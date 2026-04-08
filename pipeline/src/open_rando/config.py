@@ -1,0 +1,13 @@
+OVERPASS_API_URL = "https://overpass-api.de/api/interpreter"
+OVERPASS_TIMEOUT_SECONDS = 120
+
+GR13_RELATION_ID = 12798892
+
+MAX_STATION_DISTANCE_METERS = 5000
+
+OUTPUT_DIRECTORY = "data"
+GPX_DIRECTORY = "data/gpx"
+GEOJSON_DIRECTORY = "data/geojson"
+CATALOG_PATH = "data/catalog.json"
+
+WALKING_SPEED_KMH = 4.5

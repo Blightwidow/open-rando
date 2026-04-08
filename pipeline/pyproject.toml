@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "open-rando"
+version = "0.1.0"
+description = "Train station-to-station hiking on French GR paths"
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.31",
+    "shapely>=2.0",
+    "geojson>=3.1",
+    "gpxpy>=1.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pytest>=8.0",
+    "types-requests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["shapely.*", "gpxpy.*", "geojson.*"]
+ignore_missing_imports = true

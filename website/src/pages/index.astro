@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import HikeMap from '../components/HikeMap.astro';
+import HikeList from '../components/HikeList.astro';
+import { getAllHikes } from '../lib/catalog';
+
+const hikes = getAllHikes();
+---
+
+<Base title="open-rando -- Randonnees entre gares">
+  <header class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold">open-rando</h1>
+    <p class="text-gray-600 mt-1">Randonnees entre gares sur les sentiers GR</p>
+  </header>
+  <main class="max-w-6xl mx-auto px-4 pb-12 space-y-8">
+    <HikeMap hikes={hikes} />
+    <section>
+      <h2 class="text-xl font-semibold mb-4">{hikes.length} randonnees</h2>
+      <HikeList hikes={hikes} />
+    </section>
+  </main>
+  <footer class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500 border-t border-gray-200">
+    Donnees &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
+  </footer>
+</Base>

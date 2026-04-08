@@ -12,6 +12,7 @@ dist/
 # Node
 node_modules/
 website/dist/
+website/public/data/
 
 # SRTM elevation tiles
 *.hgt

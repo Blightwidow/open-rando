@@ -1,0 +1,206 @@
+from __future__ import annotations
+
+import logging
+import time
+
+import requests
+from shapely.geometry import LineString
+
+from open_rando.config import OVERPASS_API_URL, OVERPASS_TIMEOUT_SECONDS
+
+logger = logging.getLogger("open_rando")
+
+MAX_GAP_DEGREES = 0.01  # ~1km
+RETRY_ATTEMPTS = 5
+RETRY_BACKOFF_SECONDS = 10
+
+
+def query_overpass(query: str) -> dict:  # type: ignore[type-arg]
+    for attempt in range(RETRY_ATTEMPTS):
+        try:
+            response = requests.post(
+                OVERPASS_API_URL,
+                data={"data": query},
+                timeout=OVERPASS_TIMEOUT_SECONDS + 30,
+            )
+        except requests.exceptions.Timeout:
+            wait = RETRY_BACKOFF_SECONDS * (attempt + 1)
+            logger.warning("Request timeout, retrying in %ds...", wait)
+            time.sleep(wait)
+            continue
+
+        if response.status_code in (429, 504):
+            wait = RETRY_BACKOFF_SECONDS * (attempt + 1)
+            logger.warning("Overpass %d, retrying in %ds...", response.status_code, wait)
+            time.sleep(wait)
+            continue
+        response.raise_for_status()
+        return response.json()  # type: ignore[no-any-return]
+    raise RuntimeError("Overpass API failed after retries")
+
+
+def fetch_trail(relation_id: int) -> tuple[LineString, dict[str, str | int]]:
+    """Fetch a GR superroute and return (linestring, metadata).
+
+    Uses a single Overpass query with full recursion to get all geometry at once,
+    then uses relation member ordering to chain ways correctly.
+    """
+    logger.info("Fetching relation %d with full recursion...", relation_id)
+
+    # Single query: get the superroute, its child relations, and all ways with geometry
+    query = f"""
+[out:json][timeout:300];
+rel({relation_id});
+out body;
+rel({relation_id});
+rel(r);
+out body;
+rel({relation_id});
+rel(r);
+way(r);
+out geom;
+"""
+    data = query_overpass(query)
+
+    # Sort elements by type
+    superroute = None
+    child_relations: dict[int, dict] = {}  # type: ignore[type-arg]
+    ways_by_id: dict[int, list[tuple[float, float]]] = {}
+
+    for element in data.get("elements", []):
+        element_type = element["type"]
+        element_id = element["id"]
+
+        if element_type == "relation" and element_id == relation_id:
+            superroute = element
+        elif element_type == "relation":
+            child_relations[element_id] = element
+        elif element_type == "way":
+            geometry = element.get("geometry", [])
+            if geometry:
+                coords = [(point["lon"], point["lat"]) for point in geometry]
+                if len(coords) >= 2:
+                    ways_by_id[element_id] = coords
+
+    if superroute is None:
+        raise RuntimeError(f"Superroute {relation_id} not found")
+
+    metadata: dict[str, str | int] = {
+        "name": superroute.get("tags", {}).get("name", ""),
+        "ref": superroute.get("tags", {}).get("ref", ""),
+        "osm_relation_id": relation_id,
+    }
+
+    logger.info(
+        "Fetched %d child relations, %d ways",
+        len(child_relations),
+        len(ways_by_id),
+    )
+
+    # Get ordered child relation IDs from superroute members
+    child_relation_ids = [
+        member["ref"] for member in superroute.get("members", []) if member["type"] == "relation"
+    ]
+
+    if not child_relation_ids:
+        # Simple route (not a superroute) -- get ways directly from this relation
+        logger.info("No child relations, treating as simple route")
+        ordered_way_ids = [
+            member["ref"] for member in superroute.get("members", []) if member["type"] == "way"
+        ]
+        way_coords_list = [ways_by_id[way_id] for way_id in ordered_way_ids if way_id in ways_by_id]
+        if not way_coords_list:
+            raise RuntimeError(f"No ways found for relation {relation_id}")
+        trail = _chain_ways(way_coords_list)
+        logger.info("Trail has %d points", len(trail.coords))
+        return trail, metadata
+
+    # Process each child relation in order
+    all_linestrings: list[LineString] = []
+    for child_id in child_relation_ids:
+        child = child_relations.get(child_id)
+        if child is None:
+            logger.warning("Child relation %d not found in response", child_id)
+            continue
+
+        ordered_way_ids = [
+            member["ref"] for member in child.get("members", []) if member["type"] == "way"
+        ]
+
+        way_coords_list = [ways_by_id[way_id] for way_id in ordered_way_ids if way_id in ways_by_id]
+        if not way_coords_list:
+            logger.warning("No ways for child relation %d", child_id)
+            continue
+
+        linestring = _chain_ways(way_coords_list)
+        logger.info("  Child %d: %d points", child_id, len(linestring.coords))
+        all_linestrings.append(linestring)
+
+    if not all_linestrings:
+        raise RuntimeError(f"No geometry found for relation {relation_id}")
+
+    combined = _chain_linestrings(all_linestrings)
+    logger.info("Trail has %d points total", len(combined.coords))
+    return combined, metadata
+
+
+def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> LineString:
+    """Chain ordered ways into a single LineString, handling reversal and small gaps."""
+    chained: list[tuple[float, float]] = list(way_coords_list[0])
+
+    for way_index in range(1, len(way_coords_list)):
+        next_coords = way_coords_list[way_index]
+        chain_end = chained[-1]
+
+        distance_forward = _point_distance(chain_end, next_coords[0])
+        distance_reversed = _point_distance(chain_end, next_coords[-1])
+
+        if distance_forward <= distance_reversed:
+            if next_coords[0] == chain_end:
+                chained.extend(next_coords[1:])
+            else:
+                if distance_forward > MAX_GAP_DEGREES:
+                    logger.warning("Gap (%.4f deg) before way %d", distance_forward, way_index)
+                chained.extend(next_coords)
+        else:
+            reversed_coords = list(reversed(next_coords))
+            if reversed_coords[0] == chain_end:
+                chained.extend(reversed_coords[1:])
+            else:
+                if distance_reversed > MAX_GAP_DEGREES:
+                    logger.warning(
+                        "Gap (%.4f deg) before way %d (reversed)", distance_reversed, way_index
+                    )
+                chained.extend(reversed_coords)
+
+    return LineString(chained)
+
+
+def _chain_linestrings(linestrings: list[LineString]) -> LineString:
+    """Chain multiple LineStrings (from child relations) into one."""
+    if len(linestrings) == 1:
+        return linestrings[0]
+
+    all_coords: list[tuple[float, float]] = list(linestrings[0].coords)
+
+    for index in range(1, len(linestrings)):
+        next_coords = list(linestrings[index].coords)
+        chain_end = all_coords[-1]
+
+        distance_normal = _point_distance(chain_end, next_coords[0])
+        distance_reversed = _point_distance(chain_end, next_coords[-1])
+
+        if distance_reversed < distance_normal:
+            next_coords = list(reversed(next_coords))
+
+        if next_coords[0] == chain_end:
+            all_coords.extend(next_coords[1:])
+        else:
+            all_coords.extend(next_coords)
+
+    return LineString(all_coords)
+
+
+def _point_distance(point_a: tuple[float, float], point_b: tuple[float, float]) -> float:
+    """Euclidean distance in degrees (for comparison only)."""
+    return float(((point_a[0] - point_b[0]) ** 2 + (point_a[1] - point_b[1]) ** 2) ** 0.5)

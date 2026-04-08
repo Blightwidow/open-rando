@@ -1,0 +1,76 @@
+---
+import type { Hike } from '../lib/catalog';
+import { formatDuration } from '../lib/catalog';
+
+interface Props {
+  hikes: Hike[];
+}
+
+const { hikes } = Astro.props;
+---
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<div id="hike-map" class="h-[70vh] w-full rounded-lg border border-gray-200" data-hikes={JSON.stringify(hikes)}></div>
+
+<script>
+  import L from 'leaflet';
+
+  const mapElement = document.getElementById('hike-map')!;
+  const hikes = JSON.parse(mapElement.dataset.hikes!);
+
+  const map = L.map('hike-map').setView([47.5, 3.0], 8);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const layers: L.Layer[] = [];
+
+  async function loadSegments() {
+    for (const hike of hikes) {
+      if (!hike.geojson_path) continue;
+
+      try {
+        const response = await fetch(`/data/${hike.geojson_path}`);
+        const geojson = await response.json();
+
+        const layer = L.geoJSON(geojson, {
+          style: { color: '#2563eb', weight: 3, opacity: 0.8 },
+        }).addTo(map);
+
+        const hours = Math.floor(hike.estimated_duration_min / 60);
+        const minutes = hike.estimated_duration_min % 60;
+        const duration = hours > 0
+          ? `${hours}h${minutes > 0 ? minutes + 'min' : ''}`
+          : `${minutes}min`;
+
+        layer.bindPopup(`
+          <strong>${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</strong><br>
+          ${hike.distance_km} km &middot; ${duration}<br>
+          <a href="/data/${hike.gpx_path}" download>Telecharger GPX</a>
+        `);
+
+        layers.push(layer);
+
+        // Station markers
+        L.circleMarker([hike.start_station.lat, hike.start_station.lon], {
+          radius: 5, color: '#16a34a', fillColor: '#16a34a', fillOpacity: 0.8, weight: 1,
+        }).bindTooltip(hike.start_station.name).addTo(map);
+
+        L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
+          radius: 5, color: '#dc2626', fillColor: '#dc2626', fillOpacity: 0.8, weight: 1,
+        }).bindTooltip(hike.end_station.name).addTo(map);
+      } catch (error) {
+        console.error(`Failed to load GeoJSON for ${hike.id}:`, error);
+      }
+    }
+
+    if (layers.length > 0) {
+      const group = L.featureGroup(layers);
+      map.fitBounds(group.getBounds(), { padding: [20, 20] });
+    }
+  }
+
+  loadSegments();
+</script>

@@ -19,18 +19,18 @@ Train station-to-station hiking on French GR paths.
 
 ```bash
 # Pipeline
-cd pipeline && pip install -e ".[dev]"
-python -m open_rando
+cd pipeline && uv sync --all-extras
+uv run python -m open_rando
 
 # Website
-cd website && npm install && npm run dev
+cd website && bun install && bun run dev
 ```
 
 ## Commands
 
 - `python -m open_rando` -- run pipeline, outputs to `data/`
-- `npm run dev` (in website/) -- start dev server
-- `npm run build` (in website/) -- build static site to `dist/`
+- `bun run dev` (in website/) -- start dev server
+- `bun run build` (in website/) -- build static site to `dist/`
 
 ## Code Conventions
 
