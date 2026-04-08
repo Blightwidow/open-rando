@@ -1,0 +1,132 @@
+---
+import type { Hike } from '../lib/catalog';
+
+interface Props {
+  hikes: Hike[];
+}
+
+const { hikes } = Astro.props;
+
+const maxDistance = Math.ceil(Math.max(...hikes.map((hike) => hike.distance_km)));
+const maxDuration = Math.ceil(Math.max(...hikes.map((hike) => hike.estimated_duration_min)) / 60) * 60;
+const maxStepDistance = Math.ceil(
+  Math.max(...hikes.flatMap((hike) => hike.steps.map((step) => step.distance_km)))
+);
+const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
+---
+
+<div id="hike-filters" class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
+  <h3 class="text-sm font-semibold text-gray-700">Filtres</h3>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">
+        Distance totale: <span id="distance-value">0 – {maxDistance} km</span>
+      </label>
+      <div class="flex gap-2 items-center">
+        <input type="range" id="distance-min" min="0" max={maxDistance} value="0" step="1" class="w-full accent-blue-600" />
+        <input type="range" id="distance-max" min="0" max={maxDistance} value={maxDistance} step="1" class="w-full accent-blue-600" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">
+        Duree totale: <span id="duration-value">0 – {maxDuration / 60}h</span>
+      </label>
+      <div class="flex gap-2 items-center">
+        <input type="range" id="duration-min" min="0" max={maxDuration} value="0" step="30" class="w-full accent-blue-600" />
+        <input type="range" id="duration-max" min="0" max={maxDuration} value={maxDuration} step="30" class="w-full accent-blue-600" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">
+        Etape max: <span id="max-step-value">&le; {maxStepDistance} km</span>
+      </label>
+      <input type="range" id="max-step-distance" min="0" max={maxStepDistance} value={maxStepDistance} step="1" class="w-full accent-blue-600" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">
+        Nombre d'etapes: <span id="steps-value">1 – {maxSteps}</span>
+      </label>
+      <div class="flex gap-2 items-center">
+        <input type="range" id="steps-min" min="1" max={maxSteps} value="1" step="1" class="w-full accent-blue-600" />
+        <input type="range" id="steps-max" min="1" max={maxSteps} value={maxSteps} step="1" class="w-full accent-blue-600" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function formatDurationLabel(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0 && mins > 0) return `${hours}h${mins}min`;
+    if (hours > 0) return `${hours}h`;
+    return `${mins}min`;
+  }
+
+  const distanceMin = document.getElementById('distance-min') as HTMLInputElement;
+  const distanceMax = document.getElementById('distance-max') as HTMLInputElement;
+  const durationMin = document.getElementById('duration-min') as HTMLInputElement;
+  const durationMax = document.getElementById('duration-max') as HTMLInputElement;
+  const maxStepDistance = document.getElementById('max-step-distance') as HTMLInputElement;
+  const stepsMin = document.getElementById('steps-min') as HTMLInputElement;
+  const stepsMax = document.getElementById('steps-max') as HTMLInputElement;
+
+  const distanceValue = document.getElementById('distance-value')!;
+  const durationValue = document.getElementById('duration-value')!;
+  const maxStepValue = document.getElementById('max-step-value')!;
+  const stepsValue = document.getElementById('steps-value')!;
+  const hikeCount = document.getElementById('hike-count');
+
+  function applyFilters() {
+    const filters = {
+      distanceMin: parseFloat(distanceMin.value),
+      distanceMax: parseFloat(distanceMax.value),
+      durationMin: parseInt(durationMin.value),
+      durationMax: parseInt(durationMax.value),
+      maxStepDistance: parseFloat(maxStepDistance.value),
+      stepsMin: parseInt(stepsMin.value),
+      stepsMax: parseInt(stepsMax.value),
+    };
+
+    distanceValue.textContent = `${filters.distanceMin} – ${filters.distanceMax} km`;
+    durationValue.textContent = `${formatDurationLabel(filters.durationMin)} – ${formatDurationLabel(filters.durationMax)}`;
+    maxStepValue.textContent = `≤ ${filters.maxStepDistance} km`;
+    stepsValue.textContent = `${filters.stepsMin} – ${filters.stepsMax}`;
+
+    const cards = document.querySelectorAll<HTMLElement>('.hike-card');
+    let visibleCount = 0;
+    const visibleIds = new Set<string>();
+
+    cards.forEach((card) => {
+      const distance = parseFloat(card.dataset.distance || '0');
+      const duration = parseInt(card.dataset.duration || '0');
+      const stepDistance = parseFloat(card.dataset.maxStepDistance || '0');
+      const stepCount = parseInt(card.dataset.stepCount || '1');
+
+      const visible =
+        distance >= filters.distanceMin &&
+        distance <= filters.distanceMax &&
+        duration >= filters.durationMin &&
+        duration <= filters.durationMax &&
+        stepDistance <= filters.maxStepDistance &&
+        stepCount >= filters.stepsMin &&
+        stepCount <= filters.stepsMax;
+
+      card.style.display = visible ? '' : 'none';
+      if (visible) {
+        visibleCount++;
+        visibleIds.add(card.dataset.hikeId || '');
+      }
+    });
+
+    if (hikeCount) {
+      hikeCount.textContent = `${visibleCount} randonnee${visibleCount > 1 ? 's' : ''}`;
+    }
+
+    document.dispatchEvent(new CustomEvent('hike-filter', { detail: { visibleIds } }));
+  }
+
+  [distanceMin, distanceMax, durationMin, durationMax, maxStepDistance, stepsMin, stepsMax].forEach(
+    (input) => input.addEventListener('input', applyFilters)
+  );
+</script>

@@ -1,0 +1,169 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAllHikes, getHikeBySlug, formatDuration } from '../../lib/catalog';
+import type { Hike } from '../../lib/catalog';
+
+export function getStaticPaths() {
+  const hikes = getAllHikes();
+  return hikes.map((hike) => ({
+    params: { slug: hike.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const hike = getHikeBySlug(slug!) as Hike;
+
+const stationNames = [
+  ...hike.steps.map((step) => step.start_station.name),
+  hike.steps[hike.steps.length - 1].end_station.name,
+];
+---
+
+<Base title={`${hike.start_station.name} → ${hike.end_station.name} – open-rando`}>
+  <header class="max-w-4xl mx-auto px-4 py-6">
+    <a href="/" class="text-sm text-blue-600 hover:text-blue-800">&larr; Toutes les randonnees</a>
+    <div class="mt-4">
+      <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">{hike.path_ref}</span>
+      <h1 class="text-2xl font-bold mt-1">
+        {hike.start_station.name} &rarr; {hike.end_station.name}
+      </h1>
+      <p class="text-gray-500 mt-1">{hike.path_name}</p>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pb-12 space-y-8">
+    <div class="grid gap-6 sm:grid-cols-2">
+      <div class="bg-white rounded-lg border border-gray-200 p-5 space-y-3">
+        <h2 class="text-lg font-semibold">Resume</h2>
+        <dl class="grid grid-cols-2 gap-y-2 text-sm">
+          <dt class="text-gray-500">Distance</dt>
+          <dd class="font-medium">{hike.distance_km} km</dd>
+          <dt class="text-gray-500">Duree estimee</dt>
+          <dd class="font-medium">{formatDuration(hike.estimated_duration_min)}</dd>
+          <dt class="text-gray-500">Nombre d'etapes</dt>
+          <dd class="font-medium">{hike.step_count}</dd>
+          <dt class="text-gray-500">Sentier</dt>
+          <dd class="font-medium">{hike.path_ref}</dd>
+        </dl>
+        <a
+          href={`/data/${hike.gpx_path}`}
+          download
+          class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium mt-2"
+        >
+          Telecharger GPX
+        </a>
+      </div>
+
+      <div class="bg-white rounded-lg border border-gray-200 p-5 space-y-3">
+        <h2 class="text-lg font-semibold">Etapes</h2>
+        <ol class="space-y-2">
+          {hike.steps.map((step, index) => (
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold flex items-center justify-center">
+                {index + 1}
+              </span>
+              <div>
+                <p class="font-medium text-gray-900">
+                  {step.start_station.name} &rarr; {step.end_station.name}
+                </p>
+                <p class="text-gray-500">
+                  {step.distance_km} km &middot; {formatDuration(step.estimated_duration_min)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg border border-gray-200 p-5">
+      <h2 class="text-lg font-semibold mb-3">Gares</h2>
+      <div class="flex flex-wrap gap-2">
+        {stationNames.map((name, index) => (
+          <span class:list={[
+            "text-sm px-3 py-1 rounded-full",
+            index === 0
+              ? "bg-green-100 text-green-700"
+              : index === stationNames.length - 1
+                ? "bg-red-100 text-red-700"
+                : "bg-amber-100 text-amber-700",
+          ]}>
+            {name}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <div
+      id="detail-map"
+      class="w-full rounded-lg border border-gray-200"
+      style="height: 50vh;"
+      data-hike={JSON.stringify(hike)}
+    ></div>
+  </main>
+
+  <footer class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-500 border-t border-gray-200">
+    Donnees &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
+  </footer>
+</Base>
+
+<script>
+  import L from 'leaflet';
+
+  const mapElement = document.getElementById('detail-map')!;
+  const hike = JSON.parse(mapElement.dataset.hike!);
+
+  // bbox is [minx, miny, maxx, maxy] = [minLon, minLat, maxLon, maxLat]
+  const bbox = hike.bbox;
+  const map = L.map('detail-map').fitBounds([
+    [bbox[1], bbox[0]],
+    [bbox[3], bbox[2]],
+  ], { padding: [40, 40] });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const colors = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+  const layers: L.Layer[] = [];
+
+  async function loadHike() {
+    const response = await fetch(`/data/${hike.geojson_path}`);
+    const geojson = await response.json();
+
+    geojson.features.forEach((feature: any, index: number) => {
+      const color = colors[index % colors.length];
+      const layer = L.geoJSON(feature, {
+        style: { color, weight: 4, opacity: 0.85 },
+      }).addTo(map);
+      layers.push(layer);
+    });
+
+    // Start marker
+    L.circleMarker([hike.start_station.lat, hike.start_station.lon], {
+      radius: 7, color: '#16a34a', fillColor: '#16a34a', fillOpacity: 0.9, weight: 2,
+    }).bindTooltip(hike.start_station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
+
+    // Intermediate stations
+    if (hike.steps.length > 1) {
+      for (let stepIndex = 1; stepIndex < hike.steps.length; stepIndex++) {
+        const station = hike.steps[stepIndex].start_station;
+        L.circleMarker([station.lat, station.lon], {
+          radius: 5, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.9, weight: 2,
+        }).bindTooltip(station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
+      }
+    }
+
+    // End marker
+    L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
+      radius: 7, color: '#dc2626', fillColor: '#dc2626', fillOpacity: 0.9, weight: 2,
+    }).bindTooltip(hike.end_station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
+
+    if (layers.length > 0) {
+      map.fitBounds(L.featureGroup(layers).getBounds(), { padding: [40, 40] });
+    }
+  }
+
+  loadHike();
+</script>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import HikeMap from '../components/HikeMap.astro';
+import HikeFilters from '../components/HikeFilters.astro';
 import HikeList from '../components/HikeList.astro';
 import { getAllHikes } from '../lib/catalog';
 
@@ -14,8 +15,9 @@ const hikes = getAllHikes();
   </header>
   <main class="max-w-6xl mx-auto px-4 pb-12 space-y-8">
     <HikeMap hikes={hikes} />
+    <HikeFilters hikes={hikes} />
     <section>
-      <h2 class="text-xl font-semibold mb-4">{hikes.length} randonnees</h2>
+      <h2 class="text-xl font-semibold mb-4" id="hike-count">{hikes.length} randonnees</h2>
       <HikeList hikes={hikes} />
     </section>
   </main>

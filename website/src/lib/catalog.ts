@@ -57,6 +57,10 @@ export function getAllHikes(): Hike[] {
   return catalog.hikes;
 }
 
+export function getHikeBySlug(slug: string): Hike | undefined {
+  return getAllHikes().find((hike) => hike.slug === slug);
+}
+
 export function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
