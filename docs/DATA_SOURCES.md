@@ -2,11 +2,15 @@
 
 ## Sources
 
-| Source | What | Access |
-|--------|------|--------|
-| OpenStreetMap via Overpass API | Hiking route relations (`route=hiking`, `ref~"^GR"`) | Free, rate-limited |
-| OSM + SNCF open data | Train stations with names, coordinates, transit lines | Free |
-| SRTM `.hgt` tiles | Elevation data (3 arc-second / ~90m resolution) | Free download |
+| Source | What | Access | Caching |
+|--------|------|--------|---------|
+| OpenStreetMap via Overpass API | Hiking route relations (`route=hiking`, `ref~"^GR"`) | Free, rate-limited | Disk cache, 30-60 day TTL |
+| OSM + SNCF open data | Train stations with names, coordinates, transit lines | Free | Cached with Overpass responses |
+| SRTM `.hgt` tiles via AWS Skadi | Elevation data (1 or 3 arc-second resolution) | Free, no auth | Permanent disk cache |
+
+### SRTM Details
+
+Tiles are downloaded from `https://elevation-tiles-prod.s3.amazonaws.com/skadi/` (AWS open data mirror, gzip-compressed). Each tile covers 1°x1°, named by SW corner (e.g., `N47E003.hgt`). File size determines resolution: SRTM1 (3601x3601, ~25MB) or SRTM3 (1201x1201, ~2.8MB). Elevation is read via bilinear interpolation of the 4 surrounding grid points. Void values (-32768) are treated as missing data.
 
 ---
 
@@ -21,7 +25,7 @@
 | Risk | Mitigation |
 |------|------------|
 | OSM data gaps in GR relations | Geometry repair; skip broken segments with warnings |
-| Overpass API rate limits / timeouts | Regional bbox splitting; cache responses; fallback to Geofabrik PBF |
+| Overpass API rate limits / timeouts | Disk-cached responses (30-60 day TTL); retry with exponential backoff; regional bbox splitting planned |
 | FFRP trademark on "GR" | Frame as "hiking between stations"; no logo reproduction; disclaimer |
 | Hike count explosion from DFS | Sub-path deduplication; step distance range (8-18km) limits branching |
 | Large static site (many GPX/GeoJSON) | GPX on-demand download; simplify GeoJSON; gzip on CDN |
