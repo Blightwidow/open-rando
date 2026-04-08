@@ -26,14 +26,15 @@
 
 ## Core Algorithm
 
-1. **Fetch** a GR hiking relation from Overpass API as GeoJSON geometry
+1. **Fetch** a GR hiking relation from Overpass API (resolves super-relations recursively)
 2. **Fetch** train stations near the route bounding box (OSM + SNCF data)
-3. **Match** stations to trail: find nearest point on trail with Shapely, keep if < 2km
+3. **Match** stations to trail: find nearest point on trail with Shapely, keep if < 5km
 4. **Order** matched stations by position along the trail (linear referencing)
-5. **Slice** segments between station pairs (consecutive + skip-1 where distance < 40km)
-6. **Enrich** with SRTM elevation: sample every 50m, compute gain/loss/min/max
-7. **Compute** duration (Naismith's rule: 5km/h + 1min per 10m ascent) and difficulty
-8. **Export** GPX files, simplified GeoJSON for rendering, and `catalog.json`
+5. **Build step graph**: compute cumulative distances, create edges between station pairs 8-18km apart
+6. **Find hikes**: DFS for all maximal chains through the step graph, deduplicate sub-paths
+7. **Enrich** (planned) with SRTM elevation: sample every 50m, compute gain/loss/min/max
+8. **Compute** duration estimate (4.5 km/h flat walking speed) per step and total
+9. **Export** GPX files (one track per hike, one segment per step), GeoJSON, and `catalog.json`
 
 ---
 
@@ -55,7 +56,7 @@ BUILD TIME                                    RUNTIME (static files)
 +-----------------------------------------+
 ```
 
-Build flow: `python -m open_rando` produces data artifacts, then `npm run build` (Astro) consumes them and outputs a deployable `dist/` folder.
+Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts, then `cd website && bun run build` (Astro) consumes them and outputs a deployable `dist/` folder.
 
 ---
 
@@ -72,21 +73,29 @@ class Station:
     transit_lines: list[str]
 
 @dataclass
-class Hike:
-    id: str                # deterministic hash
-    slug: str              # "gr13-fontainebleau-to-bois-le-roi"
-    path_ref: str          # "GR 13"
-    path_name: str
-    osm_relation_id: int
+class HikeStep:
     start_station: Station
     end_station: Station
     distance_km: float
+    estimated_duration_minutes: int
+
+@dataclass
+class Hike:
+    id: str                # deterministic hash
+    slug: str              # "gr-13-auxerre-saint-gervais-to-sermizelles-vezelay"
+    path_ref: str          # "GR 13"
+    path_name: str
+    osm_relation_id: int
+    start_station: Station # first step's start
+    end_station: Station   # last step's end
+    steps: list[HikeStep]  # 1+ steps, each 8-18km
+    distance_km: float     # sum of step distances
     estimated_duration_min: int
-    elevation_gain_m: int
-    elevation_loss_m: int
-    max_elevation_m: int
-    min_elevation_m: int
-    difficulty: str        # easy | moderate | hard
+    elevation_gain_m: int  # planned
+    elevation_loss_m: int  # planned
+    max_elevation_m: int   # planned
+    min_elevation_m: int   # planned
+    difficulty: str        # planned
     bbox: tuple[float, float, float, float]
     region: str
     departement: str
@@ -104,79 +113,81 @@ class Hike:
 open-rando/
 +-- pipeline/
 |   +-- pyproject.toml
+|   +-- uv.lock
 |   +-- src/open_rando/
+|       +-- __init__.py
+|       +-- __main__.py
 |       +-- cli.py              # entry point
-|       +-- config.py           # constants (max distance, bbox)
-|       +-- models.py           # dataclasses above
+|       +-- config.py           # constants (step distances, API config)
+|       +-- models.py           # Station, HikeStep, Hike dataclasses
 |       +-- fetchers/
-|       |   +-- overpass.py     # Overpass API client
-|       |   +-- stations.py    # SNCF + OSM station fetcher
+|       |   +-- overpass.py     # Overpass API client (super-relation resolution)
+|       |   +-- stations.py    # OSM station fetcher
 |       +-- processors/
 |       |   +-- match.py       # station-to-trail matching (Shapely)
-|       |   +-- slice.py       # segment extraction
-|       |   +-- elevation.py   # SRTM .hgt reader
-|       |   +-- metadata.py    # duration, difficulty computation
+|       |   +-- slice.py       # step graph + DFS hike finder
 |       +-- exporters/
-|           +-- gpx.py         # GPX XML writer
-|           +-- geojson.py     # simplified GeoJSON for web
+|           +-- gpx.py         # GPX writer (multi-segment tracks)
+|           +-- geojson.py     # GeoJSON FeatureCollection per hike
 |           +-- catalog.py     # catalog.json writer
 +-- website/
 |   +-- package.json
+|   +-- bun.lock
 |   +-- astro.config.mjs
+|   +-- tailwind.config.mjs
 |   +-- src/
 |   |   +-- layouts/Base.astro
 |   |   +-- pages/
-|   |   |   +-- index.astro        # map + search
-|   |   |   +-- hike/[slug].astro  # detail page
+|   |   |   +-- index.astro             # map + filters + hike list
+|   |   |   +-- hike/[slug].astro       # detail page
 |   |   +-- components/
-|   |   |   +-- HikeMap.astro
+|   |   |   +-- HikeMap.astro           # Leaflet map (filter-aware)
 |   |   |   +-- HikeList.astro
-|   |   |   +-- HikeCard.astro
-|   |   |   +-- ElevationProfile.astro
-|   |   |   +-- Filters.astro
+|   |   |   +-- HikeCard.astro          # clickable card linking to detail
+|   |   |   +-- HikeFilters.astro       # range sliders
 |   |   +-- lib/
-|   |       +-- catalog.ts
-|   |       +-- map.ts
-|   +-- public/data/               # copied from pipeline output
-+-- data/                          # gitignored
+|   |       +-- catalog.ts              # types + data loading
+|   +-- public/data/                    # copied from pipeline output at build
++-- data/                               # gitignored pipeline output
 +-- docs/
-+-- .github/workflows/build-deploy.yml
 ```
 
-**Python deps**: `requests`, `shapely`, `geojson`, `gpxpy`, `srtm`
+**Python deps**: `requests`, `shapely`, `gpxpy`
 **JS deps**: `astro`, `leaflet`, `tailwindcss`
 
 ---
 
 ## Phases
 
-### Phase 1 -- Proof of Concept (single GR path)
+### Phase 1 -- Proof of Concept (single GR path) ✓
 
-Scope: GR 13 near Fontainebleau (well-served by Transilien R)
+Scope: GR 13 (Fontainebleau to Morvan)
 
-- [ ] Project scaffolding (pyproject.toml, package.json, .gitignore)
-- [ ] Overpass fetcher: fetch GR 13 relation, convert to LineString
-- [ ] Station fetcher: OSM stations in route bounding box
-- [ ] Station-to-trail matching with Shapely
-- [ ] Segment slicing between consecutive stations
-- [ ] GPX export (no elevation yet)
-- [ ] catalog.json export
-- [ ] Bare Astro page with Leaflet map showing segments
-- [ ] GPX download links
+- [x] Project scaffolding (pyproject.toml, package.json, .gitignore)
+- [x] Overpass fetcher: fetch GR 13 super-relation, resolve child relations into LineString
+- [x] Station fetcher: OSM stations in route bounding box
+- [x] Station-to-trail matching with Shapely (< 5km threshold)
+- [x] Multi-step hike generation: step graph (8-18km per step) + DFS maximal path finder
+- [x] GPX export (multi-segment tracks, no elevation yet)
+- [x] GeoJSON export (one feature per step)
+- [x] catalog.json export with step metadata
+- [x] Astro site: Leaflet map + hike cards on index page
+- [x] Filter sliders (distance, duration, max step length, step count) synced with map
+- [x] Hike detail page with step breakdown, station list, and dedicated map
+- [x] GPX download links
 
 ### Phase 2 -- Elevation and Metadata
 
 - [ ] SRTM .hgt tile downloader + reader
 - [ ] Elevation profile per segment (sample every 50m)
-- [ ] Duration estimation (Naismith's rule)
+- [ ] Duration estimation (Naismith's rule: replace flat 4.5km/h)
 - [ ] Difficulty classification
 - [ ] Elevation in GPX `<ele>` tags
-- [ ] Non-consecutive station pairs (A->C, up to 40km)
+- [ ] Elevation chart on hike detail page
 
 ### Phase 3 -- All GR Paths in France
 
 - [ ] Fetch all `ref=GR*` relations (~300-500)
-- [ ] Super-relation resolution (parent with child stages)
 - [ ] MultiLineString gap handling
 - [ ] Station deduplication (SNCF vs OSM)
 - [ ] Overpass response caching + incremental reruns
@@ -184,8 +195,6 @@ Scope: GR 13 near Fontainebleau (well-served by Transilien R)
 
 ### Phase 4 -- Polished Website
 
-- [ ] Filterable hike list (distance, duration, difficulty, region)
-- [ ] Hike detail page with elevation chart
 - [ ] Responsive mobile layout
 - [ ] URL-based filter state (shareable links)
 - [ ] CI/CD: GitHub Actions -> GitHub Pages
@@ -209,7 +218,7 @@ Scope: GR 13 near Fontainebleau (well-served by Transilien R)
 | OSM data gaps in GR relations | Geometry repair; skip broken segments with warnings |
 | Overpass API rate limits / timeouts | Regional bbox splitting; cache responses; fallback to Geofabrik PBF |
 | FFRP trademark on "GR" | Frame as "hiking between stations"; no logo reproduction; disclaimer |
-| Segment count explosion (N^2 pairs) | Cap at 40km; consecutive + skip-1 only |
+| Hike count explosion from DFS | Sub-path deduplication; step distance range (8-18km) limits branching |
 | Large static site (many GPX/GeoJSON) | GPX on-demand download; simplify GeoJSON; gzip on CDN |
 
 ---

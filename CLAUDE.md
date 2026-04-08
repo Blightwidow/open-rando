@@ -44,6 +44,6 @@ cd website && bun install && bun run dev
 
 See `docs/ROADMAP.md` for full architecture, data model, and phased plan.
 
-Pipeline flow: fetch (Overpass + SNCF) -> match (stations to trails) -> slice (segments) -> enrich (elevation) -> export (GPX + GeoJSON + catalog.json)
+Pipeline flow: fetch (Overpass + OSM stations) -> match (stations to trail) -> build step graph (8-18km edges) -> DFS maximal hikes -> export (GPX + GeoJSON + catalog.json)
 
-Website consumes `data/catalog.json` and serves GPX/GeoJSON as static files.
+Website consumes `data/catalog.json` and serves GPX/GeoJSON as static files. Hikes have 1+ steps, each between two train stations.
