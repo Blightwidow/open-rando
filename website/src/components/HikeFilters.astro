@@ -15,40 +15,40 @@ const maxStepDistance = Math.ceil(
 const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
 ---
 
-<div id="hike-filters" class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-  <h3 class="text-sm font-semibold text-gray-700">Filtres</h3>
+<div id="hike-filters" class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-4 space-y-4">
+  <h3 class="text-sm font-semibold text-stone-700 dark:text-stone-200">Filtres</h3>
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <div>
-      <label class="block text-xs text-gray-500 mb-1">
+      <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
         Distance totale: <span id="distance-value">0 – {maxDistance} km</span>
       </label>
       <div class="flex gap-2 items-center">
-        <input type="range" id="distance-min" min="0" max={maxDistance} value="0" step="1" class="w-full accent-blue-600" />
-        <input type="range" id="distance-max" min="0" max={maxDistance} value={maxDistance} step="1" class="w-full accent-blue-600" />
+        <input type="range" id="distance-min" min="0" max={maxDistance} value="0" step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
+        <input type="range" id="distance-max" min="0" max={maxDistance} value={maxDistance} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
       </div>
     </div>
     <div>
-      <label class="block text-xs text-gray-500 mb-1">
+      <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
         Duree totale: <span id="duration-value">0 – {maxDuration / 60}h</span>
       </label>
       <div class="flex gap-2 items-center">
-        <input type="range" id="duration-min" min="0" max={maxDuration} value="0" step="30" class="w-full accent-blue-600" />
-        <input type="range" id="duration-max" min="0" max={maxDuration} value={maxDuration} step="30" class="w-full accent-blue-600" />
+        <input type="range" id="duration-min" min="0" max={maxDuration} value="0" step="30" class="w-full accent-forest-700 dark:accent-forest-400" />
+        <input type="range" id="duration-max" min="0" max={maxDuration} value={maxDuration} step="30" class="w-full accent-forest-700 dark:accent-forest-400" />
       </div>
     </div>
     <div>
-      <label class="block text-xs text-gray-500 mb-1">
+      <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
         Etape max: <span id="max-step-value">&le; {maxStepDistance} km</span>
       </label>
-      <input type="range" id="max-step-distance" min="0" max={maxStepDistance} value={maxStepDistance} step="1" class="w-full accent-blue-600" />
+      <input type="range" id="max-step-distance" min="0" max={maxStepDistance} value={maxStepDistance} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
     </div>
     <div>
-      <label class="block text-xs text-gray-500 mb-1">
+      <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
         Nombre d'etapes: <span id="steps-value">1 – {maxSteps}</span>
       </label>
       <div class="flex gap-2 items-center">
-        <input type="range" id="steps-min" min="1" max={maxSteps} value="1" step="1" class="w-full accent-blue-600" />
-        <input type="range" id="steps-max" min="1" max={maxSteps} value={maxSteps} step="1" class="w-full accent-blue-600" />
+        <input type="range" id="steps-min" min="1" max={maxSteps} value="1" step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
+        <input type="range" id="steps-max" min="1" max={maxSteps} value={maxSteps} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
       </div>
     </div>
   </div>

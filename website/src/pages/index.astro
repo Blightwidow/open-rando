@@ -10,8 +10,13 @@ const hikes = getAllHikes();
 
 <Base title="open-rando -- Randonnees entre gares">
   <header class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold">open-rando</h1>
-    <p class="text-gray-600 mt-1">Randonnees entre gares sur les sentiers GR</p>
+    <div class="flex items-center gap-3">
+      <img src="/logo.jpg" alt="open-rando" class="w-10 h-10 rounded" />
+      <div>
+        <h1 class="text-3xl font-bold">open-rando</h1>
+        <p class="text-stone-600 dark:text-stone-400 mt-1">Randonnees entre gares sur les sentiers GR</p>
+      </div>
+    </div>
   </header>
   <main class="max-w-6xl mx-auto px-4 pb-12 space-y-8">
     <HikeMap hikes={hikes} />
@@ -21,7 +26,7 @@ const hikes = getAllHikes();
       <HikeList hikes={hikes} />
     </section>
   </main>
-  <footer class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500 border-t border-gray-200">
+  <footer class="max-w-6xl mx-auto px-4 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
     Donnees &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
   </footer>
 </Base>
