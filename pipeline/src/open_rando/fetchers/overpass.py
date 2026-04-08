@@ -12,7 +12,7 @@ logger = logging.getLogger("open_rando")
 
 MAX_GAP_DEGREES = 0.01  # ~1km
 RETRY_ATTEMPTS = 5
-RETRY_BACKOFF_SECONDS = 10
+RETRY_BACKOFF_SECONDS = 15
 
 
 def query_overpass(query: str) -> dict:  # type: ignore[type-arg]

@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+export interface AccommodationInfo {
+  has_hotel: boolean;
+  has_camping: boolean;
+}
+
 export interface StationInfo {
   name: string;
   code: string;
@@ -8,6 +13,7 @@ export interface StationInfo {
   lon: number;
   distance_to_trail_m: number;
   transit_lines: string[];
+  accommodation: AccommodationInfo;
 }
 
 export interface HikeStep {

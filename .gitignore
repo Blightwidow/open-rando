@@ -11,6 +11,7 @@ dist/
 
 # Node
 node_modules/
+website/.astro/
 website/dist/
 website/public/data/
 
