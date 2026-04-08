@@ -24,18 +24,31 @@ def fetch_stations(trail: LineString) -> list[Station]:
     query = f"""
 [out:json][timeout:{OVERPASS_TIMEOUT_SECONDS}];
 (
-  node["railway"="station"]({south},{west},{north},{east});
-  node["railway"="halt"]({south},{west},{north},{east});
+  node["railway"="station"]["disused"!="yes"]["abandoned"!="yes"]({south},{west},{north},{east});
+  node["railway"="halt"]["disused"!="yes"]["abandoned"!="yes"]({south},{west},{north},{east});
 );
 out body;
 """
     data = query_overpass(query)
     stations: list[Station] = []
 
+    lifecycle_prefixes = (
+        "disused:",
+        "abandoned:",
+        "razed:",
+        "demolished:",
+        "construction:",
+        "proposed:",
+    )
+
     for element in data.get("elements", []):
         tags = element.get("tags", {})
         name = tags.get("name", "")
         if not name:
+            continue
+
+        if any(key.startswith(prefix) for key in tags for prefix in lifecycle_prefixes):
+            logger.debug("Skipping lifecycle-prefixed station: %s", name)
             continue
 
         code = tags.get("ref:SNCF") or tags.get("uic_ref") or str(element["id"])

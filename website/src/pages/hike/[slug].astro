@@ -13,9 +13,9 @@ export function getStaticPaths() {
 const { slug } = Astro.params;
 const hike = getHikeBySlug(slug!) as Hike;
 
-const stationNames = [
-  ...hike.steps.map((step) => step.start_station.name),
-  hike.steps[hike.steps.length - 1].end_station.name,
+const stations = [
+  ...hike.steps.map((step) => step.start_station),
+  hike.steps[hike.steps.length - 1].end_station,
 ];
 ---
 
@@ -69,6 +69,15 @@ const stationNames = [
                 <p class="text-stone-500 dark:text-stone-400">
                   {step.distance_km} km &middot; {formatDuration(step.estimated_duration_min)}
                 </p>
+                <p class="text-xs text-gray-400 mt-0.5">
+                  {step.end_station.accommodation.has_hotel && step.end_station.accommodation.has_camping
+                    ? "Hotel & Camping"
+                    : step.end_station.accommodation.has_hotel
+                      ? "Hotel"
+                      : step.end_station.accommodation.has_camping
+                        ? "Camping"
+                        : "Pas d'hebergement repertorie"}
+                </p>
               </div>
             </li>
           ))}
@@ -79,17 +88,21 @@ const stationNames = [
     <div class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5">
       <h2 class="text-lg font-semibold mb-3">Gares</h2>
       <div class="flex flex-wrap gap-2">
-        {stationNames.map((name, index) => (
-          <span class:list={[
-            "text-sm px-3 py-1 rounded-full",
-            index === 0
-              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-              : index === stationNames.length - 1
-                ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
-          ]}>
-            {name}
-          </span>
+        {stations.map((station, index) => (
+          <div class="flex items-center gap-1">
+            <span class:list={[
+              "text-sm px-3 py-1 rounded-full",
+              index === 0
+                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                : index === stations.length - 1
+                  ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                  : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
+            ]}>
+              {station.name}
+            </span>
+            {station.accommodation.has_hotel && <span class="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 px-1.5 py-0.5 rounded-full">Hotel</span>}
+            {station.accommodation.has_camping && <span class="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded-full">Camping</span>}
+          </div>
         ))}
       </div>
     </div>

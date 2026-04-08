@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from datetime import date
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from open_rando.config import (
 from open_rando.exporters.catalog import export_catalog
 from open_rando.exporters.geojson import export_geojson
 from open_rando.exporters.gpx import export_gpx
+from open_rando.fetchers.accommodation import fetch_accommodation
 from open_rando.fetchers.overpass import fetch_trail
 from open_rando.fetchers.stations import fetch_stations
 from open_rando.models import Hike, HikeStep, generate_hike_id, slugify
@@ -32,14 +34,24 @@ logger = logging.getLogger("open_rando")
 
 
 def main() -> None:
+    overpass_cooldown_seconds = 5
+
     logger.info("Fetching GR 13 trail from Overpass API...")
     trail, trail_metadata = fetch_trail(GR13_RELATION_ID)
+
+    time.sleep(overpass_cooldown_seconds)
 
     logger.info("Fetching stations near trail...")
     stations = fetch_stations(trail)
 
     logger.info("Matching stations to trail...")
     matched = match_stations_to_trail(stations, trail, MAX_STATION_DISTANCE_METERS)
+
+    time.sleep(overpass_cooldown_seconds)
+
+    matched_stations = [station for station, _fraction in matched]
+    logger.info("Fetching accommodation near %d matched stations...", len(matched_stations))
+    fetch_accommodation(matched_stations)
 
     logger.info(
         "Finding multi-step hikes (step range: %s-%s km)...",

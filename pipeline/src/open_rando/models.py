@@ -8,6 +8,18 @@ from typing import Any
 
 
 @dataclass
+class Accommodation:
+    has_hotel: bool = False  # hotel, guest_house, hostel
+    has_camping: bool = False  # camp_site
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "has_hotel": self.has_hotel,
+            "has_camping": self.has_camping,
+        }
+
+
+@dataclass
 class Station:
     name: str
     code: str
@@ -15,6 +27,7 @@ class Station:
     lon: float
     distance_to_trail_meters: float = 0.0
     transit_lines: list[str] = field(default_factory=list)
+    accommodation: Accommodation = field(default_factory=Accommodation)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -24,6 +37,7 @@ class Station:
             "lon": self.lon,
             "distance_to_trail_m": self.distance_to_trail_meters,
             "transit_lines": self.transit_lines,
+            "accommodation": self.accommodation.to_dict(),
         }
 
 

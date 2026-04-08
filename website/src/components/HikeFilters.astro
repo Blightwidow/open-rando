@@ -52,6 +52,16 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
       </div>
     </div>
   </div>
+  <div class="flex gap-4 mt-4">
+    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+      <input type="checkbox" id="filter-hotel" class="accent-purple-600" />
+      Hotel a chaque etape
+    </label>
+    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+      <input type="checkbox" id="filter-camping" class="accent-green-600" />
+      Camping a chaque etape
+    </label>
+  </div>
 </div>
 
 <script>
@@ -76,6 +86,8 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
   const maxStepValue = document.getElementById('max-step-value')!;
   const stepsValue = document.getElementById('steps-value')!;
   const hikeCount = document.getElementById('hike-count');
+  const filterHotel = document.getElementById('filter-hotel') as HTMLInputElement;
+  const filterCamping = document.getElementById('filter-camping') as HTMLInputElement;
 
   function applyFilters() {
     const filters = {
@@ -86,6 +98,8 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
       maxStepDistance: parseFloat(maxStepDistance.value),
       stepsMin: parseInt(stepsMin.value),
       stepsMax: parseInt(stepsMax.value),
+      requireHotel: filterHotel.checked,
+      requireCamping: filterCamping.checked,
     };
 
     distanceValue.textContent = `${filters.distanceMin} – ${filters.distanceMax} km`;
@@ -103,6 +117,9 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
       const stepDistance = parseFloat(card.dataset.maxStepDistance || '0');
       const stepCount = parseInt(card.dataset.stepCount || '1');
 
+      const hasHotelAllStops = card.dataset.hotelAllStops === 'true';
+      const hasCampingAllStops = card.dataset.campingAllStops === 'true';
+
       const visible =
         distance >= filters.distanceMin &&
         distance <= filters.distanceMax &&
@@ -110,7 +127,9 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
         duration <= filters.durationMax &&
         stepDistance <= filters.maxStepDistance &&
         stepCount >= filters.stepsMin &&
-        stepCount <= filters.stepsMax;
+        stepCount <= filters.stepsMax &&
+        (!filters.requireHotel || hasHotelAllStops) &&
+        (!filters.requireCamping || hasCampingAllStops);
 
       card.style.display = visible ? '' : 'none';
       if (visible) {
@@ -128,5 +147,8 @@ const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
 
   [distanceMin, distanceMax, durationMin, durationMax, maxStepDistance, stepsMin, stepsMax].forEach(
     (input) => input.addEventListener('input', applyFilters)
+  );
+  [filterHotel, filterCamping].forEach(
+    (input) => input.addEventListener('change', applyFilters)
   );
 </script>
