@@ -1,0 +1,240 @@
+---
+interface Props {
+  hikeId: string;
+}
+
+const { hikeId } = Astro.props;
+---
+
+<div
+  id="elevation-chart"
+  class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5"
+  data-hike-id={hikeId}
+>
+  <h2 class="text-lg font-semibold mb-3">Profil altimetrique</h2>
+  <div id="elevation-chart-container" class="relative" style="height: 240px;">
+    <div id="elevation-loading" class="flex items-center justify-center h-full text-sm text-stone-400">
+      Chargement...
+    </div>
+  </div>
+</div>
+
+<script>
+  import type { ElevationProfile } from '../lib/catalog';
+
+  const chartElement = document.getElementById('elevation-chart')!;
+  const container = document.getElementById('elevation-chart-container')!;
+  const loading = document.getElementById('elevation-loading')!;
+  const hikeId = chartElement.dataset.hikeId!;
+
+  async function loadAndRender() {
+    try {
+      const response = await fetch(`/data/elevation/${hikeId}.json`);
+      if (!response.ok) {
+        chartElement.style.display = 'none';
+        return;
+      }
+
+      const profile: ElevationProfile = await response.json();
+      if (!profile.distances_km.length) {
+        chartElement.style.display = 'none';
+        return;
+      }
+
+      loading.remove();
+      renderChart(profile);
+    } catch {
+      chartElement.style.display = 'none';
+    }
+  }
+
+  function formatTime(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.round(minutes % 60);
+    if (hours > 0 && mins > 0) return `${hours}h${String(mins).padStart(2, '0')}`;
+    if (hours > 0) return `${hours}h`;
+    return `${mins}min`;
+  }
+
+  function renderChart(profile: ElevationProfile) {
+    const { distances_km, elevations_m, times_min, step_boundaries_km } = profile;
+
+    const viewWidth = 800;
+    const viewHeight = 240;
+    const paddingLeft = 50;
+    const paddingRight = 10;
+    const paddingTop = 15;
+    const paddingBottom = 50; // extra space for timeline
+    const chartWidth = viewWidth - paddingLeft - paddingRight;
+    const chartHeight = viewHeight - paddingTop - paddingBottom;
+
+    const maxDistance = distances_km[distances_km.length - 1];
+    const minElevation = Math.floor(Math.min(...elevations_m) / 50) * 50;
+    const maxElevation = Math.ceil(Math.max(...elevations_m) / 50) * 50;
+    const elevationRange = maxElevation - minElevation || 1;
+    const totalTimeMin = times_min[times_min.length - 1];
+
+    function scaleX(distance: number): number {
+      return paddingLeft + (distance / maxDistance) * chartWidth;
+    }
+
+    function scaleY(elevation: number): number {
+      return paddingTop + chartHeight - ((elevation - minElevation) / elevationRange) * chartHeight;
+    }
+
+    // Build SVG path for the elevation line
+    const lineParts: string[] = [];
+    for (let index = 0; index < distances_km.length; index++) {
+      const x = scaleX(distances_km[index]);
+      const y = scaleY(elevations_m[index]);
+      lineParts.push(`${index === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`);
+    }
+    const linePath = lineParts.join(' ');
+
+    // Build filled area path
+    const areaPath = `${linePath} L${scaleX(maxDistance).toFixed(1)},${scaleY(minElevation).toFixed(1)} L${scaleX(0).toFixed(1)},${scaleY(minElevation).toFixed(1)} Z`;
+
+    // Elevation grid lines
+    const gridLines: string[] = [];
+    const gridLabels: string[] = [];
+    const gridStep = elevationRange <= 200 ? 50 : elevationRange <= 500 ? 100 : 200;
+    for (let elevation = minElevation; elevation <= maxElevation; elevation += gridStep) {
+      const y = scaleY(elevation);
+      gridLines.push(`<line x1="${paddingLeft}" y1="${y.toFixed(1)}" x2="${viewWidth - paddingRight}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.15" stroke-dasharray="4 2" />`);
+      gridLabels.push(`<text x="${paddingLeft - 5}" y="${y.toFixed(1)}" text-anchor="end" dominant-baseline="middle" class="fill-stone-400 dark:fill-stone-500" style="font-size: 10px;">${elevation}m</text>`);
+    }
+
+    // Distance labels on x-axis (first row below chart)
+    const distanceLabels: string[] = [];
+    const distanceLabelStep = maxDistance <= 15 ? 5 : maxDistance <= 30 ? 10 : 20;
+    for (let distance = 0; distance <= maxDistance; distance += distanceLabelStep) {
+      const x = scaleX(distance);
+      distanceLabels.push(`<text x="${x.toFixed(1)}" y="${paddingTop + chartHeight + 15}" text-anchor="middle" class="fill-stone-400 dark:fill-stone-500" style="font-size: 10px;">${distance}km</text>`);
+    }
+
+    // Timeline labels on x-axis (second row below distance)
+    const timelineLabels: string[] = [];
+    const timelineTicks: string[] = [];
+    const timelineY = paddingTop + chartHeight + 30;
+
+    // Place time labels at regular time intervals
+    const timeLabelStepMin = totalTimeMin <= 120 ? 30 : totalTimeMin <= 360 ? 60 : 120;
+    for (let timeMin = 0; timeMin <= totalTimeMin; timeMin += timeLabelStepMin) {
+      // Find the distance corresponding to this time by interpolation
+      let distanceAtTime = 0;
+      for (let index = 1; index < times_min.length; index++) {
+        if (times_min[index] >= timeMin) {
+          const timeFraction = (timeMin - times_min[index - 1]) / (times_min[index] - times_min[index - 1]);
+          distanceAtTime = distances_km[index - 1] + (distances_km[index] - distances_km[index - 1]) * timeFraction;
+          break;
+        }
+      }
+      if (timeMin >= totalTimeMin) {
+        distanceAtTime = maxDistance;
+      }
+
+      const x = scaleX(distanceAtTime);
+      timelineTicks.push(`<line x1="${x.toFixed(1)}" y1="${timelineY - 4}" x2="${x.toFixed(1)}" y2="${timelineY + 4}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1" />`);
+      timelineLabels.push(`<text x="${x.toFixed(1)}" y="${timelineY + 14}" text-anchor="middle" class="fill-stone-500 dark:fill-stone-400" style="font-size: 10px; font-weight: 500;">${formatTime(timeMin)}</text>`);
+    }
+    // Timeline baseline
+    const timelineBaseline = `<line x1="${paddingLeft}" y1="${timelineY}" x2="${viewWidth - paddingRight}" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.2" stroke-width="1" />`;
+
+    // Step boundary lines
+    const boundaryLines: string[] = [];
+    for (const boundary of step_boundaries_km) {
+      const x = scaleX(boundary);
+      boundaryLines.push(`<line x1="${x.toFixed(1)}" y1="${paddingTop}" x2="${x.toFixed(1)}" y2="${paddingTop + chartHeight}" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="6 3" stroke-width="1.5" />`);
+    }
+
+    // Tooltip elements
+    const tooltipGroup = `<line id="tooltip-line" x1="0" y1="${paddingTop}" x2="0" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.4" style="display: none;" />
+    <circle id="tooltip-dot" r="4" fill="var(--color-trail, #2d6a4f)" style="display: none;" />
+    <rect id="tooltip-bg" rx="3" ry="3" class="fill-white dark:fill-neutral-700" stroke="currentColor" stroke-opacity="0.2" style="display: none;" />
+    <text id="tooltip-text" text-anchor="middle" class="fill-stone-700 dark:fill-stone-200" style="font-size: 11px; display: none;"></text>`;
+
+    const svg = `<svg viewBox="0 0 ${viewWidth} ${viewHeight}" preserveAspectRatio="xMidYMid meet" class="w-full h-full" style="overflow: visible;">
+      ${gridLines.join('\n')}
+      ${gridLabels.join('\n')}
+      ${distanceLabels.join('\n')}
+      ${timelineBaseline}
+      ${timelineTicks.join('\n')}
+      ${timelineLabels.join('\n')}
+      ${boundaryLines.join('\n')}
+      <path d="${areaPath}" fill="var(--color-trail, #2d6a4f)" fill-opacity="0.15" />
+      <path d="${linePath}" fill="none" stroke="var(--color-trail, #2d6a4f)" stroke-width="2" stroke-linejoin="round" />
+      ${tooltipGroup}
+      <rect id="tooltip-overlay" x="${paddingLeft}" y="${paddingTop}" width="${chartWidth}" height="${chartHeight}" fill="transparent" />
+    </svg>`;
+
+    container.innerHTML = svg;
+
+    // Tooltip interactivity
+    const overlay = document.getElementById('tooltip-overlay')!;
+    const tooltipLine = document.getElementById('tooltip-line')!;
+    const tooltipDot = document.getElementById('tooltip-dot')!;
+    const tooltipBg = document.getElementById('tooltip-bg')!;
+    const tooltipTextElement = document.getElementById('tooltip-text')!;
+
+    function showTooltip(event: MouseEvent) {
+      const svgElement = container.querySelector('svg')!;
+      const rect = svgElement.getBoundingClientRect();
+      const mouseX = ((event.clientX - rect.left) / rect.width) * viewWidth;
+      const distance = ((mouseX - paddingLeft) / chartWidth) * maxDistance;
+
+      if (distance < 0 || distance > maxDistance) {
+        hideTooltip();
+        return;
+      }
+
+      // Find closest data point
+      let closestIndex = 0;
+      let closestDelta = Infinity;
+      for (let index = 0; index < distances_km.length; index++) {
+        const delta = Math.abs(distances_km[index] - distance);
+        if (delta < closestDelta) {
+          closestDelta = delta;
+          closestIndex = index;
+        }
+      }
+
+      const x = scaleX(distances_km[closestIndex]);
+      const y = scaleY(elevations_m[closestIndex]);
+      const timeAtPoint = times_min[closestIndex];
+      const label = `${distances_km[closestIndex].toFixed(1)}km · ${Math.round(elevations_m[closestIndex])}m · ${formatTime(timeAtPoint)}`;
+
+      tooltipLine.setAttribute('x1', x.toFixed(1));
+      tooltipLine.setAttribute('x2', x.toFixed(1));
+      tooltipLine.style.display = '';
+
+      tooltipDot.setAttribute('cx', x.toFixed(1));
+      tooltipDot.setAttribute('cy', y.toFixed(1));
+      tooltipDot.style.display = '';
+
+      const textWidth = label.length * 6.5;
+      const bgX = Math.max(paddingLeft, Math.min(x - textWidth / 2 - 4, viewWidth - paddingRight - textWidth - 8));
+      tooltipBg.setAttribute('x', bgX.toFixed(1));
+      tooltipBg.setAttribute('y', (paddingTop - 18).toString());
+      tooltipBg.setAttribute('width', (textWidth + 8).toString());
+      tooltipBg.setAttribute('height', '16');
+      tooltipBg.style.display = '';
+
+      tooltipTextElement.setAttribute('x', (bgX + textWidth / 2 + 4).toFixed(1));
+      tooltipTextElement.setAttribute('y', (paddingTop - 7).toString());
+      tooltipTextElement.textContent = label;
+      tooltipTextElement.style.display = '';
+    }
+
+    function hideTooltip() {
+      tooltipLine.style.display = 'none';
+      tooltipDot.style.display = 'none';
+      tooltipBg.style.display = 'none';
+      tooltipTextElement.style.display = 'none';
+    }
+
+    overlay.addEventListener('mousemove', showTooltip);
+    overlay.addEventListener('mouseleave', hideTooltip);
+  }
+
+  loadAndRender();
+</script>

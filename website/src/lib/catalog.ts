@@ -21,6 +21,15 @@ export interface HikeStep {
   end_station: StationInfo;
   distance_km: number;
   estimated_duration_min: number;
+  elevation_gain_m: number;
+  elevation_loss_m: number;
+}
+
+export interface ElevationProfile {
+  distances_km: number[];
+  elevations_m: number[];
+  times_min: number[];
+  step_boundaries_km: number[];
 }
 
 export interface Hike {

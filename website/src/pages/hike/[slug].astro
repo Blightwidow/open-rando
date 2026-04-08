@@ -1,7 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ElevationChart from '../../components/ElevationChart.astro';
 import { getAllHikes, getHikeBySlug, formatDuration } from '../../lib/catalog';
 import type { Hike } from '../../lib/catalog';
+
+const difficultyLabels: Record<string, string> = {
+  easy: 'Facile',
+  moderate: 'Modere',
+  difficult: 'Difficile',
+  very_difficult: 'Tres difficile',
+};
 
 export function getStaticPaths() {
   const hikes = getAllHikes();
@@ -44,6 +52,22 @@ const stations = [
           <dd class="font-medium">{hike.step_count}</dd>
           <dt class="text-stone-500 dark:text-stone-400">Sentier</dt>
           <dd class="font-medium">{hike.path_ref}</dd>
+          {hike.elevation_gain_m > 0 && (
+            <>
+              <dt class="text-stone-500 dark:text-stone-400">Denivele positif</dt>
+              <dd class="font-medium">+{hike.elevation_gain_m}m</dd>
+              <dt class="text-stone-500 dark:text-stone-400">Denivele negatif</dt>
+              <dd class="font-medium">-{hike.elevation_loss_m}m</dd>
+              <dt class="text-stone-500 dark:text-stone-400">Altitude max</dt>
+              <dd class="font-medium">{hike.max_elevation_m}m</dd>
+            </>
+          )}
+          {hike.difficulty !== 'unknown' && (
+            <>
+              <dt class="text-stone-500 dark:text-stone-400">Difficulte</dt>
+              <dd class="font-medium">{difficultyLabels[hike.difficulty] || hike.difficulty}</dd>
+            </>
+          )}
         </dl>
         <a
           href={`/data/${hike.gpx_path}`}
@@ -68,6 +92,9 @@ const stations = [
                 </p>
                 <p class="text-stone-500 dark:text-stone-400">
                   {step.distance_km} km &middot; {formatDuration(step.estimated_duration_min)}
+                  {(step.elevation_gain_m > 0 || step.elevation_loss_m > 0) && (
+                    <span> &middot; +{step.elevation_gain_m}m / -{step.elevation_loss_m}m</span>
+                  )}
                 </p>
                 <p class="text-xs text-gray-400 mt-0.5">
                   {step.end_station.accommodation.has_hotel && step.end_station.accommodation.has_camping
@@ -84,6 +111,8 @@ const stations = [
         </ol>
       </div>
     </div>
+
+    <ElevationChart hikeId={hike.id} />
 
     <div class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5">
       <h2 class="text-lg font-semibold mb-3">Gares</h2>
