@@ -42,7 +42,7 @@ cd website && bun install && bun run dev
 
 ## Architecture
 
-See `docs/ROADMAP.md` for full architecture, data model, and phased plan.
+See `docs/ROADMAP.md` for phased plan, `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks.
 
 Pipeline flow: fetch (Overpass + OSM stations) -> match (stations to trail) -> build step graph (8-18km edges) -> DFS maximal hikes -> export (GPX + GeoJSON + catalog.json)
 
