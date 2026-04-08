@@ -1,0 +1,30 @@
+# Pipeline output
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+*.egg
+
+# Node
+node_modules/
+website/dist/
+
+# SRTM elevation tiles
+*.hgt
+*.hgt.zip
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
