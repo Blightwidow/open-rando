@@ -28,6 +28,22 @@ class Station:
 
 
 @dataclass
+class HikeStep:
+    start_station: Station
+    end_station: Station
+    distance_km: float
+    estimated_duration_minutes: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "start_station": self.start_station.to_dict(),
+            "end_station": self.end_station.to_dict(),
+            "distance_km": self.distance_km,
+            "estimated_duration_min": self.estimated_duration_minutes,
+        }
+
+
+@dataclass
 class Hike:
     identifier: str
     slug: str
@@ -36,6 +52,7 @@ class Hike:
     osm_relation_id: int
     start_station: Station
     end_station: Station
+    steps: list[HikeStep]
     distance_km: float
     estimated_duration_minutes: int
     elevation_gain_meters: int
@@ -51,6 +68,10 @@ class Hike:
     is_reversible: bool
     last_updated: str
 
+    @property
+    def step_count(self) -> int:
+        return len(self.steps)
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.identifier,
@@ -60,6 +81,8 @@ class Hike:
             "osm_relation_id": self.osm_relation_id,
             "start_station": self.start_station.to_dict(),
             "end_station": self.end_station.to_dict(),
+            "steps": [step.to_dict() for step in self.steps],
+            "step_count": self.step_count,
             "distance_km": self.distance_km,
             "estimated_duration_min": self.estimated_duration_minutes,
             "elevation_gain_m": self.elevation_gain_meters,

@@ -45,18 +45,31 @@ const { hikes } = Astro.props;
           ? `${hours}h${minutes > 0 ? minutes + 'min' : ''}`
           : `${minutes}min`;
 
+        const stepInfo = hike.step_count > 1
+          ? `${hike.step_count} etapes &middot; `
+          : '';
+
         layer.bindPopup(`
           <strong>${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</strong><br>
-          ${hike.distance_km} km &middot; ${duration}<br>
+          ${stepInfo}${hike.distance_km} km &middot; ${duration}<br>
           <a href="/data/${hike.gpx_path}" download>Telecharger GPX</a>
         `);
 
         layers.push(layer);
 
-        // Station markers
+        // Station markers: start (green), intermediate (orange), end (red)
         L.circleMarker([hike.start_station.lat, hike.start_station.lon], {
           radius: 5, color: '#16a34a', fillColor: '#16a34a', fillOpacity: 0.8, weight: 1,
         }).bindTooltip(hike.start_station.name).addTo(map);
+
+        if (hike.steps && hike.steps.length > 1) {
+          for (let stepIndex = 1; stepIndex < hike.steps.length; stepIndex++) {
+            const intermediateStation = hike.steps[stepIndex].start_station;
+            L.circleMarker([intermediateStation.lat, intermediateStation.lon], {
+              radius: 4, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8, weight: 1,
+            }).bindTooltip(intermediateStation.name).addTo(map);
+          }
+        }
 
         L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
           radius: 5, color: '#dc2626', fillColor: '#dc2626', fillOpacity: 0.8, weight: 1,

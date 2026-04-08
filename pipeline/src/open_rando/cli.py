@@ -4,12 +4,17 @@ import logging
 from datetime import date
 from pathlib import Path
 
+from shapely.geometry import LineString
+from shapely.ops import unary_union
+
 from open_rando.config import (
     CATALOG_PATH,
     GEOJSON_DIRECTORY,
     GPX_DIRECTORY,
     GR13_RELATION_ID,
     MAX_STATION_DISTANCE_METERS,
+    MAX_STEP_DISTANCE_KM,
+    MIN_STEP_DISTANCE_KM,
     OUTPUT_DIRECTORY,
     WALKING_SPEED_KMH,
 )
@@ -18,9 +23,9 @@ from open_rando.exporters.geojson import export_geojson
 from open_rando.exporters.gpx import export_gpx
 from open_rando.fetchers.overpass import fetch_trail
 from open_rando.fetchers.stations import fetch_stations
-from open_rando.models import Hike, generate_hike_id, slugify
+from open_rando.models import Hike, HikeStep, generate_hike_id, slugify
 from open_rando.processors.match import match_stations_to_trail
-from open_rando.processors.slice import compute_segment_distance_km, slice_segments
+from open_rando.processors.slice import find_hikes
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("open_rando")
@@ -36,9 +41,13 @@ def main() -> None:
     logger.info("Matching stations to trail...")
     matched = match_stations_to_trail(stations, trail, MAX_STATION_DISTANCE_METERS)
 
-    logger.info("Slicing segments...")
-    segments = slice_segments(trail, matched)
-    logger.info("Created %d segments", len(segments))
+    logger.info(
+        "Finding multi-step hikes (step range: %s-%s km)...",
+        MIN_STEP_DISTANCE_KM,
+        MAX_STEP_DISTANCE_KM,
+    )
+    raw_hikes = find_hikes(trail, matched, MIN_STEP_DISTANCE_KM, MAX_STEP_DISTANCE_KM)
+    logger.info("Found %d hikes", len(raw_hikes))
 
     Path(GPX_DIRECTORY).mkdir(parents=True, exist_ok=True)
     Path(GEOJSON_DIRECTORY).mkdir(parents=True, exist_ok=True)
@@ -48,15 +57,37 @@ def main() -> None:
     osm_relation_id = int(trail_metadata["osm_relation_id"])
 
     hikes: list[Hike] = []
-    for start_station, end_station, segment in segments:
-        distance_km = round(compute_segment_distance_km(segment), 1)
-        estimated_duration_minutes = int(distance_km / WALKING_SPEED_KMH * 60)
+    for raw_steps in raw_hikes:
+        first_start_station = raw_steps[0][0]
+        last_end_station = raw_steps[-1][1]
 
-        hike_slug = slugify(f"{path_ref} {start_station.name} to {end_station.name}")
-        hike_id = generate_hike_id(path_ref, start_station.name, end_station.name)
+        steps: list[HikeStep] = []
+        geometries: list[LineString] = []
+        total_distance_km = 0.0
+
+        for start_station, end_station, geometry, distance_km in raw_steps:
+            estimated_step_duration = int(distance_km / WALKING_SPEED_KMH * 60)
+            steps.append(
+                HikeStep(
+                    start_station=start_station,
+                    end_station=end_station,
+                    distance_km=distance_km,
+                    estimated_duration_minutes=estimated_step_duration,
+                )
+            )
+            geometries.append(geometry)
+            total_distance_km += distance_km
+
+        total_distance_km = round(total_distance_km, 1)
+        total_duration_minutes = int(total_distance_km / WALKING_SPEED_KMH * 60)
+
+        hike_slug = slugify(f"{path_ref} {first_start_station.name} to {last_end_station.name}")
+        hike_id = generate_hike_id(path_ref, first_start_station.name, last_end_station.name)
 
         gpx_path = f"gpx/{hike_id}.gpx"
         geojson_path = f"geojson/{hike_id}.json"
+
+        combined_bounds = _compute_combined_bounds(geometries)
 
         hike = Hike(
             identifier=hike_id,
@@ -64,16 +95,17 @@ def main() -> None:
             path_ref=path_ref,
             path_name=path_name,
             osm_relation_id=osm_relation_id,
-            start_station=start_station,
-            end_station=end_station,
-            distance_km=distance_km,
-            estimated_duration_minutes=estimated_duration_minutes,
+            start_station=first_start_station,
+            end_station=last_end_station,
+            steps=steps,
+            distance_km=total_distance_km,
+            estimated_duration_minutes=total_duration_minutes,
             elevation_gain_meters=0,
             elevation_loss_meters=0,
             max_elevation_meters=0,
             min_elevation_meters=0,
             difficulty="unknown",
-            bounding_box=segment.bounds,
+            bounding_box=combined_bounds,
             region="",
             departement="",
             gpx_path=gpx_path,
@@ -83,23 +115,41 @@ def main() -> None:
         )
         hikes.append(hike)
 
-        segment_name = f"{path_ref}: {start_station.name} to {end_station.name}"
+        hike_name = f"{path_ref}: {first_start_station.name} to {last_end_station.name}"
 
         export_gpx(
-            segment=segment,
-            name=segment_name,
-            description=f"Hiking segment on {path_ref}",
+            segments=geometries,
+            name=hike_name,
+            description=f"Hiking on {path_ref} ({len(steps)} step{'s' if len(steps) > 1 else ''})",
             output_path=str(Path(OUTPUT_DIRECTORY) / gpx_path),
         )
 
         export_geojson(
-            segment=segment,
+            segments=geometries,
             hike_id=hike_id,
-            name=segment_name,
+            name=hike_name,
             output_path=str(Path(OUTPUT_DIRECTORY) / geojson_path),
         )
 
-        logger.info("  %s (%.1f km, ~%dmin)", segment_name, distance_km, estimated_duration_minutes)
+        step_summary = (
+            " → ".join(f"{step.start_station.name}" for step in steps)
+            + f" → {steps[-1].end_station.name}"
+        )
+        logger.info(
+            "  %s (%d steps, %.1f km, ~%dmin)",
+            step_summary,
+            len(steps),
+            total_distance_km,
+            total_duration_minutes,
+        )
 
     export_catalog(hikes, CATALOG_PATH)
     logger.info("Catalog written to %s with %d hikes", CATALOG_PATH, len(hikes))
+
+
+def _compute_combined_bounds(
+    geometries: list[LineString],
+) -> tuple[float, float, float, float]:
+    """Compute the bounding box encompassing all geometries."""
+    combined = unary_union(geometries)
+    return combined.bounds

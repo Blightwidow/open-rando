@@ -10,6 +10,13 @@ export interface StationInfo {
   transit_lines: string[];
 }
 
+export interface HikeStep {
+  start_station: StationInfo;
+  end_station: StationInfo;
+  distance_km: number;
+  estimated_duration_min: number;
+}
+
 export interface Hike {
   id: string;
   slug: string;
@@ -18,6 +25,8 @@ export interface Hike {
   osm_relation_id: number;
   start_station: StationInfo;
   end_station: StationInfo;
+  steps: HikeStep[];
+  step_count: number;
   distance_km: number;
   estimated_duration_min: number;
   elevation_gain_m: number;

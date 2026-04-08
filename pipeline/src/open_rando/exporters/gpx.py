@@ -8,12 +8,12 @@ from shapely.geometry import LineString
 
 
 def export_gpx(
-    segment: LineString,
+    segments: list[LineString],
     name: str,
     description: str,
     output_path: str,
 ) -> None:
-    """Export a segment as a GPX file with a single track."""
+    """Export segments as a GPX file. Each segment becomes a track segment within one track."""
     gpx = gpxpy.gpx.GPX()
     gpx.name = name
     gpx.description = description
@@ -22,12 +22,13 @@ def export_gpx(
     track = gpxpy.gpx.GPXTrack(name=name)
     gpx.tracks.append(track)
 
-    track_segment = gpxpy.gpx.GPXTrackSegment()
-    track.segments.append(track_segment)
+    for segment in segments:
+        track_segment = gpxpy.gpx.GPXTrackSegment()
+        track.segments.append(track_segment)
 
-    for longitude, latitude in segment.coords:
-        track_point = gpxpy.gpx.GPXTrackPoint(latitude=latitude, longitude=longitude)
-        track_segment.points.append(track_point)
+        for longitude, latitude in segment.coords:
+            track_point = gpxpy.gpx.GPXTrackPoint(latitude=latitude, longitude=longitude)
+            track_segment.points.append(track_point)
 
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
