@@ -1,0 +1,114 @@
+---
+import type { Hike } from '../lib/catalog';
+import { formatDuration } from '../lib/catalog';
+
+interface Props {
+  hikes: Hike[];
+}
+
+const { hikes } = Astro.props;
+---
+
+<div id="hike-map" class="h-[70vh] w-full rounded-lg border border-gray-200" data-hikes={JSON.stringify(hikes)}></div>
+
+<script>
+  import L from 'leaflet';
+
+  const mapElement = document.getElementById('hike-map')!;
+  const hikes = JSON.parse(mapElement.dataset.hikes!);
+
+  const map = L.map('hike-map').setView([47.5, 3.0], 8);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const hikeLayerGroups: Map<string, L.LayerGroup> = new Map();
+
+  async function loadSegments() {
+    for (const hike of hikes) {
+      if (!hike.geojson_path) continue;
+
+      try {
+        const response = await fetch(`/data/${hike.geojson_path}`);
+        const geojson = await response.json();
+
+        const group = L.layerGroup();
+
+        const trailLayer = L.geoJSON(geojson, {
+          style: { color: '#2563eb', weight: 3, opacity: 0.8 },
+        });
+
+        const hours = Math.floor(hike.estimated_duration_min / 60);
+        const minutes = hike.estimated_duration_min % 60;
+        const duration = hours > 0
+          ? `${hours}h${minutes > 0 ? minutes + 'min' : ''}`
+          : `${minutes}min`;
+
+        const stepInfo = hike.step_count > 1
+          ? `${hike.step_count} etapes &middot; `
+          : '';
+
+        trailLayer.bindPopup(`
+          <strong>${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</strong><br>
+          ${stepInfo}${hike.distance_km} km &middot; ${duration}<br>
+          <a href="/data/${hike.gpx_path}" download>Telecharger GPX</a>
+        `);
+
+        group.addLayer(trailLayer);
+
+        group.addLayer(L.circleMarker([hike.start_station.lat, hike.start_station.lon], {
+          radius: 5, color: '#16a34a', fillColor: '#16a34a', fillOpacity: 0.8, weight: 1,
+        }).bindTooltip(hike.start_station.name));
+
+        if (hike.steps && hike.steps.length > 1) {
+          for (let stepIndex = 1; stepIndex < hike.steps.length; stepIndex++) {
+            const intermediateStation = hike.steps[stepIndex].start_station;
+            group.addLayer(L.circleMarker([intermediateStation.lat, intermediateStation.lon], {
+              radius: 4, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8, weight: 1,
+            }).bindTooltip(intermediateStation.name));
+          }
+        }
+
+        group.addLayer(L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
+          radius: 5, color: '#dc2626', fillColor: '#dc2626', fillOpacity: 0.8, weight: 1,
+        }).bindTooltip(hike.end_station.name));
+
+        group.addTo(map);
+        hikeLayerGroups.set(hike.id, group);
+      } catch (error) {
+        console.error(`Failed to load GeoJSON for ${hike.id}:`, error);
+      }
+    }
+
+    fitMapToVisible();
+  }
+
+  function fitMapToVisible() {
+    const visibleLayers: L.Layer[] = [];
+    hikeLayerGroups.forEach((group) => {
+      if (map.hasLayer(group)) {
+        group.eachLayer((layer) => visibleLayers.push(layer));
+      }
+    });
+    if (visibleLayers.length > 0) {
+      const featureGroup = L.featureGroup(visibleLayers);
+      map.fitBounds(featureGroup.getBounds(), { padding: [20, 20] });
+    }
+  }
+
+  document.addEventListener('hike-filter', ((event: CustomEvent<{ visibleIds: Set<string> }>) => {
+    const { visibleIds } = event.detail;
+    hikeLayerGroups.forEach((group, hikeId) => {
+      if (visibleIds.has(hikeId)) {
+        if (!map.hasLayer(group)) group.addTo(map);
+      } else {
+        if (map.hasLayer(group)) map.removeLayer(group);
+      }
+    });
+    fitMapToVisible();
+  }) as EventListener);
+
+  loadSegments();
+</script>

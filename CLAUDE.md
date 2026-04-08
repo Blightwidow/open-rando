@@ -19,18 +19,18 @@ Train station-to-station hiking on French GR paths.
 
 ```bash
 # Pipeline
-cd pipeline && pip install -e ".[dev]"
-python -m open_rando
+cd pipeline && uv sync --all-extras
+uv run python -m open_rando
 
 # Website
-cd website && npm install && npm run dev
+cd website && bun install && bun run dev
 ```
 
 ## Commands
 
 - `python -m open_rando` -- run pipeline, outputs to `data/`
-- `npm run dev` (in website/) -- start dev server
-- `npm run build` (in website/) -- build static site to `dist/`
+- `bun run dev` (in website/) -- start dev server
+- `bun run build` (in website/) -- build static site to `dist/`
 
 ## Code Conventions
 
@@ -42,8 +42,8 @@ cd website && npm install && npm run dev
 
 ## Architecture
 
-See `docs/ROADMAP.md` for full architecture, data model, and phased plan.
+See `docs/ROADMAP.md` for phased plan, `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks.
 
-Pipeline flow: fetch (Overpass + SNCF) -> match (stations to trails) -> slice (segments) -> enrich (elevation) -> export (GPX + GeoJSON + catalog.json)
+Pipeline flow: fetch (Overpass + OSM stations) -> match (stations to trail) -> build step graph (8-18km edges) -> DFS maximal hikes -> export (GPX + GeoJSON + catalog.json)
 
-Website consumes `data/catalog.json` and serves GPX/GeoJSON as static files.
+Website consumes `data/catalog.json` and serves GPX/GeoJSON as static files. Hikes have 1+ steps, each between two train stations.
