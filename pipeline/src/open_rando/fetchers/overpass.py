@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
 import time
+from pathlib import Path
 
 import requests
 from shapely.geometry import LineString
 
-from open_rando.config import OVERPASS_API_URL, OVERPASS_TIMEOUT_SECONDS
+from open_rando.config import (
+    OVERPASS_API_URL,
+    OVERPASS_CACHE_DIRECTORY,
+    OVERPASS_CACHE_TTL_SECONDS,
+    OVERPASS_TIMEOUT_SECONDS,
+    OVERPASS_TRAIL_CACHE_TTL_SECONDS,
+)
 
 logger = logging.getLogger("open_rando")
 
@@ -15,7 +24,31 @@ RETRY_ATTEMPTS = 5
 RETRY_BACKOFF_SECONDS = 15
 
 
-def query_overpass(query: str) -> dict:  # type: ignore[type-arg]
+def query_overpass(
+    query: str,
+    cache_ttl_seconds: int | None = None,
+) -> dict:  # type: ignore[type-arg]
+    """Query Overpass API with disk caching.
+
+    Responses are cached by query hash. Pass cache_ttl_seconds to override default TTL,
+    or 0 to bypass cache entirely.
+    """
+    ttl = cache_ttl_seconds if cache_ttl_seconds is not None else OVERPASS_CACHE_TTL_SECONDS
+
+    if ttl > 0:
+        cached = _read_cache(query, ttl)
+        if cached is not None:
+            return cached
+
+    result = _fetch_overpass(query)
+
+    if ttl > 0:
+        _write_cache(query, result)
+
+    return result
+
+
+def _fetch_overpass(query: str) -> dict:  # type: ignore[type-arg]
     for attempt in range(RETRY_ATTEMPTS):
         try:
             response = requests.post(
@@ -39,6 +72,36 @@ def query_overpass(query: str) -> dict:  # type: ignore[type-arg]
     raise RuntimeError("Overpass API failed after retries")
 
 
+def _cache_key(query: str) -> str:
+    return hashlib.sha256(query.encode()).hexdigest()[:16]
+
+
+def _cache_path(query: str) -> Path:
+    cache_directory = Path(OVERPASS_CACHE_DIRECTORY).expanduser()
+    cache_directory.mkdir(parents=True, exist_ok=True)
+    return cache_directory / f"{_cache_key(query)}.json"
+
+
+def _read_cache(query: str, ttl_seconds: int) -> dict | None:  # type: ignore[type-arg]
+    path = _cache_path(query)
+    if not path.exists():
+        return None
+
+    age_seconds = time.time() - path.stat().st_mtime
+    if age_seconds > ttl_seconds:
+        logger.info("Cache expired for %s (%.0fs old)", path.name, age_seconds)
+        return None
+
+    logger.info("Using cached response %s (%.0fs old)", path.name, age_seconds)
+    return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+
+
+def _write_cache(query: str, data: dict) -> None:  # type: ignore[type-arg]
+    path = _cache_path(query)
+    path.write_text(json.dumps(data), encoding="utf-8")
+    logger.info("Cached Overpass response to %s", path.name)
+
+
 def fetch_trail(relation_id: int) -> tuple[LineString, dict[str, str | int]]:
     """Fetch a GR superroute and return (linestring, metadata).
 
@@ -60,7 +123,7 @@ rel(r);
 way(r);
 out geom;
 """
-    data = query_overpass(query)
+    data = query_overpass(query, cache_ttl_seconds=OVERPASS_TRAIL_CACHE_TTL_SECONDS)
 
     # Sort elements by type
     superroute = None

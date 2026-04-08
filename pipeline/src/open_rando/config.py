@@ -1,5 +1,8 @@
 OVERPASS_API_URL = "https://overpass-api.de/api/interpreter"
 OVERPASS_TIMEOUT_SECONDS = 120
+OVERPASS_CACHE_DIRECTORY = "~/.cache/open-rando/overpass"
+OVERPASS_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
+OVERPASS_TRAIL_CACHE_TTL_SECONDS = 60 * 24 * 3600  # 60 days
 
 GR13_RELATION_ID = 12798892
 
@@ -16,3 +19,8 @@ MIN_STEP_DISTANCE_KM = 8
 MAX_STEP_DISTANCE_KM = 18
 
 ACCOMMODATION_SEARCH_RADIUS_METERS = 2000
+
+SRTM_CACHE_DIRECTORY = "~/.cache/open-rando/srtm"
+SRTM_BASE_URL = "https://elevation-tiles-prod.s3.amazonaws.com/skadi"
+ELEVATION_SAMPLE_INTERVAL_METERS = 50
+ELEVATION_DIRECTORY = "../data/elevation"

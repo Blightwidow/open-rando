@@ -47,6 +47,8 @@ class HikeStep:
     end_station: Station
     distance_km: float
     estimated_duration_minutes: int
+    elevation_gain_meters: int = 0
+    elevation_loss_meters: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -54,6 +56,8 @@ class HikeStep:
             "end_station": self.end_station.to_dict(),
             "distance_km": self.distance_km,
             "estimated_duration_min": self.estimated_duration_minutes,
+            "elevation_gain_m": self.elevation_gain_meters,
+            "elevation_loss_m": self.elevation_loss_meters,
         }
 
 

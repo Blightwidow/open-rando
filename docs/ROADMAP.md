@@ -33,14 +33,14 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [x] Hike detail page with step breakdown, station list, and dedicated map
 - [x] GPX download links
 
-### Phase 2 -- Elevation and Metadata
+### Phase 2 -- Elevation and Metadata ✓
 
-- [ ] SRTM .hgt tile downloader + reader
-- [ ] Elevation profile per segment (sample every 50m)
-- [ ] Duration estimation (Naismith's rule: replace flat 4.5km/h)
-- [ ] Difficulty classification
-- [ ] Elevation in GPX `<ele>` tags
-- [ ] Elevation chart on hike detail page
+- [x] SRTM .hgt tile downloader + reader
+- [x] Elevation profile per segment (sample every 50m)
+- [x] Duration estimation (Naismith's rule: replace flat 4.5km/h)
+- [x] Difficulty classification
+- [x] Elevation in GPX `<ele>` tags
+- [x] Elevation chart on hike detail page
 
 ### Phase 3 -- All GR Paths in France
 
