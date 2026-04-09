@@ -85,6 +85,8 @@ class Hike:
     geojson_path: str
     is_reversible: bool
     last_updated: str
+    is_grp: bool = False
+    is_circular_trail: bool = False
 
     @property
     def step_count(self) -> int:
@@ -114,6 +116,8 @@ class Hike:
             "gpx_path": self.gpx_path,
             "geojson_path": self.geojson_path,
             "is_reversible": self.is_reversible,
+            "is_grp": self.is_grp,
+            "is_circular_trail": self.is_circular_trail,
             "last_updated": self.last_updated,
         }
 

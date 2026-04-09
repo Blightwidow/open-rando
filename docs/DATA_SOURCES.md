@@ -25,7 +25,7 @@ Tiles are downloaded from `https://elevation-tiles-prod.s3.amazonaws.com/skadi/`
 | Risk | Mitigation |
 |------|------------|
 | OSM data gaps in GR relations | Geometry repair; skip broken segments with warnings |
-| Overpass API rate limits / timeouts | Disk-cached responses (30-60 day TTL); retry with exponential backoff; regional bbox splitting planned |
+| Overpass API rate limits / timeouts | Disk-cached responses (30-60 day TTL); retry with exponential backoff; regional bbox splitting for station queries >3° |
 | FFRP trademark on "GR" | Frame as "hiking between stations"; no logo reproduction; disclaimer |
 | Hike count explosion from DFS | Sub-path deduplication; step distance range (8-18km) limits branching |
 | Large static site (many GPX/GeoJSON) | GPX on-demand download; simplify GeoJSON; gzip on CDN |

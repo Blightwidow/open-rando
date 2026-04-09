@@ -42,13 +42,16 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [x] Elevation in GPX `<ele>` tags
 - [x] Elevation chart on hike detail page
 
-### Phase 3 -- All GR Paths in France
+### Phase 3 -- All GR Paths in France ✓
 
-- [ ] Fetch all `ref=GR*` relations (~300-500)
-- [ ] MultiLineString gap handling
-- [ ] Station deduplication (SNCF vs OSM)
-- [ ] Overpass response caching + incremental reruns
-- [ ] Regional bounding box splitting for large queries
+- [x] Route discovery: Overpass query for all `ref~^GR` relations (GR + GRP)
+- [x] MultiLineString gap handling (split at >5km gaps between child relations)
+- [x] Cross-route station deduplication (accommodation registry by station code)
+- [x] Overpass response caching (already done in phase 2, reused with 60-day TTL)
+- [x] Regional bounding box splitting for large station queries (>3° bbox)
+- [x] Multi-route CLI orchestration (`--route`, `--dry-run` flags)
+- [x] Circular trail detection
+- [x] `is_grp` and `is_circular_trail` metadata fields
 
 ### Phase 4 -- Polished Website
 
@@ -62,6 +65,6 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [ ] "Suggest a hike" from departure station + available time
 - [ ] Round-trip hikes (loop trails)
 - [ ] SNCF timetable links per station
-- [ ] GRP and PR paths
+- [ ] PR (Promenade et Randonnée) paths
 - [ ] PWA / offline GPX
 - [ ] i18n (FR primary, EN secondary)

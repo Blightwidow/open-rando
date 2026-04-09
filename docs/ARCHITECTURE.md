@@ -12,29 +12,33 @@ BUILD TIME                                    RUNTIME (static files)
 | SRTM tiles ---+   step graph -> DFS ->  |   |         |                  |
 |                    elevation -> export  |   |    catalog.json            |
 |                      |                  |   |    /gpx/{id}.gpx           |
-|               data/catalog.json         |   |    /geojson/{id}.json      |
-|               data/gpx/*.gpx            |   |    /elevation/{id}.json   |
-|               data/geojson/*.json       |   +----------------------------+
-|               data/elevation/*.json     |
+|        ~/.local/share/open-rando/data/  |   |    /geojson/{id}.json      |
+|               catalog.json              |   |    /elevation/{id}.json   |
+|               gpx/*.gpx                 |   +----------------------------+
+|               geojson/*.json            |
+|               elevation/*.json          |
 +-----------------------------------------+
 ```
 
-Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts, then `cd website && bun run build` (Astro) consumes them and outputs a deployable `dist/` folder.
+Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
 
 ---
 
 ## Pipeline Algorithm
 
-1. **Fetch** a GR hiking relation from Overpass API (resolves super-relations recursively)
-2. **Fetch** train stations near the route bounding box (OSM + SNCF data)
-3. **Match** stations to trail: find nearest point on trail with Shapely, keep if < 5km
-4. **Order** matched stations by position along the trail (linear referencing)
-5. **Build step graph**: compute cumulative distances, create edges between station pairs 8-18km apart
-6. **Find hikes**: DFS for all maximal chains through the step graph, deduplicate sub-paths
-7. **Elevation** via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold
-8. **Compute** duration per segment: 4 km/h flat, 300m/h ascent and 450m/h descent on slopes >= 10%
-9. **Classify** difficulty based on elevation gain per km and total gain (easy/moderate/difficult/very_difficult)
-10. **Export** GPX files with `<ele>` tags, GeoJSON, elevation profiles (per-hike JSON with distance/elevation/time arrays), and `catalog.json`
+1. **Discover** all GR/GRP routes in France via Overpass (`ref~^GR`, area filter + superroute recursion)
+2. **For each route**:
+   1. **Fetch** the hiking relation from Overpass API (resolves super-relations recursively, returns LineString or MultiLineString for trails with >5km gaps)
+   2. **Fetch** train stations near the route bounding box (OSM + SNCF data; bbox auto-splits into chunks for trails spanning >3°)
+   3. **Match** stations to trail: find nearest point on trail with Shapely, keep if < 5km. For MultiLineString, compute global fractions across segments.
+   4. **Order** matched stations by position along the trail (linear referencing)
+   5. **Build step graph**: compute cumulative distances, create edges between station pairs 8-18km apart
+   6. **Find hikes**: DFS for all maximal chains through the step graph, deduplicate sub-paths
+   7. **Elevation** via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold
+   8. **Compute** duration per segment: 4 km/h flat, 300m/h ascent and 450m/h descent on slopes >= 10%
+   9. **Classify** difficulty based on elevation gain per km and total gain (easy/moderate/difficult/very_difficult)
+   10. **Export** GPX files with `<ele>` tags, GeoJSON, and elevation profiles (per-hike JSON)
+3. **Export** `catalog.json` with all hikes from all routes
 
 ---
 
@@ -82,6 +86,8 @@ class Hike:
     gpx_path: str
     geojson_path: str
     is_reversible: bool
+    is_grp: bool           # True for GRP/GR de Pays routes
+    is_circular_trail: bool # True if trail endpoints are < 1km apart
     last_updated: str
 ```
 
@@ -97,16 +103,17 @@ open-rando/
 |   +-- src/open_rando/
 |       +-- __init__.py
 |       +-- __main__.py
-|       +-- cli.py              # entry point
-|       +-- config.py           # constants (step distances, API config)
+|       +-- cli.py              # entry point, multi-route orchestration
+|       +-- config.py           # constants (step distances, API config, cache TTLs)
 |       +-- models.py           # Station, HikeStep, Hike dataclasses
 |       +-- fetchers/
-|       |   +-- overpass.py     # Overpass API client (cached, super-relation resolution)
-|       |   +-- stations.py    # OSM station fetcher
+|       |   +-- discovery.py   # GR route discovery via Overpass (all GR/GRP in France)
+|       |   +-- overpass.py    # Overpass API client (cached, super-relation resolution)
+|       |   +-- stations.py    # OSM station fetcher (bbox chunking for large trails)
 |       |   +-- accommodation.py # hotel/camping near stations
 |       |   +-- srtm.py        # SRTM .hgt tile downloader + bilinear interpolation
 |       +-- processors/
-|       |   +-- match.py       # station-to-trail matching (Shapely)
+|       |   +-- match.py       # station-to-trail matching (LineString + MultiLineString)
 |       |   +-- slice.py       # step graph + DFS hike finder
 |       |   +-- elevation.py   # elevation profiling, duration, difficulty
 |       +-- exporters/
@@ -132,8 +139,7 @@ open-rando/
 |   |   |   +-- ElevationChart.astro    # inline SVG elevation profile + timeline
 |   |   +-- lib/
 |   |       +-- catalog.ts              # types + data loading
-|   +-- public/data/                    # copied from pipeline output at build
-+-- data/                               # gitignored pipeline output
+|   +-- public/data/                    # copied from ~/.local/share/open-rando/data/ at build
 +-- docs/
 ```
 
@@ -146,11 +152,12 @@ open-rando/
 
 | Data | Cache location | TTL |
 |------|---------------|-----|
+| Route discovery | `~/.cache/open-rando/overpass/` | 60 days |
 | Overpass API responses (trails) | `~/.cache/open-rando/overpass/` | 60 days |
 | Overpass API responses (stations, accommodation) | `~/.cache/open-rando/overpass/` | 30 days |
 | SRTM elevation tiles | `~/.cache/open-rando/srtm/` | Permanent |
 
-Overpass responses are keyed by SHA256 of the query string. SRTM tiles are keyed by tile name (e.g., `N47E003.hgt`). Missing tiles are cached as sentinels to avoid re-downloading.
+Overpass responses are keyed by SHA256 of the query string. SRTM tiles are keyed by tile name (e.g., `N47E003.hgt`). Missing tiles are cached as sentinels to avoid re-downloading. All caches are in `~/.cache/open-rando/` (shared across worktrees).
 
 ---
 

@@ -55,6 +55,8 @@ export interface Hike {
   gpx_path: string;
   geojson_path: string;
   is_reversible: boolean;
+  is_grp: boolean;
+  is_circular_trail: boolean;
   last_updated: string;
 }
 
