@@ -275,7 +275,10 @@ const clientTranslations = getClientTranslations(locale);
       const hasCampingAllStops = card.dataset.campingAllStops === 'true';
       const elevationGain = parseInt(card.dataset.elevationGain || '0');
 
+      const suggestHidden = card.dataset.suggestHidden === '1';
+
       const visible =
+        !suggestHidden &&
         distance >= filters.distanceMin &&
         distance <= filters.distanceMax &&
         duration >= filters.durationMin &&
@@ -332,6 +335,9 @@ const clientTranslations = getClientTranslations(locale);
 
   // Listen for reset from empty state button
   document.addEventListener('reset-filters', resetFilters);
+
+  // Re-run filters when suggest changes card visibility
+  document.addEventListener('suggest-changed', applyFilters);
 
   // Initialize from URL params, then apply
   readFiltersFromUrl();
