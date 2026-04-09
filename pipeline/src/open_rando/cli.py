@@ -28,7 +28,7 @@ from open_rando.exporters.elevation import export_elevation_profile
 from open_rando.exporters.geojson import export_geojson
 from open_rando.exporters.gpx import export_gpx
 from open_rando.fetchers.accommodation import fetch_accommodation
-from open_rando.fetchers.discovery import discover_gr_routes
+from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.overpass import fetch_trail
 from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
 from open_rando.fetchers.srtm import SrtmReader
@@ -48,7 +48,7 @@ logger = logging.getLogger("open_rando")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate hiking catalog from GR paths")
+    parser = argparse.ArgumentParser(description="Generate hiking catalog from GR and PR paths")
     parser.add_argument(
         "--route",
         type=str,
@@ -59,9 +59,22 @@ def main() -> None:
         action="store_true",
         help="List discovered routes without processing them.",
     )
+    parser.add_argument(
+        "--type",
+        choices=["gr", "pr", "all"],
+        default="all",
+        help="Which route types to discover and process (default: all).",
+    )
     arguments = parser.parse_args()
 
-    routes = discover_gr_routes()
+    if arguments.type == "gr":
+        route_types: list[str] | None = ["gr", "grp"]
+    elif arguments.type == "pr":
+        route_types = ["pr"]
+    else:
+        route_types = None
+
+    routes = discover_routes(route_types=route_types)
 
     if arguments.route:
         routes = [route for route in routes if route["ref"] == arguments.route]
@@ -72,13 +85,14 @@ def main() -> None:
     if arguments.dry_run:
         logger.info("Discovered %d routes:", len(routes))
         for route in routes:
-            grp_marker = " (GRP)" if route["is_grp"] else ""
+            route_type = str(route["route_type"])
+            type_marker = f" ({route_type.upper()})" if route_type != "gr" else ""
             logger.info(
                 "  %s — %s (relation %d)%s",
                 route["ref"],
                 route["name"],
                 route["relation_id"],
-                grp_marker,
+                type_marker,
             )
         return
 
@@ -108,7 +122,7 @@ def main() -> None:
     for route_index, route in enumerate(routes):
         route_ref = str(route["ref"])
         route_relation_id = int(route["relation_id"])
-        is_grp = bool(route["is_grp"])
+        route_type = str(route["route_type"])
 
         if route_index > 0 and previous_route_used_api:
             time.sleep(OVERPASS_COOLDOWN_SECONDS)
@@ -124,7 +138,7 @@ def main() -> None:
         try:
             hikes, all_cached = _process_route(
                 relation_id=route_relation_id,
-                is_grp=is_grp,
+                route_type=route_type,
                 srtm_reader=srtm_reader,
                 accommodation_registry=accommodation_registry,
                 sncf_codes=sncf_codes,
@@ -150,12 +164,12 @@ def main() -> None:
 
 def _process_route(
     relation_id: int,
-    is_grp: bool,
+    route_type: str,
     srtm_reader: SrtmReader,
     accommodation_registry: dict[str, Station],
     sncf_codes: set[str],
 ) -> tuple[list[Hike], bool]:
-    """Process a single GR route end-to-end and return generated hikes."""
+    """Process a single route end-to-end and return generated hikes."""
     trail, trail_metadata, trail_cached = fetch_trail(relation_id)
 
     if not trail_cached:
@@ -211,7 +225,7 @@ def _process_route(
             path_ref=path_ref,
             path_name=path_name,
             osm_relation_id=osm_relation_id,
-            is_grp=is_grp,
+            route_type=route_type,
             is_circular=is_circular,
             srtm_reader=srtm_reader,
         )
@@ -246,7 +260,7 @@ def _build_hike(
     path_ref: str,
     path_name: str,
     osm_relation_id: int,
-    is_grp: bool,
+    route_type: str,
     is_circular: bool,
     srtm_reader: SrtmReader,
 ) -> Hike:
@@ -371,7 +385,7 @@ def _build_hike(
         geojson_path=geojson_path,
         is_reversible=True,
         last_updated=date.today().isoformat(),
-        is_grp=is_grp,
+        route_type=route_type,
         is_circular_trail=is_circular,
     )
 

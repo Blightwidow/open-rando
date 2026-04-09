@@ -85,8 +85,12 @@ class Hike:
     geojson_path: str
     is_reversible: bool
     last_updated: str
-    is_grp: bool = False
+    route_type: str = "gr"
     is_circular_trail: bool = False
+
+    @property
+    def is_grp(self) -> bool:
+        return self.route_type == "grp"
 
     @property
     def step_count(self) -> int:
@@ -116,6 +120,7 @@ class Hike:
             "gpx_path": self.gpx_path,
             "geojson_path": self.geojson_path,
             "is_reversible": self.is_reversible,
+            "route_type": self.route_type,
             "is_grp": self.is_grp,
             "is_circular_trail": self.is_circular_trail,
             "last_updated": self.last_updated,
@@ -125,6 +130,15 @@ class Hike:
 def generate_hike_id(path_ref: str, start_name: str, end_name: str) -> str:
     key = f"{path_ref}:{start_name}:{end_name}"
     return hashlib.sha256(key.encode()).hexdigest()[:12]
+
+
+def determine_route_type(ref: str) -> str:
+    upper = ref.upper()
+    if upper.startswith("PR") and not upper.startswith("PRA"):
+        return "pr"
+    if "GRP" in upper or "PAYS" in upper:
+        return "grp"
+    return "gr"
 
 
 def slugify(text: str) -> str:
