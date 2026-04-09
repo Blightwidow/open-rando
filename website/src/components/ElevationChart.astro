@@ -143,7 +143,7 @@ const { hikeId, locale = 'fr' } = Astro.props;
     }
 
     const tooltipGroup = `<line id="tooltip-line" x1="0" y1="${paddingTop}" x2="0" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.4" style="display: none;" />
-    <circle id="tooltip-dot" r="4" fill="var(--color-trail, #2d6a4f)" style="display: none;" />
+    <circle id="tooltip-dot" r="4" fill="var(--color-trail, #be185d)" style="display: none;" />
     <rect id="tooltip-bg" rx="3" ry="3" class="fill-white dark:fill-neutral-700" stroke="currentColor" stroke-opacity="0.2" style="display: none;" />
     <text id="tooltip-text" text-anchor="middle" class="fill-stone-700 dark:fill-stone-200" style="font-size: 11px; display: none;"></text>`;
 
@@ -155,8 +155,8 @@ const { hikeId, locale = 'fr' } = Astro.props;
       ${timelineTicks.join('\n')}
       ${timelineLabels.join('\n')}
       ${boundaryLines.join('\n')}
-      <path d="${areaPath}" fill="var(--color-trail, #2d6a4f)" fill-opacity="0.15" />
-      <path d="${linePath}" fill="none" stroke="var(--color-trail, #2d6a4f)" stroke-width="2" stroke-linejoin="round" />
+      <path d="${areaPath}" fill="var(--color-trail, #be185d)" fill-opacity="0.15" />
+      <path d="${linePath}" fill="none" stroke="var(--color-trail, #be185d)" stroke-width="2" stroke-linejoin="round" />
       ${tooltipGroup}
       <rect id="tooltip-overlay" x="${paddingLeft}" y="${paddingTop}" width="${chartWidth}" height="${chartHeight}" fill="transparent" />
     </svg>`;
