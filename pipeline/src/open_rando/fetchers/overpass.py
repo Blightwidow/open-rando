@@ -28,25 +28,27 @@ RETRY_BACKOFF_SECONDS = 15
 def query_overpass(
     query: str,
     cache_ttl_seconds: int | None = None,
-) -> dict:  # type: ignore[type-arg]
+) -> tuple[dict, bool]:  # type: ignore[type-arg]
     """Query Overpass API with disk caching.
 
     Responses are cached by query hash. Pass cache_ttl_seconds to override default TTL,
     or 0 to bypass cache entirely.
+
+    Returns (data, cache_hit) where cache_hit is True if the response came from cache.
     """
     ttl = cache_ttl_seconds if cache_ttl_seconds is not None else OVERPASS_CACHE_TTL_SECONDS
 
     if ttl > 0:
         cached = _read_cache(query, ttl)
         if cached is not None:
-            return cached
+            return cached, True
 
     result = _fetch_overpass(query)
 
     if ttl > 0:
         _write_cache(query, result)
 
-    return result
+    return result, False
 
 
 def _fetch_overpass(query: str) -> dict:  # type: ignore[type-arg]
@@ -105,11 +107,12 @@ def _write_cache(query: str, data: dict) -> None:  # type: ignore[type-arg]
 
 def fetch_trail(
     relation_id: int,
-) -> tuple[LineString | MultiLineString, dict[str, str | int]]:
-    """Fetch a GR superroute and return (geometry, metadata).
+) -> tuple[LineString | MultiLineString, dict[str, str | int], bool]:
+    """Fetch a GR superroute and return (geometry, metadata, cache_hit).
 
     Returns a LineString when the trail is continuous, or a MultiLineString
     when there are gaps exceeding MAX_CHAIN_GAP_DEGREES between child relations.
+    The cache_hit boolean indicates whether the Overpass response came from cache.
     """
     logger.info("Fetching relation %d with full recursion...", relation_id)
 
@@ -126,7 +129,7 @@ rel(r);
 way(r);
 out geom;
 """
-    data = query_overpass(query, cache_ttl_seconds=OVERPASS_TRAIL_CACHE_TTL_SECONDS)
+    data, cache_hit = query_overpass(query, cache_ttl_seconds=OVERPASS_TRAIL_CACHE_TTL_SECONDS)
 
     # Sort elements by type
     superroute = None
@@ -179,7 +182,7 @@ out geom;
             raise RuntimeError(f"No ways found for relation {relation_id}")
         trail = _chain_ways(way_coords_list)
         logger.info("Trail has %d points", len(trail.coords))
-        return trail, metadata
+        return trail, metadata, cache_hit
 
     # Process each child relation in order
     all_linestrings: list[LineString] = []
@@ -211,7 +214,7 @@ out geom;
         logger.info("Trail has %d segments, %d points total", len(combined.geoms), total_points)
     else:
         logger.info("Trail has %d points total", len(combined.coords))
-    return combined, metadata
+    return combined, metadata, cache_hit
 
 
 def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> LineString:

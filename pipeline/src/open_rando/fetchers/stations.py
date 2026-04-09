@@ -18,11 +18,14 @@ logger = logging.getLogger("open_rando")
 BOUNDING_BOX_MARGIN_DEGREES = 0.05  # ~5km
 
 
-def fetch_stations(trail: LineString | MultiLineString) -> list[Station]:
+def fetch_stations(trail: LineString | MultiLineString) -> tuple[list[Station], bool]:
     """Fetch railway stations and halts near the trail.
 
     For large trails (bbox > MAX_STATION_BBOX_DEGREES), splits into chunks
     to avoid Overpass timeouts.
+
+    Returns (stations, all_cached) where all_cached is True if every Overpass
+    query was served from cache.
     """
     bounds = trail.bounds
     min_lon, min_lat, max_lon, max_lat = bounds
@@ -37,7 +40,7 @@ def fetch_stations(trail: LineString | MultiLineString) -> list[Station]:
 
 def _fetch_stations_bbox(
     min_lat: float, min_lon: float, max_lat: float, max_lon: float
-) -> list[Station]:
+) -> tuple[list[Station], bool]:
     """Fetch stations within a single bounding box."""
     south = min_lat - BOUNDING_BOX_MARGIN_DEGREES
     west = min_lon - BOUNDING_BOX_MARGIN_DEGREES
@@ -52,13 +55,13 @@ def _fetch_stations_bbox(
 );
 out body;
 """
-    data = query_overpass(query)
+    data, cache_hit = query_overpass(query)
     stations = _parse_station_elements(data)
     logger.info("Found %d named stations in bounding box", len(stations))
-    return stations
+    return stations, cache_hit
 
 
-def _fetch_stations_chunked(trail: LineString | MultiLineString) -> list[Station]:
+def _fetch_stations_chunked(trail: LineString | MultiLineString) -> tuple[list[Station], bool]:
     """Split trail into chunks and fetch stations for each chunk's bbox."""
     segments = list(trail.geoms) if isinstance(trail, MultiLineString) else [trail]
 
@@ -91,18 +94,23 @@ def _fetch_stations_chunked(trail: LineString | MultiLineString) -> list[Station
 
     seen_codes: set[str] = set()
     all_stations: list[Station] = []
+    all_cached = True
+    previous_was_cached = True
 
     for chunk_index, (min_lon, min_lat, max_lon, max_lat) in enumerate(chunks):
-        if chunk_index > 0:
+        if chunk_index > 0 and not previous_was_cached:
             time.sleep(OVERPASS_COOLDOWN_SECONDS)
-        chunk_stations = _fetch_stations_bbox(min_lat, min_lon, max_lat, max_lon)
+        chunk_stations, cache_hit = _fetch_stations_bbox(min_lat, min_lon, max_lat, max_lon)
+        previous_was_cached = cache_hit
+        if not cache_hit:
+            all_cached = False
         for station in chunk_stations:
             if station.code not in seen_codes:
                 seen_codes.add(station.code)
                 all_stations.append(station)
 
     logger.info("Found %d unique stations across %d chunks", len(all_stations), len(chunks))
-    return all_stations
+    return all_stations, all_cached
 
 
 def _coords_bounds(

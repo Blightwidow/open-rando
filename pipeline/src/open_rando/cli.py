@@ -96,11 +96,16 @@ def main() -> None:
     all_hikes: list[Hike] = []
     successful_routes = 0
     failed_routes: list[str] = []
+    catalog_path = str(Path(CATALOG_PATH).expanduser())
+    previous_route_used_api = False
 
     for route_index, route in enumerate(routes):
         route_ref = str(route["ref"])
         route_relation_id = int(route["relation_id"])
         is_grp = bool(route["is_grp"])
+
+        if route_index > 0 and previous_route_used_api:
+            time.sleep(OVERPASS_COOLDOWN_SECONDS)
 
         logger.info(
             "=== [%d/%d] Processing %s (relation %d) ===",
@@ -111,7 +116,7 @@ def main() -> None:
         )
 
         try:
-            hikes = _process_route(
+            hikes, all_cached = _process_route(
                 relation_id=route_relation_id,
                 is_grp=is_grp,
                 srtm_reader=srtm_reader,
@@ -119,16 +124,14 @@ def main() -> None:
             )
             all_hikes.extend(hikes)
             successful_routes += 1
+            previous_route_used_api = not all_cached
             logger.info("  -> %d hikes for %s", len(hikes), route_ref)
         except Exception:
             logger.exception("Failed to process %s, skipping", route_ref)
             failed_routes.append(route_ref)
+            previous_route_used_api = True
 
-        if route_index < len(routes) - 1:
-            time.sleep(OVERPASS_COOLDOWN_SECONDS)
-
-    catalog_path = str(Path(CATALOG_PATH).expanduser())
-    export_catalog(all_hikes, catalog_path)
+        export_catalog(all_hikes, catalog_path)
 
     logger.info("=== Summary ===")
     logger.info("Routes processed: %d/%d", successful_routes, len(routes))
@@ -143,18 +146,21 @@ def _process_route(
     is_grp: bool,
     srtm_reader: SrtmReader,
     accommodation_registry: dict[str, Station],
-) -> list[Hike]:
+) -> tuple[list[Hike], bool]:
     """Process a single GR route end-to-end and return generated hikes."""
-    trail, trail_metadata = fetch_trail(relation_id)
+    trail, trail_metadata, trail_cached = fetch_trail(relation_id)
 
-    time.sleep(OVERPASS_COOLDOWN_SECONDS)
+    if not trail_cached:
+        time.sleep(OVERPASS_COOLDOWN_SECONDS)
 
-    stations = fetch_stations(trail)
+    stations, stations_cached = fetch_stations(trail)
 
     matched = match_stations_to_trail(stations, trail, MAX_STATION_DISTANCE_METERS)
+    all_cached = trail_cached and stations_cached
+
     if len(matched) < 2:
         logger.warning("Only %d stations matched, skipping route", len(matched))
-        return []
+        return [], all_cached
 
     # Cross-route station dedup: skip accommodation fetch for already-enriched stations
     matched_stations = [station for station, _fraction in matched]
@@ -163,11 +169,13 @@ def _process_route(
     ]
 
     if stations_needing_accommodation:
-        time.sleep(OVERPASS_COOLDOWN_SECONDS)
-        fetch_accommodation(stations_needing_accommodation)
+        if not stations_cached:
+            time.sleep(OVERPASS_COOLDOWN_SECONDS)
+        accommodation_cached = fetch_accommodation(stations_needing_accommodation)
         for station in stations_needing_accommodation:
             accommodation_registry[station.code] = station
     else:
+        accommodation_cached = True
         logger.info("All %d stations already have accommodation data", len(matched_stations))
 
     # Copy accommodation from registry for stations we skipped
@@ -198,7 +206,8 @@ def _process_route(
         )
         hikes.append(hike)
 
-    return hikes
+    all_cached = all_cached and accommodation_cached
+    return hikes, all_cached
 
 
 def _detect_circular_trail(trail: LineString | MultiLineString) -> bool:

@@ -1,12 +1,15 @@
 ---
 import type { Hike } from '../lib/catalog';
 import { formatDuration } from '../lib/catalog';
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/i18n';
 
 interface Props {
   hike: Hike;
+  locale?: Locale;
 }
 
-const { hike } = Astro.props;
+const { hike, locale = 'fr' } = Astro.props;
 const stationNames = [
   ...hike.steps.map((step) => step.start_station.name),
   hike.steps[hike.steps.length - 1].end_station.name,
@@ -20,11 +23,20 @@ const overnightStations = [
 ];
 const hotelAllStops = overnightStations.length > 0 && overnightStations.every((station) => station.accommodation.has_hotel);
 const campingAllStops = overnightStations.length > 0 && overnightStations.every((station) => station.accommodation.has_camping);
+
+const hikeUrl = locale === 'en' ? `/en/hike/${hike.slug}` : `/hike/${hike.slug}`;
+
+const difficultyLabel: Record<string, string> = {
+  easy: t(locale, 'difficulty.easy'),
+  moderate: t(locale, 'difficulty.moderate'),
+  difficult: t(locale, 'difficulty.difficult'),
+  very_difficult: t(locale, 'difficulty.very_difficult'),
+};
 ---
 
 <a
-  href={`/hike/${hike.slug}`}
-  class="hike-card block bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-stone-200 dark:border-neutral-700 p-4 hover:shadow-md transition-shadow"
+  href={hikeUrl}
+  class="hike-card block bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-stone-200 dark:border-neutral-700 p-3 sm:p-4 hover:shadow-md hover:border-forest-400 dark:hover:border-forest-600 transition-all"
   data-hike-id={hike.id}
   data-step-count={hike.step_count}
   data-distance={hike.distance_km}
@@ -43,7 +55,7 @@ const campingAllStops = overnightStations.length > 0 && overnightStations.every(
     </div>
     {hike.step_count > 1 && (
       <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full whitespace-nowrap">
-        {hike.step_count} etapes
+        {t(locale, 'steps.label', { count: hike.step_count })}
       </span>
     )}
   </div>
@@ -59,16 +71,14 @@ const campingAllStops = overnightStations.length > 0 && overnightStations.every(
         hike.difficulty === 'difficult' ? "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300" :
         "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
       ]}>
-        {hike.difficulty === 'easy' ? 'Facile' :
-         hike.difficulty === 'moderate' ? 'Modere' :
-         hike.difficulty === 'difficult' ? 'Difficile' : 'Tres difficile'}
+        {difficultyLabel[hike.difficulty] || hike.difficulty}
       </span>
     )}
   </div>
   {(hotelAllStops || campingAllStops) && (
     <div class="flex gap-2 mt-2">
-      {hotelAllStops && <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Hotel</span>}
-      {campingAllStops && <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Camping</span>}
+      {hotelAllStops && <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t(locale, 'accommodation.hotel')}</span>}
+      {campingAllStops && <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t(locale, 'accommodation.camping')}</span>}
     </div>
   )}
   {hike.step_count > 1 && (

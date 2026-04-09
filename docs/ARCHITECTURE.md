@@ -22,6 +22,8 @@ BUILD TIME                                    RUNTIME (static files)
 
 Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
 
+**CI/CD**: GitHub Actions deploys the website to GitHub Pages on push to `main`. Data is downloaded from the latest GitHub Release artifact (uploaded manually after a local pipeline run). The prebuild script skips the local copy if `public/data/catalog.json` already exists (CI-friendly).
+
 ---
 
 ## Pipeline Algorithm
@@ -38,7 +40,7 @@ Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts
    8. **Compute** duration per segment: 4 km/h flat, 300m/h ascent and 450m/h descent on slopes >= 10%
    9. **Classify** difficulty based on elevation gain per km and total gain (easy/moderate/difficult/very_difficult)
    10. **Export** GPX files with `<ele>` tags, GeoJSON, and elevation profiles (per-hike JSON)
-3. **Export** `catalog.json` with all hikes from all routes
+3. **Export** `catalog.json` incrementally after each route (so interrupted runs still produce a usable catalog)
 
 ---
 
@@ -127,24 +129,27 @@ open-rando/
 |   +-- astro.config.mjs
 |   +-- tailwind.config.mjs
 |   +-- src/
-|   |   +-- layouts/Base.astro
+|   |   +-- layouts/Base.astro           # SEO meta, sticky nav, theme toggle, i18n
 |   |   +-- pages/
-|   |   |   +-- index.astro             # map + filters + hike list
-|   |   |   +-- hike/[slug].astro       # detail page
+|   |   |   +-- index.astro             # map + filters + hike list (FR)
+|   |   |   +-- hike/[slug].astro       # detail page (FR)
+|   |   |   +-- en/index.astro          # map + filters + hike list (EN)
+|   |   |   +-- en/hike/[slug].astro    # detail page (EN)
 |   |   +-- components/
 |   |   |   +-- HikeMap.astro           # Leaflet map (filter-aware)
-|   |   |   +-- HikeList.astro
+|   |   |   +-- HikeList.astro          # grid + empty state
 |   |   |   +-- HikeCard.astro          # clickable card with D+/difficulty
-|   |   |   +-- HikeFilters.astro       # range sliders (distance, elevation, etc.)
+|   |   |   +-- HikeFilters.astro       # range sliders, URL sync, collapsible mobile
 |   |   |   +-- ElevationChart.astro    # inline SVG elevation profile + timeline
 |   |   +-- lib/
 |   |       +-- catalog.ts              # types + data loading
+|   |       +-- i18n.ts                 # translation dictionary (FR/EN) + helpers
 |   +-- public/data/                    # copied from ~/.local/share/open-rando/data/ at build
 +-- docs/
 ```
 
 **Python deps**: `requests`, `shapely`, `gpxpy`, `geojson`
-**JS deps**: `astro`, `leaflet`, `tailwindcss`
+**JS deps**: `astro`, `@astrojs/sitemap`, `leaflet`, `tailwindcss`
 
 ---
 
@@ -158,6 +163,8 @@ open-rando/
 | SRTM elevation tiles | `~/.cache/open-rando/srtm/` | Permanent |
 
 Overpass responses are keyed by SHA256 of the query string. SRTM tiles are keyed by tile name (e.g., `N47E003.hgt`). Missing tiles are cached as sentinels to avoid re-downloading. All caches are in `~/.cache/open-rando/` (shared across worktrees).
+
+When an Overpass query is served from cache, the pipeline skips the cooldown sleep before the next API call. This makes re-runs with warm caches significantly faster (seconds instead of minutes).
 
 ---
 

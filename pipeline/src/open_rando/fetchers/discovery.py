@@ -33,7 +33,7 @@ out body;
 rel._["type"="superroute"]["ref"~"^GR"];
 out body;
 """
-    data = query_overpass(query, cache_ttl_seconds=DISCOVERY_CACHE_TTL_SECONDS)
+    data, _cache_hit = query_overpass(query, cache_ttl_seconds=DISCOVERY_CACHE_TTL_SECONDS)
     elements = data.get("elements", [])
 
     # Collect all relations with ref tags and identify superroute children
