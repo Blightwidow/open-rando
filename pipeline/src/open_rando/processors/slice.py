@@ -1,18 +1,42 @@
 from __future__ import annotations
 
+import logging
 import math
 
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
 from shapely.ops import substring
 
 from open_rando.models import Station
+
+logger = logging.getLogger("open_rando")
 
 MINIMUM_SEGMENT_DISTANCE_KM = 0.5
 EARTH_RADIUS_METERS = 6_371_000
 
 
+def _flatten_to_linestring(trail: LineString | MultiLineString) -> LineString:
+    """Convert MultiLineString to single LineString by connecting segments.
+
+    For the slicer, this is acceptable since stations are already matched to real
+    trail positions. Gap portions become straight-line jumps.
+    """
+    if isinstance(trail, LineString):
+        return trail
+
+    all_coords: list[tuple[float, float]] = []
+    for segment in trail.geoms:
+        coords = list(segment.coords)
+        if all_coords and coords[0] != all_coords[-1]:
+            pass  # gap jump — just concatenate
+        if all_coords and coords[0] == all_coords[-1]:
+            coords = coords[1:]
+        all_coords.extend(coords)
+
+    return LineString(all_coords)
+
+
 def find_hikes(
-    trail: LineString,
+    trail: LineString | MultiLineString,
     matched_stations: list[tuple[Station, float]],
     min_step_distance_km: float,
     max_step_distance_km: float,
@@ -22,11 +46,13 @@ def find_hikes(
     matched_stations must be sorted by fraction_along_trail.
     Returns list of hikes. Each hike is a list of steps:
     (start_station, end_station, geometry, distance_km).
+    Supports both LineString and MultiLineString trails.
     """
-    trail_length = trail.length
+    flat_trail = _flatten_to_linestring(trail)
+    trail_length = flat_trail.length
     station_count = len(matched_stations)
 
-    cumulative_km = _compute_cumulative_distances(trail, matched_stations)
+    cumulative_km = _compute_cumulative_distances(flat_trail, matched_stations)
 
     adjacency = _build_step_graph(
         cumulative_km, station_count, min_step_distance_km, max_step_distance_km
@@ -44,7 +70,7 @@ def find_hikes(
             end_station = matched_stations[target][0]
             start_distance = matched_stations[source][1] * trail_length
             end_distance = matched_stations[target][1] * trail_length
-            geometry = substring(trail, start_distance, end_distance)
+            geometry = substring(flat_trail, start_distance, end_distance)
             distance_km = round(cumulative_km[target] - cumulative_km[source], 1)
             steps.append((start_station, end_station, geometry, distance_km))
         hikes.append(steps)

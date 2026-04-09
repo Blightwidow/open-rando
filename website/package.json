@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "predev": "cp -r ../data/ public/data/ 2>/dev/null || echo 'No data/ found'",
+    "predev": "cp -r ~/.local/share/open-rando/data/ public/data/ 2>/dev/null || echo 'No data/ found'",
     "dev": "astro dev",
-    "prebuild": "cp -r ../data/ public/data/",
+    "prebuild": "cp -r ~/.local/share/open-rando/data/ public/data/",
     "build": "astro build",
     "preview": "astro preview"
   },

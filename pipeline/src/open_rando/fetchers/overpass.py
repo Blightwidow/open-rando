@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 import requests
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
 
 from open_rando.config import (
     OVERPASS_API_URL,
@@ -19,7 +19,8 @@ from open_rando.config import (
 
 logger = logging.getLogger("open_rando")
 
-MAX_GAP_DEGREES = 0.01  # ~1km
+MAX_GAP_DEGREES = 0.01  # ~1km warning threshold
+MAX_CHAIN_GAP_DEGREES = 0.05  # ~5km split threshold for MultiLineString
 RETRY_ATTEMPTS = 5
 RETRY_BACKOFF_SECONDS = 15
 
@@ -102,11 +103,13 @@ def _write_cache(query: str, data: dict) -> None:  # type: ignore[type-arg]
     logger.info("Cached Overpass response to %s", path.name)
 
 
-def fetch_trail(relation_id: int) -> tuple[LineString, dict[str, str | int]]:
-    """Fetch a GR superroute and return (linestring, metadata).
+def fetch_trail(
+    relation_id: int,
+) -> tuple[LineString | MultiLineString, dict[str, str | int]]:
+    """Fetch a GR superroute and return (geometry, metadata).
 
-    Uses a single Overpass query with full recursion to get all geometry at once,
-    then uses relation member ordering to chain ways correctly.
+    Returns a LineString when the trail is continuous, or a MultiLineString
+    when there are gaps exceeding MAX_CHAIN_GAP_DEGREES between child relations.
     """
     logger.info("Fetching relation %d with full recursion...", relation_id)
 
@@ -203,7 +206,11 @@ out geom;
         raise RuntimeError(f"No geometry found for relation {relation_id}")
 
     combined = _chain_linestrings(all_linestrings)
-    logger.info("Trail has %d points total", len(combined.coords))
+    if isinstance(combined, MultiLineString):
+        total_points = sum(len(geom.coords) for geom in combined.geoms)
+        logger.info("Trail has %d segments, %d points total", len(combined.geoms), total_points)
+    else:
+        logger.info("Trail has %d points total", len(combined.coords))
     return combined, metadata
 
 
@@ -239,16 +246,23 @@ def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> LineString:
     return LineString(chained)
 
 
-def _chain_linestrings(linestrings: list[LineString]) -> LineString:
-    """Chain multiple LineStrings (from child relations) into one."""
+def _chain_linestrings(
+    linestrings: list[LineString],
+) -> LineString | MultiLineString:
+    """Chain multiple LineStrings (from child relations) into one or more segments.
+
+    When the gap between consecutive child relations exceeds MAX_CHAIN_GAP_DEGREES,
+    a new segment is started, resulting in a MultiLineString.
+    """
     if len(linestrings) == 1:
         return linestrings[0]
 
-    all_coords: list[tuple[float, float]] = list(linestrings[0].coords)
+    segments: list[list[tuple[float, float]]] = []
+    current_coords: list[tuple[float, float]] = list(linestrings[0].coords)
 
     for index in range(1, len(linestrings)):
         next_coords = list(linestrings[index].coords)
-        chain_end = all_coords[-1]
+        chain_end = current_coords[-1]
 
         distance_normal = _point_distance(chain_end, next_coords[0])
         distance_reversed = _point_distance(chain_end, next_coords[-1])
@@ -256,12 +270,30 @@ def _chain_linestrings(linestrings: list[LineString]) -> LineString:
         if distance_reversed < distance_normal:
             next_coords = list(reversed(next_coords))
 
-        if next_coords[0] == chain_end:
-            all_coords.extend(next_coords[1:])
-        else:
-            all_coords.extend(next_coords)
+        gap_distance = min(distance_normal, distance_reversed)
 
-    return LineString(all_coords)
+        if gap_distance > MAX_CHAIN_GAP_DEGREES:
+            logger.warning(
+                "Large gap (%.4f deg) between child relations %d and %d, splitting trail",
+                gap_distance,
+                index - 1,
+                index,
+            )
+            segments.append(current_coords)
+            current_coords = list(next_coords)
+        elif next_coords[0] == chain_end:
+            current_coords.extend(next_coords[1:])
+        else:
+            if gap_distance > MAX_GAP_DEGREES:
+                logger.warning("Gap (%.4f deg) at child relation %d", gap_distance, index)
+            current_coords.extend(next_coords)
+
+    segments.append(current_coords)
+
+    if len(segments) == 1:
+        return LineString(segments[0])
+
+    return MultiLineString([LineString(segment) for segment in segments])
 
 
 def _point_distance(point_a: tuple[float, float], point_b: tuple[float, float]) -> float:
