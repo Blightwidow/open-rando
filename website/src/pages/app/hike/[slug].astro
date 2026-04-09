@@ -98,8 +98,16 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
                 {index + 1}
               </span>
               <div>
-                <p class="font-medium">
-                  {step.start_station.name} &rarr; {step.end_station.name}
+                <p class="font-medium flex flex-wrap items-center gap-1.5">
+                  <a href={getStationTimetableUrl(step.start_station)} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-100 dark:bg-neutral-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-neutral-600 transition-colors text-xs font-semibold">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 17v1a2 2 0 002 2h12a2 2 0 002-2v-1M8 17l-1-5h10l-1 5M6 8h12a2 2 0 012 2v2H4v-2a2 2 0 012-2zM10 3h4v5h-4z"/></svg>
+                    {step.start_station.name}
+                  </a>
+                  <span class="text-stone-400">&rarr;</span>
+                  <a href={getStationTimetableUrl(step.end_station)} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-100 dark:bg-neutral-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-neutral-600 transition-colors text-xs font-semibold">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 17v1a2 2 0 002 2h12a2 2 0 002-2v-1M8 17l-1-5h10l-1 5M6 8h12a2 2 0 012 2v2H4v-2a2 2 0 012-2zM10 3h4v5h-4z"/></svg>
+                    {step.end_station.name}
+                  </a>
                 </p>
                 <p class="text-stone-500 dark:text-stone-400">
                   {step.distance_km} km &middot; {formatDuration(step.estimated_duration_min)}
@@ -113,6 +121,7 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
                       hasHotel={step.end_station.accommodation.has_hotel}
                       hasCamping={step.end_station.accommodation.has_camping}
                       size="sm"
+                      locale={locale}
                     />
                   </div>
                 )}
@@ -160,32 +169,8 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
 
     <ElevationChart hikeId={hike.id} locale={locale} />
 
-    <div class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5">
-      <h2 class="text-lg font-semibold mb-3">{t(locale, 'detail.stations')}</h2>
-      <div class="flex flex-wrap gap-2">
-        {stations.map((station, index) => (
-          <a
-            href={getStationTimetableUrl(station)}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`Horaires pour ${station.name}`}
-            class:list={[
-              "text-sm px-3 py-1 rounded-full inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity",
-              index === 0
-                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                : index === stations.length - 1
-                  ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                  : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
-            ]}
-          >
-            {station.name}
-            <AccommodationIcons hasHotel={station.accommodation.has_hotel} hasCamping={station.accommodation.has_camping} size="sm" />
-            <svg class="w-3 h-3 opacity-60" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4.5 1.5H2a.5.5 0 00-.5.5v8a.5.5 0 00.5.5h8a.5.5 0 00.5-.5V7.5M7.5 1.5H10.5V4.5M10.5 1.5L5.5 6.5" />
-            </svg>
-          </a>
-        ))}
-      </div>
+    <div class="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-4 text-sm text-amber-800 dark:text-amber-300">
+      {t(locale, 'detail.disclaimer')}
     </div>
 
     <div
@@ -226,8 +211,8 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
 
   L.control.layers({ 'OpenTopoMap': openTopoLayer, 'Plan IGN': planIgnLayer }).addTo(map);
 
-  const lightStepColors = ['#2d6a4f', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
-  const darkStepColors = ['#52b788', '#a78bfa', '#f472b6', '#fb923c', '#4ade80', '#22d3ee'];
+  const lightStepColors = ['#E72323', '#931010'];
+  const darkStepColors = ['#E72323', '#931010'];
 
   let trailLayers: L.Layer[] = [];
 

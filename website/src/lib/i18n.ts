@@ -85,7 +85,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.difficulty': 'Difficulté',
     'detail.downloadGpx': 'Télécharger GPX',
     'detail.steps': 'Étapes',
-    'detail.stations': 'Gares',
+    'detail.stations': 'Arrêts',
     'detail.elevationProfile': 'Profil altimétrique',
     'detail.loading': 'Chargement...',
     'detail.sectionTitle': 'Randonner une section',
@@ -121,6 +121,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'suggest.section': 'Étapes {from}–{to}',
     'suggest.departs': 'Départ',
     'suggest.arrives': 'Arrivée',
+
+    // Disclaimer
+    'detail.disclaimer': 'Les informations présentées (tracés, hébergements, gares) sont issues de données ouvertes et peuvent être incomplètes ou obsolètes. Vérifiez la disponibilité des hébergements, campings et horaires de train avant de partir.',
 
     // Theme
     'theme.toggle': 'Basculer thème sombre',
@@ -209,7 +212,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.difficulty': 'Difficulty',
     'detail.downloadGpx': 'Download GPX',
     'detail.steps': 'Steps',
-    'detail.stations': 'Stations',
+    'detail.stations': 'Stops',
     'detail.elevationProfile': 'Elevation profile',
     'detail.loading': 'Loading...',
     'detail.sectionTitle': 'Hike a section',
@@ -245,6 +248,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'suggest.section': 'Steps {from}–{to}',
     'suggest.departs': 'Departs',
     'suggest.arrives': 'Arrives',
+
+    // Disclaimer
+    'detail.disclaimer': 'The information shown (trails, accommodation, stations) is based on open data and may be incomplete or outdated. Please verify accommodation, campsite and train schedule availability before setting out.',
 
     // Theme
     'theme.toggle': 'Toggle dark mode',
