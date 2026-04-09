@@ -59,6 +59,7 @@ export interface Hike {
   is_grp: boolean;
   is_circular_trail: boolean;
   is_round_trip: boolean;
+  terrain: string[];
   last_updated: string;
 }
 

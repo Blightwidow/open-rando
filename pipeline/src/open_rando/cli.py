@@ -44,6 +44,14 @@ from open_rando.processors.elevation import (
     elevations_for_geometry,
     estimate_duration,
 )
+from open_rando.processors.geography import (
+    build_sncf_insee_index,
+    classify_terrain,
+    compute_forest_ratio,
+    fetch_forest_areas,
+    resolve_departement,
+    resolve_region,
+)
 from open_rando.processors.match import MatchedStation, match_stations_to_trail
 from open_rando.processors.slice import find_hikes, find_round_trip_hikes
 
@@ -116,6 +124,7 @@ def main() -> None:
 
     sncf_records = fetch_sncf_stations()
     sncf_codes = build_sncf_code_set(sncf_records)
+    sncf_insee = build_sncf_insee_index(sncf_records)
     if sncf_codes:
         logger.info("Loaded %d SNCF station codes for filtering", len(sncf_codes))
 
@@ -173,6 +182,7 @@ def main() -> None:
                 srtm_reader=srtm_reader,
                 accommodation_registry=accommodation_registry,
                 sncf_codes=sncf_codes,
+                sncf_insee=sncf_insee,
             )
             all_hikes.extend(hikes)
             successful_routes += 1
@@ -204,6 +214,7 @@ def _process_route(
     srtm_reader: SrtmReader,
     accommodation_registry: dict[str, Station],
     sncf_codes: set[str],
+    sncf_insee: dict[str, str],
 ) -> tuple[list[Hike], bool]:
     """Process a single route end-to-end and return generated hikes."""
     trail, trail_metadata, trail_cached = fetch_trail(relation_id)
@@ -245,6 +256,10 @@ def _process_route(
         if already_registered is not None and station is not already_registered:
             station.accommodation = already_registered.accommodation
 
+    # Fetch forest areas for terrain classification
+    trail_bounds = trail.bounds  # (minx, miny, maxx, maxy)
+    forest_polygons = fetch_forest_areas(trail_bounds)
+
     is_circular = _detect_circular_trail(trail)
 
     raw_hikes = find_hikes(trail, matched, MIN_STEP_DISTANCE_KM, MAX_STEP_DISTANCE_KM)
@@ -273,6 +288,9 @@ def _process_route(
             is_circular=is_circular,
             is_round_trip=False,
             srtm_reader=srtm_reader,
+            sncf_insee=sncf_insee,
+            trail=trail,
+            forest_polygons=forest_polygons,
         )
         hikes.append(hike)
     for raw_steps in round_trip_raw:
@@ -286,6 +304,9 @@ def _process_route(
             is_circular=is_circular,
             is_round_trip=True,
             srtm_reader=srtm_reader,
+            sncf_insee=sncf_insee,
+            trail=trail,
+            forest_polygons=forest_polygons,
         )
         hikes.append(hike)
 
@@ -323,6 +344,9 @@ def _build_hike(
     is_circular: bool,
     is_round_trip: bool,
     srtm_reader: SrtmReader,
+    sncf_insee: dict[str, str],
+    trail: LineString | MultiLineString,
+    forest_polygons: list,
 ) -> Hike:
     """Build a Hike object from raw steps, computing elevation and exporting files."""
     enriched_steps, _connectors_cached = attach_connectors(
@@ -381,6 +405,17 @@ def _build_hike(
         overall_min_elevation = 0
 
     difficulty = classify_difficulty(total_gain, total_loss, total_distance_km)
+
+    departement = resolve_departement(first_start_station.code, sncf_insee)
+    region = resolve_region(departement)
+    forest_ratio = compute_forest_ratio(trail, forest_polygons)
+    terrain = classify_terrain(
+        max_elevation_meters=overall_max_elevation,
+        elevation_gain_meters=total_gain,
+        distance_km=total_distance_km,
+        departement=departement,
+        forest_ratio=forest_ratio,
+    )
 
     if is_round_trip:
         hike_slug = slugify(f"{path_ref} {first_start_station.name} loop")
@@ -448,8 +483,8 @@ def _build_hike(
         min_elevation_meters=overall_min_elevation,
         difficulty=difficulty,
         bounding_box=combined_bounds,
-        region="",
-        departement="",
+        region=region,
+        departement=departement,
         gpx_path=gpx_path,
         geojson_path=geojson_path,
         is_reversible=True,
@@ -457,6 +492,7 @@ def _build_hike(
         route_type=route_type,
         is_circular_trail=is_circular,
         is_round_trip=is_round_trip,
+        terrain=terrain,
     )
 
 

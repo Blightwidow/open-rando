@@ -14,6 +14,7 @@ const maxStepDistance = Math.ceil(
   Math.max(...hikes.flatMap((hike) => hike.steps.map((step) => step.distance_km)))
 );
 const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
+const regions = [...new Set(hikes.map((hike) => hike.region).filter(Boolean))].sort();
 const clientTranslations = getClientTranslations(locale);
 ---
 
@@ -100,6 +101,44 @@ const clientTranslations = getClientTranslations(locale);
         </label>
       </div>
     </div>
+    {regions.length > 0 && (
+      <div>
+        <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.region')}</p>
+        <div class="flex flex-wrap gap-3">
+          {regions.map((region) => (
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" class="filter-region accent-forest-700 w-4 h-4" data-region={region} />
+              <span class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300">{region}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    )}
+    <div>
+      <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.terrain')}</p>
+      <div class="flex flex-wrap gap-3">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-coastal" class="accent-cyan-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300">{t(locale, 'terrain.coastal')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-mountain" class="accent-slate-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300">{t(locale, 'terrain.mountain')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-hills" class="accent-amber-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">{t(locale, 'terrain.hills')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-forest" class="accent-emerald-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{t(locale, 'terrain.forest')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-plains" class="accent-lime-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-300">{t(locale, 'terrain.plains')}</span>
+        </label>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -123,6 +162,12 @@ const clientTranslations = getClientTranslations(locale);
   const filterTypeGr = document.getElementById('filter-type-gr') as HTMLInputElement;
   const filterTypeGrp = document.getElementById('filter-type-grp') as HTMLInputElement;
   const filterTypePr = document.getElementById('filter-type-pr') as HTMLInputElement;
+  const regionCheckboxes = document.querySelectorAll<HTMLInputElement>('.filter-region');
+  const filterTerrainCoastal = document.getElementById('filter-terrain-coastal') as HTMLInputElement;
+  const filterTerrainMountain = document.getElementById('filter-terrain-mountain') as HTMLInputElement;
+  const filterTerrainHills = document.getElementById('filter-terrain-hills') as HTMLInputElement;
+  const filterTerrainForest = document.getElementById('filter-terrain-forest') as HTMLInputElement;
+  const filterTerrainPlains = document.getElementById('filter-terrain-plains') as HTMLInputElement;
   const resetButton = document.getElementById('reset-filters') as HTMLElement;
   const hikeList = document.getElementById('hike-list');
   const hikeEmpty = document.getElementById('hike-empty');
@@ -150,6 +195,9 @@ const clientTranslations = getClientTranslations(locale);
   }
 
   function isNonDefault(): boolean {
+    const anyRegionChecked = Array.from(regionCheckboxes).some((checkbox) => checkbox.checked);
+    const anyTerrainChecked = filterTerrainCoastal.checked || filterTerrainMountain.checked ||
+      filterTerrainHills.checked || filterTerrainForest.checked || filterTerrainPlains.checked;
     return (
       maxStepDistance.value !== defaults.maxStepDistance ||
       stepsMin.value !== defaults.stepsMin ||
@@ -162,7 +210,9 @@ const clientTranslations = getClientTranslations(locale);
       filterDiffVeryDifficult.checked !== defaults.diffVeryDifficult ||
       filterTypeGr.checked !== defaults.typeGr ||
       filterTypeGrp.checked !== defaults.typeGrp ||
-      filterTypePr.checked !== defaults.typePr
+      filterTypePr.checked !== defaults.typePr ||
+      anyRegionChecked ||
+      anyTerrainChecked
     );
   }
 
@@ -179,6 +229,12 @@ const clientTranslations = getClientTranslations(locale);
     filterTypeGr.checked = false;
     filterTypeGrp.checked = false;
     filterTypePr.checked = false;
+    regionCheckboxes.forEach((checkbox) => { checkbox.checked = false; });
+    filterTerrainCoastal.checked = false;
+    filterTerrainMountain.checked = false;
+    filterTerrainHills.checked = false;
+    filterTerrainForest.checked = false;
+    filterTerrainPlains.checked = false;
     applyFilters();
   }
 
@@ -202,6 +258,20 @@ const clientTranslations = getClientTranslations(locale);
       filterTypeGr.checked = types.includes('gr');
       filterTypeGrp.checked = types.includes('grp');
       filterTypePr.checked = types.includes('pr');
+    }
+    if (params.has('region')) {
+      const selectedRegions = params.get('region')!.split(',');
+      regionCheckboxes.forEach((checkbox) => {
+        checkbox.checked = selectedRegions.includes(checkbox.dataset.region || '');
+      });
+    }
+    if (params.has('terrain')) {
+      const terrains = params.get('terrain')!.split(',');
+      filterTerrainCoastal.checked = terrains.includes('coastal');
+      filterTerrainMountain.checked = terrains.includes('mountain');
+      filterTerrainHills.checked = terrains.includes('hills');
+      filterTerrainForest.checked = terrains.includes('forest');
+      filterTerrainPlains.checked = terrains.includes('plains');
     }
   }
 
@@ -229,6 +299,19 @@ const clientTranslations = getClientTranslations(locale);
         filterTypePr.checked ? 'pr' : null,
       ].filter(Boolean);
       if (activeTypes.length > 0) params.set('type', activeTypes.join(','));
+      const activeRegions = Array.from(regionCheckboxes)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.region!)
+        .filter(Boolean);
+      if (activeRegions.length > 0) params.set('region', activeRegions.join(','));
+      const activeTerrains = [
+        filterTerrainCoastal.checked ? 'coastal' : null,
+        filterTerrainMountain.checked ? 'mountain' : null,
+        filterTerrainHills.checked ? 'hills' : null,
+        filterTerrainForest.checked ? 'forest' : null,
+        filterTerrainPlains.checked ? 'plains' : null,
+      ].filter(Boolean);
+      if (activeTerrains.length > 0) params.set('terrain', activeTerrains.join(','));
 
       const queryString = params.toString();
       const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
@@ -248,6 +331,20 @@ const clientTranslations = getClientTranslations(locale);
       filterTypeGr.checked ? 'gr' : null,
       filterTypeGrp.checked ? 'grp' : null,
       filterTypePr.checked ? 'pr' : null,
+    ].filter(Boolean) as string[]);
+
+    const activeRegions = new Set(
+      Array.from(regionCheckboxes)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.region!)
+    );
+
+    const activeTerrains = new Set([
+      filterTerrainCoastal.checked ? 'coastal' : null,
+      filterTerrainMountain.checked ? 'mountain' : null,
+      filterTerrainHills.checked ? 'hills' : null,
+      filterTerrainForest.checked ? 'forest' : null,
+      filterTerrainPlains.checked ? 'plains' : null,
     ].filter(Boolean) as string[]);
 
     const filters = {
@@ -274,6 +371,10 @@ const clientTranslations = getClientTranslations(locale);
 
       const suggestHidden = card.dataset.suggestHidden === '1';
 
+      const cardRegion = card.dataset.region || '';
+      const cardTerrainTags = (card.dataset.terrain || '').split(',').filter(Boolean);
+      const terrainMatch = activeTerrains.size === 0 || cardTerrainTags.some((tag) => activeTerrains.has(tag));
+
       const visible =
         !suggestHidden &&
         stepDistance <= filters.maxStepDistance &&
@@ -282,7 +383,9 @@ const clientTranslations = getClientTranslations(locale);
         (!filters.requireHotel || hasHotelAllStops) &&
         (!filters.requireCamping || hasCampingAllStops) &&
         (activeDifficulties.size === 0 || activeDifficulties.has(difficulty)) &&
-        (activeRouteTypes.size === 0 || activeRouteTypes.has(card.dataset.routeType || ''));
+        (activeRouteTypes.size === 0 || activeRouteTypes.has(card.dataset.routeType || '')) &&
+        (activeRegions.size === 0 || activeRegions.has(cardRegion)) &&
+        terrainMatch;
 
       card.style.display = visible ? '' : 'none';
       if (visible) {
@@ -319,9 +422,10 @@ const clientTranslations = getClientTranslations(locale);
   [maxStepDistance, stepsMin, stepsMax].forEach(
     (input) => input.addEventListener('input', applyFilters)
   );
-  [filterHotel, filterCamping, filterDiffEasy, filterDiffModerate, filterDiffDifficult, filterDiffVeryDifficult, filterTypeGr, filterTypeGrp, filterTypePr].forEach(
+  [filterHotel, filterCamping, filterDiffEasy, filterDiffModerate, filterDiffDifficult, filterDiffVeryDifficult, filterTypeGr, filterTypeGrp, filterTypePr, filterTerrainCoastal, filterTerrainMountain, filterTerrainHills, filterTerrainForest, filterTerrainPlains].forEach(
     (input) => input.addEventListener('change', applyFilters)
   );
+  regionCheckboxes.forEach((input) => input.addEventListener('change', applyFilters));
 
   if (resetButton) {
     resetButton.addEventListener('click', resetFilters);
