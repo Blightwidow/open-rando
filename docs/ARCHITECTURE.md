@@ -22,7 +22,7 @@ BUILD TIME                                    RUNTIME (static files)
 
 Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
 
-**CI/CD**: GitHub Actions deploys the website to GitHub Pages on push to `main`. Data is downloaded from the latest GitHub Release artifact (uploaded manually after a local pipeline run). The prebuild script skips the local copy if `public/data/catalog.json` already exists (CI-friendly).
+**CI/CD**: GitHub Actions deploys the website to GitHub Pages on push to `main`. See [Deployment](DEPLOYMENT.md) for the full workflow details.
 
 ---
 

@@ -128,4 +128,6 @@ uv run mypy src/
 
 ## License
 
+Code and website: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) -- non-commercial use, share alike, attribution required.
+
 Data: [ODbL](https://opendatacommons.org/licenses/odbl/) (OpenStreetMap)
