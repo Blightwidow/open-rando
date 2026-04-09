@@ -1,0 +1,67 @@
+---
+import Landing from '../../layouts/Landing.astro';
+
+const locale = 'en';
+---
+
+<Landing
+  title="Privacy policy — open-rando"
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">Privacy policy</h1>
+
+    <div class="space-y-8 text-stone-600 dark:text-stone-400 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">No personal data collection</h2>
+        <p>
+          open-rando does not collect, store, or share any personal data.
+          No user account is required to use the site.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">No cookies</h2>
+        <p>
+          This site does not use any tracking cookies or analytics. The only data stored locally
+          is your theme preference (light/dark), via your browser's localStorage.
+          This information never leaves your device.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Static site</h2>
+        <p>
+          open-rando is a fully static site. There is no server-side processing, no database,
+          and no backend API that would process your data.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Third-party services</h2>
+        <p>
+          Map tiles are provided by OpenTopoMap and IGN (Géoportail). When you view a map,
+          your browser sends requests directly to these services to load map tiles. These
+          providers may receive your IP address as part of these requests.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Hosting</h2>
+        <p>
+          This site is hosted on GitHub Pages. Standard web server access logs (IP address,
+          user-agent, pages visited) may be collected by GitHub in accordance with their
+          privacy policy.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Contact</h2>
+        <p>
+          For any questions about this privacy policy, you can open an issue on the project's
+          <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">GitHub repository</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+</Landing>

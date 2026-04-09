@@ -75,7 +75,7 @@ const clientTranslations = getClientTranslations(locale);
       ? `${hike.step_count} ${translations['map.steps']} &middot; `
       : '';
 
-    const hikeUrl = locale === 'en' ? `/en/hike/${hike.slug}` : `/hike/${hike.slug}`;
+    const hikeUrl = locale === 'en' ? `/en/app/hike/${hike.slug}` : `/app/hike/${hike.slug}`;
 
     trailLayer.bindPopup(`
       <strong><a href="${hikeUrl}">${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</a></strong><br>

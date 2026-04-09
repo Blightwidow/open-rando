@@ -1,0 +1,67 @@
+---
+import Landing from '../../layouts/Landing.astro';
+
+const locale = 'en';
+---
+
+<Landing
+  title="Legal notices — open-rando"
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">Legal notices</h1>
+
+    <div class="space-y-8 text-stone-600 dark:text-stone-400 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Site editor</h2>
+        <p>
+          open-rando is a personal, open-source project.<br />
+          Editor: Theo Dammaretz<br />
+          Contact: via the project's <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">GitHub repository</a>
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Hosting</h2>
+        <p>
+          This site is hosted by GitHub Pages.<br />
+          GitHub, Inc. — 88 Colin P Kelly Jr St, San Francisco, CA 94107, United States
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Intellectual property</h2>
+        <p>
+          The open-rando source code is distributed under an open-source license. Map data
+          comes from OpenStreetMap and is distributed under the
+          <a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">ODbL</a> license.
+        </p>
+        <p class="mt-2">
+          "GR" and "Grande Randonnée" are registered trademarks of the Fédération Française
+          de la Randonnée Pédestre (FFRandonnée). open-rando is not affiliated with FFRandonnée.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Limitation of liability</h2>
+        <p>
+          The routes presented on this site are automatically generated from open data. They
+          may contain errors or inaccuracies. The editor cannot be held responsible for the
+          consequences of using this information.
+        </p>
+        <p class="mt-2">
+          Always verify your route with official sources before heading out. Follow on-trail
+          signage and adapt your plans to weather conditions.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Personal data</h2>
+        <p>
+          See our <a href="/en/privacy" class="text-forest-700 dark:text-forest-400 underline">privacy policy</a>
+          for information about personal data processing.
+        </p>
+      </section>
+    </div>
+  </main>
+</Landing>

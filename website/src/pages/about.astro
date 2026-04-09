@@ -1,0 +1,50 @@
+---
+import Landing from '../layouts/Landing.astro';
+import { t } from '../lib/i18n';
+
+const locale = 'fr';
+---
+
+<Landing
+  title={`À propos — open-rando`}
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">À propos d'open-rando</h1>
+
+    <div class="prose prose-stone dark:prose-invert max-w-none space-y-6">
+      <p class="text-lg text-stone-600 dark:text-stone-400 leading-relaxed">
+        open-rando est un projet open-source qui répertorie des itinéraires de randonnée entre gares
+        sur les sentiers GR en France. L'objectif : rendre la randonnée accessible sans voiture,
+        en reliant les sentiers de Grande Randonnée au réseau ferroviaire.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">Comment ça fonctionne</h2>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        Un pipeline de données automatisé découvre les sentiers GR via OpenStreetMap, identifie les
+        gares SNCF à proximité, et calcule des itinéraires optimaux entre elles. Chaque itinéraire
+        inclut un profil altimétrique, une estimation de durée et des informations sur l'hébergement.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">Sources de données</h2>
+      <ul class="list-disc pl-6 space-y-2 text-stone-600 dark:text-stone-400">
+        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — tracés des sentiers GR et données d'hébergement (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">licence ODbL</a>)</li>
+        <li><a href="https://ressources.data.sncf.com/explore/dataset/referentiel-gares-voyageurs" class="text-forest-700 dark:text-forest-400 underline"><strong>SNCF Open Data</strong></a> — base de données des gares ferroviaires</li>
+        <li><a href="https://www.earthdata.nasa.gov/sensors/srtm" class="text-forest-700 dark:text-forest-400 underline"><strong>SRTM</strong></a> — données d'élévation pour les profils altimétriques</li>
+        <li><a href="https://opentopomap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenTopoMap</strong></a> — fonds de carte topographiques</li>
+        <li><a href="https://geoservices.ign.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>IGN Géoservices</strong></a> — fonds de carte Plan IGN</li>
+      </ul>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        Les traces sont générées automatiquement et peuvent contenir des imprécisions.
+        Vérifiez toujours votre itinéraire avant de partir en randonnée.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">Open source</h2>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        Le code source est disponible sur
+        <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">GitHub</a>.
+        Les contributions sont les bienvenues.
+      </p>
+    </div>
+  </main>
+</Landing>

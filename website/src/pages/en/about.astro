@@ -1,0 +1,50 @@
+---
+import Landing from '../../layouts/Landing.astro';
+import { t } from '../../lib/i18n';
+
+const locale = 'en';
+---
+
+<Landing
+  title={`About — open-rando`}
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">About open-rando</h1>
+
+    <div class="prose prose-stone dark:prose-invert max-w-none space-y-6">
+      <p class="text-lg text-stone-600 dark:text-stone-400 leading-relaxed">
+        open-rando is an open-source project cataloging hiking routes between train stations on
+        GR trails in France. The goal: make hiking accessible without a car, by connecting Grande
+        Randonnée trails to the railway network.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">How it works</h2>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        An automated data pipeline discovers GR trails via OpenStreetMap, identifies nearby SNCF
+        train stations, and computes optimal routes between them. Each route includes an elevation
+        profile, duration estimate, and accommodation information.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">Data sources</h2>
+      <ul class="list-disc pl-6 space-y-2 text-stone-600 dark:text-stone-400">
+        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — GR trail geometry and accommodation data (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">ODbL license</a>)</li>
+        <li><a href="https://ressources.data.sncf.com/explore/dataset/referentiel-gares-voyageurs" class="text-forest-700 dark:text-forest-400 underline"><strong>SNCF Open Data</strong></a> — train station database</li>
+        <li><a href="https://www.earthdata.nasa.gov/sensors/srtm" class="text-forest-700 dark:text-forest-400 underline"><strong>SRTM</strong></a> — elevation data for altitude profiles</li>
+        <li><a href="https://opentopomap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenTopoMap</strong></a> — topographic map tiles</li>
+        <li><a href="https://geoservices.ign.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>IGN Géoservices</strong></a> — Plan IGN map tiles</li>
+      </ul>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        Tracks are generated automatically and may contain inaccuracies.
+        Always verify your route before heading out.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-8">Open source</h2>
+      <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
+        The source code is available on
+        <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">GitHub</a>.
+        Contributions are welcome.
+      </p>
+    </div>
+  </main>
+</Landing>

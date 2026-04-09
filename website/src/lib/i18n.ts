@@ -5,9 +5,40 @@ const translations: Record<Locale, Record<string, string>> = {
     // Header & navigation
     'site.title': 'open-rando',
     'site.subtitle': 'Randonnées entre gares sur les sentiers GR',
-    'site.description': 'Randonnées entre gares sur les sentiers GR',
+    'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR, accessibles en train. open-rando est un projet open-source qui répertorie des randonnées entre gares en France.',
     'nav.back': 'Toutes les randonnées',
     'nav.language': 'EN',
+    'nav.explore': 'Parcourir',
+    'nav.about': 'À propos',
+
+    // Landing - Hero
+    'landing.hero.title': 'Randonnez de gare en gare',
+    'landing.hero.subtitle': 'Découvrez des itinéraires de randonnée sur les sentiers GR, accessibles en train. Pas de voiture, pas de navette — juste le train, vos chaussures et le sentier.',
+    'landing.hero.cta': 'Explorer les randonnées',
+
+    // Landing - Features
+    'landing.features.title': 'Comment ça marche',
+    'landing.feature.train.title': 'Départ et arrivée en gare',
+    'landing.feature.train.description': 'Chaque itinéraire commence et se termine à une gare SNCF. Prenez le train, randonnez, reprenez le train.',
+    'landing.feature.gr.title': 'Sentiers GR balisés',
+    'landing.feature.gr.description': 'Tous les itinéraires suivent les sentiers de Grande Randonnée officiels, balisés et entretenus.',
+    'landing.feature.accommodation.title': 'Étapes avec hébergement',
+    'landing.feature.accommodation.description': 'Les randonnées de plusieurs jours passent par des gares intermédiaires avec hôtels ou campings à proximité.',
+    'landing.feature.gpx.title': 'Traces GPX téléchargeables',
+    'landing.feature.gpx.description': 'Téléchargez les traces GPX avec profil altimétrique pour chaque itinéraire.',
+
+    // Landing - Privacy
+    'landing.privacy.title': 'Aucune donnée personnelle',
+    'landing.privacy.description': 'open-rando est un site statique. Aucune donnée utilisateur n\'est collectée, stockée ou partagée. Pas de cookies, pas d\'analytics, pas de compte.',
+
+    // Landing - Mobile
+    'landing.mobile.title': 'Bientôt : application mobile',
+    'landing.mobile.description': 'Une application compagnon pour consulter les itinéraires hors-ligne, avec navigation GPS et alertes météo.',
+
+    // Footer
+    'footer.about': 'À propos',
+    'footer.privacy': 'Confidentialité',
+    'footer.legal': 'Mentions légales',
 
     // Filters
     'filters.title': 'Filtres',
@@ -79,9 +110,40 @@ const translations: Record<Locale, Record<string, string>> = {
     // Header & navigation
     'site.title': 'open-rando',
     'site.subtitle': 'Train station-to-station hikes on GR trails',
-    'site.description': 'Train station-to-station hikes on GR trails in France',
+    'site.description': 'Discover hiking routes on GR trails in France, accessible by train. open-rando is an open-source project cataloging station-to-station hikes.',
     'nav.back': 'All hikes',
     'nav.language': 'FR',
+    'nav.explore': 'Explore',
+    'nav.about': 'About',
+
+    // Landing - Hero
+    'landing.hero.title': 'Hike from station to station',
+    'landing.hero.subtitle': 'Discover hiking routes on GR trails, accessible by train. No car, no shuttle — just the train, your boots and the trail.',
+    'landing.hero.cta': 'Explore hikes',
+
+    // Landing - Features
+    'landing.features.title': 'How it works',
+    'landing.feature.train.title': 'Start and end at a train station',
+    'landing.feature.train.description': 'Every route starts and ends at an SNCF train station. Take the train, hike, take the train back.',
+    'landing.feature.gr.title': 'Marked GR trails',
+    'landing.feature.gr.description': 'All routes follow official Grande Randonnée trails, waymarked and maintained.',
+    'landing.feature.accommodation.title': 'Multi-day with accommodation',
+    'landing.feature.accommodation.description': 'Multi-day hikes pass through intermediate stations with nearby hotels or campsites.',
+    'landing.feature.gpx.title': 'Downloadable GPX tracks',
+    'landing.feature.gpx.description': 'Download GPX tracks with elevation profiles for every route.',
+
+    // Landing - Privacy
+    'landing.privacy.title': 'No tracking, no personal data',
+    'landing.privacy.description': 'open-rando is a static site. No user data is collected, stored or shared. No cookies, no analytics, no accounts.',
+
+    // Landing - Mobile
+    'landing.mobile.title': 'Coming soon: mobile app',
+    'landing.mobile.description': 'A companion app to browse routes offline, with GPS navigation and weather alerts.',
+
+    // Footer
+    'footer.about': 'About',
+    'footer.privacy': 'Privacy',
+    'footer.legal': 'Legal',
 
     // Filters
     'filters.title': 'Filters',
