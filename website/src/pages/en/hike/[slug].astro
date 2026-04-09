@@ -90,9 +90,9 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} to ${hike.
 
       <div class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5 space-y-3">
         <h2 class="text-lg font-semibold">{t(locale, 'detail.steps')}</h2>
-        <ol class="space-y-2">
+        <ol class="space-y-2" id="step-list">
           {hike.steps.map((step, index) => (
-            <li class="flex items-start gap-3 text-sm">
+            <li class="flex items-start gap-3 text-sm transition-opacity" data-step-index={index}>
               <span class="flex-shrink-0 w-6 h-6 rounded-full bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 text-xs font-semibold flex items-center justify-center">
                 {index + 1}
               </span>
@@ -121,6 +121,41 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} to ${hike.
         </ol>
       </div>
     </div>
+
+    {hike.step_count > 1 && (
+      <div id="section-selector" class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">{t(locale, 'detail.sectionTitle')}</h2>
+          <button id="section-reset" class="text-sm text-forest-700 hover:text-forest-900 dark:text-forest-400 dark:hover:text-forest-300 font-medium hidden">
+            {t(locale, 'detail.sectionReset')}
+          </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="text-sm text-stone-500 dark:text-stone-400">{t(locale, 'detail.sectionFrom')}</label>
+          <select id="section-from" class="text-sm rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-2 py-1">
+            {stations.slice(0, -1).map((station, index) => (
+              <option value={index}>{station.name}</option>
+            ))}
+          </select>
+          <label class="text-sm text-stone-500 dark:text-stone-400">{t(locale, 'detail.sectionTo')}</label>
+          <select id="section-to" class="text-sm rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-2 py-1">
+            {stations.slice(1).map((station, index) => (
+              <option value={index + 1} selected={index === stations.length - 2}>{station.name}</option>
+            ))}
+          </select>
+        </div>
+        <div id="section-summary" class="hidden">
+          <dl class="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+            <div><dt class="inline text-stone-500 dark:text-stone-400">{t(locale, 'detail.distance')}: </dt><dd class="inline font-medium" id="section-distance"></dd></div>
+            <div><dt class="inline text-stone-500 dark:text-stone-400">{t(locale, 'detail.estimatedDuration')}: </dt><dd class="inline font-medium" id="section-duration"></dd></div>
+            <div><dt class="inline text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}: </dt><dd class="inline font-medium" id="section-elevation"></dd></div>
+          </dl>
+          <a id="section-gpx-download" download class="inline-flex items-center gap-1 text-sm text-forest-700 hover:text-forest-900 dark:text-forest-400 dark:hover:text-forest-300 font-medium mt-2">
+            {t(locale, 'detail.sectionDownloadGpx')}
+          </a>
+        </div>
+      </div>
+    )}
 
     <ElevationChart hikeId={hike.id} locale={locale} />
 
@@ -249,9 +284,206 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} to ${hike.
     buildLayers();
   }
 
-  document.addEventListener('theme-change', (() => {
+  let sectionFrom = 0;
+  let sectionTo = hike.steps.length;
+
+  function buildLayers_withSection() {
     buildLayers();
+    if (sectionFrom !== 0 || sectionTo !== hike.steps.length) {
+      applySectionToMap(sectionFrom, sectionTo);
+    }
+  }
+
+  function applySectionToMap(from: number, to: number) {
+    if (!cachedGeojson) return;
+    const featureCount = cachedGeojson.features.length;
+
+    for (let index = 0; index < featureCount; index++) {
+      const layer = trailLayers[index] as L.GeoJSON;
+      if (!layer || !('setStyle' in layer)) continue;
+      const isSelected = index >= from && index < to;
+      layer.setStyle({
+        opacity: isSelected ? 0.85 : 0.15,
+        weight: isSelected ? 4 : 2,
+      });
+    }
+
+    const markerOffset = featureCount;
+    const allMarkerLayers = trailLayers.slice(markerOffset);
+    allMarkerLayers.forEach((marker, markerIndex) => {
+      if ('setStyle' in marker) {
+        const stationIndex = markerIndex === 0 ? 0 : markerIndex;
+        const isInRange = stationIndex >= from && stationIndex <= to;
+        (marker as L.CircleMarker).setStyle({ opacity: isInRange ? 1 : 0.2, fillOpacity: isInRange ? 0.9 : 0.2 });
+        const tooltip = (marker as any).getTooltip();
+        if (tooltip) {
+          (marker as any).closeTooltip();
+          if (isInRange) (marker as any).openTooltip();
+        }
+      }
+    });
+
+    const selectedLayers: L.Layer[] = [];
+    for (let index = from; index < to; index++) {
+      if (trailLayers[index]) selectedLayers.push(trailLayers[index]);
+    }
+    if (selectedLayers.length > 0) {
+      map.fitBounds(L.featureGroup(selectedLayers).getBounds(), { padding: [40, 40] });
+    }
+  }
+
+  document.addEventListener('section-change', ((event: CustomEvent) => {
+    sectionFrom = event.detail.from;
+    sectionTo = event.detail.to;
+    applySectionToMap(sectionFrom, sectionTo);
+  }) as EventListener);
+
+  document.addEventListener('theme-change', (() => {
+    buildLayers_withSection();
   }) as EventListener);
 
   loadHike();
+</script>
+
+<script>
+  const sectionSelector = document.getElementById('section-selector');
+  if (sectionSelector) {
+    const mapElement = document.getElementById('detail-map')!;
+    const hike = JSON.parse(mapElement.dataset.hike!);
+    const fromSelect = document.getElementById('section-from') as HTMLSelectElement;
+    const toSelect = document.getElementById('section-to') as HTMLSelectElement;
+    const resetButton = document.getElementById('section-reset')!;
+    const summaryDiv = document.getElementById('section-summary')!;
+    const distanceDisplay = document.getElementById('section-distance')!;
+    const durationDisplay = document.getElementById('section-duration')!;
+    const elevationDisplay = document.getElementById('section-elevation')!;
+    const gpxDownloadLink = document.getElementById('section-gpx-download') as HTMLAnchorElement;
+    const stepItems = document.querySelectorAll('#step-list li[data-step-index]');
+    const totalSteps = hike.steps.length;
+
+    function formatDuration(minutes: number): string {
+      const hours = Math.floor(minutes / 60);
+      const mins = Math.round(minutes % 60);
+      if (hours > 0 && mins > 0) return `${hours}h${String(mins).padStart(2, '0')}`;
+      if (hours > 0) return `${hours}h`;
+      return `${mins}min`;
+    }
+
+    function getFromValue(): number {
+      return parseInt(fromSelect.value, 10);
+    }
+
+    function getToValue(): number {
+      return parseInt(toSelect.value, 10);
+    }
+
+    function isFullRange(): boolean {
+      return getFromValue() === 0 && getToValue() === totalSteps;
+    }
+
+    function constrainSelects() {
+      const from = getFromValue();
+      for (const option of Array.from(toSelect.options)) {
+        const value = parseInt(option.value, 10);
+        option.disabled = value <= from;
+      }
+      if (getToValue() <= from) {
+        toSelect.value = String(from + 1);
+      }
+    }
+
+    function updateSection() {
+      constrainSelects();
+      const from = getFromValue();
+      const to = getToValue();
+      const full = isFullRange();
+
+      resetButton.classList.toggle('hidden', full);
+      summaryDiv.classList.toggle('hidden', full);
+
+      if (!full) {
+        const selectedSteps = hike.steps.slice(from, to);
+        const distance = selectedSteps.reduce((sum: number, step: any) => sum + step.distance_km, 0);
+        const duration = selectedSteps.reduce((sum: number, step: any) => sum + step.estimated_duration_min, 0);
+        const elevationGain = selectedSteps.reduce((sum: number, step: any) => sum + step.elevation_gain_m, 0);
+        const elevationLoss = selectedSteps.reduce((sum: number, step: any) => sum + step.elevation_loss_m, 0);
+
+        distanceDisplay.textContent = `${distance.toFixed(1)} km`;
+        durationDisplay.textContent = formatDuration(duration);
+        elevationDisplay.textContent = `+${elevationGain}m / -${elevationLoss}m`;
+      }
+
+      stepItems.forEach((item) => {
+        const index = parseInt((item as HTMLElement).dataset.stepIndex!, 10);
+        const isSelected = index >= from && index < to;
+        (item as HTMLElement).style.opacity = full || isSelected ? '1' : '0.3';
+      });
+
+      const url = new URL(window.location.href);
+      if (full) {
+        url.searchParams.delete('from');
+        url.searchParams.delete('to');
+      } else {
+        url.searchParams.set('from', String(from));
+        url.searchParams.set('to', String(to));
+      }
+      history.replaceState(null, '', url.toString());
+
+      document.dispatchEvent(new CustomEvent('section-change', { detail: { from, to, full } }));
+    }
+
+    async function buildSectionGpx(from: number, to: number) {
+      try {
+        const response = await fetch(`/data/${hike.gpx_path}`);
+        const gpxText = await response.text();
+        const parser = new DOMParser();
+        const newGpx = parser.parseFromString(gpxText, 'text/xml');
+        const newTrack = newGpx.querySelector('trk')!;
+        const newSegments = newTrack.querySelectorAll('trkseg');
+        newSegments.forEach((segment, index) => {
+          if (index < from || index >= to) {
+            segment.remove();
+          }
+        });
+
+        const serializer = new XMLSerializer();
+        const gpxString = serializer.serializeToString(newGpx);
+        const blob = new Blob([gpxString], { type: 'application/gpx+xml' });
+
+        if (gpxDownloadLink.href.startsWith('blob:')) {
+          URL.revokeObjectURL(gpxDownloadLink.href);
+        }
+        gpxDownloadLink.href = URL.createObjectURL(blob);
+        gpxDownloadLink.download = `${hike.slug}-section-${from + 1}-${to}.gpx`;
+      } catch {
+        gpxDownloadLink.style.display = 'none';
+      }
+    }
+
+    fromSelect.addEventListener('change', () => {
+      updateSection();
+      if (!isFullRange()) buildSectionGpx(getFromValue(), getToValue());
+    });
+
+    toSelect.addEventListener('change', () => {
+      updateSection();
+      if (!isFullRange()) buildSectionGpx(getFromValue(), getToValue());
+    });
+
+    resetButton.addEventListener('click', () => {
+      fromSelect.value = '0';
+      toSelect.value = String(totalSteps);
+      updateSection();
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlFrom = urlParams.get('from');
+    const urlTo = urlParams.get('to');
+    if (urlFrom !== null && urlTo !== null) {
+      fromSelect.value = urlFrom;
+      toSelect.value = urlTo;
+      updateSection();
+      buildSectionGpx(getFromValue(), getToValue());
+    }
+  }
 </script>

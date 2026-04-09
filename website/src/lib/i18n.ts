@@ -53,6 +53,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.stations': 'Gares',
     'detail.elevationProfile': 'Profil altimétrique',
     'detail.loading': 'Chargement...',
+    'detail.sectionTitle': 'Randonner une section',
+    'detail.sectionFrom': 'De',
+    'detail.sectionTo': "Jusqu'à",
+    'detail.sectionReset': "Tout l'itinéraire",
+    'detail.sectionDownloadGpx': 'Télécharger GPX section',
 
     // Accommodation
     'accommodation.hotel': 'Hôtel',
@@ -122,6 +127,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.stations': 'Stations',
     'detail.elevationProfile': 'Elevation profile',
     'detail.loading': 'Loading...',
+    'detail.sectionTitle': 'Hike a section',
+    'detail.sectionFrom': 'From',
+    'detail.sectionTo': 'To',
+    'detail.sectionReset': 'Full itinerary',
+    'detail.sectionDownloadGpx': 'Download section GPX',
 
     // Accommodation
     'accommodation.hotel': 'Hotel',
@@ -178,6 +188,8 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
     'map.downloadGpx', 'map.steps',
     'filters.noResults', 'filters.resetFilters',
     'detail.loading',
+    'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',
+    'detail.sectionReset', 'detail.sectionDownloadGpx',
   ];
   const result: Record<string, string> = {};
   for (const key of keys) {
