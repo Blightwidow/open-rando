@@ -41,7 +41,7 @@ from open_rando.processors.elevation import (
     estimate_duration,
 )
 from open_rando.processors.match import match_stations_to_trail
-from open_rando.processors.slice import find_hikes
+from open_rando.processors.slice import find_hikes, find_round_trip_hikes
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("open_rando")
@@ -214,6 +214,13 @@ def _process_route(
     raw_hikes = find_hikes(trail, matched, MIN_STEP_DISTANCE_KM, MAX_STEP_DISTANCE_KM)
     logger.info("Found %d hikes", len(raw_hikes))
 
+    round_trip_raw: list[list[tuple[Station, Station, LineString, float]]] = []
+    if is_circular:
+        round_trip_raw = find_round_trip_hikes(
+            trail, matched, MIN_STEP_DISTANCE_KM, MAX_STEP_DISTANCE_KM
+        )
+        logger.info("Found %d round-trip hikes", len(round_trip_raw))
+
     path_ref = str(trail_metadata["ref"])
     path_name = str(trail_metadata["name"])
     osm_relation_id = int(trail_metadata["osm_relation_id"])
@@ -227,6 +234,19 @@ def _process_route(
             osm_relation_id=osm_relation_id,
             route_type=route_type,
             is_circular=is_circular,
+            is_round_trip=False,
+            srtm_reader=srtm_reader,
+        )
+        hikes.append(hike)
+    for raw_steps in round_trip_raw:
+        hike = _build_hike(
+            raw_steps=raw_steps,
+            path_ref=path_ref,
+            path_name=path_name,
+            osm_relation_id=osm_relation_id,
+            is_grp=is_grp,
+            is_circular=is_circular,
+            is_round_trip=True,
             srtm_reader=srtm_reader,
         )
         hikes.append(hike)
@@ -262,6 +282,7 @@ def _build_hike(
     osm_relation_id: int,
     route_type: str,
     is_circular: bool,
+    is_round_trip: bool,
     srtm_reader: SrtmReader,
 ) -> Hike:
     """Build a Hike object from raw steps, computing elevation and exporting files."""
@@ -318,15 +339,20 @@ def _build_hike(
 
     difficulty = classify_difficulty(total_gain, total_loss, total_distance_km)
 
-    hike_slug = slugify(f"{path_ref} {first_start_station.name} to {last_end_station.name}")
-    hike_id = generate_hike_id(path_ref, first_start_station.name, last_end_station.name)
+    if is_round_trip:
+        hike_slug = slugify(f"{path_ref} {first_start_station.name} loop")
+        loop_end_key = f"{first_start_station.name}-loop"
+        hike_id = generate_hike_id(path_ref, first_start_station.name, loop_end_key)
+        hike_name = f"{path_ref}: {first_start_station.name} loop"
+    else:
+        hike_slug = slugify(f"{path_ref} {first_start_station.name} to {last_end_station.name}")
+        hike_id = generate_hike_id(path_ref, first_start_station.name, last_end_station.name)
+        hike_name = f"{path_ref}: {first_start_station.name} to {last_end_station.name}"
 
     gpx_path = f"gpx/{hike_id}.gpx"
     geojson_path = f"geojson/{hike_id}.json"
 
     combined_bounds = _compute_combined_bounds(geometries)
-
-    hike_name = f"{path_ref}: {first_start_station.name} to {last_end_station.name}"
 
     export_gpx(
         segments=geometries,
@@ -387,6 +413,7 @@ def _build_hike(
         last_updated=date.today().isoformat(),
         route_type=route_type,
         is_circular_trail=is_circular,
+        is_round_trip=is_round_trip,
     )
 
 

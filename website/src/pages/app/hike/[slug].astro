@@ -30,11 +30,14 @@ const stations = [
   hike.steps[hike.steps.length - 1].end_station,
 ];
 
-const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike.end_station.name} — ${hike.distance_km} km, ${hike.step_count} ${hike.step_count > 1 ? 'étapes' : 'étape'}, ${difficultyLabels[hike.difficulty] || hike.difficulty}`;
+const hikeTitle = hike.is_round_trip
+  ? t(locale, 'hike.loopFrom', { station: hike.start_station.name })
+  : `${hike.start_station.name} → ${hike.end_station.name}`;
+const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} km, ${hike.step_count} ${hike.step_count > 1 ? 'étapes' : 'étape'}, ${difficultyLabels[hike.difficulty] || hike.difficulty}`;
 ---
 
 <Base
-  title={`${hike.start_station.name} → ${hike.end_station.name} – open-rando`}
+  title={`${hikeTitle} – open-rando`}
   description={hikeDescription}
   ogType="article"
   locale={locale}
@@ -44,7 +47,7 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
     <div class="mt-4">
       <span class="text-xs font-semibold text-forest-700 dark:text-forest-400 uppercase tracking-wide">{hike.path_ref}</span>
       <h1 class="text-2xl font-bold mt-1">
-        {hike.start_station.name} &rarr; {hike.end_station.name}
+        {hikeTitle}
       </h1>
       <p class="text-stone-500 dark:text-stone-400 mt-1">{hike.path_name}</p>
     </div>
@@ -245,8 +248,9 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
       trailLayers.push(layer);
     });
 
+    const startColor = hike.is_round_trip ? colors.stationIntermediate : colors.stationStart;
     const startMarker = L.circleMarker([hike.start_station.lat, hike.start_station.lon], {
-      radius: 7, color: colors.stationStart, fillColor: colors.stationStart, fillOpacity: 0.9, weight: 2,
+      radius: 7, color: startColor, fillColor: startColor, fillOpacity: 0.9, weight: 2,
     }).bindTooltip(hike.start_station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
     trailLayers.push(startMarker);
 
@@ -260,10 +264,12 @@ const hikeDescription = `${hike.path_ref}: ${hike.start_station.name} → ${hike
       }
     }
 
-    const endMarker = L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
-      radius: 7, color: colors.stationEnd, fillColor: colors.stationEnd, fillOpacity: 0.9, weight: 2,
-    }).bindTooltip(hike.end_station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
-    trailLayers.push(endMarker);
+    if (!hike.is_round_trip) {
+      const endMarker = L.circleMarker([hike.end_station.lat, hike.end_station.lon], {
+        radius: 7, color: colors.stationEnd, fillColor: colors.stationEnd, fillOpacity: 0.9, weight: 2,
+      }).bindTooltip(hike.end_station.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(map);
+      trailLayers.push(endMarker);
+    }
 
     if (trailLayers.length > 0) {
       map.fitBounds(L.featureGroup(trailLayers).getBounds(), { padding: [40, 40] });

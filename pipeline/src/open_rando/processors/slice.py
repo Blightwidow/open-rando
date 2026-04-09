@@ -13,6 +13,7 @@ logger = logging.getLogger("open_rando")
 
 MINIMUM_SEGMENT_DISTANCE_KM = 0.5
 EARTH_RADIUS_METERS = 6_371_000
+MAX_CIRCULAR_ENDPOINT_GAP_KM = 1.0
 
 
 def _flatten_to_linestring(trail: LineString | MultiLineString) -> LineString:
@@ -77,6 +78,155 @@ def find_hikes(
         hikes.append(steps)
 
     return hikes
+
+
+def find_round_trip_hikes(
+    trail: LineString | MultiLineString,
+    matched_stations: list[tuple[Station, float]],
+    min_step_distance_km: float,
+    max_step_distance_km: float,
+) -> list[list[tuple[Station, Station, LineString, float]]]:
+    """Find the best round-trip (loop) hike on a circular trail.
+
+    Returns at most one hike — a list of steps where the last step's
+    end_station equals the first step's start_station.
+
+    The algorithm reuses the forward DAG from find_hikes() and adds exactly
+    one "wrap-around" edge (high-index station -> low-index station via the
+    closing segment of the circular trail) to form the loop.
+    """
+    flat_trail = _flatten_to_linestring(trail)
+    trail_length = flat_trail.length
+    station_count = len(matched_stations)
+
+    if station_count < 2:
+        return []
+
+    total_circumference_km = compute_segment_distance_km(flat_trail)
+
+    # Bail out if the trail endpoints are not physically close (not a real loop).
+    # Use haversine on the trail's first and last coordinate points.
+    trail_coords = list(flat_trail.coords)
+    trail_start_lon, trail_start_lat = trail_coords[0]
+    trail_end_lon, trail_end_lat = trail_coords[-1]
+    endpoint_gap_km = (
+        haversine_distance(trail_start_lat, trail_start_lon, trail_end_lat, trail_end_lon) / 1000.0
+    )
+    if endpoint_gap_km > MAX_CIRCULAR_ENDPOINT_GAP_KM:
+        return []
+
+    cumulative_km = _compute_cumulative_distances(flat_trail, matched_stations)
+    adjacency = _build_step_graph(
+        cumulative_km, station_count, min_step_distance_km, max_step_distance_km
+    )
+
+    # Find all valid wrap-around edges: (high_index, low_index, wrap_km)
+    wrap_edges: list[tuple[int, int, float]] = []
+    for high in range(1, station_count):
+        for low in range(high):
+            forward_between_km = cumulative_km[high] - cumulative_km[low]
+            wrap_km = total_circumference_km - forward_between_km
+            if min_step_distance_km <= wrap_km <= max_step_distance_km:
+                wrap_edges.append((high, low, wrap_km))
+
+    if not wrap_edges:
+        return []
+
+    # For each wrap edge, find the longest forward path from low to high
+    best_loop: tuple[list[int], float, float] | None = None  # (path, forward_km, wrap_km)
+
+    for high, low, wrap_km in wrap_edges:
+        # DP: longest forward path from `low` to each node in [low, high]
+        best_distance: dict[int, float] = {}
+        predecessor: dict[int, int | None] = {}
+        for index in range(low, high + 1):
+            best_distance[index] = float("-inf")
+            predecessor[index] = None
+        best_distance[low] = 0.0
+
+        for station in range(low, high + 1):
+            if best_distance[station] == float("-inf"):
+                continue
+            for neighbor in adjacency[station]:
+                if neighbor > high:
+                    break
+                candidate = best_distance[station] + (
+                    cumulative_km[neighbor] - cumulative_km[station]
+                )
+                if candidate > best_distance[neighbor]:
+                    best_distance[neighbor] = candidate
+                    predecessor[neighbor] = station
+
+        if best_distance[high] <= 0.0:
+            continue  # high is not reachable from low
+
+        forward_km = best_distance[high]
+
+        # Reconstruct the forward path
+        path: list[int] = []
+        current: int | None = high
+        while current is not None:
+            path.append(current)
+            current = predecessor[current]
+        path.reverse()
+
+        if len(path) < 2:
+            continue
+
+        total_km = forward_km + wrap_km
+        if best_loop is None or total_km > best_loop[1] + best_loop[2]:
+            best_loop = (path, forward_km, wrap_km)
+
+    if best_loop is None:
+        return []
+
+    path, _forward_km, wrap_km = best_loop
+
+    # Build forward steps
+    steps: list[tuple[Station, Station, LineString, float]] = []
+    for step_index in range(len(path) - 1):
+        source = path[step_index]
+        target = path[step_index + 1]
+        start_station = matched_stations[source][0]
+        end_station = matched_stations[target][0]
+        start_distance = matched_stations[source][1] * trail_length
+        end_distance = matched_stations[target][1] * trail_length
+        geometry = substring(flat_trail, start_distance, end_distance)
+        distance_km = round(cumulative_km[target] - cumulative_km[source], 1)
+        steps.append((start_station, end_station, geometry, distance_km))
+
+    # Build wrap-around step: high station -> trail end -> trail start -> low station
+    high_station_index = path[-1]
+    low_station_index = path[0]
+    high_position = matched_stations[high_station_index][1] * trail_length
+    low_position = matched_stations[low_station_index][1] * trail_length
+
+    segment_to_trail_end = substring(flat_trail, high_position, trail_length)
+    segment_from_trail_start = substring(flat_trail, 0, low_position)
+
+    wrap_coords = list(segment_to_trail_end.coords)
+    start_to_low_coords = list(segment_from_trail_start.coords)
+    if wrap_coords and start_to_low_coords:
+        if wrap_coords[-1] == start_to_low_coords[0]:
+            wrap_coords.extend(start_to_low_coords[1:])
+        else:
+            wrap_coords.extend(start_to_low_coords)
+
+    if len(wrap_coords) >= 2:
+        wrap_geometry: LineString = LineString(wrap_coords)
+    else:
+        wrap_geometry = segment_to_trail_end
+
+    steps.append(
+        (
+            matched_stations[high_station_index][0],
+            matched_stations[low_station_index][0],
+            wrap_geometry,
+            round(wrap_km, 1),
+        )
+    )
+
+    return [steps]
 
 
 def _compute_cumulative_distances(

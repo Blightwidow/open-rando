@@ -87,6 +87,7 @@ class Hike:
     last_updated: str
     route_type: str = "gr"
     is_circular_trail: bool = False
+    is_round_trip: bool = False
 
     @property
     def is_grp(self) -> bool:
@@ -123,6 +124,7 @@ class Hike:
             "route_type": self.route_type,
             "is_grp": self.is_grp,
             "is_circular_trail": self.is_circular_trail,
+            "is_round_trip": self.is_round_trip,
             "last_updated": self.last_updated,
         }
 

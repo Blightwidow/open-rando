@@ -76,9 +76,12 @@ const clientTranslations = getClientTranslations(locale);
       : '';
 
     const hikeUrl = locale === 'en' ? `/en/app/hike/${hike.slug}` : `/app/hike/${hike.slug}`;
+    const hikeLabel = hike.is_round_trip
+      ? `${hike.path_ref}: ${translations['hike.loop']} ${hike.start_station.name}`
+      : `${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}`;
 
     trailLayer.bindPopup(`
-      <strong><a href="${hikeUrl}">${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</a></strong><br>
+      <strong><a href="${hikeUrl}">${hikeLabel}</a></strong><br>
       ${stepInfo}${hike.distance_km} km &middot; ${duration}<br>
       <a href="/data/${hike.gpx_path}" download>${translations['map.downloadGpx']}</a>
     `);

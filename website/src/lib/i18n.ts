@@ -70,6 +70,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.difficult': 'Difficile',
     'difficulty.very_difficult': 'Très difficile',
 
+    // Hike types
+    'hike.loop': 'Boucle',
+    'hike.loopFrom': 'Boucle depuis {station}',
+
     // Steps
     'steps.label': '{count} étapes',
 
@@ -197,6 +201,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.difficult': 'Difficult',
     'difficulty.very_difficult': 'Very difficult',
 
+    // Hike types
+    'hike.loop': 'Loop',
+    'hike.loopFrom': 'Loop from {station}',
+
     // Steps
     'steps.label': '{count} steps',
 
@@ -292,6 +300,7 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
   const keys = [
     'hikes.count.zero', 'hikes.count.one', 'hikes.count.many',
     'map.downloadGpx', 'map.steps',
+    'hike.loop', 'hike.loopFrom',
     'filters.noResults', 'filters.resetFilters',
     'detail.loading',
     'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',

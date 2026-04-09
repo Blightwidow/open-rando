@@ -58,6 +58,7 @@ export interface Hike {
   route_type: 'gr' | 'grp' | 'pr';
   is_grp: boolean;
   is_circular_trail: boolean;
+  is_round_trip: boolean;
   last_updated: string;
 }
 
