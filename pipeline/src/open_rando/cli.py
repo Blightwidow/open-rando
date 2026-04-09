@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import time
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 from shapely.geometry import LineString, MultiLineString
 from shapely.ops import unary_union
@@ -65,6 +67,11 @@ def main() -> None:
         default="all",
         help="Which route types to discover and process (default: all).",
     )
+    parser.add_argument(
+        "--keep-existing",
+        action="store_true",
+        help="Load existing catalog and skip routes already present. New hikes are appended.",
+    )
     arguments = parser.parse_args()
 
     if arguments.type == "gr":
@@ -117,12 +124,34 @@ def main() -> None:
     successful_routes = 0
     failed_routes: list[str] = []
     catalog_path = str(Path(CATALOG_PATH).expanduser())
+
+    existing_hike_dicts: list[dict[str, Any]] = []
+    existing_relation_ids: set[int] = set()
+    if arguments.keep_existing and Path(catalog_path).exists():
+        with open(catalog_path, encoding="utf-8") as catalog_file:
+            existing_catalog = json.load(catalog_file)
+        existing_hike_dicts = existing_catalog.get("hikes", [])
+        existing_relation_ids = {int(hike["osm_relation_id"]) for hike in existing_hike_dicts}
+        logger.info(
+            "Loaded %d existing hikes from catalog (%d routes)",
+            len(existing_hike_dicts),
+            len(existing_relation_ids),
+        )
+
     previous_route_used_api = False
 
     for route_index, route in enumerate(routes):
         route_ref = str(route["ref"])
         route_relation_id = int(route["relation_id"])
         route_type = str(route["route_type"])
+
+        if route_relation_id in existing_relation_ids:
+            logger.info(
+                "  Skipping %s (relation %d) — already in catalog",
+                route_ref,
+                route_relation_id,
+            )
+            continue
 
         if route_index > 0 and previous_route_used_api:
             time.sleep(OVERPASS_COOLDOWN_SECONDS)
@@ -152,11 +181,16 @@ def main() -> None:
             failed_routes.append(route_ref)
             previous_route_used_api = True
 
-        export_catalog(all_hikes, catalog_path)
+        export_catalog(existing_hike_dicts + all_hikes, catalog_path)
 
     logger.info("=== Summary ===")
     logger.info("Routes processed: %d/%d", successful_routes, len(routes))
-    logger.info("Total hikes: %d", len(all_hikes))
+    logger.info(
+        "Total hikes: %d (%d existing + %d new)",
+        len(existing_hike_dicts) + len(all_hikes),
+        len(existing_hike_dicts),
+        len(all_hikes),
+    )
     logger.info("Catalog written to %s", catalog_path)
     if failed_routes:
         logger.warning("Failed routes: %s", ", ".join(failed_routes))
@@ -244,7 +278,7 @@ def _process_route(
             path_ref=path_ref,
             path_name=path_name,
             osm_relation_id=osm_relation_id,
-            is_grp=is_grp,
+            route_type=route_type,
             is_circular=is_circular,
             is_round_trip=True,
             srtm_reader=srtm_reader,
