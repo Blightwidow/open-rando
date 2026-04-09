@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "prebuild": "[ -f public/data/catalog.json ] || cp -r ~/.local/share/open-rando/data/ public/data/",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "bash deploy.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
