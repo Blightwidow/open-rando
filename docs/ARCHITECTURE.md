@@ -9,7 +9,7 @@ BUILD TIME                                    RUNTIME (static files)
 |                                         |   |                            |
 | Overpass API --+                        |   |  Leaflet Map + List/Filter |
 | OSM stations --+-> fetch -> match ->    |   |  Elevation Chart (SVG)     |
-| SRTM tiles ---+   step graph -> DFS ->  |   |         |                  |
+| SRTM tiles ---+   step graph -> DP ->   |   |  Section Hike Selector     |
 |                    elevation -> export  |   |    catalog.json            |
 |                      |                  |   |    /gpx/{id}.gpx           |
 |        ~/.local/share/open-rando/data/  |   |    /geojson/{id}.json      |
@@ -35,7 +35,7 @@ Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts
    3. **Match** stations to trail: find nearest point on trail with Shapely, keep if < 5km. For MultiLineString, compute global fractions across segments.
    4. **Order** matched stations by position along the trail (linear referencing)
    5. **Build step graph**: compute cumulative distances, create edges between station pairs 8-18km apart
-   6. **Find hikes**: DFS for all maximal chains through the step graph, deduplicate sub-paths
+   6. **Find hikes**: longest-path DP per connected component of the step graph (one optimal hike per trail section)
    7. **Elevation** via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold
    8. **Compute** duration per segment: 4 km/h flat, 300m/h ascent and 450m/h descent on slopes >= 10%
    9. **Classify** difficulty based on elevation gain per km and total gain (easy/moderate/difficult/very_difficult)
@@ -116,7 +116,7 @@ open-rando/
 |       |   +-- srtm.py        # SRTM .hgt tile downloader + bilinear interpolation
 |       +-- processors/
 |       |   +-- match.py       # station-to-trail matching (LineString + MultiLineString)
-|       |   +-- slice.py       # step graph + DFS hike finder
+|       |   +-- slice.py       # step graph + longest-path DP hike finder
 |       |   +-- elevation.py   # elevation profiling, duration, difficulty
 |       +-- exporters/
 |           +-- gpx.py         # GPX writer (multi-segment tracks with elevation)
@@ -140,7 +140,7 @@ open-rando/
 |   |   |   +-- HikeList.astro          # grid + empty state
 |   |   |   +-- HikeCard.astro          # clickable card with D+/difficulty
 |   |   |   +-- HikeFilters.astro       # range sliders, URL sync, collapsible mobile
-|   |   |   +-- ElevationChart.astro    # inline SVG elevation profile + timeline
+|   |   |   +-- ElevationChart.astro    # inline SVG elevation profile + timeline + section highlighting
 |   |   +-- lib/
 |   |       +-- catalog.ts              # types + data loading
 |   |       +-- i18n.ts                 # translation dictionary (FR/EN) + helpers

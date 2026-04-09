@@ -47,6 +47,6 @@ cd website && bun install && bun run dev
 
 See `docs/ROADMAP.md` for phased plan, `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks.
 
-Pipeline flow: discover routes (Overpass `ref~^GR`) -> for each route: fetch trail (superroute recursion, cached) -> fetch stations (bbox splitting for large trails) -> match (stations to trail, MultiLineString support) -> build step graph (8-18km edges) -> DFS maximal hikes -> elevation (SRTM sampling every 50m) -> duration (4km/h flat, 300m/h up, 450m/h down on >= 10% slopes) -> export (GPX with elevation + GeoJSON + elevation profiles) -> final catalog.json with all routes
+Pipeline flow: discover routes (Overpass `ref~^GR`) -> for each route: fetch trail (superroute recursion, cached) -> fetch stations (bbox splitting for large trails) -> match (stations to trail, MultiLineString support) -> build step graph (8-18km edges) -> longest-path DP per connected component -> elevation (SRTM sampling every 50m) -> duration (4km/h flat, 300m/h up, 450m/h down on >= 10% slopes) -> export (GPX with elevation + GeoJSON + elevation profiles) -> final catalog.json with all routes
 
-Website consumes `data/catalog.json` and serves GPX/GeoJSON/elevation profiles as static files. Hikes have 1+ steps, each between two train stations. Detail pages show an interactive SVG elevation chart with timeline.
+Website consumes `data/catalog.json` and serves GPX/GeoJSON/elevation profiles as static files. Hikes have 1+ steps, each between two train stations. Detail pages show an interactive SVG elevation chart with timeline and a section selector (for multi-step hikes) that lets users pick a sub-range of steps with reactive stats, map highlighting, elevation overlay, and section GPX download.
