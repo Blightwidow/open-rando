@@ -30,8 +30,9 @@ from open_rando.exporters.gpx import export_gpx
 from open_rando.fetchers.accommodation import fetch_accommodation
 from open_rando.fetchers.discovery import discover_gr_routes
 from open_rando.fetchers.overpass import fetch_trail
+from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
 from open_rando.fetchers.srtm import SrtmReader
-from open_rando.fetchers.stations import fetch_stations
+from open_rando.fetchers.stations import fetch_stations, filter_stations_by_sncf
 from open_rando.models import Hike, HikeStep, Station, generate_hike_id, slugify
 from open_rando.processors.elevation import (
     classify_difficulty,
@@ -90,6 +91,11 @@ def main() -> None:
         base_url=SRTM_BASE_URL,
     )
 
+    sncf_records = fetch_sncf_stations()
+    sncf_codes = build_sncf_code_set(sncf_records)
+    if sncf_codes:
+        logger.info("Loaded %d SNCF station codes for filtering", len(sncf_codes))
+
     # Cross-route station accommodation registry
     accommodation_registry: dict[str, Station] = {}
 
@@ -121,6 +127,7 @@ def main() -> None:
                 is_grp=is_grp,
                 srtm_reader=srtm_reader,
                 accommodation_registry=accommodation_registry,
+                sncf_codes=sncf_codes,
             )
             all_hikes.extend(hikes)
             successful_routes += 1
@@ -146,6 +153,7 @@ def _process_route(
     is_grp: bool,
     srtm_reader: SrtmReader,
     accommodation_registry: dict[str, Station],
+    sncf_codes: set[str],
 ) -> tuple[list[Hike], bool]:
     """Process a single GR route end-to-end and return generated hikes."""
     trail, trail_metadata, trail_cached = fetch_trail(relation_id)
@@ -154,6 +162,9 @@ def _process_route(
         time.sleep(OVERPASS_COOLDOWN_SECONDS)
 
     stations, stations_cached = fetch_stations(trail)
+
+    if sncf_codes:
+        stations = filter_stations_by_sncf(stations, sncf_codes)
 
     matched = match_stations_to_trail(stations, trail, MAX_STATION_DISTANCE_METERS)
     all_cached = trail_cached and stations_cached

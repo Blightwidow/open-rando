@@ -26,3 +26,7 @@ SRTM_CACHE_DIRECTORY = "~/.cache/open-rando/srtm"
 SRTM_BASE_URL = "https://elevation-tiles-prod.s3.amazonaws.com/skadi"
 ELEVATION_SAMPLE_INTERVAL_METERS = 50
 ELEVATION_DIRECTORY = "~/.local/share/open-rando/data/elevation"
+
+SNCF_STATIONS_URL = "https://ressources.data.sncf.com/api/explore/v2.1/catalog/datasets/gares-de-voyageurs/exports/json?limit=-1"
+SNCF_CACHE_DIRECTORY = "~/.cache/open-rando/sncf"
+SNCF_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days

@@ -113,6 +113,26 @@ def _fetch_stations_chunked(trail: LineString | MultiLineString) -> tuple[list[S
     return all_stations, all_cached
 
 
+def filter_stations_by_sncf(
+    stations: list[Station],
+    sncf_codes: set[str],
+) -> list[Station]:
+    """Keep only stations whose code appears in the SNCF dataset."""
+    filtered = [station for station in stations if station.code in sncf_codes]
+    dropped_count = len(stations) - len(filtered)
+    if dropped_count > 0:
+        dropped = [station for station in stations if station.code not in sncf_codes]
+        for station in dropped:
+            logger.debug("Dropped non-SNCF station: %s (code=%s)", station.name, station.code)
+        logger.info(
+            "Filtered %d OSM stations to %d SNCF-verified (dropped %d)",
+            len(stations),
+            len(filtered),
+            dropped_count,
+        )
+    return filtered
+
+
 def _coords_bounds(
     coords: list[tuple[float, float]],
 ) -> tuple[float, float, float, float]:
@@ -145,7 +165,12 @@ def _parse_station_elements(data: dict) -> list[Station]:  # type: ignore[type-a
             logger.debug("Skipping lifecycle-prefixed station: %s", name)
             continue
 
-        code = tags.get("ref:SNCF") or tags.get("uic_ref") or str(element["id"])
+        code = (
+            tags.get("ref:SNCF")
+            or tags.get("railway:ref")
+            or tags.get("uic_ref")
+            or str(element["id"])
+        )
 
         transit_lines_raw = tags.get("line", "")
         transit_lines = (
