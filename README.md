@@ -94,7 +94,7 @@ open-rando/
       components/      HikeMap, HikeCard, HikeFilters, HikeList
       lib/catalog.ts   TypeScript types + data loading
   data/               Pipeline output (gitignored)
-  docs/               Architecture, data sources, roadmap
+  docs/               Architecture, data sources, deployment
 ```
 
 ## Stack
@@ -127,5 +127,7 @@ uv run mypy src/
 ```
 
 ## License
+
+Code and website: [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 Data: [ODbL](https://opendatacommons.org/licenses/odbl/) (OpenStreetMap)

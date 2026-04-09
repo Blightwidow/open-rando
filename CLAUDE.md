@@ -45,7 +45,7 @@ cd website && bun install && bun run dev
 
 ## Architecture
 
-See `docs/ROADMAP.md` for phased plan, `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks.
+See `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks, `docs/DEPLOYMENT.md` for GitHub Pages deployment.
 
 Pipeline flow: discover routes (Overpass `ref~^GR`) -> for each route: fetch trail (superroute recursion, cached) -> fetch stations (bbox splitting for large trails) -> match (stations to trail, MultiLineString support) -> build step graph (8-18km edges) -> longest-path DP per connected component -> elevation (SRTM sampling every 50m) -> duration (4km/h flat, 300m/h up, 450m/h down on >= 10% slopes) -> export (GPX with elevation + GeoJSON + elevation profiles) -> final catalog.json with all routes
 
