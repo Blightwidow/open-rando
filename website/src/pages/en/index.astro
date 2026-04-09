@@ -1,12 +1,12 @@
 ---
-import Base from '../layouts/Base.astro';
-import HikeMap from '../components/HikeMap.astro';
-import HikeFilters from '../components/HikeFilters.astro';
-import HikeList from '../components/HikeList.astro';
-import { getAllHikes } from '../lib/catalog';
-import { t, formatHikeCount } from '../lib/i18n';
+import Base from '../../layouts/Base.astro';
+import HikeMap from '../../components/HikeMap.astro';
+import HikeFilters from '../../components/HikeFilters.astro';
+import HikeList from '../../components/HikeList.astro';
+import { getAllHikes } from '../../lib/catalog';
+import { t, formatHikeCount } from '../../lib/i18n';
 
-const locale = 'fr';
+const locale = 'en';
 const hikes = getAllHikes();
 ---
 

@@ -1,19 +1,58 @@
 ---
+import type { Locale } from '../lib/i18n';
+import { t, getAlternateUrl } from '../lib/i18n';
+
 interface Props {
   title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogType?: 'website' | 'article';
+  locale?: Locale;
 }
 
-const { title = 'open-rando' } = Astro.props;
+const {
+  title = 'open-rando',
+  description,
+  canonicalUrl,
+  ogType = 'website',
+  locale = 'fr',
+} = Astro.props;
+
+const siteUrl = 'https://rando.dammaretz.fr';
+const resolvedDescription = description || t(locale, 'site.description');
+const resolvedCanonical = canonicalUrl || new URL(Astro.url.pathname, siteUrl).href;
+const alternateLocale = locale === 'fr' ? 'en' : 'fr';
+const alternateUrl = new URL(getAlternateUrl(Astro.url, alternateLocale), siteUrl).href;
+const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
-    <meta name="description" content="Randonnees entre gares sur les sentiers GR" />
+    <meta name="description" content={resolvedDescription} />
+    <meta name="theme-color" content="#2d6a4f" />
     <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="canonical" href={resolvedCanonical} />
+    <link rel="alternate" hreflang={locale} href={resolvedCanonical} />
+    <link rel="alternate" hreflang={alternateLocale} href={alternateUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={resolvedDescription} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:image" content={`${siteUrl}/logo.jpg`} />
+    <meta property="og:site_name" content="open-rando" />
+    <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_GB'} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={resolvedDescription} />
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script is:inline>
       (function () {
@@ -26,19 +65,35 @@ const { title = 'open-rando' } = Astro.props;
     </script>
   </head>
   <body class="bg-stone-50 text-stone-900 dark:bg-neutral-900 dark:text-stone-100 min-h-screen transition-colors">
-    <button
-      id="theme-toggle"
-      aria-label="Basculer theme sombre"
-      class="fixed top-4 right-4 z-50 p-2 rounded-full bg-stone-200 dark:bg-neutral-700 text-stone-700 dark:text-stone-200 hover:bg-stone-300 dark:hover:bg-neutral-600 transition-colors shadow-md"
-    >
-      <svg id="theme-icon-sun" class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="5" />
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-      </svg>
-      <svg id="theme-icon-moon" class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-      </svg>
-    </button>
+    <nav class="sticky top-0 z-50 bg-stone-50/95 dark:bg-neutral-900/95 backdrop-blur border-b border-stone-200 dark:border-neutral-700">
+      <div class="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
+        <a href={locale === 'en' ? '/en/' : '/'} class="flex items-center gap-2">
+          <img src="/logo.jpg" alt="open-rando" class="w-7 h-7 rounded" />
+          <span class="font-bold text-sm">open-rando</span>
+        </a>
+        <div class="flex items-center gap-2">
+          <a
+            href={languageSwitchPath}
+            class="text-xs font-medium px-2 py-1 rounded bg-stone-200 dark:bg-neutral-700 text-stone-700 dark:text-stone-200 hover:bg-stone-300 dark:hover:bg-neutral-600 transition-colors"
+          >
+            {t(locale, 'nav.language')}
+          </a>
+          <button
+            id="theme-toggle"
+            aria-label={t(locale, 'theme.toggle')}
+            class="p-2 rounded-full bg-stone-200 dark:bg-neutral-700 text-stone-700 dark:text-stone-200 hover:bg-stone-300 dark:hover:bg-neutral-600 transition-colors"
+          >
+            <svg id="theme-icon-sun" class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg id="theme-icon-moon" class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
     <slot />
   </body>
 </html>
@@ -96,5 +151,14 @@ const { title = 'open-rando' } = Astro.props;
   }
   .dark .leaflet-tooltip::before {
     border-top-color: #262626;
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid #2d6a4f;
+    outline-offset: 2px;
+  }
+  .dark *:focus-visible {
+    outline-color: #52b788;
   }
 </style>

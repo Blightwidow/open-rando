@@ -53,12 +53,14 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [x] Circular trail detection
 - [x] `is_grp` and `is_circular_trail` metadata fields
 
-### Phase 4 -- Polished Website
+### Phase 4 -- Polished Website ✓
 
-- [ ] Responsive mobile layout
-- [ ] URL-based filter state (shareable links)
-- [ ] CI/CD: GitHub Actions -> GitHub Pages
-- [ ] SEO meta tags
+- [x] Responsive mobile layout
+- [x] URL-based filter state (shareable links)
+- [x] CI/CD: GitHub Actions -> GitHub Pages
+- [x] SEO meta tags
+- [x] Refined UI
+- [x] I18N with english
 
 ### Phase 5 -- Stretch Goals
 
@@ -67,4 +69,3 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [ ] SNCF timetable links per station
 - [ ] PR (Promenade et Randonnée) paths
 - [ ] PWA / offline GPX
-- [ ] i18n (FR primary, EN secondary)

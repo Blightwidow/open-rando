@@ -19,14 +19,19 @@ BATCH_SIZE = 15
 DELAY_BETWEEN_BATCHES_SECONDS = 5
 
 
-def fetch_accommodation(stations: list[Station]) -> None:
-    """Fetch accommodation near each station and mutate their accommodation field."""
-    if not stations:
-        return
+def fetch_accommodation(stations: list[Station]) -> bool:
+    """Fetch accommodation near each station and mutate their accommodation field.
 
+    Returns True if all Overpass queries were served from cache.
+    """
+    if not stations:
+        return True
+
+    all_cached = True
+    previous_was_cached = True
     total_batches = (len(stations) + BATCH_SIZE - 1) // BATCH_SIZE
     for batch_index, batch_start in enumerate(range(0, len(stations), BATCH_SIZE)):
-        if batch_index > 0:
+        if batch_index > 0 and not previous_was_cached:
             logger.info(
                 "Waiting %ds before next batch (%d/%d)...",
                 DELAY_BETWEEN_BATCHES_SECONDS,
@@ -35,7 +40,10 @@ def fetch_accommodation(stations: list[Station]) -> None:
             )
             time.sleep(DELAY_BETWEEN_BATCHES_SECONDS)
         batch = stations[batch_start : batch_start + BATCH_SIZE]
-        _fetch_accommodation_batch(batch)
+        cache_hit = _fetch_accommodation_batch(batch)
+        previous_was_cached = cache_hit
+        if not cache_hit:
+            all_cached = False
 
     stations_with_hotel = sum(1 for station in stations if station.accommodation.has_hotel)
     stations_with_camping = sum(1 for station in stations if station.accommodation.has_camping)
@@ -46,10 +54,14 @@ def fetch_accommodation(stations: list[Station]) -> None:
         stations_with_camping,
         len(stations),
     )
+    return all_cached
 
 
-def _fetch_accommodation_batch(stations: list[Station]) -> None:
-    """Fetch accommodation for a batch of stations in a single Overpass query."""
+def _fetch_accommodation_batch(stations: list[Station]) -> bool:
+    """Fetch accommodation for a batch of stations in a single Overpass query.
+
+    Returns True if the Overpass query was served from cache.
+    """
     around_clauses: list[str] = []
     for station in stations:
         around = f"around:{ACCOMMODATION_SEARCH_RADIUS_METERS},{station.lat},{station.lon}"
@@ -64,7 +76,7 @@ def _fetch_accommodation_batch(stations: list[Station]) -> None:
 );
 out center;
 """
-    data = query_overpass(query)
+    data, cache_hit = query_overpass(query)
 
     for element in data.get("elements", []):
         tags = element.get("tags", {})
@@ -93,3 +105,5 @@ out center;
                 station.accommodation.has_hotel = True
             elif tourism_tag in CAMPING_TAGS:
                 station.accommodation.has_camping = True
+
+    return cache_hit

@@ -1,9 +1,13 @@
 ---
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/i18n';
+
 interface Props {
   hikeId: string;
+  locale?: Locale;
 }
 
-const { hikeId } = Astro.props;
+const { hikeId, locale = 'fr' } = Astro.props;
 ---
 
 <div
@@ -11,10 +15,10 @@ const { hikeId } = Astro.props;
   class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5"
   data-hike-id={hikeId}
 >
-  <h2 class="text-lg font-semibold mb-3">Profil altimetrique</h2>
+  <h2 class="text-lg font-semibold mb-3">{t(locale, 'detail.elevationProfile')}</h2>
   <div id="elevation-chart-container" class="relative" style="height: 240px;">
     <div id="elevation-loading" class="flex items-center justify-center h-full text-sm text-stone-400">
-      Chargement...
+      {t(locale, 'detail.loading')}
     </div>
   </div>
 </div>
@@ -64,7 +68,7 @@ const { hikeId } = Astro.props;
     const paddingLeft = 50;
     const paddingRight = 10;
     const paddingTop = 15;
-    const paddingBottom = 50; // extra space for timeline
+    const paddingBottom = 50;
     const chartWidth = viewWidth - paddingLeft - paddingRight;
     const chartHeight = viewHeight - paddingTop - paddingBottom;
 
@@ -82,7 +86,6 @@ const { hikeId } = Astro.props;
       return paddingTop + chartHeight - ((elevation - minElevation) / elevationRange) * chartHeight;
     }
 
-    // Build SVG path for the elevation line
     const lineParts: string[] = [];
     for (let index = 0; index < distances_km.length; index++) {
       const x = scaleX(distances_km[index]);
@@ -91,10 +94,8 @@ const { hikeId } = Astro.props;
     }
     const linePath = lineParts.join(' ');
 
-    // Build filled area path
     const areaPath = `${linePath} L${scaleX(maxDistance).toFixed(1)},${scaleY(minElevation).toFixed(1)} L${scaleX(0).toFixed(1)},${scaleY(minElevation).toFixed(1)} Z`;
 
-    // Elevation grid lines
     const gridLines: string[] = [];
     const gridLabels: string[] = [];
     const gridStep = elevationRange <= 200 ? 50 : elevationRange <= 500 ? 100 : 200;
@@ -104,7 +105,6 @@ const { hikeId } = Astro.props;
       gridLabels.push(`<text x="${paddingLeft - 5}" y="${y.toFixed(1)}" text-anchor="end" dominant-baseline="middle" class="fill-stone-400 dark:fill-stone-500" style="font-size: 10px;">${elevation}m</text>`);
     }
 
-    // Distance labels on x-axis (first row below chart)
     const distanceLabels: string[] = [];
     const distanceLabelStep = maxDistance <= 15 ? 5 : maxDistance <= 30 ? 10 : 20;
     for (let distance = 0; distance <= maxDistance; distance += distanceLabelStep) {
@@ -112,15 +112,12 @@ const { hikeId } = Astro.props;
       distanceLabels.push(`<text x="${x.toFixed(1)}" y="${paddingTop + chartHeight + 15}" text-anchor="middle" class="fill-stone-400 dark:fill-stone-500" style="font-size: 10px;">${distance}km</text>`);
     }
 
-    // Timeline labels on x-axis (second row below distance)
     const timelineLabels: string[] = [];
     const timelineTicks: string[] = [];
     const timelineY = paddingTop + chartHeight + 30;
 
-    // Place time labels at regular time intervals
     const timeLabelStepMin = totalTimeMin <= 120 ? 30 : totalTimeMin <= 360 ? 60 : 120;
     for (let timeMin = 0; timeMin <= totalTimeMin; timeMin += timeLabelStepMin) {
-      // Find the distance corresponding to this time by interpolation
       let distanceAtTime = 0;
       for (let index = 1; index < times_min.length; index++) {
         if (times_min[index] >= timeMin) {
@@ -137,23 +134,20 @@ const { hikeId } = Astro.props;
       timelineTicks.push(`<line x1="${x.toFixed(1)}" y1="${timelineY - 4}" x2="${x.toFixed(1)}" y2="${timelineY + 4}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1" />`);
       timelineLabels.push(`<text x="${x.toFixed(1)}" y="${timelineY + 14}" text-anchor="middle" class="fill-stone-500 dark:fill-stone-400" style="font-size: 10px; font-weight: 500;">${formatTime(timeMin)}</text>`);
     }
-    // Timeline baseline
     const timelineBaseline = `<line x1="${paddingLeft}" y1="${timelineY}" x2="${viewWidth - paddingRight}" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.2" stroke-width="1" />`;
 
-    // Step boundary lines
     const boundaryLines: string[] = [];
     for (const boundary of step_boundaries_km) {
       const x = scaleX(boundary);
       boundaryLines.push(`<line x1="${x.toFixed(1)}" y1="${paddingTop}" x2="${x.toFixed(1)}" y2="${paddingTop + chartHeight}" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="6 3" stroke-width="1.5" />`);
     }
 
-    // Tooltip elements
     const tooltipGroup = `<line id="tooltip-line" x1="0" y1="${paddingTop}" x2="0" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.4" style="display: none;" />
     <circle id="tooltip-dot" r="4" fill="var(--color-trail, #2d6a4f)" style="display: none;" />
     <rect id="tooltip-bg" rx="3" ry="3" class="fill-white dark:fill-neutral-700" stroke="currentColor" stroke-opacity="0.2" style="display: none;" />
     <text id="tooltip-text" text-anchor="middle" class="fill-stone-700 dark:fill-stone-200" style="font-size: 11px; display: none;"></text>`;
 
-    const svg = `<svg viewBox="0 0 ${viewWidth} ${viewHeight}" preserveAspectRatio="xMidYMid meet" class="w-full h-full" style="overflow: visible;">
+    const svg = `<svg viewBox="0 0 ${viewWidth} ${viewHeight}" preserveAspectRatio="xMidYMid meet" class="w-full h-full" style="overflow: visible; touch-action: none;">
       ${gridLines.join('\n')}
       ${gridLabels.join('\n')}
       ${distanceLabels.join('\n')}
@@ -169,17 +163,16 @@ const { hikeId } = Astro.props;
 
     container.innerHTML = svg;
 
-    // Tooltip interactivity
     const overlay = document.getElementById('tooltip-overlay')!;
     const tooltipLine = document.getElementById('tooltip-line')!;
     const tooltipDot = document.getElementById('tooltip-dot')!;
     const tooltipBg = document.getElementById('tooltip-bg')!;
     const tooltipTextElement = document.getElementById('tooltip-text')!;
 
-    function showTooltip(event: MouseEvent) {
+    function showTooltipAtClientX(clientX: number) {
       const svgElement = container.querySelector('svg')!;
       const rect = svgElement.getBoundingClientRect();
-      const mouseX = ((event.clientX - rect.left) / rect.width) * viewWidth;
+      const mouseX = ((clientX - rect.left) / rect.width) * viewWidth;
       const distance = ((mouseX - paddingLeft) / chartWidth) * maxDistance;
 
       if (distance < 0 || distance > maxDistance) {
@@ -187,7 +180,6 @@ const { hikeId } = Astro.props;
         return;
       }
 
-      // Find closest data point
       let closestIndex = 0;
       let closestDelta = Infinity;
       for (let index = 0; index < distances_km.length; index++) {
@@ -232,8 +224,18 @@ const { hikeId } = Astro.props;
       tooltipTextElement.style.display = 'none';
     }
 
-    overlay.addEventListener('mousemove', showTooltip);
+    // Mouse events
+    overlay.addEventListener('mousemove', (event: MouseEvent) => showTooltipAtClientX(event.clientX));
     overlay.addEventListener('mouseleave', hideTooltip);
+
+    // Touch events
+    overlay.addEventListener('touchmove', (event: TouchEvent) => {
+      event.preventDefault();
+      if (event.touches.length > 0) {
+        showTooltipAtClientX(event.touches[0].clientX);
+      }
+    });
+    overlay.addEventListener('touchend', hideTooltip);
   }
 
   loadAndRender();

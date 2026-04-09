@@ -1,21 +1,32 @@
 ---
 import type { Hike } from '../lib/catalog';
-import { formatDuration } from '../lib/catalog';
+import type { Locale } from '../lib/i18n';
+import { getClientTranslations } from '../lib/i18n';
 
 interface Props {
   hikes: Hike[];
+  locale?: Locale;
 }
 
-const { hikes } = Astro.props;
+const { hikes, locale = 'fr' } = Astro.props;
+const clientTranslations = getClientTranslations(locale);
 ---
 
-<div id="hike-map" class="h-[70vh] w-full rounded-lg border border-stone-200 dark:border-neutral-700" data-hikes={JSON.stringify(hikes)}></div>
+<div
+  id="hike-map"
+  class="h-[40vh] sm:h-[50vh] md:h-[70vh] w-full rounded-lg border border-stone-200 dark:border-neutral-700"
+  data-hikes={JSON.stringify(hikes)}
+  data-translations={JSON.stringify(clientTranslations)}
+  data-locale={locale}
+></div>
 
 <script>
   import L from 'leaflet';
 
   const mapElement = document.getElementById('hike-map')!;
   const hikes = JSON.parse(mapElement.dataset.hikes!);
+  const translations = JSON.parse(mapElement.dataset.translations!);
+  const locale = mapElement.dataset.locale || 'fr';
 
   const map = L.map('hike-map').setView([47.5, 3.0], 8);
 
@@ -61,13 +72,15 @@ const { hikes } = Astro.props;
       : `${minutes}min`;
 
     const stepInfo = hike.step_count > 1
-      ? `${hike.step_count} etapes &middot; `
+      ? `${hike.step_count} ${translations['map.steps']} &middot; `
       : '';
 
+    const hikeUrl = locale === 'en' ? `/en/hike/${hike.slug}` : `/hike/${hike.slug}`;
+
     trailLayer.bindPopup(`
-      <strong>${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</strong><br>
+      <strong><a href="${hikeUrl}">${hike.path_ref}: ${hike.start_station.name} &rarr; ${hike.end_station.name}</a></strong><br>
       ${stepInfo}${hike.distance_km} km &middot; ${duration}<br>
-      <a href="/data/${hike.gpx_path}" download>Telecharger GPX</a>
+      <a href="/data/${hike.gpx_path}" download>${translations['map.downloadGpx']}</a>
     `);
 
     group.addLayer(trailLayer);
