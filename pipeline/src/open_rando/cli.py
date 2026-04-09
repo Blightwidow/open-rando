@@ -13,6 +13,7 @@ from shapely.ops import unary_union
 
 from open_rando.config import (
     CATALOG_PATH,
+    CONNECTOR_SKIP_THRESHOLD_METERS,
     ELEVATION_DIRECTORY,
     ELEVATION_SAMPLE_INTERVAL_METERS,
     GEOJSON_DIRECTORY,
@@ -36,13 +37,14 @@ from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
 from open_rando.fetchers.srtm import SrtmReader
 from open_rando.fetchers.stations import fetch_stations, filter_stations_by_sncf
 from open_rando.models import Hike, HikeStep, Station, generate_hike_id, slugify
+from open_rando.processors.connectors import attach_connectors
 from open_rando.processors.elevation import (
     classify_difficulty,
     compute_elevation_profile,
     elevations_for_geometry,
     estimate_duration,
 )
-from open_rando.processors.match import match_stations_to_trail
+from open_rando.processors.match import MatchedStation, match_stations_to_trail
 from open_rando.processors.slice import find_hikes, find_round_trip_hikes
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -222,7 +224,7 @@ def _process_route(
         return [], all_cached
 
     # Cross-route station dedup: skip accommodation fetch for already-enriched stations
-    matched_stations = [station for station, _fraction in matched]
+    matched_stations = [station for station, _fraction, _junction in matched]
     stations_needing_accommodation = [
         station for station in matched_stations if station.code not in accommodation_registry
     ]
@@ -263,6 +265,7 @@ def _process_route(
     for raw_steps in raw_hikes:
         hike = _build_hike(
             raw_steps=raw_steps,
+            matched_stations=matched,
             path_ref=path_ref,
             path_name=path_name,
             osm_relation_id=osm_relation_id,
@@ -275,6 +278,7 @@ def _process_route(
     for raw_steps in round_trip_raw:
         hike = _build_hike(
             raw_steps=raw_steps,
+            matched_stations=matched,
             path_ref=path_ref,
             path_name=path_name,
             osm_relation_id=osm_relation_id,
@@ -311,6 +315,7 @@ def _detect_circular_trail(trail: LineString | MultiLineString) -> bool:
 
 def _build_hike(
     raw_steps: list[tuple[Station, Station, LineString, float]],
+    matched_stations: list[MatchedStation],
     path_ref: str,
     path_name: str,
     osm_relation_id: int,
@@ -320,8 +325,12 @@ def _build_hike(
     srtm_reader: SrtmReader,
 ) -> Hike:
     """Build a Hike object from raw steps, computing elevation and exporting files."""
-    first_start_station = raw_steps[0][0]
-    last_end_station = raw_steps[-1][1]
+    enriched_steps, _connectors_cached = attach_connectors(
+        raw_steps, matched_stations, CONNECTOR_SKIP_THRESHOLD_METERS
+    )
+
+    first_start_station = enriched_steps[0][0]
+    last_end_station = enriched_steps[-1][1]
 
     steps: list[HikeStep] = []
     geometries: list[LineString] = []
@@ -333,7 +342,7 @@ def _build_hike(
     overall_max_elevation = 0
     overall_min_elevation = 99999
 
-    for start_station, end_station, geometry, distance_km in raw_steps:
+    for start_station, end_station, geometry, distance_km in enriched_steps:
         profile = compute_elevation_profile(geometry, srtm_reader, ELEVATION_SAMPLE_INTERVAL_METERS)
         step_profiles.append(profile)
 

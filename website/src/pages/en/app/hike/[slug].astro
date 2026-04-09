@@ -79,7 +79,17 @@ const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} 
           {hike.difficulty !== 'unknown' && (
             <>
               <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.difficulty')}</dt>
-              <dd class="font-medium">{difficultyLabels[hike.difficulty] || hike.difficulty}</dd>
+              <dd>
+                <span class:list={[
+                  "text-xs px-2 py-0.5 rounded-full",
+                  hike.difficulty === 'easy' ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" :
+                  hike.difficulty === 'moderate' ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300" :
+                  hike.difficulty === 'difficult' ? "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300" :
+                  "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                ]}>
+                  {difficultyLabels[hike.difficulty] || hike.difficulty}
+                </span>
+              </dd>
             </>
           )}
         </dl>
@@ -88,6 +98,7 @@ const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} 
           download
           class="inline-flex items-center gap-1 text-sm text-forest-700 hover:text-forest-900 dark:text-forest-400 dark:hover:text-forest-300 font-medium mt-2"
         >
+          <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           {t(locale, 'detail.downloadGpx')}
         </a>
       </div>
@@ -164,6 +175,7 @@ const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} 
             <div><dt class="inline text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}: </dt><dd class="inline font-medium" id="section-elevation"></dd></div>
           </dl>
           <a id="section-gpx-download" download class="inline-flex items-center gap-1 text-sm text-forest-700 hover:text-forest-900 dark:text-forest-400 dark:hover:text-forest-300 font-medium mt-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
             {t(locale, 'detail.sectionDownloadGpx')}
           </a>
         </div>
