@@ -163,17 +163,17 @@ const stations = [
 
   const ignAttribution = '&copy; <a href="https://www.ign.fr/">IGN</a>';
 
-  const planIgnLayer = L.tileLayer(
-    'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
-    { attribution: ignAttribution, maxZoom: 18 },
-  ).addTo(map);
-
   const openTopoLayer = L.tileLayer(
     'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     { attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> &middot; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 17 },
+  ).addTo(map);
+
+  const planIgnLayer = L.tileLayer(
+    'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+    { attribution: ignAttribution, maxZoom: 18 },
   );
 
-  L.control.layers({ 'Plan IGN': planIgnLayer, 'OpenTopoMap': openTopoLayer }).addTo(map);
+  L.control.layers({ 'OpenTopoMap': openTopoLayer, 'Plan IGN': planIgnLayer }).addTo(map);
 
   const lightStepColors = ['#2d6a4f', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
   const darkStepColors = ['#52b788', '#a78bfa', '#f472b6', '#fb923c', '#4ade80', '#22d3ee'];
