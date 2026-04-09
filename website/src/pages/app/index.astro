@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import HikeMap from '../../components/HikeMap.astro';
 import HikeFilters from '../../components/HikeFilters.astro';
 import HikeSuggest from '../../components/HikeSuggest.astro';
 import HikeList from '../../components/HikeList.astro';
@@ -16,19 +15,19 @@ const hikes = getAllHikes();
   description={t(locale, 'site.description')}
   locale={locale}
 >
-  <header class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
-    <h1 class="text-2xl sm:text-3xl font-bold">{t(locale, 'site.subtitle')}</h1>
-  </header>
-  <main class="max-w-6xl mx-auto px-4 pb-12 space-y-6 sm:space-y-8">
-    <HikeMap hikes={hikes} locale={locale} />
-    <HikeSuggest hikes={hikes} locale={locale} />
-    <HikeFilters hikes={hikes} locale={locale} />
-    <section>
-      <h2 class="text-xl font-semibold mb-4" id="hike-count">{formatHikeCount(locale, hikes.length)}</h2>
-      <HikeList hikes={hikes} locale={locale} />
-    </section>
-  </main>
-  <footer class="max-w-6xl mx-auto px-4 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
+  <div class="flex min-h-[calc(100vh-3rem)]">
+    <aside class="w-64 xl:w-72 shrink-0 border-r border-stone-200 dark:border-neutral-700 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto p-4">
+      <HikeFilters hikes={hikes} locale={locale} />
+    </aside>
+    <div class="flex-1 min-w-0 px-4 sm:px-6 py-6 pb-12 space-y-6">
+      <HikeSuggest hikes={hikes} locale={locale} />
+      <section>
+        <h2 class="text-xl font-semibold mb-4" id="hike-count">{formatHikeCount(locale, hikes.length)}</h2>
+        <HikeList hikes={hikes} locale={locale} />
+      </section>
+    </div>
+  </div>
+  <footer class="px-4 sm:px-6 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
     {t(locale, 'footer.data')} &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
     &middot; <a href="https://github.com/Blightwidow/open-rando" class="underline">GitHub</a>
   </footer>
