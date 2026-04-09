@@ -3,6 +3,7 @@ import type { Hike } from '../lib/catalog';
 import { formatDuration } from '../lib/catalog';
 import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
+import AccommodationIcons from './AccommodationIcons.astro';
 
 interface Props {
   hike: Hike;
@@ -24,7 +25,7 @@ const overnightStations = [
 const hotelAllStops = overnightStations.length > 0 && overnightStations.every((station) => station.accommodation.has_hotel);
 const campingAllStops = overnightStations.length > 0 && overnightStations.every((station) => station.accommodation.has_camping);
 
-const hikeUrl = locale === 'en' ? `/en/hike/${hike.slug}` : `/hike/${hike.slug}`;
+const hikeUrl = locale === 'en' ? `/en/app/hike/${hike.slug}` : `/app/hike/${hike.slug}`;
 
 const difficultyLabel: Record<string, string> = {
   easy: t(locale, 'difficulty.easy'),
@@ -76,9 +77,8 @@ const difficultyLabel: Record<string, string> = {
     )}
   </div>
   {(hotelAllStops || campingAllStops) && (
-    <div class="flex gap-2 mt-2">
-      {hotelAllStops && <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t(locale, 'accommodation.hotel')}</span>}
-      {campingAllStops && <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t(locale, 'accommodation.camping')}</span>}
+    <div class="flex items-center gap-2 mt-2">
+      <AccommodationIcons hasHotel={hotelAllStops} hasCamping={campingAllStops} size="sm" />
     </div>
   )}
   {hike.step_count > 1 && (

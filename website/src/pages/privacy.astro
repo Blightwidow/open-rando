@@ -1,0 +1,68 @@
+---
+import Landing from '../layouts/Landing.astro';
+
+const locale = 'fr';
+---
+
+<Landing
+  title="Politique de confidentialité — open-rando"
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">Politique de confidentialité</h1>
+
+    <div class="space-y-8 text-stone-600 dark:text-stone-400 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Aucune collecte de données personnelles</h2>
+        <p>
+          open-rando ne collecte, ne stocke et ne partage aucune donnée personnelle.
+          Aucun compte utilisateur n'est requis pour utiliser le site.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Pas de cookies</h2>
+        <p>
+          Ce site n'utilise aucun cookie de suivi ni d'analytics. La seule donnée stockée
+          localement est votre préférence de thème (clair/sombre), via le localStorage de votre
+          navigateur. Cette information ne quitte jamais votre appareil.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Site statique</h2>
+        <p>
+          open-rando est un site entièrement statique. Il n'y a aucun traitement côté serveur,
+          aucune base de données, et aucune API backend qui traiterait vos données.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Services tiers</h2>
+        <p>
+          Les fonds de carte sont fournis par OpenTopoMap et l'IGN (Géoportail). Lorsque vous
+          consultez une carte, votre navigateur envoie des requêtes directement à ces services
+          pour charger les tuiles cartographiques. Ces fournisseurs peuvent recevoir votre
+          adresse IP dans le cadre de ces requêtes.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Hébergement</h2>
+        <p>
+          Ce site est hébergé sur GitHub Pages. Les journaux d'accès standard du serveur web
+          (adresse IP, user-agent, pages consultées) peuvent être collectés par GitHub conformément
+          à leur politique de confidentialité.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Contact</h2>
+        <p>
+          Pour toute question relative à cette politique de confidentialité, vous pouvez ouvrir
+          une issue sur le <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">dépôt GitHub</a> du projet.
+        </p>
+      </section>
+    </div>
+  </main>
+</Landing>

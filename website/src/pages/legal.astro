@@ -1,0 +1,69 @@
+---
+import Landing from '../layouts/Landing.astro';
+
+const locale = 'fr';
+---
+
+<Landing
+  title="Mentions légales — open-rando"
+  locale={locale}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <h1 class="text-3xl font-bold">Mentions légales</h1>
+
+    <div class="space-y-8 text-stone-600 dark:text-stone-400 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Éditeur du site</h2>
+        <p>
+          open-rando est un projet personnel et open-source.<br />
+          Éditeur : Theo Dammaretz<br />
+          Contact : via le <a href="https://github.com/Blightwidow/open-rando" class="text-forest-700 dark:text-forest-400 underline">dépôt GitHub</a> du projet
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Hébergement</h2>
+        <p>
+          Ce site est hébergé par GitHub Pages.<br />
+          GitHub, Inc. — 88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Propriété intellectuelle</h2>
+        <p>
+          Le code source d'open-rando est distribué sous licence open-source. Les données
+          cartographiques proviennent d'OpenStreetMap et sont distribuées sous licence
+          <a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">ODbL</a>.
+        </p>
+        <p class="mt-2">
+          Les noms « GR » et « Grande Randonnée » sont des marques déposées de la Fédération
+          Française de la Randonnée Pédestre (FFRandonnée). open-rando n'est pas affilié à
+          la FFRandonnée.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Limitation de responsabilité</h2>
+        <p>
+          Les itinéraires présentés sur ce site sont générés automatiquement à partir de données
+          ouvertes. Ils peuvent contenir des erreurs ou des imprécisions. L'éditeur ne saurait
+          être tenu responsable des conséquences de l'utilisation de ces informations.
+        </p>
+        <p class="mt-2">
+          Vérifiez toujours votre itinéraire auprès de sources officielles avant de partir en
+          randonnée. Respectez la signalétique sur le terrain et adaptez votre parcours aux
+          conditions météorologiques.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">Données personnelles</h2>
+        <p>
+          Consultez notre <a href="/privacy" class="text-forest-700 dark:text-forest-400 underline">politique de confidentialité</a>
+          pour les informations relatives au traitement des données personnelles.
+        </p>
+      </section>
+    </div>
+  </main>
+</Landing>

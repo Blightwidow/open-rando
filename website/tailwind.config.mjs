@@ -4,6 +4,9 @@ export default {
   content: ['./src/**/*.{astro,html,js,ts}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Open Sans"', 'system-ui', 'sans-serif'],
+      },
       colors: {
         forest: {
           50: '#f0fdf4',

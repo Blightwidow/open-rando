@@ -56,7 +56,6 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={resolvedDescription} />
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('theme');
@@ -110,6 +109,19 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
       </div>
     </nav>
     <slot />
+    <footer class="border-t border-stone-200 dark:border-neutral-700">
+      <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-500 dark:text-stone-400">
+          <a href={locale === 'en' ? '/en/about' : '/about'} class="hover:text-stone-700 dark:hover:text-stone-200 transition-colors">{t(locale, 'footer.about')}</a>
+          <a href={locale === 'en' ? '/en/privacy' : '/privacy'} class="hover:text-stone-700 dark:hover:text-stone-200 transition-colors">{t(locale, 'footer.privacy')}</a>
+          <a href={locale === 'en' ? '/en/legal' : '/legal'} class="hover:text-stone-700 dark:hover:text-stone-200 transition-colors">{t(locale, 'footer.legal')}</a>
+          <a href="https://github.com/Blightwidow/open-rando" class="hover:text-stone-700 dark:hover:text-stone-200 transition-colors">GitHub</a>
+        </div>
+        <p class="mt-3 text-xs text-stone-400 dark:text-stone-500">
+          {t(locale, 'footer.data')} &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
 
@@ -122,53 +134,6 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
 </script>
 
 <style is:global>
-  :root {
-    --color-trail: #be185d;
-    --color-station-start: #16a34a;
-    --color-station-intermediate: #d97706;
-    --color-station-end: #dc2626;
-  }
-  .dark {
-    --color-trail: #f472b6;
-    --color-station-start: #4ade80;
-    --color-station-intermediate: #fbbf24;
-    --color-station-end: #f87171;
-  }
-
-  /* Leaflet dark mode overrides */
-  .dark .leaflet-popup-content-wrapper,
-  .dark .leaflet-popup-tip {
-    background-color: #262626;
-    color: #f5f5f4;
-  }
-  .dark .leaflet-popup-content a {
-    color: #52b788;
-  }
-  .dark .leaflet-control-zoom a {
-    background-color: #262626;
-    color: #f5f5f4;
-    border-color: #3a3a3a;
-  }
-  .dark .leaflet-control-zoom a:hover {
-    background-color: #333;
-  }
-  .dark .leaflet-control-attribution {
-    background-color: rgba(26, 26, 26, 0.8);
-    color: #a8a29e;
-  }
-  .dark .leaflet-control-attribution a {
-    color: #78716c;
-  }
-  .dark .leaflet-tooltip {
-    background-color: #262626;
-    color: #f5f5f4;
-    border-color: #3a3a3a;
-  }
-  .dark .leaflet-tooltip::before {
-    border-top-color: #262626;
-  }
-
-  /* Focus visible for keyboard navigation */
   *:focus-visible {
     outline: 2px solid #2d6a4f;
     outline-offset: 2px;
