@@ -4,8 +4,8 @@ const translations: Record<Locale, Record<string, string>> = {
   fr: {
     // Header & navigation
     'site.title': 'open-rando',
-    'site.subtitle': 'Randonnées entre gares sur les sentiers GR',
-    'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR, accessibles en train. open-rando est un projet open-source qui répertorie des randonnées entre gares en France.',
+    'site.subtitle': 'Randonnées entre gares sur les sentiers GR & PR',
+    'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR et PR, accessibles en train. open-rando est un projet open-source qui répertorie des randonnées entre gares en France.',
     'nav.back': 'Toutes les randonnées',
     'nav.language': 'EN',
     'nav.explore': 'Parcourir',
@@ -13,15 +13,15 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Landing - Hero
     'landing.hero.title': 'Randonnez de gare en gare',
-    'landing.hero.subtitle': 'Découvrez des itinéraires de randonnée sur les sentiers GR, accessibles en train. Pas de voiture, pas de navette — juste le train, vos chaussures et le sentier.',
+    'landing.hero.subtitle': 'Découvrez des itinéraires de randonnée sur les sentiers GR et PR, accessibles en train. Pas de voiture, pas de navette — juste le train, vos chaussures et le sentier.',
     'landing.hero.cta': 'Explorer les randonnées',
 
     // Landing - Features
     'landing.features.title': 'Comment ça marche',
     'landing.feature.train.title': 'Départ et arrivée en gare',
     'landing.feature.train.description': 'Chaque itinéraire commence et se termine à une gare SNCF. Prenez le train, randonnez, reprenez le train.',
-    'landing.feature.gr.title': 'Sentiers GR balisés',
-    'landing.feature.gr.description': 'Tous les itinéraires suivent les sentiers de Grande Randonnée officiels, balisés et entretenus.',
+    'landing.feature.gr.title': 'Sentiers GR & PR balisés',
+    'landing.feature.gr.description': 'Tous les itinéraires suivent des sentiers officiels balisés et entretenus : Grandes Randonnées (GR, GRP) et Promenades et Randonnées (PR).',
     'landing.feature.accommodation.title': 'Étapes avec hébergement',
     'landing.feature.accommodation.description': 'Les randonnées de plusieurs jours passent par des gares intermédiaires avec hôtels ou campings à proximité.',
     'landing.feature.gpx.title': 'Traces GPX téléchargeables',
@@ -52,6 +52,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'filters.elevationGain': 'Dénivelé positif',
     'filters.hotel': 'Hôtel à chaque étape',
     'filters.camping': 'Camping à chaque étape',
+    'filters.trailType': 'Type de sentier',
+    'filters.trailType.gr': 'GR',
+    'filters.trailType.grp': 'GRP',
+    'filters.trailType.pr': 'PR',
     'filters.noResults': 'Aucune randonnée ne correspond à vos filtres.',
     'filters.resetFilters': 'Réinitialiser les filtres',
 
@@ -124,8 +128,8 @@ const translations: Record<Locale, Record<string, string>> = {
   en: {
     // Header & navigation
     'site.title': 'open-rando',
-    'site.subtitle': 'Train station-to-station hikes on GR trails',
-    'site.description': 'Discover hiking routes on GR trails in France, accessible by train. open-rando is an open-source project cataloging station-to-station hikes.',
+    'site.subtitle': 'Train station-to-station hikes on GR & PR trails',
+    'site.description': 'Discover hiking routes on GR and PR trails in France, accessible by train. open-rando is an open-source project cataloging station-to-station hikes.',
     'nav.back': 'All hikes',
     'nav.language': 'FR',
     'nav.explore': 'Explore',
@@ -133,15 +137,15 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Landing - Hero
     'landing.hero.title': 'Hike from station to station',
-    'landing.hero.subtitle': 'Discover hiking routes on GR trails, accessible by train. No car, no shuttle — just the train, your boots and the trail.',
+    'landing.hero.subtitle': 'Discover hiking routes on GR and PR trails, accessible by train. No car, no shuttle — just the train, your boots and the trail.',
     'landing.hero.cta': 'Explore hikes',
 
     // Landing - Features
     'landing.features.title': 'How it works',
     'landing.feature.train.title': 'Start and end at a train station',
     'landing.feature.train.description': 'Every route starts and ends at an SNCF train station. Take the train, hike, take the train back.',
-    'landing.feature.gr.title': 'Marked GR trails',
-    'landing.feature.gr.description': 'All routes follow official Grande Randonnée trails, waymarked and maintained.',
+    'landing.feature.gr.title': 'Marked GR & PR trails',
+    'landing.feature.gr.description': 'All routes follow official waymarked trails: Grande Randonnée (GR, GRP) and Promenade et Randonnée (PR).',
     'landing.feature.accommodation.title': 'Multi-day with accommodation',
     'landing.feature.accommodation.description': 'Multi-day hikes pass through intermediate stations with nearby hotels or campsites.',
     'landing.feature.gpx.title': 'Downloadable GPX tracks',
@@ -172,6 +176,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'filters.elevationGain': 'Elevation gain',
     'filters.hotel': 'Hotel at every stop',
     'filters.camping': 'Campsite at every stop',
+    'filters.trailType': 'Trail type',
+    'filters.trailType.gr': 'GR',
+    'filters.trailType.grp': 'GRP',
+    'filters.trailType.pr': 'PR',
     'filters.noResults': 'No hikes match your filters.',
     'filters.resetFilters': 'Reset filters',
 
