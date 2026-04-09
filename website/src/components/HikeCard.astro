@@ -33,6 +33,22 @@ const difficultyLabel: Record<string, string> = {
   difficult: t(locale, 'difficulty.difficult'),
   very_difficult: t(locale, 'difficulty.very_difficult'),
 };
+
+const terrainLabel: Record<string, string> = {
+  coastal: t(locale, 'terrain.coastal'),
+  mountain: t(locale, 'terrain.mountain'),
+  hills: t(locale, 'terrain.hills'),
+  forest: t(locale, 'terrain.forest'),
+  plains: t(locale, 'terrain.plains'),
+};
+
+const terrainColor: Record<string, string> = {
+  coastal: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300',
+  mountain: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  hills: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
+  forest: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+  plains: 'bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-300',
+};
 ---
 
 <a
@@ -48,6 +64,8 @@ const difficultyLabel: Record<string, string> = {
   data-elevation-gain={hike.elevation_gain_m}
   data-route-type={hike.route_type}
   data-difficulty={hike.difficulty}
+  data-region={hike.region}
+  data-terrain={(hike.terrain || []).join(',')}
 >
   <div class="flex items-start justify-between gap-2">
     <div>
@@ -91,6 +109,14 @@ const difficultyLabel: Record<string, string> = {
         {difficultyLabel[hike.difficulty] || hike.difficulty}
       </span>
     )}
+    {hike.region && (
+      <span class="text-xs text-stone-500 dark:text-stone-400">{hike.region}</span>
+    )}
+    {(hike.terrain || []).map((tag) => (
+      <span class:list={["text-xs px-2 py-0.5 rounded-full", terrainColor[tag] || 'bg-stone-100 text-stone-600']}>
+        {terrainLabel[tag] || tag}
+      </span>
+    ))}
   </div>
   {(hotelAllStops || campingAllStops) && (
     <div class="flex items-center gap-2 mt-2">

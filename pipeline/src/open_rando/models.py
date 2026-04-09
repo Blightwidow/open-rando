@@ -88,6 +88,7 @@ class Hike:
     route_type: str = "gr"
     is_circular_trail: bool = False
     is_round_trip: bool = False
+    terrain: list[str] = field(default_factory=list)
 
     @property
     def is_grp(self) -> bool:
@@ -125,6 +126,7 @@ class Hike:
             "is_grp": self.is_grp,
             "is_circular_trail": self.is_circular_trail,
             "is_round_trip": self.is_round_trip,
+            "terrain": self.terrain,
             "last_updated": self.last_updated,
         }
 
