@@ -8,6 +8,7 @@ from shapely.geometry import LineString, MultiLineString
 from shapely.ops import substring
 
 from open_rando.models import Station
+from open_rando.processors.match import MatchedStation
 
 logger = logging.getLogger("open_rando")
 
@@ -39,7 +40,7 @@ def _flatten_to_linestring(trail: LineString | MultiLineString) -> LineString:
 
 def find_hikes(
     trail: LineString | MultiLineString,
-    matched_stations: list[tuple[Station, float]],
+    matched_stations: list[MatchedStation],
     min_step_distance_km: float,
     max_step_distance_km: float,
 ) -> list[list[tuple[Station, Station, LineString, float]]]:
@@ -82,7 +83,7 @@ def find_hikes(
 
 def find_round_trip_hikes(
     trail: LineString | MultiLineString,
-    matched_stations: list[tuple[Station, float]],
+    matched_stations: list[MatchedStation],
     min_step_distance_km: float,
     max_step_distance_km: float,
 ) -> list[list[tuple[Station, Station, LineString, float]]]:
@@ -231,7 +232,7 @@ def find_round_trip_hikes(
 
 def _compute_cumulative_distances(
     trail: LineString,
-    matched_stations: list[tuple[Station, float]],
+    matched_stations: list[MatchedStation],
 ) -> list[float]:
     """Compute cumulative haversine distances along the trail for each station."""
     trail_length = trail.length

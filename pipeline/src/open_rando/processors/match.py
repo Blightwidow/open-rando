@@ -22,16 +22,20 @@ def degrees_to_meters(distance_degrees: float, latitude: float) -> float:
     return distance_degrees * average_scale
 
 
+MatchedStation = tuple[Station, float, tuple[float, float]]
+"""(station, fraction_along_trail, (junction_lon, junction_lat))"""
+
+
 def match_stations_to_trail(
     stations: list[Station],
     trail: LineString | MultiLineString,
     max_distance_meters: float,
-) -> list[tuple[Station, float]]:
+) -> list[MatchedStation]:
     """Match stations to the trail within max_distance_meters.
 
-    Returns (station, fraction_along_trail) pairs sorted by position along trail.
-    Supports both LineString and MultiLineString trails. For MultiLineString, fractions
-    are computed as global position across all segments weighted by segment length.
+    Returns (station, fraction_along_trail, junction_point) triples sorted by
+    position along trail. The junction_point is the nearest point on the trail
+    as (lon, lat). Supports both LineString and MultiLineString trails.
     """
     if isinstance(trail, MultiLineString):
         return _match_stations_multiline(stations, trail, max_distance_meters)
@@ -43,9 +47,9 @@ def _match_stations_single(
     stations: list[Station],
     trail: LineString,
     max_distance_meters: float,
-) -> list[tuple[Station, float]]:
+) -> list[MatchedStation]:
     """Match stations to a single LineString trail."""
-    candidates: list[tuple[Station, float]] = []
+    candidates: list[MatchedStation] = []
 
     for station in stations:
         station_point = Point(station.lon, station.lat)
@@ -57,7 +61,8 @@ def _match_stations_single(
         if distance_meters <= max_distance_meters:
             station.distance_to_trail_meters = round(distance_meters, 1)
             fraction_along = trail.project(station_point, normalized=True)
-            candidates.append((station, fraction_along))
+            junction_point = (nearest_on_trail.x, nearest_on_trail.y)
+            candidates.append((station, fraction_along, junction_point))
             logger.debug(
                 "  %s: %.0fm from trail, position %.3f",
                 station.name,
@@ -69,7 +74,7 @@ def _match_stations_single(
     matched = _deduplicate_stations(candidates)
 
     logger.info("Matched %d stations within %.0fm", len(matched), max_distance_meters)
-    for station, fraction in matched:
+    for station, fraction, _junction in matched:
         logger.info("  %.3f %s (%.0fm)", fraction, station.name, station.distance_to_trail_meters)
 
     return matched
@@ -79,7 +84,7 @@ def _match_stations_multiline(
     stations: list[Station],
     trail: MultiLineString,
     max_distance_meters: float,
-) -> list[tuple[Station, float]]:
+) -> list[MatchedStation]:
     """Match stations to a MultiLineString trail using global fractions."""
     segments = list(trail.geoms)
     segment_lengths = [segment.length for segment in segments]
@@ -93,7 +98,7 @@ def _match_stations_multiline(
     for length in segment_lengths:
         cumulative_offsets.append(cumulative_offsets[-1] + length)
 
-    candidates: list[tuple[Station, float]] = []
+    candidates: list[MatchedStation] = []
 
     for station in stations:
         station_point = Point(station.lon, station.lat)
@@ -101,6 +106,7 @@ def _match_stations_multiline(
         # Find the nearest segment and distance
         best_distance_meters = float("inf")
         best_global_fraction = 0.0
+        best_junction_point: tuple[float, float] = (0.0, 0.0)
 
         for segment_index, segment in enumerate(segments):
             nearest_on_segment, _ = nearest_points(segment, station_point)
@@ -109,6 +115,7 @@ def _match_stations_multiline(
 
             if distance_meters < best_distance_meters:
                 best_distance_meters = distance_meters
+                best_junction_point = (nearest_on_segment.x, nearest_on_segment.y)
                 local_fraction = segment.project(station_point, normalized=True)
                 segment_offset = cumulative_offsets[segment_index]
                 best_global_fraction = (
@@ -117,7 +124,7 @@ def _match_stations_multiline(
 
         if best_distance_meters <= max_distance_meters:
             station.distance_to_trail_meters = round(best_distance_meters, 1)
-            candidates.append((station, best_global_fraction))
+            candidates.append((station, best_global_fraction, best_junction_point))
             logger.debug(
                 "  %s: %.0fm from trail, position %.3f",
                 station.name,
@@ -129,24 +136,26 @@ def _match_stations_multiline(
     matched = _deduplicate_stations(candidates)
 
     logger.info("Matched %d stations within %.0fm", len(matched), max_distance_meters)
-    for station, fraction in matched:
+    for station, fraction, _junction in matched:
         logger.info("  %.3f %s (%.0fm)", fraction, station.name, station.distance_to_trail_meters)
 
     return matched
 
 
 def _deduplicate_stations(
-    candidates: list[tuple[Station, float]],
-) -> list[tuple[Station, float]]:
+    candidates: list[MatchedStation],
+) -> list[MatchedStation]:
     """Remove duplicate stations (same name within 500m, or same trail position)."""
     if not candidates:
         return []
 
-    deduplicated: list[tuple[Station, float]] = []
+    deduplicated: list[MatchedStation] = []
 
-    for station, fraction in candidates:
+    for station, fraction, junction in candidates:
         is_duplicate = False
-        for existing_index, (existing_station, existing_fraction) in enumerate(deduplicated):
+        for existing_index, (existing_station, existing_fraction, _existing_junction) in enumerate(
+            deduplicated
+        ):
             # Same name and close together
             if (
                 station.name == existing_station.name
@@ -155,18 +164,18 @@ def _deduplicate_stations(
             ):
                 # Keep the one closer to the trail
                 if station.distance_to_trail_meters < existing_station.distance_to_trail_meters:
-                    deduplicated[existing_index] = (station, fraction)
+                    deduplicated[existing_index] = (station, fraction, junction)
                 is_duplicate = True
                 break
 
             # Different name but nearly same position on trail
             if abs(fraction - existing_fraction) < MINIMUM_FRACTION_SEPARATION:
                 if station.distance_to_trail_meters < existing_station.distance_to_trail_meters:
-                    deduplicated[existing_index] = (station, fraction)
+                    deduplicated[existing_index] = (station, fraction, junction)
                 is_duplicate = True
                 break
 
         if not is_duplicate:
-            deduplicated.append((station, fraction))
+            deduplicated.append((station, fraction, junction))
 
     return deduplicated

@@ -30,3 +30,11 @@ ELEVATION_DIRECTORY = "~/.local/share/open-rando/data/elevation"
 SNCF_STATIONS_URL = "https://ressources.data.sncf.com/api/explore/v2.1/catalog/datasets/gares-de-voyageurs/exports/json?limit=-1"
 SNCF_CACHE_DIRECTORY = "~/.cache/open-rando/sncf"
 SNCF_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
+
+OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/foot"
+OSRM_CACHE_DIRECTORY = "~/.cache/open-rando/osrm"
+OSRM_CACHE_TTL_SECONDS = 90 * 24 * 3600  # 90 days
+OSRM_COOLDOWN_SECONDS = 1
+OSRM_TIMEOUT_SECONDS = 10
+
+CONNECTOR_SKIP_THRESHOLD_METERS = 100
