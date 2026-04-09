@@ -21,6 +21,12 @@ const { hikeId, locale = 'fr' } = Astro.props;
       {t(locale, 'detail.loading')}
     </div>
   </div>
+  <div id="elevation-legend" class="hidden flex-wrap gap-3 mt-2 text-xs text-stone-500 dark:text-stone-400">
+    <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm bg-green-500 opacity-50"></span> &lt; 5%</span>
+    <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm bg-yellow-500 opacity-50"></span> 5–10%</span>
+    <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm bg-orange-500 opacity-50"></span> 10–15%</span>
+    <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm bg-red-600 opacity-50"></span> &gt; 15%</span>
+  </div>
 </div>
 
 <script>
@@ -94,7 +100,40 @@ const { hikeId, locale = 'fr' } = Astro.props;
     }
     const linePath = lineParts.join(' ');
 
-    const areaPath = `${linePath} L${scaleX(maxDistance).toFixed(1)},${scaleY(minElevation).toFixed(1)} L${scaleX(0).toFixed(1)},${scaleY(minElevation).toFixed(1)} Z`;
+    // Build gradient-colored area segments based on slope intensity
+    const slopeThresholds = [
+      { minSlope: 15, color: 'var(--slope-extreme, #dc2626)' },
+      { minSlope: 10, color: 'var(--slope-steep, #ea580c)' },
+      { minSlope: 5, color: 'var(--slope-moderate, #eab308)' },
+      { minSlope: 0, color: 'var(--slope-flat, #22c55e)' },
+    ];
+
+    function getSlopeColor(slopePercent: number): string {
+      const absoluteSlope = Math.abs(slopePercent);
+      for (const threshold of slopeThresholds) {
+        if (absoluteSlope >= threshold.minSlope) return threshold.color;
+      }
+      return slopeThresholds[slopeThresholds.length - 1].color;
+    }
+
+    const baselineY = scaleY(minElevation).toFixed(1);
+    const slopeAreaSegments: string[] = [];
+
+    for (let index = 0; index < distances_km.length - 1; index++) {
+      const horizontalDistanceMeters = (distances_km[index + 1] - distances_km[index]) * 1000;
+      const verticalDelta = elevations_m[index + 1] - elevations_m[index];
+      const slopePercent = horizontalDistanceMeters > 0 ? (verticalDelta / horizontalDistanceMeters) * 100 : 0;
+      const color = getSlopeColor(slopePercent);
+
+      const x1 = scaleX(distances_km[index]).toFixed(1);
+      const y1 = scaleY(elevations_m[index]).toFixed(1);
+      const x2 = scaleX(distances_km[index + 1]).toFixed(1);
+      const y2 = scaleY(elevations_m[index + 1]).toFixed(1);
+
+      slopeAreaSegments.push(
+        `<path d="M${x1},${y1} L${x2},${y2} L${x2},${baselineY} L${x1},${baselineY} Z" fill="${color}" fill-opacity="0.25" />`
+      );
+    }
 
     const gridLines: string[] = [];
     const gridLabels: string[] = [];
@@ -143,7 +182,7 @@ const { hikeId, locale = 'fr' } = Astro.props;
     }
 
     const tooltipGroup = `<line id="tooltip-line" x1="0" y1="${paddingTop}" x2="0" y2="${timelineY}" stroke="currentColor" stroke-opacity="0.4" style="display: none;" />
-    <circle id="tooltip-dot" r="4" fill="var(--color-trail, #be185d)" style="display: none;" />
+    <circle id="tooltip-dot" r="4" fill="var(--color-trail, #E72323)" style="display: none;" />
     <rect id="tooltip-bg" rx="3" ry="3" class="fill-white dark:fill-neutral-700" stroke="currentColor" stroke-opacity="0.2" style="display: none;" />
     <text id="tooltip-text" text-anchor="middle" class="fill-stone-700 dark:fill-stone-200" style="font-size: 11px; display: none;"></text>`;
 
@@ -155,8 +194,8 @@ const { hikeId, locale = 'fr' } = Astro.props;
       ${timelineTicks.join('\n')}
       ${timelineLabels.join('\n')}
       ${boundaryLines.join('\n')}
-      <path d="${areaPath}" fill="var(--color-trail, #be185d)" fill-opacity="0.15" />
-      <path d="${linePath}" fill="none" stroke="var(--color-trail, #be185d)" stroke-width="2" stroke-linejoin="round" />
+      ${slopeAreaSegments.join('\n')}
+      <path d="${linePath}" fill="none" stroke="var(--color-trail, #E72323)" stroke-width="2" stroke-linejoin="round" />
       <rect id="section-overlay-left" x="${paddingLeft}" y="${paddingTop}" width="0" height="${chartHeight}" fill="currentColor" fill-opacity="0.15" style="display: none; pointer-events: none;" />
       <rect id="section-overlay-right" x="${paddingLeft}" y="${paddingTop}" width="0" height="${chartHeight}" fill="currentColor" fill-opacity="0.15" style="display: none; pointer-events: none;" />
       ${tooltipGroup}
@@ -164,6 +203,7 @@ const { hikeId, locale = 'fr' } = Astro.props;
     </svg>`;
 
     container.innerHTML = svg;
+    document.getElementById('elevation-legend')!.classList.replace('hidden', 'flex');
 
     const overlay = document.getElementById('tooltip-overlay')!;
     const tooltipLine = document.getElementById('tooltip-line')!;
