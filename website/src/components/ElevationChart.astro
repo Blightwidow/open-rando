@@ -157,6 +157,8 @@ const { hikeId, locale = 'fr' } = Astro.props;
       ${boundaryLines.join('\n')}
       <path d="${areaPath}" fill="var(--color-trail, #be185d)" fill-opacity="0.15" />
       <path d="${linePath}" fill="none" stroke="var(--color-trail, #be185d)" stroke-width="2" stroke-linejoin="round" />
+      <rect id="section-overlay-left" x="${paddingLeft}" y="${paddingTop}" width="0" height="${chartHeight}" fill="currentColor" fill-opacity="0.15" style="display: none; pointer-events: none;" />
+      <rect id="section-overlay-right" x="${paddingLeft}" y="${paddingTop}" width="0" height="${chartHeight}" fill="currentColor" fill-opacity="0.15" style="display: none; pointer-events: none;" />
       ${tooltipGroup}
       <rect id="tooltip-overlay" x="${paddingLeft}" y="${paddingTop}" width="${chartWidth}" height="${chartHeight}" fill="transparent" />
     </svg>`;
@@ -236,6 +238,45 @@ const { hikeId, locale = 'fr' } = Astro.props;
       }
     });
     overlay.addEventListener('touchend', hideTooltip);
+
+    // Section highlighting
+    const overlayLeft = document.getElementById('section-overlay-left')!;
+    const overlayRight = document.getElementById('section-overlay-right')!;
+    const allBoundaries = [0, ...step_boundaries_km, maxDistance];
+
+    document.addEventListener('section-change', ((event: CustomEvent) => {
+      const { from, to, full } = event.detail;
+
+      if (full) {
+        overlayLeft.style.display = 'none';
+        overlayRight.style.display = 'none';
+        return;
+      }
+
+      const sectionStartKm = allBoundaries[from];
+      const sectionEndKm = allBoundaries[to];
+
+      const leftX = scaleX(0);
+      const sectionStartX = scaleX(sectionStartKm);
+      const sectionEndX = scaleX(sectionEndKm);
+      const rightEndX = scaleX(maxDistance);
+
+      if (sectionStartKm > 0) {
+        overlayLeft.setAttribute('x', leftX.toFixed(1));
+        overlayLeft.setAttribute('width', (sectionStartX - leftX).toFixed(1));
+        overlayLeft.style.display = '';
+      } else {
+        overlayLeft.style.display = 'none';
+      }
+
+      if (sectionEndKm < maxDistance) {
+        overlayRight.setAttribute('x', sectionEndX.toFixed(1));
+        overlayRight.setAttribute('width', (rightEndX - sectionEndX).toFixed(1));
+        overlayRight.style.display = '';
+      } else {
+        overlayRight.style.display = 'none';
+      }
+    }) as EventListener);
   }
 
   loadAndRender();

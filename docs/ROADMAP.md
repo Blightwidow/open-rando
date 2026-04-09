@@ -24,14 +24,14 @@ Scope: GR 13 (Fontainebleau to Morvan)
 - [x] Overpass fetcher: fetch GR 13 super-relation, resolve child relations into LineString
 - [x] Station fetcher: OSM stations in route bounding box
 - [x] Station-to-trail matching with Shapely (< 5km threshold)
-- [x] Multi-step hike generation: step graph (8-18km per step) + DFS maximal path finder
+- [x] Multi-step hike generation: step graph (8-18km per step) + longest-path DP per connected component
 - [x] GPX export (multi-segment tracks, no elevation yet)
 - [x] GeoJSON export (one feature per step)
 - [x] catalog.json export with step metadata
 - [x] Astro site: Leaflet map + hike cards on index page
 - [x] Filter sliders (distance, duration, max step length, step count) synced with map
-- [x] Hike detail page with step breakdown, station list, and dedicated map
-- [x] GPX download links
+- [x] Hike detail page with step breakdown, station list, section selector, and dedicated map
+- [x] GPX download links (full hike + section GPX)
 
 ### Phase 2 -- Elevation and Metadata ✓
 

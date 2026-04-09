@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import math
+from collections import defaultdict
 
 from shapely.geometry import LineString, MultiLineString
 from shapely.ops import substring
@@ -58,7 +59,7 @@ def find_hikes(
         cumulative_km, station_count, min_step_distance_km, max_step_distance_km
     )
 
-    maximal_paths = _find_maximal_paths(adjacency, station_count)
+    maximal_paths = _find_longest_paths(adjacency, cumulative_km, station_count)
 
     hikes: list[list[tuple[Station, Station, LineString, float]]] = []
     for path in maximal_paths:
@@ -120,52 +121,86 @@ def _build_step_graph(
     return adjacency
 
 
-def _find_maximal_paths(
+def _find_longest_paths(
     adjacency: dict[int, list[int]],
+    cumulative_km: list[float],
     station_count: int,
 ) -> list[list[int]]:
-    """Find all maximal paths via DFS. A path is maximal if it cannot be extended forward."""
-    all_paths: list[list[int]] = []
+    """Find the single longest path (by trail distance) per connected component.
 
-    def depth_first_search(path: list[int]) -> None:
-        last = path[-1]
-        extended = False
-        for next_index in adjacency[last]:
-            extended = True
-            path.append(next_index)
-            depth_first_search(path)
-            path.pop()
-        if not extended and len(path) >= 2:
-            all_paths.append(path[:])
+    The step graph is a DAG with edges only going from lower to higher station indices,
+    so longest-path DP runs in O(V+E) via topological order (ascending index).
+    Returns one path per connected component of the graph.
+    """
+    components = _find_connected_components(adjacency, station_count)
+    longest_paths: list[list[int]] = []
 
-    for start_index in range(station_count):
-        if adjacency[start_index]:
-            depth_first_search([start_index])
+    for component in components:
+        if len(component) < 2:
+            continue
 
-    return _remove_subpaths(all_paths)
+        best_distance: dict[int, float] = {station: 0.0 for station in component}
+        predecessor: dict[int, int | None] = {station: None for station in component}
+
+        for station in sorted(component):
+            for neighbor in adjacency[station]:
+                if neighbor not in best_distance:
+                    continue
+                candidate = best_distance[station] + (
+                    cumulative_km[neighbor] - cumulative_km[station]
+                )
+                if candidate > best_distance[neighbor]:
+                    best_distance[neighbor] = candidate
+                    predecessor[neighbor] = station
+
+        end_station = max(component, key=lambda station: best_distance[station])
+        if best_distance[end_station] == 0.0:
+            continue
+
+        path: list[int] = []
+        current: int | None = end_station
+        while current is not None:
+            path.append(current)
+            current = predecessor[current]
+        path.reverse()
+
+        if len(path) >= 2:
+            longest_paths.append(path)
+
+    return longest_paths
 
 
-def _remove_subpaths(paths: list[list[int]]) -> list[list[int]]:
-    """Remove paths that are contiguous sub-sequences of longer paths."""
-    paths.sort(key=len, reverse=True)
-    kept: list[list[int]] = []
+def _find_connected_components(
+    adjacency: dict[int, list[int]],
+    station_count: int,
+) -> list[set[int]]:
+    """Find connected components of the step graph (treating edges as undirected)."""
+    undirected: dict[int, set[int]] = defaultdict(set)
+    for source, targets in adjacency.items():
+        for target in targets:
+            undirected[source].add(target)
+            undirected[target].add(source)
 
-    for path in paths:
-        is_subpath = False
-        path_tuple = tuple(path)
-        for longer in kept:
-            longer_tuple = tuple(longer)
-            window_size = len(path_tuple)
-            for offset in range(len(longer_tuple) - window_size + 1):
-                if longer_tuple[offset : offset + window_size] == path_tuple:
-                    is_subpath = True
-                    break
-            if is_subpath:
-                break
-        if not is_subpath:
-            kept.append(path)
+    visited: set[int] = set()
+    components: list[set[int]] = []
 
-    return kept
+    for station in range(station_count):
+        if station in visited or station not in undirected:
+            continue
+        component: set[int] = set()
+        queue = [station]
+        while queue:
+            current = queue.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            component.add(current)
+            for neighbor in undirected[current]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+        components.append(component)
+
+    return components
 
 
 def compute_segment_distance_km(segment: LineString) -> float:
