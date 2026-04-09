@@ -10,32 +10,20 @@ interface Props {
 
 const { hikes, locale = 'fr' } = Astro.props;
 
-const maxDistance = Math.ceil(Math.max(...hikes.map((hike) => hike.distance_km)));
-const maxDuration = Math.ceil(Math.max(...hikes.map((hike) => hike.estimated_duration_min)) / 60) * 60;
 const maxStepDistance = Math.ceil(
   Math.max(...hikes.flatMap((hike) => hike.steps.map((step) => step.distance_km)))
 );
 const maxSteps = Math.max(...hikes.map((hike) => hike.step_count));
-const maxElevationGain = Math.ceil(Math.max(...hikes.map((hike) => hike.elevation_gain_m)) / 100) * 100;
 const clientTranslations = getClientTranslations(locale);
 ---
 
 <div
   id="hike-filters"
-  class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-4 space-y-4"
+  class="space-y-4"
   data-translations={JSON.stringify(clientTranslations)}
 >
   <div class="flex items-center justify-between">
-    <button
-      id="filter-toggle"
-      class="flex items-center gap-2 text-sm font-semibold text-stone-700 dark:text-stone-200 lg:hidden"
-    >
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path d="M3 4h18M3 12h18M3 20h18" />
-      </svg>
-      {t(locale, 'filters.show')}
-    </button>
-    <h3 class="hidden lg:block text-sm font-semibold text-stone-700 dark:text-stone-200">{t(locale, 'filters.title')}</h3>
+    <h3 class="text-sm font-semibold text-stone-700 dark:text-stone-200">{t(locale, 'filters.title')}</h3>
     <button
       id="reset-filters"
       class="text-xs text-forest-700 dark:text-forest-400 hover:text-forest-900 dark:hover:text-forest-300 underline hidden"
@@ -43,31 +31,13 @@ const clientTranslations = getClientTranslations(locale);
       {t(locale, 'filters.reset')}
     </button>
   </div>
-  <div id="filter-panel" class="hidden lg:block space-y-4">
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+  <div id="filter-panel" class="space-y-4">
+    <div class="grid gap-4">
       <div>
         <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
-          {t(locale, 'filters.distance')}: <span id="distance-value">0 – {maxDistance} km</span>
+          {t(locale, 'filters.maxStep')}: <span id="max-step-value">&le; 20 km</span>
         </label>
-        <div class="flex gap-2 items-center">
-          <input type="range" id="distance-min" min="0" max={maxDistance} value="0" step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
-          <input type="range" id="distance-max" min="0" max={maxDistance} value={maxDistance} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
-          {t(locale, 'filters.duration')}: <span id="duration-value">0 – {maxDuration / 60}h</span>
-        </label>
-        <div class="flex gap-2 items-center">
-          <input type="range" id="duration-min" min="0" max={maxDuration} value="0" step="30" class="w-full accent-forest-700 dark:accent-forest-400" />
-          <input type="range" id="duration-max" min="0" max={maxDuration} value={maxDuration} step="30" class="w-full accent-forest-700 dark:accent-forest-400" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
-          {t(locale, 'filters.maxStep')}: <span id="max-step-value">&le; {maxStepDistance} km</span>
-        </label>
-        <input type="range" id="max-step-distance" min="0" max={maxStepDistance} value={maxStepDistance} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
+        <input type="range" id="max-step-distance" min="0" max={maxStepDistance} value="20" step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
       </div>
       <div>
         <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
@@ -78,29 +48,40 @@ const clientTranslations = getClientTranslations(locale);
           <input type="range" id="steps-max" min="1" max={maxSteps} value={maxSteps} step="1" class="w-full accent-forest-700 dark:accent-forest-400" />
         </div>
       </div>
-      <div>
-        <label class="block text-xs text-stone-500 dark:text-stone-400 mb-1">
-          {t(locale, 'filters.elevationGain')}: <span id="elevation-gain-value">&le; {maxElevationGain}m</span>
+    </div>
+    <div>
+      <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.accommodation')}</p>
+      <div class="flex flex-wrap gap-3">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-hotel" class="accent-purple-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">{t(locale, 'filters.hotel')}</span>
         </label>
-        <input type="range" id="max-elevation-gain" min="0" max={maxElevationGain} value={maxElevationGain} step="50" class="w-full accent-forest-700 dark:accent-forest-400" />
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-camping" class="accent-green-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">{t(locale, 'filters.camping')}</span>
+        </label>
       </div>
     </div>
-    <div class="flex gap-4">
-      <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300 cursor-pointer">
-        <input type="checkbox" id="filter-hotel" class="accent-purple-600 w-4 h-4" />
-        <svg class="w-4 h-4 text-purple-700 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path d="M3 21h18M3 10l9-7 9 7M5 10v11M19 10v11M9 21v-6h6v6" />
-        </svg>
-        {t(locale, 'filters.hotel')}
-      </label>
-      <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300 cursor-pointer">
-        <input type="checkbox" id="filter-camping" class="accent-green-600 w-4 h-4" />
-        <svg class="w-4 h-4 text-green-700 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L2 22h20L12 2z" />
-          <path d="M12 12v6" />
-        </svg>
-        {t(locale, 'filters.camping')}
-      </label>
+    <div>
+      <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.difficulty')}</p>
+      <div class="flex flex-wrap gap-3">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-diff-easy" class="accent-green-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">{t(locale, 'difficulty.easy')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-diff-moderate" class="accent-yellow-500 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{t(locale, 'difficulty.moderate')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-diff-difficult" class="accent-orange-500 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300">{t(locale, 'difficulty.difficult')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-diff-very-difficult" class="accent-red-500 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">{t(locale, 'difficulty.very_difficult')}</span>
+        </label>
+      </div>
     </div>
     <div>
       <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.trailType')}</p>
@@ -123,34 +104,22 @@ const clientTranslations = getClientTranslations(locale);
 </div>
 
 <script>
-  function formatDurationLabel(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0 && mins > 0) return `${hours}h${mins}min`;
-    if (hours > 0) return `${hours}h`;
-    return `${mins}min`;
-  }
-
   const filtersContainer = document.getElementById('hike-filters')!;
   const translations = JSON.parse(filtersContainer.dataset.translations || '{}');
 
-  const distanceMin = document.getElementById('distance-min') as HTMLInputElement;
-  const distanceMax = document.getElementById('distance-max') as HTMLInputElement;
-  const durationMin = document.getElementById('duration-min') as HTMLInputElement;
-  const durationMax = document.getElementById('duration-max') as HTMLInputElement;
   const maxStepDistance = document.getElementById('max-step-distance') as HTMLInputElement;
   const stepsMin = document.getElementById('steps-min') as HTMLInputElement;
   const stepsMax = document.getElementById('steps-max') as HTMLInputElement;
-  const maxElevationGain = document.getElementById('max-elevation-gain') as HTMLInputElement;
 
-  const distanceValue = document.getElementById('distance-value')!;
-  const durationValue = document.getElementById('duration-value')!;
   const maxStepValue = document.getElementById('max-step-value')!;
   const stepsValue = document.getElementById('steps-value')!;
-  const elevationGainValue = document.getElementById('elevation-gain-value')!;
   const hikeCount = document.getElementById('hike-count');
   const filterHotel = document.getElementById('filter-hotel') as HTMLInputElement;
   const filterCamping = document.getElementById('filter-camping') as HTMLInputElement;
+  const filterDiffEasy = document.getElementById('filter-diff-easy') as HTMLInputElement;
+  const filterDiffModerate = document.getElementById('filter-diff-moderate') as HTMLInputElement;
+  const filterDiffDifficult = document.getElementById('filter-diff-difficult') as HTMLInputElement;
+  const filterDiffVeryDifficult = document.getElementById('filter-diff-very-difficult') as HTMLInputElement;
   const filterTypeGr = document.getElementById('filter-type-gr') as HTMLInputElement;
   const filterTypeGrp = document.getElementById('filter-type-grp') as HTMLInputElement;
   const filterTypePr = document.getElementById('filter-type-pr') as HTMLInputElement;
@@ -158,35 +127,17 @@ const clientTranslations = getClientTranslations(locale);
   const hikeList = document.getElementById('hike-list');
   const hikeEmpty = document.getElementById('hike-empty');
 
-  // Collapsible filter panel on mobile
-  const filterToggle = document.getElementById('filter-toggle');
-  const filterPanel = document.getElementById('filter-panel');
-
-  if (filterToggle && filterPanel) {
-    filterToggle.addEventListener('click', () => {
-      const isHidden = filterPanel.classList.contains('hidden');
-      if (isHidden) {
-        filterPanel.classList.remove('hidden');
-        filterPanel.classList.add('block');
-      } else {
-        filterPanel.classList.add('hidden');
-        filterPanel.classList.remove('block');
-      }
-    });
-  }
-
   // Store default values for reset detection
   const defaults = {
-    distanceMin: distanceMin.min,
-    distanceMax: distanceMax.max,
-    durationMin: durationMin.min,
-    durationMax: durationMax.max,
-    maxStepDistance: maxStepDistance.max,
+    maxStepDistance: '20',
     stepsMin: stepsMin.min,
     stepsMax: stepsMax.max,
-    maxElevationGain: maxElevationGain.max,
     hotel: false,
     camping: false,
+    diffEasy: false,
+    diffModerate: false,
+    diffDifficult: false,
+    diffVeryDifficult: false,
     typeGr: false,
     typeGrp: false,
     typePr: false,
@@ -200,16 +151,15 @@ const clientTranslations = getClientTranslations(locale);
 
   function isNonDefault(): boolean {
     return (
-      distanceMin.value !== defaults.distanceMin ||
-      distanceMax.value !== defaults.distanceMax ||
-      durationMin.value !== defaults.durationMin ||
-      durationMax.value !== defaults.durationMax ||
       maxStepDistance.value !== defaults.maxStepDistance ||
       stepsMin.value !== defaults.stepsMin ||
       stepsMax.value !== defaults.stepsMax ||
-      maxElevationGain.value !== defaults.maxElevationGain ||
       filterHotel.checked !== defaults.hotel ||
       filterCamping.checked !== defaults.camping ||
+      filterDiffEasy.checked !== defaults.diffEasy ||
+      filterDiffModerate.checked !== defaults.diffModerate ||
+      filterDiffDifficult.checked !== defaults.diffDifficult ||
+      filterDiffVeryDifficult.checked !== defaults.diffVeryDifficult ||
       filterTypeGr.checked !== defaults.typeGr ||
       filterTypeGrp.checked !== defaults.typeGrp ||
       filterTypePr.checked !== defaults.typePr
@@ -217,16 +167,15 @@ const clientTranslations = getClientTranslations(locale);
   }
 
   function resetFilters() {
-    distanceMin.value = defaults.distanceMin;
-    distanceMax.value = defaults.distanceMax;
-    durationMin.value = defaults.durationMin;
-    durationMax.value = defaults.durationMax;
     maxStepDistance.value = defaults.maxStepDistance;
     stepsMin.value = defaults.stepsMin;
     stepsMax.value = defaults.stepsMax;
-    maxElevationGain.value = defaults.maxElevationGain;
     filterHotel.checked = false;
     filterCamping.checked = false;
+    filterDiffEasy.checked = false;
+    filterDiffModerate.checked = false;
+    filterDiffDifficult.checked = false;
+    filterDiffVeryDifficult.checked = false;
     filterTypeGr.checked = false;
     filterTypeGrp.checked = false;
     filterTypePr.checked = false;
@@ -236,16 +185,18 @@ const clientTranslations = getClientTranslations(locale);
   // URL state management
   function readFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    if (params.has('dmin')) distanceMin.value = params.get('dmin')!;
-    if (params.has('dmax')) distanceMax.value = params.get('dmax')!;
-    if (params.has('tmin')) durationMin.value = params.get('tmin')!;
-    if (params.has('tmax')) durationMax.value = params.get('tmax')!;
     if (params.has('step')) maxStepDistance.value = params.get('step')!;
     if (params.has('smin')) stepsMin.value = params.get('smin')!;
     if (params.has('smax')) stepsMax.value = params.get('smax')!;
-    if (params.has('elev')) maxElevationGain.value = params.get('elev')!;
     if (params.has('hotel')) filterHotel.checked = params.get('hotel') === '1';
     if (params.has('camping')) filterCamping.checked = params.get('camping') === '1';
+    if (params.has('diff')) {
+      const difficulties = params.get('diff')!.split(',');
+      filterDiffEasy.checked = difficulties.includes('easy');
+      filterDiffModerate.checked = difficulties.includes('moderate');
+      filterDiffDifficult.checked = difficulties.includes('difficult');
+      filterDiffVeryDifficult.checked = difficulties.includes('very_difficult');
+    }
     if (params.has('type')) {
       const types = params.get('type')!.split(',');
       filterTypeGr.checked = types.includes('gr');
@@ -260,16 +211,18 @@ const clientTranslations = getClientTranslations(locale);
     if (urlUpdateTimer) clearTimeout(urlUpdateTimer);
     urlUpdateTimer = setTimeout(() => {
       const params = new URLSearchParams();
-      if (distanceMin.value !== defaults.distanceMin) params.set('dmin', distanceMin.value);
-      if (distanceMax.value !== defaults.distanceMax) params.set('dmax', distanceMax.value);
-      if (durationMin.value !== defaults.durationMin) params.set('tmin', durationMin.value);
-      if (durationMax.value !== defaults.durationMax) params.set('tmax', durationMax.value);
       if (maxStepDistance.value !== defaults.maxStepDistance) params.set('step', maxStepDistance.value);
       if (stepsMin.value !== defaults.stepsMin) params.set('smin', stepsMin.value);
       if (stepsMax.value !== defaults.stepsMax) params.set('smax', stepsMax.value);
-      if (maxElevationGain.value !== defaults.maxElevationGain) params.set('elev', maxElevationGain.value);
       if (filterHotel.checked) params.set('hotel', '1');
       if (filterCamping.checked) params.set('camping', '1');
+      const activeDifficulties = [
+        filterDiffEasy.checked ? 'easy' : null,
+        filterDiffModerate.checked ? 'moderate' : null,
+        filterDiffDifficult.checked ? 'difficult' : null,
+        filterDiffVeryDifficult.checked ? 'very_difficult' : null,
+      ].filter(Boolean);
+      if (activeDifficulties.length > 0) params.set('diff', activeDifficulties.join(','));
       const activeTypes = [
         filterTypeGr.checked ? 'gr' : null,
         filterTypeGrp.checked ? 'grp' : null,
@@ -284,6 +237,13 @@ const clientTranslations = getClientTranslations(locale);
   }
 
   function applyFilters() {
+    const activeDifficulties = new Set([
+      filterDiffEasy.checked ? 'easy' : null,
+      filterDiffModerate.checked ? 'moderate' : null,
+      filterDiffDifficult.checked ? 'difficult' : null,
+      filterDiffVeryDifficult.checked ? 'very_difficult' : null,
+    ].filter(Boolean) as string[]);
+
     const activeRouteTypes = new Set([
       filterTypeGr.checked ? 'gr' : null,
       filterTypeGrp.checked ? 'grp' : null,
@@ -291,51 +251,37 @@ const clientTranslations = getClientTranslations(locale);
     ].filter(Boolean) as string[]);
 
     const filters = {
-      distanceMin: parseFloat(distanceMin.value),
-      distanceMax: parseFloat(distanceMax.value),
-      durationMin: parseInt(durationMin.value),
-      durationMax: parseInt(durationMax.value),
       maxStepDistance: parseFloat(maxStepDistance.value),
       stepsMin: parseInt(stepsMin.value),
       stepsMax: parseInt(stepsMax.value),
       requireHotel: filterHotel.checked,
       requireCamping: filterCamping.checked,
-      maxElevationGain: parseInt(maxElevationGain.value),
     };
 
-    distanceValue.textContent = `${filters.distanceMin} – ${filters.distanceMax} km`;
-    durationValue.textContent = `${formatDurationLabel(filters.durationMin)} – ${formatDurationLabel(filters.durationMax)}`;
     maxStepValue.textContent = `≤ ${filters.maxStepDistance} km`;
     stepsValue.textContent = `${filters.stepsMin} – ${filters.stepsMax}`;
-    elevationGainValue.textContent = `≤ ${filters.maxElevationGain}m`;
 
     const cards = document.querySelectorAll<HTMLElement>('.hike-card');
     let visibleCount = 0;
     const visibleIds = new Set<string>();
 
     cards.forEach((card) => {
-      const distance = parseFloat(card.dataset.distance || '0');
-      const duration = parseInt(card.dataset.duration || '0');
       const stepDistance = parseFloat(card.dataset.maxStepDistance || '0');
       const stepCount = parseInt(card.dataset.stepCount || '1');
       const hasHotelAllStops = card.dataset.hotelAllStops === 'true';
       const hasCampingAllStops = card.dataset.campingAllStops === 'true';
-      const elevationGain = parseInt(card.dataset.elevationGain || '0');
+      const difficulty = card.dataset.difficulty || '';
 
       const suggestHidden = card.dataset.suggestHidden === '1';
 
       const visible =
         !suggestHidden &&
-        distance >= filters.distanceMin &&
-        distance <= filters.distanceMax &&
-        duration >= filters.durationMin &&
-        duration <= filters.durationMax &&
         stepDistance <= filters.maxStepDistance &&
         stepCount >= filters.stepsMin &&
         stepCount <= filters.stepsMax &&
         (!filters.requireHotel || hasHotelAllStops) &&
         (!filters.requireCamping || hasCampingAllStops) &&
-        elevationGain <= filters.maxElevationGain &&
+        (activeDifficulties.size === 0 || activeDifficulties.has(difficulty)) &&
         (activeRouteTypes.size === 0 || activeRouteTypes.has(card.dataset.routeType || ''));
 
       card.style.display = visible ? '' : 'none';
@@ -370,10 +316,10 @@ const clientTranslations = getClientTranslations(locale);
   }
 
   // Event listeners
-  [distanceMin, distanceMax, durationMin, durationMax, maxStepDistance, stepsMin, stepsMax, maxElevationGain].forEach(
+  [maxStepDistance, stepsMin, stepsMax].forEach(
     (input) => input.addEventListener('input', applyFilters)
   );
-  [filterHotel, filterCamping, filterTypeGr, filterTypeGrp, filterTypePr].forEach(
+  [filterHotel, filterCamping, filterDiffEasy, filterDiffModerate, filterDiffDifficult, filterDiffVeryDifficult, filterTypeGr, filterTypeGrp, filterTypePr].forEach(
     (input) => input.addEventListener('change', applyFilters)
   );
 
