@@ -103,6 +103,21 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     'footer.data': 'Données',
 
+    // Suggest
+    'suggest.title': 'Trouver une randonnée',
+    'suggest.stationPlaceholder': 'Gare de départ...',
+    'suggest.time.halfDay': 'Demi-journée (4h)',
+    'suggest.time.fullDay': 'Journée (8h)',
+    'suggest.time.weekend': 'Week-end (2j)',
+    'suggest.time.multiDay': '3+ jours',
+    'suggest.clear': 'Effacer',
+    'suggest.resultsCount.one': '1 suggestion',
+    'suggest.resultsCount.many': '{count} suggestions',
+    'suggest.noResults': 'Aucune randonnée depuis cette gare pour cette durée.',
+    'suggest.section': 'Étapes {from}–{to}',
+    'suggest.departs': 'Départ',
+    'suggest.arrives': 'Arrivée',
+
     // Theme
     'theme.toggle': 'Basculer thème sombre',
   },
@@ -208,6 +223,21 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     'footer.data': 'Data',
 
+    // Suggest
+    'suggest.title': 'Find a hike',
+    'suggest.stationPlaceholder': 'Departure station...',
+    'suggest.time.halfDay': 'Half day (4h)',
+    'suggest.time.fullDay': 'Full day (8h)',
+    'suggest.time.weekend': 'Weekend (2d)',
+    'suggest.time.multiDay': '3+ days',
+    'suggest.clear': 'Clear',
+    'suggest.resultsCount.one': '1 suggestion',
+    'suggest.resultsCount.many': '{count} suggestions',
+    'suggest.noResults': 'No hikes found from this station for this duration.',
+    'suggest.section': 'Steps {from}–{to}',
+    'suggest.departs': 'Departs',
+    'suggest.arrives': 'Arrives',
+
     // Theme
     'theme.toggle': 'Toggle dark mode',
   },
@@ -252,6 +282,8 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
     'detail.loading',
     'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',
     'detail.sectionReset', 'detail.sectionDownloadGpx',
+    'suggest.resultsCount.one', 'suggest.resultsCount.many',
+    'suggest.noResults', 'suggest.section', 'suggest.departs', 'suggest.arrives',
   ];
   const result: Record<string, string> = {};
   for (const key of keys) {
