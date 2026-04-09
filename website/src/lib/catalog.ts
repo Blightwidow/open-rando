@@ -78,6 +78,17 @@ export function getHikeBySlug(slug: string): Hike | undefined {
   return getAllHikes().find((hike) => hike.slug === slug);
 }
 
+export function getStationTimetableUrl(station: StationInfo): string {
+  const slug = station.name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `https://www.garesetconnexions.sncf/fr/gares-services/${slug}`;
+}
+
 export function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
