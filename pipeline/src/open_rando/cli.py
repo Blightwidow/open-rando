@@ -8,7 +8,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from shapely.geometry import LineString, MultiLineString
+from shapely.geometry import LineString, MultiLineString, Polygon
 from shapely.ops import unary_union
 
 from open_rando.config import (
@@ -346,7 +346,7 @@ def _build_hike(
     srtm_reader: SrtmReader,
     sncf_insee: dict[str, str],
     trail: LineString | MultiLineString,
-    forest_polygons: list,
+    forest_polygons: list[Polygon],
 ) -> Hike:
     """Build a Hike object from raw steps, computing elevation and exporting files."""
     enriched_steps, _connectors_cached = attach_connectors(
