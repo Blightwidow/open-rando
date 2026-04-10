@@ -11,7 +11,7 @@ interface Props {
 }
 
 const {
-  title = 'open-rando',
+  title = 'TrainRando',
   description,
   canonicalUrl,
   ogType = 'website',
@@ -48,7 +48,7 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <meta property="og:url" content={resolvedCanonical} />
     <meta property="og:type" content={ogType} />
     <meta property="og:image" content={`${siteUrl}/logo.jpg`} />
-    <meta property="og:site_name" content="open-rando" />
+    <meta property="og:site_name" content="TrainRando" />
     <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_GB'} />
 
     <!-- Twitter Card -->
@@ -71,8 +71,8 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <nav class="sticky top-0 z-50 bg-stone-50/95 dark:bg-neutral-900/95 backdrop-blur border-b border-stone-200 dark:border-neutral-700">
       <div class="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
         <a href={locale === 'en' ? '/en/' : '/'} class="flex items-center gap-2">
-          <img src="/logo.jpg" alt="open-rando" class="w-7 h-7 rounded" />
-          <span class="font-bold text-sm">Open Rando</span>
+          <img src="/logo.jpg" alt="TrainRando" class="w-7 h-7 rounded" />
+          <span class="font-bold text-sm">TrainRando</span>
         </a>
         <div class="flex items-center gap-3">
           <a

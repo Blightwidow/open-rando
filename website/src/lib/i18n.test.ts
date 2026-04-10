@@ -3,7 +3,7 @@ import { t, getLocaleFromUrl, getAlternateUrl, formatHikeCount, getClientTransla
 
 describe('t', () => {
   test('returns French translation', () => {
-    expect(t('fr', 'site.title')).toBe('open-rando');
+    expect(t('fr', 'site.title')).toBe('TrainRando');
   });
 
   test('returns English translation', () => {
