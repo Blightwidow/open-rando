@@ -43,6 +43,7 @@ const clientTranslations = getClientTranslations(locale);
   );
 
   L.control.layers({ 'OpenTopoMap': openTopoLayer, 'Plan IGN': planIgnLayer }).addTo(map);
+  L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   const hikeLayerGroups: Map<string, L.LayerGroup> = new Map();
   const hikeGeojsonCache: Map<string, any> = new Map();

@@ -234,6 +234,7 @@ const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} 
   );
 
   L.control.layers({ 'Plan IGN': planIgnLayer, 'OpenTopoMap': openTopoLayer }).addTo(map);
+  L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   const lightStepColors = ['#E72323', '#931010'];
   const darkStepColors = ['#E72323', '#931010'];
