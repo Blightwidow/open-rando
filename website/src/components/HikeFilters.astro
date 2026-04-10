@@ -143,6 +143,9 @@ const clientTranslations = getClientTranslations(locale);
 </div>
 
 <script>
+  import { matchesFilters } from '../lib/filters';
+  import type { HikeFilterData } from '../lib/filters';
+
   const filtersContainer = document.getElementById('hike-filters')!;
   const translations = JSON.parse(filtersContainer.dataset.translations || '{}');
 
@@ -363,29 +366,25 @@ const clientTranslations = getClientTranslations(locale);
     const visibleIds = new Set<string>();
 
     cards.forEach((card) => {
-      const stepDistance = parseFloat(card.dataset.maxStepDistance || '0');
-      const stepCount = parseInt(card.dataset.stepCount || '1');
-      const hasHotelAllStops = card.dataset.hotelAllStops === 'true';
-      const hasCampingAllStops = card.dataset.campingAllStops === 'true';
-      const difficulty = card.dataset.difficulty || '';
+      const hikeData: HikeFilterData = {
+        maxStepDistance: parseFloat(card.dataset.maxStepDistance || '0'),
+        stepCount: parseInt(card.dataset.stepCount || '1'),
+        hotelAllStops: card.dataset.hotelAllStops === 'true',
+        campingAllStops: card.dataset.campingAllStops === 'true',
+        difficulty: card.dataset.difficulty || '',
+        routeType: card.dataset.routeType || '',
+        region: card.dataset.region || '',
+        terrainTags: (card.dataset.terrain || '').split(',').filter(Boolean),
+        suggestHidden: card.dataset.suggestHidden === '1',
+      };
 
-      const suggestHidden = card.dataset.suggestHidden === '1';
-
-      const cardRegion = card.dataset.region || '';
-      const cardTerrainTags = (card.dataset.terrain || '').split(',').filter(Boolean);
-      const terrainMatch = activeTerrains.size === 0 || cardTerrainTags.some((tag) => activeTerrains.has(tag));
-
-      const visible =
-        !suggestHidden &&
-        stepDistance <= filters.maxStepDistance &&
-        stepCount >= filters.stepsMin &&
-        stepCount <= filters.stepsMax &&
-        (!filters.requireHotel || hasHotelAllStops) &&
-        (!filters.requireCamping || hasCampingAllStops) &&
-        (activeDifficulties.size === 0 || activeDifficulties.has(difficulty)) &&
-        (activeRouteTypes.size === 0 || activeRouteTypes.has(card.dataset.routeType || '')) &&
-        (activeRegions.size === 0 || activeRegions.has(cardRegion)) &&
-        terrainMatch;
+      const visible = matchesFilters(hikeData, {
+        ...filters,
+        difficulties: activeDifficulties,
+        routeTypes: activeRouteTypes,
+        regions: activeRegions,
+        terrains: activeTerrains,
+      });
 
       card.style.display = visible ? '' : 'none';
       if (visible) {
