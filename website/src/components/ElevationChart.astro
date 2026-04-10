@@ -31,6 +31,7 @@ const { hikeId, locale = 'fr' } = Astro.props;
 
 <script>
   import type { ElevationProfile } from '../lib/catalog';
+  import { getSlopeColor, computeSlopePercent, formatTime } from '../lib/elevation';
 
   const chartElement = document.getElementById('elevation-chart')!;
   const container = document.getElementById('elevation-chart-container')!;
@@ -56,14 +57,6 @@ const { hikeId, locale = 'fr' } = Astro.props;
     } catch {
       chartElement.style.display = 'none';
     }
-  }
-
-  function formatTime(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.round(minutes % 60);
-    if (hours > 0 && mins > 0) return `${hours}h${String(mins).padStart(2, '0')}`;
-    if (hours > 0) return `${hours}h`;
-    return `${mins}min`;
   }
 
   function renderChart(profile: ElevationProfile) {
@@ -101,28 +94,11 @@ const { hikeId, locale = 'fr' } = Astro.props;
     const linePath = lineParts.join(' ');
 
     // Build gradient-colored area segments based on slope intensity
-    const slopeThresholds = [
-      { minSlope: 15, color: 'var(--slope-extreme, #dc2626)' },
-      { minSlope: 10, color: 'var(--slope-steep, #ea580c)' },
-      { minSlope: 5, color: 'var(--slope-moderate, #eab308)' },
-      { minSlope: 0, color: 'var(--slope-flat, #22c55e)' },
-    ];
-
-    function getSlopeColor(slopePercent: number): string {
-      const absoluteSlope = Math.abs(slopePercent);
-      for (const threshold of slopeThresholds) {
-        if (absoluteSlope >= threshold.minSlope) return threshold.color;
-      }
-      return slopeThresholds[slopeThresholds.length - 1].color;
-    }
-
     const baselineY = scaleY(minElevation).toFixed(1);
     const slopeAreaSegments: string[] = [];
 
     for (let index = 0; index < distances_km.length - 1; index++) {
-      const horizontalDistanceMeters = (distances_km[index + 1] - distances_km[index]) * 1000;
-      const verticalDelta = elevations_m[index + 1] - elevations_m[index];
-      const slopePercent = horizontalDistanceMeters > 0 ? (verticalDelta / horizontalDistanceMeters) * 100 : 0;
+      const slopePercent = computeSlopePercent(distances_km[index], elevations_m[index], distances_km[index + 1], elevations_m[index + 1]);
       const color = getSlopeColor(slopePercent);
 
       const x1 = scaleX(distances_km[index]).toFixed(1);
