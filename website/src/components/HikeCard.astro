@@ -15,7 +15,8 @@ const stationNames = [
   ...hike.steps.map((step) => step.start_station.name),
   hike.steps[hike.steps.length - 1].end_station.name,
 ];
-const maxStepDistance = Math.max(...hike.steps.map((step) => step.distance_km));
+const stepDistances = hike.steps.map((step) => step.distance_km);
+const maxStepDistance = Math.max(...stepDistances);
 
 // Intermediate + end stations only (exclude first start station)
 const overnightStations = [
@@ -65,6 +66,7 @@ const terrainColor: Record<string, string> = {
   data-step-count={hike.step_count}
   data-distance={hike.distance_km}
   data-max-step-distance={maxStepDistance}
+  data-step-distances={stepDistances.join(',')}
   data-duration={hike.estimated_duration_min}
   data-hotel-all-stops={hotelAllStops}
   data-camping-all-stops={campingAllStops}
@@ -137,5 +139,6 @@ const terrainColor: Record<string, string> = {
       {stationNames.join(' → ')}
     </div>
   )}
+  <div class="section-annotation hidden mt-2 text-xs text-blue-700 dark:text-blue-400 font-medium"></div>
   <div class="suggest-annotation hidden mt-2 text-xs text-forest-700 dark:text-forest-400 font-medium"></div>
 </a>
