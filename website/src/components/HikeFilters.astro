@@ -144,7 +144,7 @@ const clientTranslations = getClientTranslations(locale);
 
 <script>
   import { matchesFilters } from '../lib/filters';
-  import type { HikeFilterData } from '../lib/filters';
+  import type { HikeFilterData, FilterResult } from '../lib/filters';
 
   const filtersContainer = document.getElementById('hike-filters')!;
   const translations = JSON.parse(filtersContainer.dataset.translations || '{}');
@@ -369,6 +369,7 @@ const clientTranslations = getClientTranslations(locale);
       const hikeData: HikeFilterData = {
         maxStepDistance: parseFloat(card.dataset.maxStepDistance || '0'),
         stepCount: parseInt(card.dataset.stepCount || '1'),
+        stepDistances: (card.dataset.stepDistances || '').split(',').filter(Boolean).map(Number),
         hotelAllStops: card.dataset.hotelAllStops === 'true',
         campingAllStops: card.dataset.campingAllStops === 'true',
         difficulty: card.dataset.difficulty || '',
@@ -378,7 +379,7 @@ const clientTranslations = getClientTranslations(locale);
         suggestHidden: card.dataset.suggestHidden === '1',
       };
 
-      const visible = matchesFilters(hikeData, {
+      const result: FilterResult = matchesFilters(hikeData, {
         ...filters,
         difficulties: activeDifficulties,
         routeTypes: activeRouteTypes,
@@ -386,8 +387,23 @@ const clientTranslations = getClientTranslations(locale);
         terrains: activeTerrains,
       });
 
-      card.style.display = visible ? '' : 'none';
-      if (visible) {
+      card.style.display = result.visible ? '' : 'none';
+
+      // Show/hide section annotation
+      const sectionAnnotation = card.querySelector<HTMLElement>('.section-annotation');
+      if (sectionAnnotation) {
+        if (result.sectionMatch) {
+          sectionAnnotation.textContent = (translations['filters.sectionMatch'] || 'Steps {from}–{to} within limit')
+            .replace('{from}', String(result.sectionMatch.from + 1))
+            .replace('{to}', String(result.sectionMatch.to));
+          sectionAnnotation.classList.remove('hidden');
+        } else {
+          sectionAnnotation.textContent = '';
+          sectionAnnotation.classList.add('hidden');
+        }
+      }
+
+      if (result.visible) {
         visibleCount++;
         visibleIds.add(card.dataset.hikeId || '');
       }

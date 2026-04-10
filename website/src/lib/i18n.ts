@@ -136,6 +136,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'suggest.departs': 'Départ',
     'suggest.arrives': 'Arrivée',
 
+    // Section filter
+    'filters.sectionMatch': 'Étapes {from}–{to} dans la limite',
+
     // Disclaimer
     'detail.disclaimer': 'Les informations présentées (tracés, hébergements, gares) sont issues de données ouvertes et peuvent être incomplètes ou obsolètes. Vérifiez la disponibilité des hébergements, campings et horaires de train avant de partir.',
 
@@ -277,6 +280,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'suggest.departs': 'Departs',
     'suggest.arrives': 'Arrives',
 
+    // Section filter
+    'filters.sectionMatch': 'Steps {from}–{to} within limit',
+
     // Disclaimer
     'detail.disclaimer': 'The information shown (trails, accommodation, stations) is based on open data and may be incomplete or outdated. Please verify accommodation, campsite and train schedule availability before setting out.',
 
@@ -327,6 +333,7 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
     'detail.sectionReset', 'detail.sectionDownloadGpx',
     'suggest.resultsCount.one', 'suggest.resultsCount.many',
     'suggest.noResults', 'suggest.section', 'suggest.departs', 'suggest.arrives',
+    'filters.sectionMatch',
   ];
   const result: Record<string, string> = {};
   for (const key of keys) {
