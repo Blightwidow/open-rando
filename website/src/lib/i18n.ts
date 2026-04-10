@@ -3,9 +3,9 @@ export type Locale = 'fr' | 'en';
 const translations: Record<Locale, Record<string, string>> = {
   fr: {
     // Header & navigation
-    'site.title': 'open-rando',
+    'site.title': 'TrainRando',
     'site.subtitle': 'Randonnées entre gares sur les sentiers GR & PR',
-    'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR et PR, accessibles en train. open-rando est un projet open-source qui répertorie des randonnées entre gares en France.',
+    'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR et PR, accessibles en train. TrainRando est un projet open-source qui répertorie des randonnées entre gares en France.',
     'nav.back': 'Toutes les randonnées',
     'nav.language': 'EN',
     'nav.explore': 'Parcourir',
@@ -29,7 +29,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Landing - Privacy
     'landing.privacy.title': 'Aucune donnée personnelle',
-    'landing.privacy.description': 'open-rando est un site statique. Aucune donnée utilisateur n\'est collectée, stockée ou partagée. Pas de cookies, pas d\'analytics, pas de compte.',
+    'landing.privacy.description': 'TrainRando est un site statique. Aucune donnée utilisateur n\'est collectée, stockée ou partagée. Pas de cookies, pas d\'analytics, pas de compte.',
 
     // Landing - Mobile
     'landing.mobile.title': 'Bientôt : application mobile',
@@ -144,9 +144,9 @@ const translations: Record<Locale, Record<string, string>> = {
   },
   en: {
     // Header & navigation
-    'site.title': 'open-rando',
+    'site.title': 'TrainRando',
     'site.subtitle': 'Train station-to-station hikes on GR & PR trails',
-    'site.description': 'Discover hiking routes on GR and PR trails in France, accessible by train. open-rando is an open-source project cataloging station-to-station hikes.',
+    'site.description': 'Discover hiking routes on GR and PR trails in France, accessible by train. TrainRando is an open-source project cataloging station-to-station hikes.',
     'nav.back': 'All hikes',
     'nav.language': 'FR',
     'nav.explore': 'Explore',
@@ -170,7 +170,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Landing - Privacy
     'landing.privacy.title': 'No tracking, no personal data',
-    'landing.privacy.description': 'open-rando is a static site. No user data is collected, stored or shared. No cookies, no analytics, no accounts.',
+    'landing.privacy.description': 'TrainRando is a static site. No user data is collected, stored or shared. No cookies, no analytics, no accounts.',
 
     // Landing - Mobile
     'landing.mobile.title': 'Coming soon: mobile app',
