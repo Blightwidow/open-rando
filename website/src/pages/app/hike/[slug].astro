@@ -15,6 +15,13 @@ const difficultyLabels: Record<string, string> = {
   very_difficult: t(locale, 'difficulty.very_difficult'),
 };
 
+const difficultyTooltips: Record<string, string> = {
+  easy: t(locale, 'difficulty.tooltip.easy'),
+  moderate: t(locale, 'difficulty.tooltip.moderate'),
+  difficult: t(locale, 'difficulty.tooltip.difficult'),
+  very_difficult: t(locale, 'difficulty.tooltip.very_difficult'),
+};
+
 export function getStaticPaths() {
   const hikes = getAllHikes();
   return hikes.map((hike) => ({
@@ -80,8 +87,10 @@ const hikeDescription = `${hike.path_ref}: ${hikeTitle} — ${hike.distance_km} 
             <>
               <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.difficulty')}</dt>
               <dd>
-                <span class:list={[
-                  "text-xs px-2 py-0.5 rounded-full",
+                <span
+                  title={difficultyTooltips[hike.difficulty]}
+                  class:list={[
+                  "text-xs px-2 py-0.5 rounded-full cursor-help",
                   hike.difficulty === 'easy' ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300" :
                   hike.difficulty === 'moderate' ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300" :
                   hike.difficulty === 'difficult' ? "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300" :

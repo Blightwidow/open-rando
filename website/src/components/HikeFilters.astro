@@ -68,19 +68,19 @@ const clientTranslations = getClientTranslations(locale);
       <div class="flex flex-wrap gap-3">
         <label class="flex items-center gap-1.5 cursor-pointer">
           <input type="checkbox" id="filter-diff-easy" class="accent-green-600 w-4 h-4" />
-          <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">{t(locale, 'difficulty.easy')}</span>
+          <span title={t(locale, 'difficulty.tooltip.easy')} class="text-xs px-2 py-0.5 rounded-full cursor-help bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">{t(locale, 'difficulty.easy')}</span>
         </label>
         <label class="flex items-center gap-1.5 cursor-pointer">
           <input type="checkbox" id="filter-diff-moderate" class="accent-yellow-500 w-4 h-4" />
-          <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{t(locale, 'difficulty.moderate')}</span>
+          <span title={t(locale, 'difficulty.tooltip.moderate')} class="text-xs px-2 py-0.5 rounded-full cursor-help bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{t(locale, 'difficulty.moderate')}</span>
         </label>
         <label class="flex items-center gap-1.5 cursor-pointer">
           <input type="checkbox" id="filter-diff-difficult" class="accent-orange-500 w-4 h-4" />
-          <span class="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300">{t(locale, 'difficulty.difficult')}</span>
+          <span title={t(locale, 'difficulty.tooltip.difficult')} class="text-xs px-2 py-0.5 rounded-full cursor-help bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300">{t(locale, 'difficulty.difficult')}</span>
         </label>
         <label class="flex items-center gap-1.5 cursor-pointer">
           <input type="checkbox" id="filter-diff-very-difficult" class="accent-red-500 w-4 h-4" />
-          <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">{t(locale, 'difficulty.very_difficult')}</span>
+          <span title={t(locale, 'difficulty.tooltip.very_difficult')} class="text-xs px-2 py-0.5 rounded-full cursor-help bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">{t(locale, 'difficulty.very_difficult')}</span>
         </label>
       </div>
     </div>
