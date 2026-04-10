@@ -75,6 +75,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.moderate': 'Modéré',
     'difficulty.difficult': 'Difficile',
     'difficulty.very_difficult': 'Très difficile',
+    'difficulty.tooltip.easy': 'Moins de 500m de dénivelé positif et moins de 30m/km',
+    'difficulty.tooltip.moderate': 'Moins de 1000m de dénivelé positif et moins de 50m/km',
+    'difficulty.tooltip.difficult': 'Moins de 1500m de dénivelé positif et moins de 70m/km',
+    'difficulty.tooltip.very_difficult': '1500m ou plus de dénivelé positif, ou 70m/km ou plus',
 
     // Hike types
     'hike.loop': 'Boucle',
@@ -212,6 +216,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.moderate': 'Moderate',
     'difficulty.difficult': 'Difficult',
     'difficulty.very_difficult': 'Very difficult',
+    'difficulty.tooltip.easy': 'Less than 500m elevation gain and less than 30m/km',
+    'difficulty.tooltip.moderate': 'Less than 1000m elevation gain and less than 50m/km',
+    'difficulty.tooltip.difficult': 'Less than 1500m elevation gain and less than 70m/km',
+    'difficulty.tooltip.very_difficult': '1500m or more elevation gain, or 70m/km or more',
 
     // Hike types
     'hike.loop': 'Loop',
