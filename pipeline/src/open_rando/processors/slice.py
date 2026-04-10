@@ -43,7 +43,7 @@ def _extract_substring(
     all_coords: list[tuple[float, ...]] = []
     cumulative = 0.0
 
-    for segment, segment_length in zip(segments, segment_lengths):
+    for segment, segment_length in zip(segments, segment_lengths, strict=True):
         segment_start = cumulative
         segment_end = cumulative + segment_length
 
