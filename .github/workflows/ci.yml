@@ -45,4 +45,5 @@ jobs:
           mkdir -p public/data
           echo '{"generated_at":"","source":"","license":"","hikes":[]}' > public/data/catalog.json
 
+      - run: bun test
       - run: bun run astro check
