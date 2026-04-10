@@ -17,23 +17,56 @@ EARTH_RADIUS_METERS = 6_371_000
 MAX_CIRCULAR_ENDPOINT_GAP_KM = 1.0
 
 
-def _flatten_to_linestring(trail: LineString | MultiLineString) -> LineString:
-    """Convert MultiLineString to single LineString by connecting segments.
+def _extract_substring(
+    trail: LineString | MultiLineString,
+    start_fraction: float,
+    end_fraction: float,
+) -> LineString:
+    """Extract geometry between two normalized fractions along the trail.
 
-    For the slicer, this is acceptable since stations are already matched to real
-    trail positions. Gap portions become straight-line jumps.
+    For MultiLineString, fractions are relative to cumulative segment lengths
+    (matching the system used by match_stations_to_trail). Gap portions between
+    non-adjacent segments are skipped entirely — only real trail coordinates
+    are included.
     """
     if isinstance(trail, LineString):
-        return trail
+        trail_length = trail.length
+        return substring(trail, start_fraction * trail_length, end_fraction * trail_length)
 
-    all_coords: list[tuple[float, float]] = []
-    for segment in trail.geoms:
-        coords = list(segment.coords)
-        if all_coords and coords[0] != all_coords[-1]:
-            pass  # gap jump — just concatenate
-        if all_coords and coords[0] == all_coords[-1]:
+    segments = list(trail.geoms)
+    segment_lengths = [segment.length for segment in segments]
+    total_length = sum(segment_lengths)
+
+    start_distance = start_fraction * total_length
+    end_distance = end_fraction * total_length
+
+    all_coords: list[tuple[float, ...]] = []
+    cumulative = 0.0
+
+    for segment, segment_length in zip(segments, segment_lengths):
+        segment_start = cumulative
+        segment_end = cumulative + segment_length
+
+        # Skip segments entirely outside the requested range
+        if segment_end <= start_distance or segment_start >= end_distance:
+            cumulative = segment_end
+            continue
+
+        clip_start = max(0.0, start_distance - segment_start)
+        clip_end = min(segment_length, end_distance - segment_start)
+
+        clipped = substring(segment, clip_start, clip_end)
+        coords = list(clipped.coords)
+
+        # Deduplicate shared endpoints between adjacent segments
+        if all_coords and coords and coords[0] == all_coords[-1]:
             coords = coords[1:]
+
         all_coords.extend(coords)
+        cumulative = segment_end
+
+    if len(all_coords) < 2:
+        return LineString()
 
     return LineString(all_coords)
 
@@ -51,11 +84,9 @@ def find_hikes(
     (start_station, end_station, geometry, distance_km).
     Supports both LineString and MultiLineString trails.
     """
-    flat_trail = _flatten_to_linestring(trail)
-    trail_length = flat_trail.length
     station_count = len(matched_stations)
 
-    cumulative_km = _compute_cumulative_distances(flat_trail, matched_stations)
+    cumulative_km = _compute_cumulative_distances(trail, matched_stations)
 
     adjacency = _build_step_graph(
         cumulative_km, station_count, min_step_distance_km, max_step_distance_km
@@ -71,9 +102,9 @@ def find_hikes(
             target = path[step_index + 1]
             start_station = matched_stations[source][0]
             end_station = matched_stations[target][0]
-            start_distance = matched_stations[source][1] * trail_length
-            end_distance = matched_stations[target][1] * trail_length
-            geometry = substring(flat_trail, start_distance, end_distance)
+            start_fraction = matched_stations[source][1]
+            end_fraction = matched_stations[target][1]
+            geometry = _extract_substring(trail, start_fraction, end_fraction)
             distance_km = round(cumulative_km[target] - cumulative_km[source], 1)
             steps.append((start_station, end_station, geometry, distance_km))
         hikes.append(steps)
@@ -96,27 +127,36 @@ def find_round_trip_hikes(
     one "wrap-around" edge (high-index station -> low-index station via the
     closing segment of the circular trail) to form the loop.
     """
-    flat_trail = _flatten_to_linestring(trail)
-    trail_length = flat_trail.length
     station_count = len(matched_stations)
 
     if station_count < 2:
         return []
 
-    total_circumference_km = compute_segment_distance_km(flat_trail)
+    # Compute total circumference from real trail segments (no gap distances)
+    if isinstance(trail, MultiLineString):
+        total_circumference_km = sum(
+            compute_segment_distance_km(segment) for segment in trail.geoms
+        )
+    else:
+        total_circumference_km = compute_segment_distance_km(trail)
 
     # Bail out if the trail endpoints are not physically close (not a real loop).
     # Use haversine on the trail's first and last coordinate points.
-    trail_coords = list(flat_trail.coords)
-    trail_start_lon, trail_start_lat = trail_coords[0]
-    trail_end_lon, trail_end_lat = trail_coords[-1]
+    if isinstance(trail, MultiLineString):
+        segments = list(trail.geoms)
+        trail_start_lon, trail_start_lat = segments[0].coords[0]
+        trail_end_lon, trail_end_lat = segments[-1].coords[-1]
+    else:
+        trail_coords = list(trail.coords)
+        trail_start_lon, trail_start_lat = trail_coords[0]
+        trail_end_lon, trail_end_lat = trail_coords[-1]
     endpoint_gap_km = (
         haversine_distance(trail_start_lat, trail_start_lon, trail_end_lat, trail_end_lon) / 1000.0
     )
     if endpoint_gap_km > MAX_CIRCULAR_ENDPOINT_GAP_KM:
         return []
 
-    cumulative_km = _compute_cumulative_distances(flat_trail, matched_stations)
+    cumulative_km = _compute_cumulative_distances(trail, matched_stations)
     adjacency = _build_step_graph(
         cumulative_km, station_count, min_step_distance_km, max_step_distance_km
     )
@@ -190,20 +230,20 @@ def find_round_trip_hikes(
         target = path[step_index + 1]
         start_station = matched_stations[source][0]
         end_station = matched_stations[target][0]
-        start_distance = matched_stations[source][1] * trail_length
-        end_distance = matched_stations[target][1] * trail_length
-        geometry = substring(flat_trail, start_distance, end_distance)
+        start_fraction = matched_stations[source][1]
+        end_fraction = matched_stations[target][1]
+        geometry = _extract_substring(trail, start_fraction, end_fraction)
         distance_km = round(cumulative_km[target] - cumulative_km[source], 1)
         steps.append((start_station, end_station, geometry, distance_km))
 
     # Build wrap-around step: high station -> trail end -> trail start -> low station
     high_station_index = path[-1]
     low_station_index = path[0]
-    high_position = matched_stations[high_station_index][1] * trail_length
-    low_position = matched_stations[low_station_index][1] * trail_length
+    high_fraction = matched_stations[high_station_index][1]
+    low_fraction = matched_stations[low_station_index][1]
 
-    segment_to_trail_end = substring(flat_trail, high_position, trail_length)
-    segment_from_trail_start = substring(flat_trail, 0, low_position)
+    segment_to_trail_end = _extract_substring(trail, high_fraction, 1.0)
+    segment_from_trail_start = _extract_substring(trail, 0.0, low_fraction)
 
     wrap_coords = list(segment_to_trail_end.coords)
     start_to_low_coords = list(segment_from_trail_start.coords)
@@ -231,21 +271,16 @@ def find_round_trip_hikes(
 
 
 def _compute_cumulative_distances(
-    trail: LineString,
+    trail: LineString | MultiLineString,
     matched_stations: list[MatchedStation],
 ) -> list[float]:
     """Compute cumulative haversine distances along the trail for each station."""
-    trail_length = trail.length
     cumulative_km: list[float] = [0.0]
 
     for index in range(1, len(matched_stations)):
         previous_fraction = matched_stations[index - 1][1]
         current_fraction = matched_stations[index][1]
-        segment = substring(
-            trail,
-            previous_fraction * trail_length,
-            current_fraction * trail_length,
-        )
+        segment = _extract_substring(trail, previous_fraction, current_fraction)
         segment_distance = compute_segment_distance_km(segment)
         cumulative_km.append(cumulative_km[-1] + segment_distance)
 
