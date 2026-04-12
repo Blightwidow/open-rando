@@ -63,6 +63,8 @@ export interface Hike {
   is_round_trip: boolean;
   terrain: string[];
   last_updated: string;
+  route_tagline?: string;
+  route_description?: string;
 }
 
 interface Catalog {

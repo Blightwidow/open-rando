@@ -1,5 +1,6 @@
 # Pipeline output
 data/
+!pipeline/src/open_rando/data/
 
 # Python
 __pycache__/

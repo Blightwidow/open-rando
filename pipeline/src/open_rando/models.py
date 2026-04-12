@@ -89,6 +89,8 @@ class Hike:
     is_circular_trail: bool = False
     is_round_trip: bool = False
     terrain: list[str] = field(default_factory=list)
+    route_tagline: str | None = None
+    route_description: str | None = None
 
     @property
     def is_grp(self) -> bool:
@@ -99,7 +101,7 @@ class Hike:
         return len(self.steps)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result: dict[str, Any] = {
             "id": self.identifier,
             "slug": self.slug,
             "path_ref": self.path_ref,
@@ -129,6 +131,11 @@ class Hike:
             "terrain": self.terrain,
             "last_updated": self.last_updated,
         }
+        if self.route_tagline:
+            result["route_tagline"] = self.route_tagline
+        if self.route_description:
+            result["route_description"] = self.route_description
+        return result
 
 
 def generate_hike_id(path_ref: str, start_name: str, end_name: str) -> str:

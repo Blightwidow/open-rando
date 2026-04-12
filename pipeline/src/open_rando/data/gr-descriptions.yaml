@@ -1,0 +1,285 @@
+# GR route descriptions for TrainRando
+# Paraphrased from publicly available sources: ffrandonnee.fr, gr-go.fr
+# Factual geographic and historical information only.
+
+routes:
+  "GR 2":
+    tagline: "Le sentier de la Seine"
+    description: >
+      Le GR 2 suit le cours de la Seine sur près de 800 kilomètres, depuis la source du fleuve en
+      Côte-d'Or jusqu'à Dieppe sur la côte normande. L'itinéraire traverse forêts bourguignonnes,
+      vignobles champenois, la boucle de Paris et les falaises crayeuses de Haute-Normandie.
+
+  "GR 3":
+    tagline: "La Loire sauvage à pied"
+    description: >
+      Premier sentier de grande randonnée balisé en France, le GR 3 remonte la Loire depuis son
+      estuaire à Saint-Nazaire jusqu'aux monts du Forez, traversant 3 régions et 12 départements
+      sur environ 1 300 kilomètres. L'itinéraire longe le dernier grand fleuve sauvage d'Europe
+      occidentale, classé au patrimoine mondial de l'Unesco.
+
+  "GR 4":
+    tagline: "De la Méditerranée à l'Atlantique"
+    description: >
+      Le GR 4 relie Grasse, dans les Alpes-Maritimes, à Royan en Charente-Maritime sur environ
+      1 400 kilomètres. Il traverse la Haute-Provence, les Alpes-de-Haute-Provence, le Massif
+      central (Cévennes, Aubrac) et le Quercy, offrant une diagonale remarquable de la France
+      méridionale.
+
+  "GR 5":
+    tagline: "Le sentier de l'Europe"
+    description: >
+      Long de 2 500 kilomètres, le GR 5 relie Rotterdam à Nice en traversant les Pays-Bas, la
+      Belgique et la France. La section française parcourt les Vosges, le Jura, les Alpes
+      (Vanoise, Écrins, Mercantour) avant de rejoindre la Méditerranée.
+
+  "GR 6":
+    tagline: "Entre Alpes provençales et Atlantique"
+    description: >
+      Le GR 6 traverse la France horizontalement d'est en ouest, des Alpes-de-Haute-Provence
+      jusqu'au bassin d'Arcachon. Il franchit les Baronnies, le Massif central, le Quercy et les
+      Landes, reliant deux façades maritimes sur une diagonale d'environ 1 000 kilomètres.
+
+  "GR 7":
+    tagline: "Des Vosges aux Pyrénées"
+    description: >
+      Le GR 7 parcourt la France du nord-est au sud-ouest depuis le Ballon d'Alsace jusqu'en
+      Andorre, traversant les Vosges, la Bourgogne, le Massif central (Cévennes) et les
+      contreforts pyrénéens. Un grand itinéraire de plus de 1 000 kilomètres aux paysages variés.
+
+  "GR 9":
+    tagline: "Du Jura à la Méditerranée"
+    description: >
+      Le GR 9 descend du Jura jusqu'au golfe de Saint-Tropez en traversant le Bugey, les massifs
+      de Chartreuse, Vercors et Luberon. Sur environ 700 kilomètres, il offre une traversée des
+      Préalpes françaises depuis les plateaux jurassiens jusqu'aux rivages méditerranéens.
+
+  "GR 10":
+    tagline: "La grande traversée des Pyrénées"
+    description: >
+      Le GR 10 traverse les Pyrénées d'Hendaye à Banyuls-sur-Mer sur quelque 1 100 kilomètres,
+      en restant en territoire français. L'itinéraire franchit toutes les grandes vallées
+      pyrénéennes, des pays basque et béarnais à la Catalogne, avec des passages réguliers
+      au-dessus de 2 000 mètres.
+
+  "GR 13":
+    tagline: "Du Gâtinais au Morvan"
+    description: >
+      Le GR 13 relie la forêt de Fontainebleau à Bourbon-Lancy sur environ 420 kilomètres,
+      traversant le Gâtinais, l'Yonne et la Nièvre. L'itinéraire offre une belle transition entre
+      le bassin parisien et les collines boisées du Morvan.
+
+  "GR 14":
+    tagline: "Le sentier des Ardennes"
+    description: >
+      Le GR 14 relie Paris aux Ardennes belges en longeant la Marne, traversant la Champagne
+      viticole et les massifs forestiers ardennais. Environ 600 kilomètres de chemins qui font
+      découvrir l'est de la France jusqu'à la frontière belge.
+
+  "GR 20":
+    tagline: "À travers la montagne corse"
+    description: >
+      Le GR 20 traverse la Corse du nord au sud sur 200 kilomètres, de Calenzana à Conca, en
+      16 étapes. Considéré comme l'un des itinéraires de montagne les plus exigeants d'Europe,
+      il franchit régulièrement les 2 000 mètres d'altitude au cœur d'un environnement granitique
+      spectaculaire.
+
+  "GR 21":
+    tagline: "Le littoral de la Haute-Normandie"
+    description: >
+      Le GR 21 longe les falaises normandes de Dieppe au Havre sur environ 180 kilomètres.
+      L'itinéraire suit le bord des falaises crayeuses surplombant la Manche, passe par les
+      célèbres aiguilles d'Étretat et traverse plusieurs vallées encaissées rejoignant la mer.
+
+  "GR 22":
+    tagline: "Paris – Le Mont-Saint-Michel"
+    description: >
+      Le GR 22 relie Notre-Dame de Paris au Mont-Saint-Michel sur environ 450 kilomètres,
+      reprenant en partie d'anciennes routes de pèlerinage. Il traverse le Perche, le Maine et
+      la baie du Mont-Saint-Michel, permettant de rejoindre à pied l'un des sites les plus
+      emblématiques du patrimoine français.
+
+  "GR 42":
+    tagline: "Les balcons du Rhône"
+    description: >
+      Le GR 42 relie Saint-Étienne au Grau-du-Roi sur 452 kilomètres en longeant les coteaux
+      dominant le Rhône. L'itinéraire traverse l'Ardèche, le Gard et la Camargue, offrant des
+      panoramas sur le fleuve et la transition entre climat montagnard et méditerranéen.
+
+  "GR 52":
+    tagline: "La vallée des Merveilles"
+    description: >
+      Le GR 52 traverse les Alpes-Maritimes de Saint-Dalmas-Valdeblore à Menton sur 98 kilomètres,
+      au cœur du Parc national du Mercantour. Il donne accès à la Vallée des Merveilles, site
+      archéologique unique renfermant des milliers de gravures rupestres de l'âge du bronze.
+
+  "GR 54":
+    tagline: "Tour de l'Oisans et des Écrins"
+    description: >
+      Le GR 54 fait le tour du massif des Écrins sur 170 kilomètres au départ du Bourg-d'Oisans,
+      en passant par de nombreux cols au-dessus de 2 000 mètres. L'itinéraire est l'un des
+      grands tours alpins français, aux côtés du Tour du Mont-Blanc et du Tour de la Vanoise.
+
+  "GR 58":
+    tagline: "Le tour du Queyras"
+    description: >
+      Le GR 58 fait le tour du Parc naturel régional du Queyras dans les Hautes-Alpes sur
+      environ 120 kilomètres. L'itinéraire traverse des villages en bois perchés, des alpages
+      et plusieurs cols frontaliers avec l'Italie dans l'un des massifs les mieux préservés
+      des Alpes françaises.
+
+  "GR 59":
+    tagline: "Des Vosges du sud aux contreforts du Jura"
+    description: >
+      Le GR 59 relie le Ballon d'Alsace à la cluse de Pontarlier sur environ 360 kilomètres,
+      formant un trait d'union entre les Vosges méridionales et le massif du Jura. Il traverse
+      la Haute-Saône et le Doubs à travers forêts et plateaux.
+
+  "GR 65":
+    tagline: "Le chemin de Compostelle via le Puy"
+    description: >
+      Le GR 65, ou via Podiensis, relie Le Puy-en-Velay à Saint-Jean-Pied-de-Port sur environ
+      750 kilomètres. Classé au patrimoine mondial de l'Unesco, c'est le chemin de Saint-Jacques
+      le plus fréquenté de France, traversant l'Aubrac, le Quercy et la Gascogne.
+
+  "GR 69":
+    tagline: "La Routo"
+    description: >
+      Homologué en 2020, le GR 69 est un itinéraire transfrontalier de 600 kilomètres reliant
+      Arles à Cuneo en Italie, franchissant les Alpes par le col de Larche. Il suit d'anciennes
+      voies de transhumance entre la Provence, les Préalpes et les Alpes ligures.
+
+  "GR 70":
+    tagline: "Le chemin de Stevenson"
+    description: >
+      Le GR 70 relie Le Puy-en-Velay à Saint-Jean-du-Gard sur 272 kilomètres, sur les traces de
+      Robert Louis Stevenson et de son ânesse Modestine (1878). L'itinéraire traverse le Velay,
+      le Gévaudan, le plateau du Lozère et les Cévennes, classées au patrimoine mondial de l'Unesco.
+
+  "GR 71C":
+    tagline: "Chemin des Templiers et des Hospitaliers"
+    description: >
+      Le GR 71C parcourt le Parc naturel régional des Grands Causses sur 83 kilomètres en boucle,
+      entre Millau et Saint-Affrique. L'itinéraire suit les traces des ordres militaires médiévaux
+      à travers les causses calcaires et les gorges du Dourdou.
+
+  "GR 71D":
+    tagline: "Le tour du Larzac"
+    description: >
+      Le GR 71D fait le tour du plateau du Larzac sur environ 120 kilomètres, dans le Parc naturel
+      régional des Grands Causses. L'itinéraire longe les remparts des commanderies templières et
+      traverse les causses arides bordés de falaises abruptes.
+
+  "GR 78":
+    tagline: "Le chemin du Piémont pyrénéen"
+    description: >
+      Le GR 78 longe le piémont pyrénéen d'Hendaye à Carcassonne sur 500 kilomètres, en contrebas
+      des reliefs. Il relie les hautes vallées pyrénéennes entre elles à travers le pays basque,
+      le Béarn, la Bigorre et le Comminges, avec de belles vues sur la chaîne.
+
+  "GR 91":
+    tagline: "La traversée du Vercors"
+    description: >
+      Le GR 91 traverse le Parc naturel régional du Vercors du nord au sud sur 150 kilomètres,
+      de Saint-Nizier-du-Moucherotte à Brantes. Il parcourt les hauts plateaux du massif,
+      entaillés de profondes gorges, entre Drôme et Isère.
+
+  "GR 107":
+    tagline: "Le chemin des Bonshommes"
+    description: >
+      Le GR 107 relie Foix à Berga (Catalogne) sur 100 kilomètres en franchissant les Pyrénées
+      par le col de Puymorens. Il suit les anciennes voies empruntées par les Cathares en fuite
+      vers l'Aragon au XIIIe siècle, à travers le pays de l'Ariège et le Capcir.
+
+  "GR 145":
+    tagline: "La Via Francigena"
+    description: >
+      Le GR 145 suit la Via Francigena de la frontière belge à Rome sur la portion française,
+      de Reims à Pontarlier, sur environ 450 kilomètres. Ce chemin de pèlerinage médiéval
+      traverse la Champagne, la Bourgogne et le Jura.
+
+  "GR 223":
+    tagline: "Le littoral du Cotentin"
+    description: >
+      Le GR 223 longe le littoral de Basse-Normandie depuis Honfleur jusqu'au Mont-Saint-Michel
+      sur environ 360 kilomètres, en passant par les plages du débarquement, le cap de la Hague
+      et la baie du Mont-Saint-Michel.
+
+  "GR 340":
+    tagline: "Le tour de Belle-Île-en-Mer"
+    description: >
+      Le GR 340 fait le tour de Belle-Île, la plus grande des îles bretonnes, sur 95 kilomètres.
+      L'itinéraire longe des côtes sauvages alternant falaises granitiques, plages de sable et
+      criques abritées dans un paysage d'une grande diversité.
+
+  "GR 400":
+    tagline: "Le tour du massif cantalien"
+    description: >
+      Le GR 400 fait le tour du massif du Cantal sur 165 kilomètres, traversant de vastes estives
+      et plusieurs sommets dépassant 1 700 mètres. L'itinéraire passe par le Plomb du Cantal et
+      le Puy Mary, points culminants d'un volcan bouclier parmi les plus grands d'Europe.
+
+  "GR 509":
+    tagline: "La Grande Traversée du Jura"
+    description: >
+      Le GR 509 traverse le massif du Jura du nord au sud sur 350 kilomètres, de Mandeure à Culoz,
+      à travers plateaux boisés, reculées et crêts. L'itinéraire offre de nombreuses vues sur les
+      Alpes depuis les sommets jurassiens les jours de beau temps.
+
+  "GR 653":
+    tagline: "Compostelle via Arles"
+    description: >
+      Le GR 653 suit la via Tolosana de Arles à Saint-Jean-Pied-de-Port sur environ 750 kilomètres,
+      l'une des quatre grandes voies françaises vers Compostelle. L'itinéraire traverse la Camargue,
+      la Montagne Noire et le Languedoc avant de rejoindre les Pyrénées.
+
+  "GR 654":
+    tagline: "Compostelle via Vézelay"
+    description: >
+      Le GR 654 suit la via Lemovicensis de la Belgique (Namur) à Pied-de-Port sur environ
+      1 750 kilomètres côté français, en passant par Vézelay, Limoges et Périgueux. C'est la
+      via Lemovicensis, l'une des voies historiques de Compostelle.
+
+  "GR 655":
+    tagline: "Compostelle via Tours"
+    description: >
+      Le GR 655 suit la via Turonensis de Paris à Saint-Jean-Pied-de-Port sur environ 1 000
+      kilomètres, en passant par Tours, Poitiers et Bordeaux. C'est l'une des quatre grandes
+      routes historiques françaises de Saint-Jacques-de-Compostelle.
+
+  "GR 700":
+    tagline: "Le chemin de Régordane"
+    description: >
+      Le GR 700 relie Le Puy-en-Velay à Saint-Gilles (Gard) sur 190 kilomètres, suivant l'ancienne
+      voie de Régordane, route commerciale et militaire du Moyen Âge. Il descend du Massif central
+      vers la Camargue en traversant les Cévennes.
+
+  "GR 738":
+    tagline: "Haute Traversée de Belledonne"
+    description: >
+      Le GR 738 traverse la chaîne de Belledonne d'est en ouest sur 130 kilomètres entre Savoie
+      et Isère. L'itinéraire reste à haute altitude le long d'une ligne de crêtes dominant les
+      vallées de la Romanche, de l'Arc et de l'Isère, avec de nombreux passages au-dessus
+      de 2 500 mètres.
+
+  "GR 800":
+    tagline: "La vallée de la Somme"
+    description: >
+      Le GR 800 suit la vallée de la Somme depuis sa source dans l'Aisne jusqu'à la baie de Somme
+      sur environ 330 kilomètres. L'itinéraire longe étangs, marais et prairies humides de la
+      vallée, marquée par la mémoire de la Première Guerre mondiale.
+
+  "GR R1":
+    tagline: "Tour du piton des Neiges – La Réunion"
+    description: >
+      Le GR R1 fait le tour du piton des Neiges à La Réunion en six étapes pour une soixantaine
+      de kilomètres. L'itinéraire traverse les trois cirques de Cilaos, Mafate et Salazie, paysages
+      volcaniques exceptionnels classés au patrimoine mondial de l'Unesco.
+
+  "GR R2":
+    tagline: "La grande traversée de La Réunion"
+    description: >
+      Le GR R2 traverse l'île de La Réunion du nord au sud en une dizaine de jours sur environ
+      190 kilomètres, du littoral de Saint-Denis au lagon de Saint-Philippe. L'itinéraire franchit
+      le massif du piton des Neiges et longe les flancs du Piton de la Fournaise, volcan
+      parmi les plus actifs du monde.
