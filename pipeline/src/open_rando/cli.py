@@ -31,6 +31,7 @@ from open_rando.exporters.elevation import export_elevation_profile
 from open_rando.exporters.geojson import export_geojson
 from open_rando.exporters.gpx import export_gpx
 from open_rando.fetchers.accommodation import fetch_accommodation
+from open_rando.fetchers.descriptions import RouteDescription, load_route_descriptions
 from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.overpass import fetch_trail
 from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
@@ -128,6 +129,8 @@ def main() -> None:
     if sncf_codes:
         logger.info("Loaded %d SNCF station codes for filtering", len(sncf_codes))
 
+    route_descriptions = load_route_descriptions()
+
     # Cross-route station accommodation registry
     accommodation_registry: dict[str, Station] = {}
 
@@ -183,6 +186,7 @@ def main() -> None:
                 accommodation_registry=accommodation_registry,
                 sncf_codes=sncf_codes,
                 sncf_insee=sncf_insee,
+                route_descriptions=route_descriptions,
             )
             all_hikes.extend(hikes)
             successful_routes += 1
@@ -215,6 +219,7 @@ def _process_route(
     accommodation_registry: dict[str, Station],
     sncf_codes: set[str],
     sncf_insee: dict[str, str],
+    route_descriptions: dict[str, RouteDescription] | None = None,
 ) -> tuple[list[Hike], bool]:
     """Process a single route end-to-end and return generated hikes."""
     trail, trail_metadata, trail_cached = fetch_trail(relation_id)
@@ -291,6 +296,7 @@ def _process_route(
             sncf_insee=sncf_insee,
             trail=trail,
             forest_polygons=forest_polygons,
+            route_descriptions=route_descriptions,
         )
         hikes.append(hike)
     for raw_steps in round_trip_raw:
@@ -307,6 +313,7 @@ def _process_route(
             sncf_insee=sncf_insee,
             trail=trail,
             forest_polygons=forest_polygons,
+            route_descriptions=route_descriptions,
         )
         hikes.append(hike)
 
@@ -347,6 +354,7 @@ def _build_hike(
     sncf_insee: dict[str, str],
     trail: LineString | MultiLineString,
     forest_polygons: list[Polygon],
+    route_descriptions: dict[str, RouteDescription] | None = None,
 ) -> Hike:
     """Build a Hike object from raw steps, computing elevation and exporting files."""
     enriched_steps, _connectors_cached = attach_connectors(
@@ -466,6 +474,8 @@ def _build_hike(
         total_gain,
     )
 
+    description = route_descriptions.get(path_ref) if route_descriptions else None
+
     return Hike(
         identifier=hike_id,
         slug=hike_slug,
@@ -493,6 +503,8 @@ def _build_hike(
         is_circular_trail=is_circular,
         is_round_trip=is_round_trip,
         terrain=terrain,
+        route_tagline=description.tagline if description else None,
+        route_description=description.description if description else None,
     )
 
 
