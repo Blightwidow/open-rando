@@ -160,6 +160,73 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
 
       const bounds = L.geoJSON(geojson).getBounds();
       map.fitBounds(bounds, { padding: [30, 30] });
+
+      // Build distance-to-coordinate lookup for elevation chart sync
+      const allCoords: [number, number][] = [];
+      for (const feature of trailFeatures) {
+        const geom = feature.geometry;
+        const rings = geom.type === 'MultiLineString' ? geom.coordinates : [geom.coordinates];
+        for (const ring of rings) {
+          for (const coord of ring) {
+            allCoords.push([coord[1], coord[0]]);
+          }
+        }
+      }
+
+      function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+        const earthRadiusKm = 6371;
+        const deltaLat = (lat2 - lat1) * Math.PI / 180;
+        const deltaLon = (lon2 - lon1) * Math.PI / 180;
+        const halfChordSquared = Math.sin(deltaLat / 2) ** 2
+          + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(deltaLon / 2) ** 2;
+        return earthRadiusKm * 2 * Math.atan2(Math.sqrt(halfChordSquared), Math.sqrt(1 - halfChordSquared));
+      }
+
+      const cumulativeDistances: number[] = [0];
+      for (let index = 1; index < allCoords.length; index++) {
+        const segmentDistance = haversine(allCoords[index - 1][0], allCoords[index - 1][1], allCoords[index][0], allCoords[index][1]);
+        cumulativeDistances.push(cumulativeDistances[index - 1] + segmentDistance);
+      }
+      const totalTrailDistance = cumulativeDistances[cumulativeDistances.length - 1];
+
+      let hoverMarker: L.CircleMarker | null = null;
+
+      document.addEventListener('elevation-hover', ((event: CustomEvent) => {
+        const distanceKm = event.detail.distanceKm;
+
+        if (distanceKm === null || totalTrailDistance === 0) {
+          if (hoverMarker) { map.removeLayer(hoverMarker); hoverMarker = null; }
+          return;
+        }
+
+        const fraction = Math.min(distanceKm / totalTrailDistance, 1);
+        const targetDistance = fraction * totalTrailDistance;
+
+        let low = 0;
+        let high = cumulativeDistances.length - 1;
+        while (low < high - 1) {
+          const mid = (low + high) >> 1;
+          if (cumulativeDistances[mid] <= targetDistance) low = mid; else high = mid;
+        }
+
+        const segmentLength = cumulativeDistances[high] - cumulativeDistances[low];
+        const interpolation = segmentLength > 0 ? (targetDistance - cumulativeDistances[low]) / segmentLength : 0;
+        const lat = allCoords[low][0] + (allCoords[high][0] - allCoords[low][0]) * interpolation;
+        const lon = allCoords[low][1] + (allCoords[high][1] - allCoords[low][1]) * interpolation;
+
+        if (hoverMarker) {
+          hoverMarker.setLatLng([lat, lon]);
+        } else {
+          hoverMarker = L.circleMarker([lat, lon], {
+            radius: 7,
+            fillColor: '#E72323',
+            color: '#fff',
+            weight: 2,
+            fillOpacity: 1,
+          }).addTo(map);
+        }
+      }) as EventListener);
+
     } catch (error) {
       console.error('Failed to load route GeoJSON:', error);
     }

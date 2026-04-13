@@ -213,6 +213,10 @@ const { routeId, locale = 'fr' } = Astro.props;
       const timeAtPoint = times_min[closestIndex];
       const label = `${distances_km[closestIndex].toFixed(1)}km · ${Math.round(elevations_m[closestIndex])}m · ${formatTime(timeAtPoint)}`;
 
+      document.dispatchEvent(new CustomEvent('elevation-hover', {
+        detail: { distanceKm: distances_km[closestIndex] }
+      }));
+
       tooltipLine.setAttribute('x1', x.toFixed(1));
       tooltipLine.setAttribute('x2', x.toFixed(1));
       tooltipLine.style.display = '';
@@ -236,6 +240,9 @@ const { routeId, locale = 'fr' } = Astro.props;
     }
 
     function hideTooltip() {
+      document.dispatchEvent(new CustomEvent('elevation-hover', {
+        detail: { distanceKm: null }
+      }));
       tooltipLine.style.display = 'none';
       tooltipDot.style.display = 'none';
       tooltipBg.style.display = 'none';
