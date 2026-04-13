@@ -1,0 +1,83 @@
+---
+import type { Route } from '../lib/catalog';
+import { getTrainStations } from '../lib/catalog';
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/i18n';
+
+interface Props {
+  route: Route;
+  locale?: Locale;
+}
+
+const { route, locale = 'fr' } = Astro.props;
+const routeUrl = locale === 'en' ? `/en/app/route/${route.slug}` : `/app/route/${route.slug}`;
+const trainStations = getTrainStations(route);
+
+const terrainLabel: Record<string, string> = {
+  coastal: t(locale, 'terrain.coastal'),
+  mountain: t(locale, 'terrain.mountain'),
+  hills: t(locale, 'terrain.hills'),
+  forest: t(locale, 'terrain.forest'),
+  plains: t(locale, 'terrain.plains'),
+};
+
+const terrainColor: Record<string, string> = {
+  coastal: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300',
+  mountain: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  hills: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
+  forest: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+  plains: 'bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-300',
+};
+
+const difficultyLabel: Record<string, Record<string, string>> = {
+  fr: { easy: 'Facile', moderate: 'Modéré', difficult: 'Difficile', very_difficult: 'Très difficile' },
+  en: { easy: 'Easy', moderate: 'Moderate', difficult: 'Difficult', very_difficult: 'Very difficult' },
+};
+
+const difficultyColor: Record<string, string> = {
+  easy: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+  moderate: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+  difficult: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300',
+  very_difficult: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+};
+
+const difficulty = route.difficulty ?? 'unknown';
+---
+
+<a
+  href={routeUrl}
+  class="route-card block bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-stone-200 dark:border-neutral-700 p-3 sm:p-4 hover:shadow-md hover:border-forest-400 dark:hover:border-forest-600 transition-all"
+  data-route-id={route.id}
+  data-region={route.region}
+  data-terrain={(route.terrain || []).join(',')}
+  data-distance={route.distance_km}
+>
+  <div class="flex items-start justify-between gap-2">
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-forest-700 dark:text-forest-400">
+        {route.path_ref}
+      </span>
+      <h3 class="font-medium text-stone-900 dark:text-stone-100 mt-1">{route.path_name}</h3>
+    </div>
+    {difficulty !== 'unknown' && (
+      <span class:list={["text-xs px-2 py-0.5 rounded-full whitespace-nowrap font-medium", difficultyColor[difficulty] || 'bg-stone-100 text-stone-600']}>
+        {difficultyLabel[locale]?.[difficulty] ?? difficulty}
+      </span>
+    )}
+  </div>
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-stone-600 dark:text-stone-400">
+    <span>{route.distance_km} km</span>
+    {route.elevation_gain_m > 0 && <span>+{route.elevation_gain_m}m</span>}
+    <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full">
+      {trainStations.length} {locale === 'fr' ? 'gares' : 'stations'}
+    </span>
+    {(route.terrain || []).map((tag) => (
+      <span class:list={["text-xs px-2 py-0.5 rounded-full", terrainColor[tag] || 'bg-stone-100 text-stone-600']}>
+        {terrainLabel[tag] || tag}
+      </span>
+    ))}
+  </div>
+  {route.description && (
+    <p class="mt-2 text-xs text-stone-500 dark:text-stone-400 line-clamp-2">{route.description}</p>
+  )}
+</a>

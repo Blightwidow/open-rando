@@ -52,6 +52,8 @@ def _fetch_stations_bbox(
 (
   node["railway"="station"]["disused"!="yes"]["abandoned"!="yes"]({south},{west},{north},{east});
   node["railway"="halt"]["disused"!="yes"]["abandoned"!="yes"]({south},{west},{north},{east});
+  node["highway"="bus_stop"]({south},{west},{north},{east});
+  node["public_transport"="platform"]["bus"="yes"]({south},{west},{north},{east});
 );
 out body;
 """
@@ -117,17 +119,25 @@ def filter_stations_by_sncf(
     stations: list[Station],
     sncf_codes: set[str],
 ) -> list[Station]:
-    """Keep only stations whose code appears in the SNCF dataset."""
-    filtered = [station for station in stations if station.code in sncf_codes]
+    """Keep bus stops unconditionally; keep train stations only if in SNCF dataset."""
+    filtered = [
+        station
+        for station in stations
+        if station.transport_type == "bus" or station.code in sncf_codes
+    ]
     dropped_count = len(stations) - len(filtered)
     if dropped_count > 0:
-        dropped = [station for station in stations if station.code not in sncf_codes]
+        dropped = [
+            station
+            for station in stations
+            if station.transport_type == "train" and station.code not in sncf_codes
+        ]
         for station in dropped:
-            logger.debug("Dropped non-SNCF station: %s (code=%s)", station.name, station.code)
+            logger.debug("Dropped non-SNCF train station: %s (code=%s)", station.name, station.code)
         logger.info(
-            "Filtered %d OSM stations to %d SNCF-verified (dropped %d)",
-            len(stations),
-            len(filtered),
+            "Filtered %d train stations to %d SNCF-verified (dropped %d)",
+            sum(1 for station in stations if station.transport_type == "train"),
+            sum(1 for station in filtered if station.transport_type == "train"),
             dropped_count,
         )
     return filtered
@@ -165,14 +175,10 @@ def _parse_station_elements(data: dict) -> list[Station]:  # type: ignore[type-a
             logger.debug("Skipping lifecycle-prefixed station: %s", name)
             continue
 
-        code = (
-            tags.get("ref:SNCF")
-            or tags.get("railway:ref")
-            or tags.get("uic_ref")
-            or str(element["id"])
-        )
+        transport_type = _detect_transport_type(tags)
+        code = _extract_code(tags, element["id"], transport_type)
 
-        transit_lines_raw = tags.get("line", "")
+        transit_lines_raw = tags.get("line", "") or tags.get("route_ref", "")
         transit_lines = (
             [line.strip() for line in transit_lines_raw.split(";") if line.strip()]
             if transit_lines_raw
@@ -187,7 +193,32 @@ def _parse_station_elements(data: dict) -> list[Station]:  # type: ignore[type-a
                 lon=element["lon"],
                 distance_to_trail_meters=0.0,
                 transit_lines=transit_lines,
+                transport_type=transport_type,
             )
         )
 
     return stations
+
+
+def _detect_transport_type(tags: dict[str, str]) -> str:
+    """Detect transport type from OSM tags."""
+    if tags.get("railway") in ("station", "halt"):
+        return "train"
+    if tags.get("highway") == "bus_stop":
+        return "bus"
+    if tags.get("public_transport") == "platform" and tags.get("bus") == "yes":
+        return "bus"
+    return "train"
+
+
+def _extract_code(tags: dict[str, str], element_id: int, transport_type: str) -> str:
+    """Extract reference code from OSM tags based on transport type."""
+    if transport_type == "train":
+        return (
+            tags.get("ref:SNCF")
+            or tags.get("railway:ref")
+            or tags.get("uic_ref")
+            or str(element_id)
+        )
+    # Bus stops use different reference systems
+    return tags.get("ref") or tags.get("ref:FR:STIF") or tags.get("ref:FR:IDFM") or str(element_id)

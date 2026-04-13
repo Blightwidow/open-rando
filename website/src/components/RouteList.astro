@@ -1,0 +1,20 @@
+---
+import type { Route } from '../lib/catalog';
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/i18n';
+import RouteCard from './RouteCard.astro';
+
+interface Props {
+  routes: Route[];
+  locale?: Locale;
+}
+
+const { routes, locale = 'fr' } = Astro.props;
+---
+
+<div id="route-list" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {routes.map((route) => <RouteCard route={route} locale={locale} />)}
+</div>
+<div id="route-empty" class="hidden text-center py-12">
+  <p class="text-stone-500 dark:text-stone-400">{t(locale, 'filters.noResults')}</p>
+</div>

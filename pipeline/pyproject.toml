@@ -12,7 +12,7 @@ dependencies = [
     "shapely>=2.0",
     "geojson>=3.1",
     "gpxpy>=1.6",
-    "PyYAML>=6.0",
+    "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
@@ -38,3 +38,8 @@ strict = true
 [[tool.mypy.overrides]]
 module = ["shapely.*", "gpxpy.*"]
 ignore_missing_imports = true
+
+[dependency-groups]
+dev = [
+    "types-pyyaml>=6.0.12.20260408",
+]

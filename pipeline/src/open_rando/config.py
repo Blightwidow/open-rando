@@ -20,7 +20,18 @@ WALKING_SPEED_KMH = 4.5
 MIN_STEP_DISTANCE_KM = 8
 MAX_STEP_DISTANCE_KM = 25
 
+MIN_TRAIN_STATIONS_PER_ROUTE = 2
+
 ACCOMMODATION_SEARCH_RADIUS_METERS = 2000
+
+MAX_BUS_STOP_DISTANCE_METERS = 2000
+
+GTFS_STOPS_API_URL = "https://transport.data.gouv.fr/api/gtfs-stops"
+GTFS_DATASETS_API_URL = "https://transport.data.gouv.fr/api/datasets"
+GTFS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs"
+GTFS_FEEDS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs/feeds"
+GTFS_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
+GTFS_MATCH_RADIUS_METERS = 150
 
 SRTM_CACHE_DIRECTORY = "~/.cache/open-rando/srtm"
 SRTM_BASE_URL = "https://elevation-tiles-prod.s3.amazonaws.com/skadi"

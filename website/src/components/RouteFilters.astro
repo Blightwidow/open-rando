@@ -1,0 +1,205 @@
+---
+import type { Route } from '../lib/catalog';
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/i18n';
+
+interface Props {
+  routes: Route[];
+  locale?: Locale;
+}
+
+const { routes, locale = 'fr' } = Astro.props;
+
+const regions = [...new Set(routes.map((route) => route.region).filter(Boolean))].sort();
+---
+
+<div id="route-filters" class="space-y-4">
+  <div class="flex items-center justify-between">
+    <h3 class="text-sm font-semibold text-stone-700 dark:text-stone-200">{t(locale, 'filters.title')}</h3>
+    <button
+      id="reset-filters"
+      class="text-xs text-forest-700 dark:text-forest-400 hover:text-forest-900 dark:hover:text-forest-300 underline hidden"
+    >
+      {t(locale, 'filters.reset')}
+    </button>
+  </div>
+  <div id="filter-panel" class="space-y-4">
+    {regions.length > 0 && (
+      <div>
+        <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.region')}</p>
+        <div class="flex flex-wrap gap-3">
+          {regions.map((region) => (
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" class="filter-region accent-forest-700 w-4 h-4" data-region={region} />
+              <span class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300">{region}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    )}
+    <div>
+      <p class="text-xs text-stone-500 dark:text-stone-400 mb-2">{t(locale, 'filters.terrain')}</p>
+      <div class="flex flex-wrap gap-3">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-coastal" class="accent-cyan-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300">{t(locale, 'terrain.coastal')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-mountain" class="accent-slate-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300">{t(locale, 'terrain.mountain')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-hills" class="accent-amber-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">{t(locale, 'terrain.hills')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-forest" class="accent-emerald-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{t(locale, 'terrain.forest')}</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="filter-terrain-plains" class="accent-lime-600 w-4 h-4" />
+          <span class="text-xs px-2 py-0.5 rounded-full bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-300">{t(locale, 'terrain.plains')}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { matchesRouteFilters, isFilterActive } from '../lib/route-filters';
+  import type { RouteFilterData } from '../lib/route-filters';
+
+  const regionCheckboxes = document.querySelectorAll<HTMLInputElement>('.filter-region');
+  const filterTerrainCoastal = document.getElementById('filter-terrain-coastal') as HTMLInputElement;
+  const filterTerrainMountain = document.getElementById('filter-terrain-mountain') as HTMLInputElement;
+  const filterTerrainHills = document.getElementById('filter-terrain-hills') as HTMLInputElement;
+  const filterTerrainForest = document.getElementById('filter-terrain-forest') as HTMLInputElement;
+  const filterTerrainPlains = document.getElementById('filter-terrain-plains') as HTMLInputElement;
+  const resetButton = document.getElementById('reset-filters') as HTMLElement;
+  const routeList = document.getElementById('route-list');
+  const routeEmpty = document.getElementById('route-empty');
+  const routeCount = document.getElementById('route-count');
+
+  function readFiltersFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('region')) {
+      const selectedRegions = params.get('region')!.split(',');
+      regionCheckboxes.forEach((checkbox) => {
+        checkbox.checked = selectedRegions.includes(checkbox.dataset.region || '');
+      });
+    }
+    if (params.has('terrain')) {
+      const terrains = params.get('terrain')!.split(',');
+      filterTerrainCoastal.checked = terrains.includes('coastal');
+      filterTerrainMountain.checked = terrains.includes('mountain');
+      filterTerrainHills.checked = terrains.includes('hills');
+      filterTerrainForest.checked = terrains.includes('forest');
+      filterTerrainPlains.checked = terrains.includes('plains');
+    }
+  }
+
+  let urlUpdateTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function writeFiltersToUrl() {
+    if (urlUpdateTimer) clearTimeout(urlUpdateTimer);
+    urlUpdateTimer = setTimeout(() => {
+      const params = new URLSearchParams();
+      const activeRegions = Array.from(regionCheckboxes)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.region!)
+        .filter(Boolean);
+      if (activeRegions.length > 0) params.set('region', activeRegions.join(','));
+      const activeTerrains = [
+        filterTerrainCoastal.checked ? 'coastal' : null,
+        filterTerrainMountain.checked ? 'mountain' : null,
+        filterTerrainHills.checked ? 'hills' : null,
+        filterTerrainForest.checked ? 'forest' : null,
+        filterTerrainPlains.checked ? 'plains' : null,
+      ].filter(Boolean);
+      if (activeTerrains.length > 0) params.set('terrain', activeTerrains.join(','));
+
+      const queryString = params.toString();
+      const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+      history.replaceState(null, '', newUrl);
+    }, 150);
+  }
+
+  function buildFilterState() {
+    const regions = new Set(
+      Array.from(regionCheckboxes)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.region!)
+    );
+
+    const terrains = new Set([
+      filterTerrainCoastal.checked ? 'coastal' : null,
+      filterTerrainMountain.checked ? 'mountain' : null,
+      filterTerrainHills.checked ? 'hills' : null,
+      filterTerrainForest.checked ? 'forest' : null,
+      filterTerrainPlains.checked ? 'plains' : null,
+    ].filter(Boolean) as string[]);
+
+    return { regions, terrains };
+  }
+
+  function applyFilters() {
+    const filters = buildFilterState();
+    const cards = document.querySelectorAll<HTMLElement>('.route-card');
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const routeData: RouteFilterData = {
+        region: card.dataset.region || '',
+        terrainTags: (card.dataset.terrain || '').split(',').filter(Boolean),
+      };
+
+      const visible = matchesRouteFilters(routeData, filters);
+      card.style.display = visible ? '' : 'none';
+      if (visible) visibleCount++;
+    });
+
+    if (routeCount) {
+      routeCount.textContent = String(visibleCount);
+    }
+
+    if (routeList && routeEmpty) {
+      if (visibleCount === 0 && cards.length > 0) {
+        routeList.classList.add('hidden');
+        routeEmpty.classList.remove('hidden');
+      } else {
+        routeList.classList.remove('hidden');
+        routeEmpty.classList.add('hidden');
+      }
+    }
+
+    if (resetButton) {
+      resetButton.classList.toggle('hidden', !isFilterActive(filters));
+    }
+
+    writeFiltersToUrl();
+  }
+
+  function resetFilters() {
+    regionCheckboxes.forEach((checkbox) => { checkbox.checked = false; });
+    filterTerrainCoastal.checked = false;
+    filterTerrainMountain.checked = false;
+    filterTerrainHills.checked = false;
+    filterTerrainForest.checked = false;
+    filterTerrainPlains.checked = false;
+    applyFilters();
+  }
+
+  [filterTerrainCoastal, filterTerrainMountain, filterTerrainHills, filterTerrainForest, filterTerrainPlains].forEach(
+    (input) => input.addEventListener('change', applyFilters)
+  );
+  regionCheckboxes.forEach((input) => input.addEventListener('change', applyFilters));
+
+  if (resetButton) {
+    resetButton.addEventListener('click', resetFilters);
+  }
+
+  document.addEventListener('reset-filters', resetFilters);
+
+  readFiltersFromUrl();
+  applyFilters();
+</script>

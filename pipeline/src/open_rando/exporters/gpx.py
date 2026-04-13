@@ -4,37 +4,52 @@ from pathlib import Path
 
 import gpxpy
 import gpxpy.gpx
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
+
+from open_rando.models import PointOfInterest
 
 
-def export_gpx(
-    segments: list[LineString],
+def export_route_gpx(
+    trail: LineString | MultiLineString,
     name: str,
     description: str,
+    pois: list[PointOfInterest],
     output_path: str,
-    segment_elevations: list[list[float | None]] | None = None,
+    elevations: list[float | None] | None = None,
 ) -> None:
-    """Export segments as a GPX file. Each segment becomes a track segment within one track."""
+    """Export a full route trail as a GPX file with POI waypoints."""
     gpx = gpxpy.gpx.GPX()
     gpx.name = name
     gpx.description = description
     gpx.creator = "open-rando"
 
+    # Add POI waypoints (train stations only — keeps GPX useful for navigation)
+    for poi in pois:
+        if poi.poi_type == "train_station":
+            waypoint = gpxpy.gpx.GPXWaypoint(
+                latitude=poi.lat,
+                longitude=poi.lon,
+                name=poi.name,
+            )
+            gpx.waypoints.append(waypoint)
+
+    # Add trail as track
     track = gpxpy.gpx.GPXTrack(name=name)
     gpx.tracks.append(track)
 
-    for segment_index, segment in enumerate(segments):
+    segments = list(trail.geoms) if isinstance(trail, MultiLineString) else [trail]
+
+    elevation_index = 0
+    for segment in segments:
         track_segment = gpxpy.gpx.GPXTrackSegment()
         track.segments.append(track_segment)
 
-        elevations = segment_elevations[segment_index] if segment_elevations is not None else None
+        for longitude, latitude in segment.coords:
+            elevation = None
+            if elevations is not None and elevation_index < len(elevations):
+                elevation = elevations[elevation_index]
+            elevation_index += 1
 
-        for point_index, (longitude, latitude) in enumerate(segment.coords):
-            elevation = (
-                elevations[point_index]
-                if elevations is not None and point_index < len(elevations)
-                else None
-            )
             track_point = gpxpy.gpx.GPXTrackPoint(
                 latitude=latitude, longitude=longitude, elevation=elevation
             )
