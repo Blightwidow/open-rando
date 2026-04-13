@@ -29,6 +29,14 @@ from open_rando.exporters.elevation import export_route_elevation
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
 from open_rando.fetchers.discovery import discover_routes
+from open_rando.fetchers.gtfs import (
+    annotate_station_connectivity,
+    fetch_gtfs_route_connectivity,
+    fetch_gtfs_stops,
+    fetch_resource_url_map,
+    filter_and_annotate_bus_stops,
+    resolve_transit_line_names,
+)
 from open_rando.fetchers.overpass import chain_linestrings, fetch_trail
 from open_rando.fetchers.pois import (
     POI_ACCOMMODATION_RADIUS_METERS,
@@ -277,22 +285,54 @@ def _process_route(
         for station, _fraction, _junction in matched_trains
     ]
 
-    # Bus stop POIs
+    # Bus stop POIs — enrich with GTFS route names
     bus_stops = [station for station in stations if station.transport_type == "bus"]
     matched_buses = match_stations_to_trail(
         bus_stops,
         trail,
         MAX_BUS_STOP_DISTANCE_METERS,
     )
-    bus_pois = [
-        PointOfInterest(
-            name=station.name,
-            lat=station.lat,
-            lon=station.lon,
-            poi_type="bus_stop",
+
+    # GTFS enrichment: match bus stops to GTFS feeds and extract route names
+    route_names: dict[str, str] = {}
+    if matched_buses:
+        trail_bounds = trail.bounds
+        gtfs_stops, gtfs_cached = fetch_gtfs_stops(
+            south=trail_bounds[1] - 0.05,
+            west=trail_bounds[0] - 0.05,
+            north=trail_bounds[3] + 0.05,
+            east=trail_bounds[2] + 0.05,
         )
-        for station, _fraction, _junction in matched_buses
-    ]
+        all_cached = all_cached and gtfs_cached
+
+        matched_bus_stations = [station for station, _fraction, _junction in matched_buses]
+        _, gtfs_stop_id_map = filter_and_annotate_bus_stops(matched_bus_stations, gtfs_stops)
+
+        resource_ids = {
+            gtfs_stop.resource_id for matches in gtfs_stop_id_map.values() for gtfs_stop in matches
+        }
+        if resource_ids:
+            resource_url_map = fetch_resource_url_map()
+            connectivity, route_names = fetch_gtfs_route_connectivity(
+                resource_ids, resource_url_map
+            )
+            annotate_station_connectivity(matched_bus_stations, gtfs_stop_id_map, connectivity)
+
+    bus_pois = []
+    for station, _fraction, _junction in matched_buses:
+        if station.connected_route_ids:
+            lines = resolve_transit_line_names(station.connected_route_ids, route_names)
+        else:
+            lines = station.transit_lines
+        bus_pois.append(
+            PointOfInterest(
+                name=station.name,
+                lat=station.lat,
+                lon=station.lon,
+                poi_type="bus_stop",
+                transit_lines=lines,
+            )
+        )
 
     # Accommodation POIs (hotels + campings within 3km)
     if not stations_cached:

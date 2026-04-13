@@ -4,6 +4,7 @@ from open_rando.fetchers.gtfs import (
     GtfsStop,
     are_stations_transport_connected,
     filter_and_annotate_bus_stops,
+    resolve_transit_line_names,
 )
 from open_rando.fetchers.stations import (
     _detect_transport_type,
@@ -240,3 +241,27 @@ class TestAreStationsTransportConnected:
         station_a = _make_station("A", "A1", "bus")
         station_b = _make_station("B", "B1", "bus")
         assert are_stations_transport_connected(station_a, station_b) is False
+
+
+class TestResolveTransitLineNames:
+    def test_resolves_known_routes(self) -> None:
+        route_names = {"R1": "42 — Paris - Versailles", "R2": "57 — Mantes - Poissy"}
+        result = resolve_transit_line_names({"R1", "R2"}, route_names)
+        assert result == ["42 — Paris - Versailles", "57 — Mantes - Poissy"]
+
+    def test_falls_back_to_route_id(self) -> None:
+        result = resolve_transit_line_names({"R1"}, {})
+        assert result == ["R1"]
+
+    def test_skips_train_sentinel(self) -> None:
+        result = resolve_transit_line_names({"__train__", "R1"}, {"R1": "Line 1"})
+        assert result == ["Line 1"]
+
+    def test_empty_route_ids(self) -> None:
+        result = resolve_transit_line_names(set(), {"R1": "Line 1"})
+        assert result == []
+
+    def test_sorted_alphabetically(self) -> None:
+        route_names = {"R1": "Z Line", "R2": "A Line"}
+        result = resolve_transit_line_names({"R1", "R2"}, route_names)
+        assert result == ["A Line", "Z Line"]

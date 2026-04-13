@@ -47,6 +47,11 @@ class GtfsStop:
 # ---------------------------------------------------------------------------
 
 
+# Max bbox dimension in degrees before chunking (~0.25° ≈ 28km).
+# Dense urban areas (Paris) cause 422 errors at larger sizes.
+GTFS_MAX_BBOX_DEGREES = 0.25
+
+
 def fetch_gtfs_stops(
     south: float,
     west: float,
@@ -55,8 +60,61 @@ def fetch_gtfs_stops(
 ) -> tuple[list[GtfsStop], bool]:
     """Fetch GTFS-indexed stops from transport.data.gouv.fr.
 
-    Returns (list of GtfsStop, cache_hit).
+    Splits into chunks and deduplicates by stop_id.
+    Returns (list of GtfsStop, all_cached).
     """
+    seen_stop_ids: set[str] = set()
+    all_stops: list[GtfsStop] = []
+    all_cached = True
+
+    for chunk in _split_bbox(south, west, north, east, GTFS_MAX_BBOX_DEGREES):
+        chunk_stops, cached = _fetch_gtfs_stops_single(*chunk)
+        all_cached = all_cached and cached
+        for stop in chunk_stops:
+            if stop.stop_id not in seen_stop_ids:
+                seen_stop_ids.add(stop.stop_id)
+                all_stops.append(stop)
+
+    logger.info("Found %d unique GTFS stops", len(all_stops))
+    return all_stops, all_cached
+
+
+def _split_bbox(
+    south: float,
+    west: float,
+    north: float,
+    east: float,
+    max_degrees: float,
+) -> list[tuple[float, float, float, float]]:
+    """Split a bbox into chunks no larger than max_degrees on each side."""
+    width = east - west
+    height = north - south
+    lat_steps = max(1, math.ceil(height / max_degrees))
+    lon_steps = max(1, math.ceil(width / max_degrees))
+    lat_size = height / lat_steps
+    lon_size = width / lon_steps
+
+    chunks: list[tuple[float, float, float, float]] = []
+    for lat_index in range(lat_steps):
+        for lon_index in range(lon_steps):
+            chunks.append(
+                (
+                    south + lat_index * lat_size,
+                    west + lon_index * lon_size,
+                    south + (lat_index + 1) * lat_size,
+                    west + (lon_index + 1) * lon_size,
+                )
+            )
+    return chunks
+
+
+def _fetch_gtfs_stops_single(
+    south: float,
+    west: float,
+    north: float,
+    east: float,
+) -> tuple[list[GtfsStop], bool]:
+    """Fetch GTFS stops for a single bbox (no chunking)."""
     cache_key = _bbox_cache_key(south, west, north, east)
     cached = _read_stops_cache(cache_key)
     if cached is not None:
@@ -218,13 +276,14 @@ def fetch_resource_url_map() -> dict[int, str]:
 def fetch_gtfs_route_connectivity(
     resource_ids: set[int],
     resource_url_map: dict[int, str],
-) -> dict[str, set[str]]:
+) -> tuple[dict[str, set[str]], dict[str, str]]:
     """Download GTFS feeds and build stop_id → set[route_id] mapping.
 
     Only downloads feeds for the given resource_ids.
-    Returns a combined mapping across all feeds.
+    Returns (combined_connectivity, combined_route_names).
     """
     combined_connectivity: dict[str, set[str]] = {}
+    combined_route_names: dict[str, str] = {}
 
     for resource_id in resource_ids:
         url = resource_url_map.get(resource_id)
@@ -232,30 +291,37 @@ def fetch_gtfs_route_connectivity(
             logger.warning("No download URL for GTFS resource %d", resource_id)
             continue
 
-        connectivity = _fetch_feed_connectivity(resource_id, url)
+        connectivity, route_names = _fetch_feed_connectivity(resource_id, url)
         for stop_id, route_ids in connectivity.items():
             if stop_id in combined_connectivity:
                 combined_connectivity[stop_id].update(route_ids)
             else:
                 combined_connectivity[stop_id] = set(route_ids)
+        combined_route_names.update(route_names)
 
     logger.info(
         "Built route connectivity for %d stops from %d feeds",
         len(combined_connectivity),
         len(resource_ids),
     )
-    return combined_connectivity
+    return combined_connectivity, combined_route_names
 
 
-def _fetch_feed_connectivity(resource_id: int, url: str) -> dict[str, set[str]]:
-    """Download a single GTFS feed and extract stop_id → route_ids mapping.
+def _fetch_feed_connectivity(
+    resource_id: int, url: str
+) -> tuple[dict[str, set[str]], dict[str, str]]:
+    """Download a single GTFS feed and extract stop→route mapping + route names.
 
-    Cached per resource_id.
+    Cached per resource_id (cache key includes route names).
     """
-    cache_path = _generic_cache_path(f"feed_connectivity_{resource_id}")
+    cache_path = _generic_cache_path(f"feed_data_{resource_id}")
     cached = _read_generic_cache(cache_path)
     if cached is not None:
-        return {stop_id: set(route_ids) for stop_id, route_ids in cached.items()}
+        connectivity = {
+            stop_id: set(route_ids) for stop_id, route_ids in cached.get("connectivity", {}).items()
+        }
+        route_names = cached.get("route_names", {})
+        return connectivity, route_names
 
     logger.info("Downloading GTFS feed for resource %d", resource_id)
 
@@ -264,30 +330,35 @@ def _fetch_feed_connectivity(resource_id: int, url: str) -> dict[str, set[str]]:
         response.raise_for_status()
     except (requests.RequestException, requests.Timeout) as error:
         logger.warning("Failed to download GTFS feed %d: %s", resource_id, error)
-        return {}
+        return {}, {}
 
     try:
-        connectivity = _parse_gtfs_zip(response.content)
+        connectivity, route_names = _parse_gtfs_zip(response.content)
     except (zipfile.BadZipFile, KeyError, csv.Error) as error:
         logger.warning("Failed to parse GTFS feed %d: %s", resource_id, error)
-        return {}
+        return {}, {}
 
     # Cache as JSON-serializable format
-    serializable = {stop_id: list(route_ids) for stop_id, route_ids in connectivity.items()}
+    serializable = {
+        "connectivity": {stop_id: list(route_ids) for stop_id, route_ids in connectivity.items()},
+        "route_names": route_names,
+    }
     _write_generic_cache(cache_path, serializable)
 
     logger.info(
-        "Parsed GTFS feed %d: %d stops with route connectivity",
+        "Parsed GTFS feed %d: %d stops, %d route names",
         resource_id,
         len(connectivity),
+        len(route_names),
     )
-    return connectivity
+    return connectivity, route_names
 
 
-def _parse_gtfs_zip(content: bytes) -> dict[str, set[str]]:
-    """Parse a GTFS zip in memory, extracting stop_id → route_ids mapping.
+def _parse_gtfs_zip(content: bytes) -> tuple[dict[str, set[str]], dict[str, str]]:
+    """Parse a GTFS zip in memory.
 
-    Only reads trips.txt and stop_times.txt (streaming to minimize memory).
+    Returns (stop_id → route_ids, route_id → display_name).
+    Reads trips.txt, stop_times.txt, and routes.txt.
     """
     with zipfile.ZipFile(io.BytesIO(content)) as zip_file:
         # Step 1: Build trip_id → route_id from trips.txt
@@ -315,7 +386,25 @@ def _parse_gtfs_zip(content: bytes) -> dict[str, set[str]]:
                         stop_to_routes[stop_id] = set()
                     stop_to_routes[stop_id].add(route_id)
 
-    return stop_to_routes
+        # Step 3: Build route_id → display name from routes.txt
+        route_names: dict[str, str] = {}
+        try:
+            with zip_file.open("routes.txt") as routes_file:
+                reader = csv.DictReader(io.TextIOWrapper(routes_file, encoding="utf-8-sig"))
+                for row in reader:
+                    route_id = row.get("route_id", "")
+                    if not route_id:
+                        continue
+                    short_name = row.get("route_short_name", "").strip()
+                    long_name = row.get("route_long_name", "").strip()
+                    if short_name:
+                        route_names[route_id] = short_name
+                    elif long_name:
+                        route_names[route_id] = long_name
+        except KeyError:
+            logger.debug("No routes.txt in GTFS feed, skipping route names")
+
+    return stop_to_routes, route_names
 
 
 # ---------------------------------------------------------------------------
@@ -354,6 +443,21 @@ def annotate_station_connectivity(
             )
         else:
             logger.debug("Bus stop %s has no route connectivity", station.name)
+
+
+def resolve_transit_line_names(
+    connected_route_ids: set[str],
+    route_names: dict[str, str],
+) -> list[str]:
+    """Resolve route IDs to human-readable display names, sorted alphabetically."""
+    names: list[str] = []
+    for route_id in connected_route_ids:
+        if route_id == TRAIN_ROUTE_SENTINEL:
+            continue
+        display_name = route_names.get(route_id, route_id)
+        names.append(display_name)
+    names.sort()
+    return names
 
 
 def are_stations_transport_connected(station_a: Station, station_b: Station) -> bool:

@@ -53,6 +53,7 @@ class PointOfInterest:
     lon: float
     poi_type: str  # "hotel", "camping", "train_station", "bus_stop"
     url: str | None = None
+    transit_lines: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         result: dict[str, Any] = {
@@ -63,6 +64,8 @@ class PointOfInterest:
         }
         if self.url:
             result["url"] = self.url
+        if self.transit_lines:
+            result["transit_lines"] = self.transit_lines
         return result
 
 
