@@ -151,7 +151,10 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
           fillOpacity: 0.9,
         }).addTo(style.layer);
 
-        let popupContent = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>`;
+        const lines = poi.transit_lines?.length
+          ? `<br><span class="text-xs text-blue-600">${poi.transit_lines.join(', ')}</span>`
+          : '';
+        let popupContent = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>${lines}`;
         if (poi.url) {
           popupContent += `<br><a href="${poi.url}" target="_blank" rel="noopener" class="text-xs underline">Horaires</a>`;
         }
