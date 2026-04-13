@@ -379,7 +379,7 @@ def _process_route(
     # We cannot use fraction * total_distance_km because the fraction comes from
     # Shapely's Euclidean project() in degree-space, while the elevation profile
     # uses haversine distances. Extract the actual trail substring and measure it.
-    for poi, (_station, fraction, _junction) in zip(train_pois, matched_trains):
+    for poi, (_station, fraction, _junction) in zip(train_pois, matched_trains, strict=True):
         segment_to_station = _extract_substring(trail, 0.0, fraction)
         poi.distance_km = round(compute_segment_distance_km(segment_to_station), 2)
 
