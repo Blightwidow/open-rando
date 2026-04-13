@@ -25,14 +25,17 @@ def export_route_geojson(
     ]
 
     for poi in pois:
+        properties: dict[str, str] = {
+            "feature_type": "poi",
+            "poi_type": poi.poi_type,
+            "name": poi.name,
+        }
+        if poi.url is not None:
+            properties["url"] = poi.url
         features.append(
             {
                 "type": "Feature",
-                "properties": {
-                    "feature_type": "poi",
-                    "poi_type": poi.poi_type,
-                    "name": poi.name,
-                },
+                "properties": properties,
                 "geometry": {
                     "type": "Point",
                     "coordinates": [poi.lon, poi.lat],
