@@ -91,6 +91,7 @@ routes:
   - ref: "GR 30"
     name: "Tour des volcans et lacs d'Auvergne (Puy-de-Dôme)"
     description: "Boucle autour des monts et lacs volcaniques du Puy-de-Dôme, dominée par les dômes et cratères du Massif du Sancy."
+    relation_id: 10699408
   - ref: "GR 31"
     name: "Traversée de la Sologne"
     relation_id: 13046192
@@ -103,13 +104,6 @@ routes:
     name: "Chemin des Douaniers"
     relation_id: 7790332
     description: "Plus de 2 000 km le long de la côte bretonne, des plages de sable fin aux falaises avec vues plongeantes sur l'océan et villages chargés d'histoire."
-  - ref: "GR 34A"
-    name: "Au travers des Côtes-d'Armor"
-    relation_id: 14987109
-    description: ""
-  - ref: "GR 34E"
-    name: "Du Pont de Saint-Maurice (Finistère) au Pont Neuf (Morbihan)"
-    description: ""
   - ref: "GR 35"
     name: "Du Perche à la Loire"
     relation_id: 7477707
@@ -125,6 +119,7 @@ routes:
   - ref: "GR 38"
     name: "De Douarnenez (Finistère) à Redon (Ille-et-Vilaine)"
     description: "De Douarnenez à Redon sur 366 km à travers les paysages bretons, des côtes sauvages aux Monts d'Arrée en passant par la forêt de Brocéliande."
+    relation_id: 12035546
   - ref: "GR 39"
     name: "Du Mont-Saint-Michel à La Grande Brière"
     relation_id: 1824726
@@ -139,17 +134,12 @@ routes:
   - ref: "GR 42"
     name: "Balcons du Rhône"
     description: "De Saint-Étienne au Grau-du-Roi en suivant le Rhône sur 453 km, des forêts de montagne aux vignobles de la vallée du Rhône puis aux marais de Camargue."
+    relation_id: 2410123
   - ref: "GR 43"
     name: "Sentier du Col des Faïsses à Sainte-Eulalie"
     relation_id: 6438029
     description: "Des sommets granitiques du Mont Lozère aux plateaux mystérieux de la Margeride, une traversée spectaculaire entre Cévennes et terres de légendes."
   - ref: "GR 44"
-    name: "Des Vans à Champerboux"
-    relation_id: 13873396
-    description: "93 km à travers les Cévennes, des Vans à Florac, entre vallées encaissées, forêts anciennes et plateaux calcaires."
-  - ref: "GR 44B"
-    name: "Des Vans (Ardèche) à la Montagne de la Vieille Morte (Lozère)"
-    description: ""
   - ref: "GR 46"
     name: "De Tours à Toulouse"
     relation_id: 6439515
@@ -157,12 +147,15 @@ routes:
   - ref: "GR 48"
     name: "De Chinon (Indre-et-Loire) à La Ribière (Haute-Vienne)"
     description: ""
+    relation_id: 10169937
   - ref: "GR 49"
     name: "De Saint Raphaël (Var) à Rougon (Alpes de Haute-Provence)"
     description: ""
+    realtion_id: 1623140
   - ref: "GR 50"
     name: "Tour du Parc National des Ecrins (Hautes-Alpes, Isère)"
-    description: ""
+    description: "Le Tour des Écrins est une boucle épique de 370 km au cœur du massif le plus sauvage d’Europe. En passant par les Hautes-Alpes et l'Isère, ce sentier en balcon offre un panorama glaciaire spectaculaire (Meije, Barre des Écrins). Vous y découvrirez un patrimoine alpin unique – hameaux de pierre séculaires – tout en traversant forêts de mélèzes et pelouses alpines. C'est le terrain de jeu privilégié pour observer la faune emblématique : chamois, bouquetin et aigle royal."
+    relation_id: 11097196
   - ref: "GR 51"
     name: "Balcons de la Méditerranée"
     relation_id: 11087038
@@ -173,10 +166,12 @@ routes:
     description: "214 km à travers le Parc national du Mercantour, des pics granitiques aux oliveraies littorales, sur d'anciennes routes de transhumance."
   - ref: "GR 53"
     name: "De Wissembourg (Bas-Rhin) au col de l'Engin (Moselle)"
-    description: ""
+    description: "Le GR53 est une immersion spectaculaire au cœur des Vosges du Nord, reliant Wissembourg au col de l'Engin. Ce sentier historique et pionnier vous fera traverser une forêt dense de hêtres et de pins sylvestres. Le paysage y est dominé par d’impressionnants éperons de grès rose, sculptés par les siècles. Cette géologie unique a servi de fondation à une fascinante ligne de défense médiévale, que l'on observe dans des châteaux forts comme le Fleckenstein. Entre vallons secrets et crêtes panoramiques, la biodiversité est riche : c'est un sanctuaire où évoluent le lynx boréal et le grand tétras, tandis que la flore déploie ses fougères rares et ses orchidées sauvages. Le GR53 vous offre ainsi une double découverte : celle d’un passé tumultueux et celui d’une nature préservée au rythme de l'Alsace."
+    relation_id: 2603124
   - ref: "GR 54"
     name: "Tour des massifs de l'Oisans et des Ecrins (Isère, Hautes-Alpes)"
     description: ""
+    relation_id: 2909096
   - ref: "GR 55"
     name: "Parc National de la Vanoise De Tignes à Modane (Savoie)"
     description: ""
