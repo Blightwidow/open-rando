@@ -80,6 +80,58 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       </a>
     </div>
 
+    {trainStations.filter((station) => station.distance_km != null).length >= 3 && (
+      <div
+        id="section-selector"
+        class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5 space-y-4"
+        data-stations={JSON.stringify(
+          trainStations
+            .filter((station) => station.distance_km != null)
+            .sort((stationA, stationB) => stationA.distance_km! - stationB.distance_km!)
+            .map((station) => ({ name: station.name, distance_km: station.distance_km }))
+        )}
+        data-route-id={route.id}
+        data-route-ref={route.path_ref}
+      >
+        <h2 class="text-lg font-semibold">{t(locale, 'detail.sectionTitle')}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="section-from" class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionFrom')}</label>
+            <select id="section-from" class="w-full rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-3 py-2 text-sm">
+              <option value="">—</option>
+            </select>
+          </div>
+          <div>
+            <label for="section-to" class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionTo')}</label>
+            <select id="section-to" class="w-full rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-3 py-2 text-sm">
+              <option value="">—</option>
+            </select>
+          </div>
+        </div>
+        <div id="section-stats" class="hidden">
+          <dl class="grid grid-cols-2 sm:grid-cols-4 gap-y-2 text-sm">
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.distance')}</dt>
+            <dd id="section-distance" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}</dt>
+            <dd id="section-gain" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationLoss')}</dt>
+            <dd id="section-loss" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.estimatedDuration')}</dt>
+            <dd id="section-duration" class="font-medium"></dd>
+          </dl>
+          <div class="flex flex-wrap gap-3 mt-3">
+            <button id="section-download-gpx" class="inline-flex items-center gap-2 px-4 py-2 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-sm font-medium">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
+              {t(locale, 'detail.sectionDownloadGpx')}
+            </button>
+            <button id="section-reset" class="text-sm text-forest-700 dark:text-forest-400 hover:underline">
+              {t(locale, 'detail.sectionReset')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
     <ElevationChart routeId={route.id} locale={locale} />
 
     <div
@@ -231,6 +283,70 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
         }
       }) as EventListener);
 
+      // Section highlighting
+      let sectionHighlightLayer: L.Polyline | null = null;
+      let originalTrailOpacity = 0.8;
+
+      document.addEventListener('section-change', ((event: CustomEvent) => {
+        // Remove previous highlight
+        if (sectionHighlightLayer) {
+          map.removeLayer(sectionHighlightLayer);
+          sectionHighlightLayer = null;
+        }
+
+        // Reset trail opacity
+        trailLayer.eachLayer((layer: any) => {
+          if (layer.setStyle) layer.setStyle({ opacity: originalTrailOpacity });
+        });
+
+        const detail = event.detail;
+        if (!detail || detail.startKm == null || detail.endKm == null) return;
+
+        const { startKm, endKm } = detail;
+
+        // Dim main trail
+        trailLayer.eachLayer((layer: any) => {
+          if (layer.setStyle) layer.setStyle({ opacity: 0.25 });
+        });
+
+        // Find coordinate indices for section
+        function findCoordIndex(targetKm: number): number {
+          let low = 0;
+          let high = cumulativeDistances.length - 1;
+          while (low < high - 1) {
+            const mid = (low + high) >> 1;
+            if (cumulativeDistances[mid] <= targetKm) low = mid; else high = mid;
+          }
+          return low;
+        }
+
+        const startIndex = findCoordIndex(startKm);
+        const endIndex = Math.min(findCoordIndex(endKm) + 1, allCoords.length - 1);
+
+        const sectionCoords = allCoords.slice(startIndex, endIndex + 1);
+        if (sectionCoords.length >= 2) {
+          sectionHighlightLayer = L.polyline(sectionCoords, {
+            color: '#2563eb',
+            weight: 5,
+            opacity: 0.9,
+          }).addTo(map);
+          map.fitBounds(sectionHighlightLayer.getBounds(), { padding: [30, 30] });
+        }
+      }) as EventListener);
+
+      // If a section was already selected (e.g. restored from URL before map loaded),
+      // re-apply it now that the listener is ready.
+      const fromSelect = document.getElementById('section-from') as HTMLSelectElement | null;
+      const toSelect = document.getElementById('section-to') as HTMLSelectElement | null;
+      if (fromSelect?.value && toSelect?.value && fromSelect.value !== toSelect.value) {
+        let startKm = parseFloat(fromSelect.value);
+        let endKm = parseFloat(toSelect.value);
+        if (startKm > endKm) { const tmp = startKm; startKm = endKm; endKm = tmp; }
+        document.dispatchEvent(new CustomEvent('section-change', {
+          detail: { startKm, endKm }
+        }));
+      }
+
     } catch (error) {
       console.error('Failed to load route GeoJSON:', error);
     }
@@ -261,4 +377,256 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
   });
 
   loadRoute();
+</script>
+
+<script>
+  import type { RouteElevationProfile } from '../../../../lib/catalog';
+  import { formatTime } from '../../../../lib/elevation';
+
+  const selectorElement = document.getElementById('section-selector');
+  if (selectorElement) {
+    const stations: { name: string; distance_km: number }[] = JSON.parse(selectorElement.dataset.stations!);
+    const routeId = selectorElement.dataset.routeId!;
+    const routeRef = selectorElement.dataset.routeRef!;
+
+    const fromSelect = document.getElementById('section-from') as HTMLSelectElement;
+    const toSelect = document.getElementById('section-to') as HTMLSelectElement;
+    const statsContainer = document.getElementById('section-stats')!;
+    const distanceDisplay = document.getElementById('section-distance')!;
+    const gainDisplay = document.getElementById('section-gain')!;
+    const lossDisplay = document.getElementById('section-loss')!;
+    const durationDisplay = document.getElementById('section-duration')!;
+    const downloadButton = document.getElementById('section-download-gpx')!;
+    const resetButton = document.getElementById('section-reset')!;
+
+    // Populate dropdowns
+    for (const station of stations) {
+      const optionFrom = document.createElement('option');
+      optionFrom.value = String(station.distance_km);
+      optionFrom.textContent = station.name;
+      fromSelect.appendChild(optionFrom);
+
+      const optionTo = document.createElement('option');
+      optionTo.value = String(station.distance_km);
+      optionTo.textContent = station.name;
+      toSelect.appendChild(optionTo);
+    }
+
+    let elevationProfile: RouteElevationProfile | null = null;
+
+    async function loadElevationProfile(): Promise<RouteElevationProfile | null> {
+      if (elevationProfile) return elevationProfile;
+      try {
+        const response = await fetch(`/data/elevation/${routeId}.json`);
+        if (!response.ok) return null;
+        elevationProfile = await response.json();
+        return elevationProfile;
+      } catch {
+        return null;
+      }
+    }
+
+    function findProfileIndex(distances: number[], targetKm: number): number {
+      let low = 0;
+      let high = distances.length - 1;
+      while (low < high - 1) {
+        const mid = (low + high) >> 1;
+        if (distances[mid] <= targetKm) low = mid; else high = mid;
+      }
+      return low;
+    }
+
+    function updateUrlParams(fromValue: string, toValue: string) {
+      const url = new URL(window.location.href);
+      if (fromValue && toValue) {
+        url.searchParams.set('from', fromValue);
+        url.searchParams.set('to', toValue);
+      } else {
+        url.searchParams.delete('from');
+        url.searchParams.delete('to');
+      }
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    async function updateSection() {
+      const fromValue = fromSelect.value;
+      const toValue = toSelect.value;
+
+      if (!fromValue || !toValue || fromValue === toValue) {
+        statsContainer.classList.add('hidden');
+        updateUrlParams('', '');
+        document.dispatchEvent(new CustomEvent('section-change', { detail: null }));
+        return;
+      }
+
+      let startKm = parseFloat(fromValue);
+      let endKm = parseFloat(toValue);
+      if (startKm > endKm) {
+        const temporary = startKm;
+        startKm = endKm;
+        endKm = temporary;
+      }
+
+      const profile = await loadElevationProfile();
+      if (!profile) return;
+
+      const startIndex = findProfileIndex(profile.distances_km, startKm);
+      const endIndex = findProfileIndex(profile.distances_km, endKm);
+
+      // Compute section stats
+      const sectionDistanceKm = Math.abs(endKm - startKm);
+      let gain = 0;
+      let loss = 0;
+      for (let index = startIndex; index < endIndex; index++) {
+        const delta = profile.elevations_m[index + 1] - profile.elevations_m[index];
+        if (delta > 0) gain += delta;
+        else loss += Math.abs(delta);
+      }
+
+      const durationMinutes = profile.times_min[endIndex] - profile.times_min[startIndex];
+
+      distanceDisplay.textContent = `${sectionDistanceKm.toFixed(1)} km`;
+      gainDisplay.textContent = `+${Math.round(gain)}m`;
+      lossDisplay.textContent = `-${Math.round(loss)}m`;
+      durationDisplay.textContent = formatTime(Math.abs(durationMinutes));
+
+      statsContainer.classList.remove('hidden');
+
+      updateUrlParams(fromValue, toValue);
+
+      document.dispatchEvent(new CustomEvent('section-change', {
+        detail: { startKm, endKm }
+      }));
+    }
+
+    fromSelect.addEventListener('change', updateSection);
+    toSelect.addEventListener('change', updateSection);
+
+    resetButton.addEventListener('click', () => {
+      fromSelect.value = '';
+      toSelect.value = '';
+      statsContainer.classList.add('hidden');
+      updateUrlParams('', '');
+      document.dispatchEvent(new CustomEvent('section-change', { detail: null }));
+    });
+
+    // Restore section from URL params on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlFrom = urlParams.get('from');
+    const urlTo = urlParams.get('to');
+    if (urlFrom && urlTo) {
+      const validValues = new Set(stations.map((station) => String(station.distance_km)));
+      if (validValues.has(urlFrom) && validValues.has(urlTo)) {
+        fromSelect.value = urlFrom;
+        toSelect.value = urlTo;
+        updateSection();
+      }
+    }
+
+    downloadButton.addEventListener('click', async () => {
+      const fromValue = fromSelect.value;
+      const toValue = toSelect.value;
+      if (!fromValue || !toValue) return;
+
+      let startKm = parseFloat(fromValue);
+      let endKm = parseFloat(toValue);
+      if (startKm > endKm) {
+        const temporary = startKm;
+        startKm = endKm;
+        endKm = temporary;
+      }
+
+      const fromName = stations.find((station) => String(station.distance_km) === fromValue)?.name ?? '';
+      const toName = stations.find((station) => String(station.distance_km) === toValue)?.name ?? '';
+
+      // Get trail coordinates from the map's GeoJSON data
+      const mapElement = document.getElementById('detail-map')!;
+      const routeData = JSON.parse(mapElement.dataset.route!);
+      const geojsonResponse = await fetch(`/data/${routeData.geojson_path}`);
+      const geojson = await geojsonResponse.json();
+
+      const trailFeatures = geojson.features.filter((feature: any) => feature.properties.feature_type === 'trail');
+      const allCoords: [number, number][] = [];
+      for (const feature of trailFeatures) {
+        const geometry = feature.geometry;
+        const rings = geometry.type === 'MultiLineString' ? geometry.coordinates : [geometry.coordinates];
+        for (const ring of rings) {
+          for (const coord of ring) {
+            allCoords.push([coord[1], coord[0]]); // [lat, lon]
+          }
+        }
+      }
+
+      // Build cumulative distances
+      function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+        const earthRadiusKm = 6371;
+        const deltaLat = (lat2 - lat1) * Math.PI / 180;
+        const deltaLon = (lon2 - lon1) * Math.PI / 180;
+        const halfChordSquared = Math.sin(deltaLat / 2) ** 2
+          + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(deltaLon / 2) ** 2;
+        return earthRadiusKm * 2 * Math.atan2(Math.sqrt(halfChordSquared), Math.sqrt(1 - halfChordSquared));
+      }
+
+      const cumulativeDistances: number[] = [0];
+      for (let index = 1; index < allCoords.length; index++) {
+        const segmentDistance = haversine(allCoords[index - 1][0], allCoords[index - 1][1], allCoords[index][0], allCoords[index][1]);
+        cumulativeDistances.push(cumulativeDistances[index - 1] + segmentDistance);
+      }
+
+      // Find coordinate range for section
+      function findCoordIndex(targetKm: number): number {
+        let low = 0;
+        let high = cumulativeDistances.length - 1;
+        while (low < high - 1) {
+          const mid = (low + high) >> 1;
+          if (cumulativeDistances[mid] <= targetKm) low = mid; else high = mid;
+        }
+        return low;
+      }
+
+      const startIndex = findCoordIndex(startKm);
+      const endIndex = Math.min(findCoordIndex(endKm) + 1, allCoords.length - 1);
+      const sectionCoords = allCoords.slice(startIndex, endIndex + 1);
+
+      // Get elevation data for section coordinates
+      const profile = await loadElevationProfile();
+
+      // Build GPX — use absolute indices to look up cumulative distance per coord
+      let trackPoints = '';
+      for (let coordOffset = 0; coordOffset < sectionCoords.length; coordOffset++) {
+        const [lat, lon] = sectionCoords[coordOffset];
+        let elevation = '';
+        if (profile) {
+          const absoluteIndex = startIndex + coordOffset;
+          const coordDistanceKm = absoluteIndex < cumulativeDistances.length
+            ? cumulativeDistances[absoluteIndex]
+            : endKm;
+          const profileIndex = findProfileIndex(profile.distances_km, coordDistanceKm);
+          if (profileIndex < profile.elevations_m.length) {
+            elevation = `<ele>${profile.elevations_m[profileIndex].toFixed(1)}</ele>`;
+          }
+        }
+        trackPoints += `      <trkpt lat="${lat.toFixed(6)}" lon="${lon.toFixed(6)}">${elevation}</trkpt>\n`;
+      }
+
+      const gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="TrainRando" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>${routeRef} — ${fromName} → ${toName}</name>
+    <trkseg>
+${trackPoints}    </trkseg>
+  </trk>
+</gpx>`;
+
+      const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const safeFrom = fromName.replace(/\s+/g, '-');
+      const safeTo = toName.replace(/\s+/g, '-');
+      link.download = `${routeRef.replace(/\s+/g, '-')}_${safeFrom}_${safeTo}.gpx`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  }
 </script>

@@ -9,6 +9,7 @@ export interface POI {
   lon: number;
   poi_type: 'hotel' | 'camping' | 'train_station' | 'bus_stop';
   transit_lines?: string[];
+  distance_km?: number;
 }
 
 export interface Route {

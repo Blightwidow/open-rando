@@ -61,6 +61,7 @@ from open_rando.processors.geography import (
     resolve_region,
 )
 from open_rando.processors.match import match_stations_to_trail
+from open_rando.processors.slice import _extract_substring, compute_segment_distance_km
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("open_rando")
@@ -373,6 +374,14 @@ def _process_route(
     vertex_elevations = elevations_for_geometry(full_line, srtm_reader)
 
     total_distance_km = round(profile.distances_km[-1], 1) if profile.distances_km else 0.0
+
+    # Annotate train station POIs with haversine distance along the trail.
+    # We cannot use fraction * total_distance_km because the fraction comes from
+    # Shapely's Euclidean project() in degree-space, while the elevation profile
+    # uses haversine distances. Extract the actual trail substring and measure it.
+    for poi, (_station, fraction, _junction) in zip(train_pois, matched_trains, strict=True):
+        segment_to_station = _extract_substring(trail, 0.0, fraction)
+        poi.distance_km = round(compute_segment_distance_km(segment_to_station), 2)
 
     # Geography
     trail_bounds = trail.bounds

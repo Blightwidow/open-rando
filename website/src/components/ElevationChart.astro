@@ -41,6 +41,8 @@ const { routeId, locale = 'fr' } = Astro.props;
   const loading = document.getElementById('elevation-loading')!;
   const routeId = chartElement.dataset.routeId!;
 
+  let fullProfile: RouteElevationProfile | null = null;
+
   async function loadAndRender() {
     try {
       const response = await fetch(`/data/elevation/${routeId}.json`);
@@ -49,20 +51,44 @@ const { routeId, locale = 'fr' } = Astro.props;
         return;
       }
 
-      const profile: RouteElevationProfile = await response.json();
-      if (!profile.distances_km.length) {
+      fullProfile = await response.json();
+      if (!fullProfile || !fullProfile.distances_km.length) {
         chartElement.style.display = 'none';
         return;
       }
 
       loading.remove();
-      renderChart(profile);
+      renderChart(fullProfile);
     } catch {
       chartElement.style.display = 'none';
     }
   }
 
-  function renderChart(profile: RouteElevationProfile) {
+  function findProfileIndex(distances: number[], targetKm: number): number {
+    let low = 0;
+    let high = distances.length - 1;
+    while (low < high - 1) {
+      const mid = (low + high) >> 1;
+      if (distances[mid] <= targetKm) low = mid; else high = mid;
+    }
+    return low;
+  }
+
+  function sliceProfile(profile: RouteElevationProfile, startKm: number, endKm: number): RouteElevationProfile {
+    const startIndex = findProfileIndex(profile.distances_km, startKm);
+    const endIndex = Math.min(findProfileIndex(profile.distances_km, endKm) + 1, profile.distances_km.length - 1);
+
+    const distanceOffset = profile.distances_km[startIndex];
+    const timeOffset = profile.times_min[startIndex];
+
+    return {
+      distances_km: profile.distances_km.slice(startIndex, endIndex + 1).map((distance) => distance - distanceOffset),
+      elevations_m: profile.elevations_m.slice(startIndex, endIndex + 1),
+      times_min: profile.times_min.slice(startIndex, endIndex + 1).map((time) => time - timeOffset),
+    };
+  }
+
+  function renderChart(profile: RouteElevationProfile, absoluteDistanceOffset: number = 0) {
     const { distances_km, elevations_m, times_min } = profile;
 
     const viewWidth = 800;
@@ -214,7 +240,7 @@ const { routeId, locale = 'fr' } = Astro.props;
       const label = `${distances_km[closestIndex].toFixed(1)}km · ${Math.round(elevations_m[closestIndex])}m · ${formatTime(timeAtPoint)}`;
 
       document.dispatchEvent(new CustomEvent('elevation-hover', {
-        detail: { distanceKm: distances_km[closestIndex] }
+        detail: { distanceKm: distances_km[closestIndex] + absoluteDistanceOffset }
       }));
 
       tooltipLine.setAttribute('x1', x.toFixed(1));
@@ -263,6 +289,23 @@ const { routeId, locale = 'fr' } = Astro.props;
     overlay.addEventListener('touchend', hideTooltip);
 
   }
+
+  // Listen for section changes and re-render the chart clipped to the section
+  document.addEventListener('section-change', ((event: CustomEvent) => {
+    if (!fullProfile) return;
+
+    const detail = event.detail;
+    if (!detail || detail.startKm == null || detail.endKm == null) {
+      // Reset: re-render full profile
+      renderChart(fullProfile);
+      return;
+    }
+
+    const sectionProfile = sliceProfile(fullProfile, detail.startKm, detail.endKm);
+    if (sectionProfile.distances_km.length >= 2) {
+      renderChart(sectionProfile, detail.startKm);
+    }
+  }) as EventListener);
 
   loadAndRender();
 </script>
