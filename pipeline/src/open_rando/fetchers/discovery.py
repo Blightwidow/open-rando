@@ -32,13 +32,15 @@ def discover_routes(
         if relation_id is None:
             skipped_count += 1
             continue
-        routes.append({
-            "relation_id": relation_id,
-            "relation_ids": [relation_id],
-            "ref": entry["ref"],
-            "name": entry.get("name", ""),
-            "description": entry.get("description", ""),
-        })
+        routes.append(
+            {
+                "relation_id": relation_id,
+                "relation_ids": [relation_id],
+                "ref": entry["ref"],
+                "name": entry.get("name", ""),
+                "description": entry.get("description", ""),
+            }
+        )
 
     routes.sort(key=lambda route: str(route["ref"]))
 

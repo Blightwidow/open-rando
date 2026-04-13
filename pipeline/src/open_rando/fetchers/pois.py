@@ -38,7 +38,10 @@ def fetch_accommodation_pois(
 
 
 def _fetch_accommodation_bbox(
-    min_lat: float, min_lon: float, max_lat: float, max_lon: float,
+    min_lat: float,
+    min_lon: float,
+    max_lat: float,
+    max_lon: float,
 ) -> tuple[list[PointOfInterest], bool]:
     """Fetch accommodation within a single bounding box."""
     south = min_lat - BOUNDING_BOX_MARGIN_DEGREES
@@ -78,10 +81,7 @@ def _fetch_accommodation_chunked(
         segment_width = segment_bounds[2] - segment_bounds[0]
         segment_height = segment_bounds[3] - segment_bounds[1]
 
-        if (
-            segment_width <= MAX_STATION_BBOX_DEGREES
-            and segment_height <= MAX_STATION_BBOX_DEGREES
-        ):
+        if segment_width <= MAX_STATION_BBOX_DEGREES and segment_height <= MAX_STATION_BBOX_DEGREES:
             chunks.append(segment_bounds)
         else:
             coords = list(segment.coords)
@@ -91,10 +91,7 @@ def _fetch_accommodation_chunked(
                 current_bounds = _coords_bounds(chunk_coords)
                 width = current_bounds[2] - current_bounds[0]
                 height = current_bounds[3] - current_bounds[1]
-                if (
-                    width > MAX_STATION_BBOX_DEGREES
-                    or height > MAX_STATION_BBOX_DEGREES
-                ):
+                if width > MAX_STATION_BBOX_DEGREES or height > MAX_STATION_BBOX_DEGREES:
                     chunks.append(_coords_bounds(chunk_coords[:-1]))
                     chunk_coords = [chunk_coords[-2], coord]
             if len(chunk_coords) >= 2:
@@ -111,7 +108,10 @@ def _fetch_accommodation_chunked(
         if chunk_index > 0 and not previous_was_cached:
             time.sleep(OVERPASS_COOLDOWN_SECONDS)
         chunk_pois, cache_hit = _fetch_accommodation_bbox(
-            min_lat, min_lon, max_lat, max_lon,
+            min_lat,
+            min_lon,
+            max_lat,
+            max_lon,
         )
         previous_was_cached = cache_hit
         if not cache_hit:

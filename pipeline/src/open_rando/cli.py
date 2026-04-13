@@ -136,15 +136,12 @@ def main() -> None:
         route_ref = str(discovered_route["ref"])
         fallback_ids = [discovered_route["relation_id"]]
         route_relation_ids: list[int] = [
-            int(relation_id)
-            for relation_id in discovered_route.get("relation_ids", fallback_ids)
+            int(relation_id) for relation_id in discovered_route.get("relation_ids", fallback_ids)
         ]
         if route_index > 0 and previous_route_used_api:
             time.sleep(OVERPASS_COOLDOWN_SECONDS)
 
-        relation_label = ", ".join(
-            str(relation_id) for relation_id in route_relation_ids
-        )
+        relation_label = ", ".join(str(relation_id) for relation_id in route_relation_ids)
         logger.info(
             "=== [%d/%d] Processing %s (relations: %s) ===",
             route_index + 1,
@@ -254,11 +251,11 @@ def _process_route(
     # Train station POIs (SNCF-filtered)
     sncf_stations = filter_stations_by_sncf(stations, sncf_codes) if sncf_codes else stations
 
-    train_stations = [
-        station for station in sncf_stations if station.transport_type == "train"
-    ]
+    train_stations = [station for station in sncf_stations if station.transport_type == "train"]
     matched_trains = match_stations_to_trail(
-        train_stations, trail, MAX_STATION_DISTANCE_METERS,
+        train_stations,
+        trail,
+        MAX_STATION_DISTANCE_METERS,
     )
 
     if len(matched_trains) < MIN_TRAIN_STATIONS_PER_ROUTE:
@@ -271,22 +268,26 @@ def _process_route(
 
     train_pois = [
         PointOfInterest(
-            name=station.name, lat=station.lat, lon=station.lon,
+            name=station.name,
+            lat=station.lat,
+            lon=station.lon,
             poi_type="train_station",
         )
         for station, _fraction, _junction in matched_trains
     ]
 
     # Bus stop POIs
-    bus_stops = [
-        station for station in stations if station.transport_type == "bus"
-    ]
+    bus_stops = [station for station in stations if station.transport_type == "bus"]
     matched_buses = match_stations_to_trail(
-        bus_stops, trail, MAX_BUS_STOP_DISTANCE_METERS,
+        bus_stops,
+        trail,
+        MAX_BUS_STOP_DISTANCE_METERS,
     )
     bus_pois = [
         PointOfInterest(
-            name=station.name, lat=station.lat, lon=station.lon,
+            name=station.name,
+            lat=station.lat,
+            lon=station.lon,
             poi_type="bus_stop",
         )
         for station, _fraction, _junction in matched_buses
@@ -298,7 +299,9 @@ def _process_route(
 
     accommodation_pois, accommodation_cached = fetch_accommodation_pois(trail)
     accommodation_pois = filter_pois_by_trail_distance(
-        accommodation_pois, trail, POI_ACCOMMODATION_RADIUS_METERS,
+        accommodation_pois,
+        trail,
+        POI_ACCOMMODATION_RADIUS_METERS,
     )
     all_cached = all_cached and accommodation_cached
 
@@ -322,7 +325,9 @@ def _process_route(
         full_line = trail
 
     profile = compute_elevation_profile(
-        full_line, srtm_reader, ELEVATION_SAMPLE_INTERVAL_METERS,
+        full_line,
+        srtm_reader,
+        ELEVATION_SAMPLE_INTERVAL_METERS,
     )
     vertex_elevations = elevations_for_geometry(full_line, srtm_reader)
 
@@ -333,9 +338,7 @@ def _process_route(
     forest_polygons = fetch_forest_areas(trail_bounds)
     is_circular = _detect_circular_trail(trail)
 
-    matched_station_codes = [
-        station.code for station, _fraction, _junction in matched_trains
-    ]
+    matched_station_codes = [station.code for station, _fraction, _junction in matched_trains]
     departement = resolve_departement(matched_station_codes[0], sncf_insee)
     region = resolve_region(departement)
     forest_ratio = compute_forest_ratio(trail, forest_polygons)
@@ -430,11 +433,7 @@ def _detect_circular_trail(trail: LineString | MultiLineString) -> bool:
         last_point = trail.coords[-1]
 
     distance_degrees = float(
-        (
-            (first_point[0] - last_point[0]) ** 2
-            + (first_point[1] - last_point[1]) ** 2
-        )
-        ** 0.5
+        ((first_point[0] - last_point[0]) ** 2 + (first_point[1] - last_point[1]) ** 2) ** 0.5
     )
     # ~5km threshold
     return distance_degrees < 0.05
