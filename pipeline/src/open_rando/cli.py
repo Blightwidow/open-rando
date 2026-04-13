@@ -38,7 +38,7 @@ from open_rando.fetchers.pois import (
 from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
 from open_rando.fetchers.srtm import SrtmReader
 from open_rando.fetchers.stations import fetch_stations, filter_stations_by_sncf
-from open_rando.models import PointOfInterest, Route, generate_route_id, slugify
+from open_rando.models import PointOfInterest, Route, generate_route_id, slugify, slugify_sncf
 from open_rando.processors.elevation import (
     classify_difficulty,
     compute_elevation_profile,
@@ -272,6 +272,7 @@ def _process_route(
             lat=station.lat,
             lon=station.lon,
             poi_type="train_station",
+            url=_build_sncf_url(station.name),
         )
         for station, _fraction, _junction in matched_trains
     ]
@@ -421,6 +422,12 @@ def _process_route(
     )
 
     return route, all_cached
+
+
+def _build_sncf_url(station_name: str) -> str:
+    """Build a garesetconnexions.sncf URL from a station name."""
+    slug = slugify_sncf(station_name)
+    return f"https://www.garesetconnexions.sncf/fr/gares-services/{slug}/horaires"
 
 
 def _detect_circular_trail(trail: LineString | MultiLineString) -> bool:

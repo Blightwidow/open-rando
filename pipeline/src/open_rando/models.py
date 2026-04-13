@@ -52,14 +52,18 @@ class PointOfInterest:
     lat: float
     lon: float
     poi_type: str  # "hotel", "camping", "train_station", "bus_stop"
+    url: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result: dict[str, Any] = {
             "name": self.name,
             "lat": self.lat,
             "lon": self.lon,
             "poi_type": self.poi_type,
         }
+        if self.url:
+            result["url"] = self.url
+        return result
 
 
 @dataclass
@@ -124,3 +128,16 @@ def slugify(text: str) -> str:
     ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
     cleaned = re.sub(r"[^\w\s-]", "", ascii_text.lower())
     return re.sub(r"[-\s]+", "-", cleaned).strip("-")
+
+
+def slugify_sncf(station_name: str) -> str:
+    """Slugify a station name for garesetconnexions.sncf URLs.
+
+    Strips accents, lowercases, splits on non-alphanumeric chars,
+    drops single-character fragments (e.g. "l" from "l'Amaury").
+    """
+    normalized = unicodedata.normalize("NFKD", station_name)
+    ascii_text = normalized.encode("ascii", "ignore").decode("ascii").lower()
+    words = re.split(r"[^a-z0-9]+", ascii_text)
+    words = [word for word in words if len(word) > 1]
+    return "-".join(words)
