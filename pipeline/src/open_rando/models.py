@@ -54,6 +54,7 @@ class PointOfInterest:
     poi_type: str  # "hotel", "camping", "train_station", "bus_stop"
     url: str | None = None
     transit_lines: list[str] = field(default_factory=list)
+    distance_km: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         result: dict[str, Any] = {
@@ -66,6 +67,8 @@ class PointOfInterest:
             result["url"] = self.url
         if self.transit_lines:
             result["transit_lines"] = self.transit_lines
+        if self.distance_km is not None:
+            result["distance_km"] = self.distance_km
         return result
 
 
