@@ -309,18 +309,14 @@ def _process_route(
         _, gtfs_stop_id_map = filter_and_annotate_bus_stops(matched_bus_stations, gtfs_stops)
 
         resource_ids = {
-            gtfs_stop.resource_id
-            for matches in gtfs_stop_id_map.values()
-            for gtfs_stop in matches
+            gtfs_stop.resource_id for matches in gtfs_stop_id_map.values() for gtfs_stop in matches
         }
         if resource_ids:
             resource_url_map = fetch_resource_url_map()
             connectivity, route_names = fetch_gtfs_route_connectivity(
                 resource_ids, resource_url_map
             )
-            annotate_station_connectivity(
-                matched_bus_stations, gtfs_stop_id_map, connectivity
-            )
+            annotate_station_connectivity(matched_bus_stations, gtfs_stop_id_map, connectivity)
 
     bus_pois = []
     for station, _fraction, _junction in matched_buses:

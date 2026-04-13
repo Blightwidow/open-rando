@@ -97,12 +97,14 @@ def _split_bbox(
     chunks: list[tuple[float, float, float, float]] = []
     for lat_index in range(lat_steps):
         for lon_index in range(lon_steps):
-            chunks.append((
-                south + lat_index * lat_size,
-                west + lon_index * lon_size,
-                south + (lat_index + 1) * lat_size,
-                west + (lon_index + 1) * lon_size,
-            ))
+            chunks.append(
+                (
+                    south + lat_index * lat_size,
+                    west + lon_index * lon_size,
+                    south + (lat_index + 1) * lat_size,
+                    west + (lon_index + 1) * lon_size,
+                )
+            )
     return chunks
 
 
@@ -316,8 +318,7 @@ def _fetch_feed_connectivity(
     cached = _read_generic_cache(cache_path)
     if cached is not None:
         connectivity = {
-            stop_id: set(route_ids)
-            for stop_id, route_ids in cached.get("connectivity", {}).items()
+            stop_id: set(route_ids) for stop_id, route_ids in cached.get("connectivity", {}).items()
         }
         route_names = cached.get("route_names", {})
         return connectivity, route_names
