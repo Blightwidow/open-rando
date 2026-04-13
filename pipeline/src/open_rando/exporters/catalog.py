@@ -5,16 +5,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from open_rando.models import Hike
+from open_rando.models import Route
 
 
-def export_catalog(hikes: list[Hike | dict[str, Any]], output_path: str) -> None:
-    """Write catalog.json containing all hike metadata."""
+def export_route_catalog(routes: list[Route | dict[str, Any]], output_path: str) -> None:
+    """Write catalog.json containing all route metadata with ordered stations."""
     catalog = {
         "generated_at": datetime.now(UTC).isoformat(),
         "source": "OpenStreetMap via Overpass API",
         "license": "ODbL",
-        "hikes": [hike.to_dict() if isinstance(hike, Hike) else hike for hike in hikes],
+        "routes": [route.to_dict() if isinstance(route, Route) else route for route in routes],
     }
 
     path = Path(output_path)

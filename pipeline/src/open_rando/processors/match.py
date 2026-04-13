@@ -30,23 +30,32 @@ def match_stations_to_trail(
     stations: list[Station],
     trail: LineString | MultiLineString,
     max_distance_meters: float,
+    max_bus_stop_distance_meters: float | None = None,
 ) -> list[MatchedStation]:
     """Match stations to the trail within max_distance_meters.
 
     Returns (station, fraction_along_trail, junction_point) triples sorted by
     position along trail. The junction_point is the nearest point on the trail
     as (lon, lat). Supports both LineString and MultiLineString trails.
+
+    When max_bus_stop_distance_meters is provided, bus stops use that tighter
+    distance threshold instead of max_distance_meters.
     """
     if isinstance(trail, MultiLineString):
-        return _match_stations_multiline(stations, trail, max_distance_meters)
+        return _match_stations_multiline(
+            stations, trail, max_distance_meters, max_bus_stop_distance_meters
+        )
 
-    return _match_stations_single(stations, trail, max_distance_meters)
+    return _match_stations_single(
+        stations, trail, max_distance_meters, max_bus_stop_distance_meters
+    )
 
 
 def _match_stations_single(
     stations: list[Station],
     trail: LineString,
     max_distance_meters: float,
+    max_bus_stop_distance_meters: float | None = None,
 ) -> list[MatchedStation]:
     """Match stations to a single LineString trail."""
     candidates: list[MatchedStation] = []
@@ -58,7 +67,11 @@ def _match_stations_single(
         raw_distance = station_point.distance(nearest_on_trail)
         distance_meters = degrees_to_meters(raw_distance, station.lat)
 
-        if distance_meters <= max_distance_meters:
+        effective_max = max_distance_meters
+        if station.transport_type == "bus" and max_bus_stop_distance_meters is not None:
+            effective_max = max_bus_stop_distance_meters
+
+        if distance_meters <= effective_max:
             station.distance_to_trail_meters = round(distance_meters, 1)
             fraction_along = trail.project(station_point, normalized=True)
             junction_point = (nearest_on_trail.x, nearest_on_trail.y)
@@ -84,6 +97,7 @@ def _match_stations_multiline(
     stations: list[Station],
     trail: MultiLineString,
     max_distance_meters: float,
+    max_bus_stop_distance_meters: float | None = None,
 ) -> list[MatchedStation]:
     """Match stations to a MultiLineString trail using global fractions."""
     segments = list(trail.geoms)
@@ -122,7 +136,11 @@ def _match_stations_multiline(
                     segment_offset + local_fraction * segment_lengths[segment_index]
                 ) / total_length
 
-        if best_distance_meters <= max_distance_meters:
+        effective_max = max_distance_meters
+        if station.transport_type == "bus" and max_bus_stop_distance_meters is not None:
+            effective_max = max_bus_stop_distance_meters
+
+        if best_distance_meters <= effective_max:
             station.distance_to_trail_meters = round(best_distance_meters, 1)
             candidates.append((station, best_global_fraction, best_junction_point))
             logger.debug(

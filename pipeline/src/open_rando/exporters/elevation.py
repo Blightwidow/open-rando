@@ -56,3 +56,24 @@ def export_elevation_profile(
     }
 
     output_path.write_text(json.dumps(data), encoding="utf-8")
+
+
+def export_route_elevation(
+    profile: ElevationProfile,
+    route_id: str,
+    output_directory: str,
+) -> None:
+    """Export elevation profile for a full route."""
+    if not profile.distances_km:
+        return
+
+    output_path = Path(output_directory) / f"{route_id}.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    data = {
+        "distances_km": [round(distance, 3) for distance in profile.distances_km],
+        "elevations_m": [round(elevation, 1) for elevation in profile.elevations_m],
+        "times_min": [round(time, 1) for time in profile.cumulative_times_min],
+    }
+
+    output_path.write_text(json.dumps(data), encoding="utf-8")

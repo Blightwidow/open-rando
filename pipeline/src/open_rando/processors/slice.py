@@ -7,6 +7,7 @@ from collections import defaultdict
 from shapely.geometry import LineString, MultiLineString
 from shapely.ops import substring
 
+from open_rando.fetchers.gtfs import are_stations_transport_connected
 from open_rando.models import Station
 from open_rando.processors.match import MatchedStation
 
@@ -77,25 +78,36 @@ def find_hikes(
     min_step_distance_km: float,
     max_step_distance_km: float,
 ) -> list[list[tuple[Station, Station, LineString, float]]]:
-    """Find multi-step hikes where each step is within the distance range.
+    """Find multi-step hikes with quality constraints.
+
+    Constraints enforced:
+    - Hike must start and end at a train station
+    - Every intermediate station must have a hotel
+    - Every step must be skippable: both endpoints connected by same transport
+      (both train stations, or both bus stops on the same bus route)
 
     matched_stations must be sorted by fraction_along_trail.
     Returns list of hikes. Each hike is a list of steps:
     (start_station, end_station, geometry, distance_km).
-    Supports both LineString and MultiLineString trails.
     """
     station_count = len(matched_stations)
 
     cumulative_km = _compute_cumulative_distances(trail, matched_stations)
 
-    adjacency = _build_step_graph(
-        cumulative_km, station_count, min_step_distance_km, max_step_distance_km
+    adjacency = _build_constrained_step_graph(
+        cumulative_km,
+        matched_stations,
+        station_count,
+        min_step_distance_km,
+        max_step_distance_km,
     )
 
-    maximal_paths = _find_longest_paths(adjacency, cumulative_km, station_count)
+    constrained_paths = _find_constrained_paths(
+        adjacency, cumulative_km, matched_stations, station_count
+    )
 
     hikes: list[list[tuple[Station, Station, LineString, float]]] = []
-    for path in maximal_paths:
+    for path in constrained_paths:
         steps: list[tuple[Station, Station, LineString, float]] = []
         for step_index in range(len(path) - 1):
             source = path[step_index]
@@ -307,16 +319,52 @@ def _build_step_graph(
     return adjacency
 
 
-def _find_longest_paths(
+def _build_constrained_step_graph(
+    cumulative_km: list[float],
+    matched_stations: list[MatchedStation],
+    station_count: int,
+    min_step_distance_km: float,
+    max_step_distance_km: float,
+) -> dict[int, list[int]]:
+    """Build adjacency list with transport connectivity constraint.
+
+    An edge source→target exists only if:
+    - Distance is within [min, max] range
+    - Both stations are transport-connected (same mode: both train, or same bus route)
+    """
+    adjacency: dict[int, list[int]] = {index: [] for index in range(station_count)}
+
+    for source in range(station_count):
+        source_station = matched_stations[source][0]
+        for target in range(source + 1, station_count):
+            step_distance = cumulative_km[target] - cumulative_km[source]
+            if step_distance > max_step_distance_km:
+                break
+            if step_distance < min_step_distance_km:
+                continue
+            target_station = matched_stations[target][0]
+            if are_stations_transport_connected(source_station, target_station):
+                adjacency[source].append(target)
+
+    return adjacency
+
+
+def _find_constrained_paths(
     adjacency: dict[int, list[int]],
     cumulative_km: list[float],
+    matched_stations: list[MatchedStation],
     station_count: int,
 ) -> list[list[int]]:
-    """Find the single longest path (by trail distance) per connected component.
+    """Find the longest path per connected component with hike constraints.
 
-    The step graph is a DAG with edges only going from lower to higher station indices,
-    so longest-path DP runs in O(V+E) via topological order (ascending index).
-    Returns one path per connected component of the graph.
+    Constraints:
+    - Path must start at a train station
+    - Path must end at a train station
+    - Every intermediate station must have a hotel
+    - Edge connectivity is already enforced by _build_constrained_step_graph
+
+    The step graph is a DAG (edges go from lower to higher index),
+    so longest-path DP runs in O(V+E) via topological order.
     """
     components = _find_connected_components(adjacency, station_count)
     longest_paths: list[list[int]] = []
@@ -325,10 +373,29 @@ def _find_longest_paths(
         if len(component) < 2:
             continue
 
-        best_distance: dict[int, float] = {station: 0.0 for station in component}
-        predecessor: dict[int, int | None] = {station: None for station in component}
+        best_distance: dict[int, float] = {}
+        predecessor: dict[int, int | None] = {}
+        for station in component:
+            best_distance[station] = float("-inf")
+            predecessor[station] = None
+
+        # Only train stations are valid starting points
+        for station in component:
+            if matched_stations[station][0].transport_type == "train":
+                best_distance[station] = 0.0
 
         for station in sorted(component):
+            if best_distance[station] == float("-inf"):
+                continue
+
+            # Intermediate stations (those reached from somewhere) must have a hotel
+            is_intermediate = predecessor[station] is not None
+            if is_intermediate:
+                station_data = matched_stations[station][0]
+                has_hotel = station_data.accommodation.has_hotel
+                if not has_hotel:
+                    continue
+
             for neighbor in adjacency[station]:
                 if neighbor not in best_distance:
                     continue
@@ -339,9 +406,18 @@ def _find_longest_paths(
                     best_distance[neighbor] = candidate
                     predecessor[neighbor] = station
 
-        end_station = max(component, key=lambda station: best_distance[station])
-        if best_distance[end_station] == 0.0:
+        # Only train stations are valid endpoints
+        train_endpoints = [
+            station
+            for station in component
+            if matched_stations[station][0].transport_type == "train"
+            and best_distance[station] > 0.0
+        ]
+
+        if not train_endpoints:
             continue
+
+        end_station = max(train_endpoints, key=lambda station: best_distance[station])
 
         path: list[int] = []
         current: int | None = end_station

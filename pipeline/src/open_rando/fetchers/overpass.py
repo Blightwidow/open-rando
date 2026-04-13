@@ -211,7 +211,7 @@ out geom;
     if not all_linestrings:
         raise RuntimeError(f"No geometry found for relation {relation_id}")
 
-    combined = _chain_linestrings(all_linestrings)
+    combined = chain_linestrings(all_linestrings)
     if isinstance(combined, MultiLineString):
         total_points = sum(len(geom.coords) for geom in combined.geoms)
         logger.info("Trail has %d segments, %d points total", len(combined.geoms), total_points)
@@ -252,7 +252,7 @@ def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> LineString:
     return LineString(chained)
 
 
-def _chain_linestrings(
+def chain_linestrings(
     linestrings: list[LineString],
 ) -> LineString | MultiLineString:
     """Chain multiple LineStrings (from child relations) into one or more segments.

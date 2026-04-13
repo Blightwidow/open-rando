@@ -3,33 +3,44 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from shapely.geometry import LineString, mapping
+from shapely.geometry import LineString, MultiLineString, mapping
+
+from open_rando.models import PointOfInterest
 
 
-def export_geojson(
-    segments: list[LineString],
-    hike_id: str,
+def export_route_geojson(
+    trail: LineString | MultiLineString,
+    route_id: str,
     name: str,
+    pois: list[PointOfInterest],
     output_path: str,
 ) -> None:
-    """Export segments as a GeoJSON FeatureCollection. Each segment becomes a Feature."""
-    features = [
+    """Export a full route trail and its POIs as a GeoJSON FeatureCollection."""
+    features: list[dict[str, object]] = [
         {
             "type": "Feature",
-            "properties": {
-                "id": hike_id,
-                "name": name,
-                "step": step_index + 1,
-            },
-            "geometry": mapping(segment),
+            "properties": {"id": route_id, "name": name, "feature_type": "trail"},
+            "geometry": mapping(trail),
         }
-        for step_index, segment in enumerate(segments)
     ]
 
-    feature_collection = {
-        "type": "FeatureCollection",
-        "features": features,
-    }
+    for poi in pois:
+        features.append(
+            {
+                "type": "Feature",
+                "properties": {
+                    "feature_type": "poi",
+                    "poi_type": poi.poi_type,
+                    "name": poi.name,
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [poi.lon, poi.lat],
+                },
+            }
+        )
+
+    feature_collection = {"type": "FeatureCollection", "features": features}
 
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)

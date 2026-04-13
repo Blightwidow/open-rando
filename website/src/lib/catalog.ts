@@ -3,96 +3,61 @@ import { join } from 'node:path';
 
 export { formatDuration } from './format';
 
-export interface AccommodationInfo {
-  has_hotel: boolean;
-  has_camping: boolean;
-}
-
-export interface StationInfo {
+export interface POI {
   name: string;
-  code: string;
   lat: number;
   lon: number;
-  distance_to_trail_m: number;
-  transit_lines: string[];
-  accommodation: AccommodationInfo;
+  poi_type: 'hotel' | 'camping' | 'train_station' | 'bus_stop';
 }
 
-export interface HikeStep {
-  start_station: StationInfo;
-  end_station: StationInfo;
-  distance_km: number;
-  estimated_duration_min: number;
-  elevation_gain_m: number;
-  elevation_loss_m: number;
-}
-
-export interface ElevationProfile {
-  distances_km: number[];
-  elevations_m: number[];
-  times_min: number[];
-  step_boundaries_km: number[];
-}
-
-export interface Hike {
+export interface Route {
   id: string;
   slug: string;
   path_ref: string;
   path_name: string;
+  description: string;
   osm_relation_id: number;
-  start_station: StationInfo;
-  end_station: StationInfo;
-  steps: HikeStep[];
-  step_count: number;
+  pois: POI[];
   distance_km: number;
-  estimated_duration_min: number;
   elevation_gain_m: number;
   elevation_loss_m: number;
   max_elevation_m: number;
   min_elevation_m: number;
-  difficulty: string;
   bbox: [number, number, number, number];
   region: string;
   departement: string;
-  gpx_path: string;
-  geojson_path: string;
-  is_reversible: boolean;
-  route_type: 'gr' | 'grp' | 'pr';
-  is_grp: boolean;
+  difficulty: 'easy' | 'moderate' | 'difficult' | 'very_difficult' | 'unknown';
   is_circular_trail: boolean;
-  is_round_trip: boolean;
   terrain: string[];
+  geojson_path: string;
+  gpx_path: string;
   last_updated: string;
-  route_tagline?: string;
-  route_description?: string;
+}
+
+export interface RouteElevationProfile {
+  distances_km: number[];
+  elevations_m: number[];
+  times_min: number[];
 }
 
 interface Catalog {
   generated_at: string;
   source: string;
   license: string;
-  hikes: Hike[];
+  routes: Route[];
 }
 
-export function getAllHikes(): Hike[] {
+export function getAllRoutes(): Route[] {
   const catalogPath = join(process.cwd(), 'public', 'data', 'catalog.json');
   const raw = readFileSync(catalogPath, 'utf-8');
   const catalog: Catalog = JSON.parse(raw);
-  return catalog.hikes;
+  return catalog.routes;
 }
 
-export function getHikeBySlug(slug: string): Hike | undefined {
-  return getAllHikes().find((hike) => hike.slug === slug);
+export function getRouteBySlug(slug: string): Route | undefined {
+  return getAllRoutes().find((route) => route.slug === slug);
 }
 
-export function getStationTimetableUrl(station: StationInfo): string {
-  const slug = station.name
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return `https://www.garesetconnexions.sncf/fr/gares-services/${slug}`;
+export function getTrainStations(route: Route): POI[] {
+  return (route.pois ?? []).filter((poi) => poi.poi_type === 'train_station');
 }
-

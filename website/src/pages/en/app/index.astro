@@ -1,13 +1,12 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import HikeFilters from '../../../components/HikeFilters.astro';
-import HikeSuggest from '../../../components/HikeSuggest.astro';
-import HikeList from '../../../components/HikeList.astro';
-import { getAllHikes } from '../../../lib/catalog';
-import { t, formatHikeCount } from '../../../lib/i18n';
+import RouteList from '../../../components/RouteList.astro';
+import RouteFilters from '../../../components/RouteFilters.astro';
+import { getAllRoutes } from '../../../lib/catalog';
+import { t } from '../../../lib/i18n';
 
 const locale = 'en';
-const hikes = getAllHikes();
+const routes = getAllRoutes();
 ---
 
 <Base
@@ -15,73 +14,25 @@ const hikes = getAllHikes();
   description={t(locale, 'site.description')}
   locale={locale}
 >
-  <div class="flex min-h-[calc(100vh-3rem)]">
-    <aside
-      id="filter-sidebar"
-      class="fixed inset-x-0 top-12 bottom-0 z-40 bg-white dark:bg-neutral-900 overflow-y-auto p-4 transition-transform duration-200 -translate-x-full md:static md:translate-x-0 md:w-64 xl:md:w-72 md:shrink-0 md:border-r md:border-stone-200 md:dark:border-neutral-700 md:sticky md:top-12 md:self-start md:h-[calc(100vh-3rem)]"
-    >
-      <HikeFilters hikes={hikes} locale={locale} />
+  <!-- Mobile: stacked layout / Desktop: fixed sidebar + scrollable main -->
+  <div class="lg:flex lg:h-[calc(100vh-3rem)]">
+    <!-- Sidebar -->
+    <aside class="px-4 py-5 border-b border-stone-200 dark:border-neutral-700 lg:border-b-0 lg:border-r lg:w-72 lg:shrink-0 lg:overflow-y-auto lg:py-6 lg:px-5">
+      <RouteFilters routes={routes} locale={locale} />
     </aside>
-    <div
-      id="filter-backdrop"
-      class="fixed inset-0 top-12 z-30 bg-black/40 hidden md:hidden"
-    ></div>
-    <div class="flex-1 min-w-0 px-4 sm:px-6 py-6 pb-12 space-y-6">
-      <button
-        id="filter-toggle"
-        class="md:hidden flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-stone-300 dark:border-neutral-600 text-stone-700 dark:text-stone-200 bg-white dark:bg-neutral-800 hover:bg-stone-50 dark:hover:bg-neutral-700"
-        data-show={t(locale, 'filters.show')}
-        data-hide={t(locale, 'filters.hide')}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
-        </svg>
-        <span>{t(locale, 'filters.show')}</span>
-      </button>
-      <HikeSuggest hikes={hikes} locale={locale} />
-      <section>
-        <h2 class="text-xl font-semibold mb-4" id="hike-count">{formatHikeCount(locale, hikes.length)}</h2>
-        <HikeList hikes={hikes} locale={locale} />
-      </section>
+
+    <!-- Main content -->
+    <div class="flex-1 lg:overflow-y-auto">
+      <div class="px-4 sm:px-6 py-6 pb-12 space-y-4">
+        <h2 class="text-xl font-semibold">
+          <span id="route-count">{routes.length}</span> trails
+        </h2>
+        <RouteList routes={routes} locale={locale} />
+      </div>
+      <footer class="px-4 sm:px-6 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
+        {t(locale, 'footer.data')} &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
+        &middot; <a href="https://github.com/Blightwidow/open-rando" class="underline">GitHub</a>
+      </footer>
     </div>
   </div>
-  <footer class="px-4 sm:px-6 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
-    {t(locale, 'footer.data')} &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
-    &middot; <a href="https://github.com/Blightwidow/open-rando" class="underline">GitHub</a>
-  </footer>
-  <script>
-    const sidebar = document.getElementById('filter-sidebar')!;
-    const backdrop = document.getElementById('filter-backdrop')!;
-    const toggle = document.getElementById('filter-toggle')!;
-    const toggleLabel = toggle.querySelector('span')!;
-    const showText = toggle.dataset.show!;
-    const hideText = toggle.dataset.hide!;
-
-    function openFilters() {
-      sidebar.classList.remove('-translate-x-full');
-      sidebar.classList.add('translate-x-0');
-      backdrop.classList.remove('hidden');
-      toggleLabel.textContent = hideText;
-    }
-
-    function closeFilters() {
-      sidebar.classList.add('-translate-x-full');
-      sidebar.classList.remove('translate-x-0');
-      backdrop.classList.add('hidden');
-      toggleLabel.textContent = showText;
-    }
-
-    toggle.addEventListener('click', () => {
-      const isOpen = sidebar.classList.contains('translate-x-0');
-      if (isOpen) closeFilters();
-      else openFilters();
-    });
-
-    backdrop.addEventListener('click', closeFilters);
-    document.addEventListener('close-filters', closeFilters);
-
-    window.matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
-      if (event.matches) closeFilters();
-    });
-  </script>
 </Base>
