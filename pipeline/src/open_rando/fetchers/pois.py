@@ -193,8 +193,6 @@ def _parse_accommodation_elements(
         poi_type = "camping" if tourism == "camp_site" else "hotel"
         url = tags.get("website") or tags.get("contact:website") or None
 
-        pois.append(
-            PointOfInterest(name=name, lat=lat, lon=lon, poi_type=poi_type, url=url)
-        )
+        pois.append(PointOfInterest(name=name, lat=lat, lon=lon, poi_type=poi_type, url=url))
 
     return pois
