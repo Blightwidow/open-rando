@@ -13,6 +13,7 @@ logger = logging.getLogger("open_rando")
 METERS_PER_DEGREE_LATITUDE = 111_320.0
 DEDUPLICATION_DISTANCE_METERS = 500.0
 MINIMUM_FRACTION_SEPARATION = 0.001
+NEAREST_STATION_RADIUS_METERS = 5000.0
 
 
 def degrees_to_meters(distance_degrees: float, latitude: float) -> float:
@@ -85,6 +86,7 @@ def _match_stations_single(
 
     candidates.sort(key=lambda pair: pair[1])
     matched = _deduplicate_stations(candidates)
+    matched = _filter_never_closest_stations(matched, trail)
 
     logger.info("Matched %d stations within %.0fm", len(matched), max_distance_meters)
     for station, fraction, _junction in matched:
@@ -152,6 +154,7 @@ def _match_stations_multiline(
 
     candidates.sort(key=lambda pair: pair[1])
     matched = _deduplicate_stations(candidates)
+    matched = _filter_never_closest_stations(matched, trail)
 
     logger.info("Matched %d stations within %.0fm", len(matched), max_distance_meters)
     for station, fraction, _junction in matched:
@@ -197,3 +200,67 @@ def _deduplicate_stations(
             deduplicated.append((station, fraction, junction))
 
     return deduplicated
+
+
+def _filter_never_closest_stations(
+    candidates: list[MatchedStation],
+    trail: LineString | MultiLineString,
+) -> list[MatchedStation]:
+    """Remove stations that are never the closest to any trail point within range.
+
+    For each trail vertex within NEAREST_STATION_RADIUS_METERS of at least one
+    station, determine which station is closest. Stations that are never the
+    closest to any trail point are removed.
+    """
+    if len(candidates) <= 1:
+        return candidates
+
+    trail_coords: list[tuple[float, float]] = []
+    if isinstance(trail, MultiLineString):
+        for segment in trail.geoms:
+            trail_coords.extend((coordinate[0], coordinate[1]) for coordinate in segment.coords)
+    else:
+        trail_coords.extend((coordinate[0], coordinate[1]) for coordinate in trail.coords)
+
+    station_positions = [(station.lon, station.lat) for station, _fraction, _junction in candidates]
+
+    closest_set: set[int] = set()
+
+    for trail_lon, trail_lat in trail_coords:
+        best_index = -1
+        best_distance_squared = float("inf")
+        within_radius = False
+
+        for station_index, (station_lon, station_lat) in enumerate(station_positions):
+            delta_lon = trail_lon - station_lon
+            delta_lat = trail_lat - station_lat
+            distance_squared = delta_lon * delta_lon + delta_lat * delta_lat
+
+            if distance_squared < best_distance_squared:
+                best_distance_squared = distance_squared
+                best_index = station_index
+
+        if best_index >= 0:
+            best_distance_meters = degrees_to_meters(best_distance_squared**0.5, trail_lat)
+            if best_distance_meters <= NEAREST_STATION_RADIUS_METERS:
+                within_radius = True
+
+        if within_radius:
+            closest_set.add(best_index)
+
+    result = [candidate for index, candidate in enumerate(candidates) if index in closest_set]
+
+    removed_count = len(candidates) - len(result)
+    if removed_count > 0:
+        removed_names = [
+            candidates[index][0].name
+            for index in range(len(candidates))
+            if index not in closest_set
+        ]
+        logger.info(
+            "Nearest-station filtering removed %d station(s): %s",
+            removed_count,
+            ", ".join(removed_names),
+        )
+
+    return result

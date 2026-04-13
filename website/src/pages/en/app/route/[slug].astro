@@ -151,7 +151,11 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
           fillOpacity: 0.9,
         }).addTo(style.layer);
 
-        marker.bindPopup(`<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>`);
+        let popupContent = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>`;
+        if (poi.url) {
+          popupContent += `<br><a href="${poi.url}" target="_blank" rel="noopener" class="text-xs underline">Timetable</a>`;
+        }
+        marker.bindPopup(popupContent);
       }
 
       const bounds = L.geoJSON(geojson).getBounds();
@@ -172,6 +176,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
     [colorDot('#f59e0b', 'Campsites')]: campingLayer,
   };
   L.control.layers(undefined, overlays, { collapsed: false, position: 'topright' }).addTo(map);
+  L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   document.addEventListener('theme-change', () => {
     const dark = document.documentElement.classList.contains('dark');
