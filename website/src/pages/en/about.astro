@@ -21,15 +21,17 @@ const locale = 'en';
 
       <h2 class="text-xl font-semibold mt-8">How it works</h2>
       <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
-        An automated data pipeline discovers GR trails via OpenStreetMap, identifies nearby SNCF
-        train stations, and computes optimal routes between them. Each route includes an elevation
-        profile, duration estimate, and accommodation information.
+        A catalog of 176 GR trails is automatically enriched via OpenStreetMap:
+        the pipeline identifies nearby SNCF train stations and bus stops along each trail,
+        generates elevation profiles, and lists accommodation (hotels, campsites) along the route.
+        Bus stops are enriched with GTFS transit line names to help with trip planning.
       </p>
 
       <h2 class="text-xl font-semibold mt-8">Data sources</h2>
       <ul class="list-disc pl-6 space-y-2 text-stone-600 dark:text-stone-400">
-        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — GR trail geometry and accommodation data (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">ODbL license</a>)</li>
+        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — GR trail geometry, stations and accommodation data (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">ODbL license</a>)</li>
         <li><a href="https://ressources.data.sncf.com/explore/dataset/referentiel-gares-voyageurs" class="text-forest-700 dark:text-forest-400 underline"><strong>SNCF Open Data</strong></a> — train station database</li>
+        <li><a href="https://transport.data.gouv.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>transport.data.gouv.fr</strong></a> — GTFS bus stop and transit line data</li>
         <li><a href="https://www.earthdata.nasa.gov/sensors/srtm" class="text-forest-700 dark:text-forest-400 underline"><strong>SRTM</strong></a> — elevation data for altitude profiles</li>
         <li><a href="https://opentopomap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenTopoMap</strong></a> — topographic map tiles</li>
         <li><a href="https://geoservices.ign.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>IGN Géoservices</strong></a> — Plan IGN map tiles</li>

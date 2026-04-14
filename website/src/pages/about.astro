@@ -21,15 +21,17 @@ const locale = 'fr';
 
       <h2 class="text-xl font-semibold mt-8">Comment ça fonctionne</h2>
       <p class="text-stone-600 dark:text-stone-400 leading-relaxed">
-        Un pipeline de données automatisé découvre les sentiers GR via OpenStreetMap, identifie les
-        gares SNCF à proximité, et calcule des itinéraires optimaux entre elles. Chaque itinéraire
-        inclut un profil altimétrique, une estimation de durée et des informations sur l'hébergement.
+        Un catalogue de 176 sentiers GR est enrichi automatiquement via OpenStreetMap :
+        le pipeline identifie les gares SNCF et arrêts de bus à proximité de chaque sentier,
+        génère un profil altimétrique et référence les hébergements (hôtels, campings) le long du tracé.
+        Les arrêts de bus sont enrichis avec les noms de lignes GTFS pour faciliter la planification.
       </p>
 
       <h2 class="text-xl font-semibold mt-8">Sources de données</h2>
       <ul class="list-disc pl-6 space-y-2 text-stone-600 dark:text-stone-400">
-        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — tracés des sentiers GR et données d'hébergement (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">licence ODbL</a>)</li>
+        <li><a href="https://www.openstreetmap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenStreetMap</strong></a> — tracés des sentiers GR, gares et données d'hébergement (<a href="https://opendatacommons.org/licenses/odbl/" class="text-forest-700 dark:text-forest-400 underline">licence ODbL</a>)</li>
         <li><a href="https://ressources.data.sncf.com/explore/dataset/referentiel-gares-voyageurs" class="text-forest-700 dark:text-forest-400 underline"><strong>SNCF Open Data</strong></a> — base de données des gares ferroviaires</li>
+        <li><a href="https://transport.data.gouv.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>transport.data.gouv.fr</strong></a> — données GTFS des arrêts de bus et noms de lignes</li>
         <li><a href="https://www.earthdata.nasa.gov/sensors/srtm" class="text-forest-700 dark:text-forest-400 underline"><strong>SRTM</strong></a> — données d'élévation pour les profils altimétriques</li>
         <li><a href="https://opentopomap.org" class="text-forest-700 dark:text-forest-400 underline"><strong>OpenTopoMap</strong></a> — fonds de carte topographiques</li>
         <li><a href="https://geoservices.ign.fr" class="text-forest-700 dark:text-forest-400 underline"><strong>IGN Géoservices</strong></a> — fonds de carte Plan IGN</li>

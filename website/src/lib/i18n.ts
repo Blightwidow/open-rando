@@ -26,6 +26,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.accommodation.description': 'Les randonnées de plusieurs jours passent par des gares intermédiaires avec hôtels ou campings à proximité.',
     'landing.feature.gpx.title': 'Traces GPX téléchargeables',
     'landing.feature.gpx.description': 'Téléchargez les traces GPX avec profil altimétrique pour chaque itinéraire.',
+    'landing.feature.suggest.title': 'Trouvez votre randonnée',
+    'landing.feature.suggest.description': 'Choisissez votre gare de départ et votre temps disponible, on vous suggère les meilleurs itinéraires.',
+    'landing.feature.map.title': 'Carte interactive',
+    'landing.feature.map.description': 'Gares, arrêts de bus, hébergements et profil altimétrique synchronisés sur une carte interactive.',
 
     // Landing - Privacy
     'landing.privacy.title': 'Aucune donnée personnelle',
@@ -167,6 +171,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.accommodation.description': 'Multi-day hikes pass through intermediate stations with nearby hotels or campsites.',
     'landing.feature.gpx.title': 'Downloadable GPX tracks',
     'landing.feature.gpx.description': 'Download GPX tracks with elevation profiles for every route.',
+    'landing.feature.suggest.title': 'Find your hike',
+    'landing.feature.suggest.description': 'Pick your departure station and available time, and get the best route suggestions.',
+    'landing.feature.map.title': 'Interactive map',
+    'landing.feature.map.description': 'Train stations, bus stops, accommodation and elevation profile synced on an interactive map.',
 
     // Landing - Privacy
     'landing.privacy.title': 'No tracking, no personal data',
