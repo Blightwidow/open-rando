@@ -152,9 +152,7 @@ const { routeId, locale = 'fr' } = Astro.props;
     }
 
     const distanceLabels: string[] = [];
-    const niceDistanceSteps = [1, 2, 5, 10, 20, 50, 100, 200];
-    const rawDistanceStep = maxDistance / 10;
-    const distanceLabelStep = niceDistanceSteps.find((step) => step >= rawDistanceStep) ?? 200;
+    const distanceLabelStep = Math.ceil(maxDistance / 10 / 5) * 5;
     for (let distance = 0; distance <= maxDistance; distance += distanceLabelStep) {
       const x = scaleX(distance);
       distanceLabels.push(`<text x="${x.toFixed(1)}" y="${paddingTop + chartHeight + 15}" text-anchor="middle" class="fill-stone-400 dark:fill-stone-500" style="font-size: 10px;">${distance}km</text>`);
@@ -164,9 +162,7 @@ const { routeId, locale = 'fr' } = Astro.props;
     const timelineTicks: string[] = [];
     const timelineY = paddingTop + chartHeight + 30;
 
-    const niceTimeSteps = [15, 30, 60, 120, 180, 240, 360, 480, 720, 1440];
-    const rawTimeStep = totalTimeMin / 10;
-    const timeLabelStepMin = niceTimeSteps.find((step) => step >= rawTimeStep) ?? 720;
+    const timeLabelStepMin = Math.ceil(totalTimeMin / 10 / 120) * 120;
     for (let timeMin = 0; timeMin <= totalTimeMin; timeMin += timeLabelStepMin) {
       let distanceAtTime = 0;
       for (let index = 1; index < times_min.length; index++) {
