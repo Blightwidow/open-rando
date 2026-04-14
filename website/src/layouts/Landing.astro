@@ -37,7 +37,7 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="canonical" href={resolvedCanonical} />
     <link rel="alternate" hreflang={locale} href={resolvedCanonical} />
     <link rel="alternate" hreflang={alternateLocale} href={alternateUrl} />
@@ -47,7 +47,7 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <meta property="og:description" content={resolvedDescription} />
     <meta property="og:url" content={resolvedCanonical} />
     <meta property="og:type" content={ogType} />
-    <meta property="og:image" content={`${siteUrl}/logo.jpg`} />
+    <meta property="og:image" content={`${siteUrl}/logo.png`} />
     <meta property="og:site_name" content="TrainRando" />
     <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_GB'} />
 
@@ -70,7 +70,7 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <nav class="sticky top-0 z-50 bg-stone-50/95 dark:bg-neutral-900/95 backdrop-blur border-b border-stone-200 dark:border-neutral-700">
       <div class="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
         <a href={locale === 'en' ? '/en/' : '/'} class="flex items-center gap-2">
-          <img src="/logo.jpg" alt="TrainRando" class="w-7 h-7 rounded" />
+          <img src="/logo.png" alt="TrainRando" class="w-7 h-7 rounded" />
           <span class="font-bold text-sm">TrainRando</span>
         </a>
         <div class="flex items-center gap-3">
