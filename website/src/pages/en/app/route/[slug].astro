@@ -1,6 +1,7 @@
 ---
 import Base from '../../../../layouts/Base.astro';
 import ElevationChart from '../../../../components/ElevationChart.astro';
+import SearchableSelect from '../../../../components/SearchableSelect.astro';
 import { getAllRoutes, getRouteBySlug, getTrainStations } from '../../../../lib/catalog';
 import type { Route } from '../../../../lib/catalog';
 import { t } from '../../../../lib/i18n';
@@ -96,16 +97,12 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
         <h2 class="text-lg font-semibold">{t(locale, 'detail.sectionTitle')}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label for="section-from" class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionFrom')}</label>
-            <select id="section-from" class="w-full rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-3 py-2 text-sm">
-              <option value="">—</option>
-            </select>
+            <label class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionFrom')}</label>
+            <SearchableSelect id="section-from" placeholder="—" />
           </div>
           <div>
-            <label for="section-to" class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionTo')}</label>
-            <select id="section-to" class="w-full rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-3 py-2 text-sm">
-              <option value="">—</option>
-            </select>
+            <label class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionTo')}</label>
+            <SearchableSelect id="section-to" placeholder="—" />
           </div>
         </div>
         <div id="section-stats" class="hidden">
@@ -114,10 +111,10 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
             <dd id="section-distance" class="font-medium"></dd>
             <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}</dt>
             <dd id="section-gain" class="font-medium"></dd>
-            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationLoss')}</dt>
-            <dd id="section-loss" class="font-medium"></dd>
             <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.estimatedDuration')}</dt>
             <dd id="section-duration" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationLoss')}</dt>
+            <dd id="section-loss" class="font-medium"></dd>
           </dl>
           <div class="flex flex-wrap gap-3 mt-3">
             <button id="section-download-gpx" class="inline-flex items-center gap-2 px-4 py-2 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-sm font-medium">
