@@ -7,6 +7,14 @@ import { t } from '../../lib/i18n';
 
 const locale = 'fr';
 const routes = getAllRoutes();
+const routesMeta = routes.map((route) => ({
+  id: route.id,
+  slug: route.slug,
+  geojson_path: route.geojson_path,
+  bbox: route.bbox,
+  path_name: route.path_name,
+  path_ref: route.path_ref,
+}));
 ---
 
 <Base
@@ -24,10 +32,36 @@ const routes = getAllRoutes();
     <!-- Main content -->
     <div class="flex-1 lg:overflow-y-auto">
       <div class="px-4 sm:px-6 py-6 pb-12 space-y-4">
-        <h2 class="text-xl font-semibold">
-          <span id="route-count">{routes.length}</span> {locale === 'fr' ? 'sentiers' : 'trails'}
-        </h2>
-        <RouteList routes={routes} locale={locale} />
+        <!-- Header with count + tab switcher -->
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">
+            <span id="route-count">{routes.length}</span> {locale === 'fr' ? 'sentiers' : 'trails'}
+          </h2>
+          <div class="flex border border-stone-300 dark:border-neutral-600 rounded-md overflow-hidden text-sm">
+            <button id="tab-list" class="px-3 py-1.5 bg-forest-700 text-white font-medium" data-view="list">
+              {t(locale, 'tabs.list')}
+            </button>
+            <button id="tab-map" class="px-3 py-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-neutral-700" data-view="map">
+              {t(locale, 'tabs.map')}
+            </button>
+          </div>
+        </div>
+
+        <!-- List view (default) -->
+        <div id="view-list">
+          <RouteList routes={routes} locale={locale} />
+        </div>
+
+        <!-- Map view (hidden, lazy-loaded) -->
+        <div id="view-map" class="hidden">
+          <div
+            id="app-map"
+            class="relative rounded-lg border border-stone-200 dark:border-neutral-700 overflow-hidden"
+            style="height: calc(100vh - 12rem);"
+            data-routes-meta={JSON.stringify(routesMeta)}
+            data-locale={locale}
+          ></div>
+        </div>
       </div>
       <footer class="px-4 sm:px-6 py-6 text-sm text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-neutral-700">
         {t(locale, 'footer.data')} &copy; <a href="https://www.openstreetmap.org/copyright" class="underline">OpenStreetMap</a> (ODbL)
@@ -36,3 +70,179 @@ const routes = getAllRoutes();
     </div>
   </div>
 </Base>
+
+<script>
+  const tabList = document.getElementById('tab-list')!;
+  const tabMap = document.getElementById('tab-map')!;
+  const viewList = document.getElementById('view-list')!;
+  const viewMap = document.getElementById('view-map')!;
+
+  function switchTab(view: 'list' | 'map') {
+    const isList = view === 'list';
+
+    viewList.classList.toggle('hidden', !isList);
+    viewMap.classList.toggle('hidden', isList);
+
+    for (const button of [tabList, tabMap]) {
+      const isActive = button.dataset.view === view;
+      button.className = isActive
+        ? 'px-3 py-1.5 bg-forest-700 text-white font-medium'
+        : 'px-3 py-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-neutral-700';
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (view === 'map') params.set('view', 'map');
+    else params.delete('view');
+    const queryString = params.toString();
+    history.replaceState(null, '', queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname);
+
+    if (view === 'map') {
+      document.dispatchEvent(new CustomEvent('map-tab-activated'));
+    }
+  }
+
+  tabList.addEventListener('click', () => switchTab('list'));
+  tabMap.addEventListener('click', () => switchTab('map'));
+
+  if (new URLSearchParams(window.location.search).get('view') === 'map') {
+    switchTab('map');
+  }
+</script>
+
+<script>
+  import L from 'leaflet';
+
+  interface RouteMeta {
+    id: string;
+    slug: string;
+    geojson_path: string;
+    bbox: [number, number, number, number];
+    path_name: string;
+    path_ref: string;
+  }
+
+  let mapInstance: L.Map | null = null;
+  const routeLayers = new Map<string, L.GeoJSON>();
+  let allRoutesLoaded = false;
+
+  async function initMap() {
+    if (mapInstance) {
+      mapInstance.invalidateSize();
+      return;
+    }
+
+    const container = document.getElementById('app-map')!;
+    const routesMeta: RouteMeta[] = JSON.parse(container.dataset.routesMeta!);
+    const locale = container.dataset.locale || 'fr';
+    const prefix = locale === 'en' ? '/en' : '';
+
+    const map = L.map(container, { zoomControl: true, scrollWheelZoom: true });
+    mapInstance = map;
+
+    const isDark = document.documentElement.classList.contains('dark');
+    let tileLayer = L.tileLayer(
+      isDark
+        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
+    ).addTo(map);
+
+    L.control.scale({ metric: true, imperial: false }).addTo(map);
+
+    // Loading overlay
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'absolute inset-0 z-[1000] flex items-center justify-center bg-white/70 dark:bg-neutral-900/70';
+    loadingOverlay.innerHTML = '<span class="text-sm text-stone-500 dark:text-stone-400">Chargement des sentiers…</span>';
+    container.appendChild(loadingOverlay);
+
+    // Fetch all GeoJSON traces in parallel
+    await Promise.allSettled(
+      routesMeta.map(async (meta) => {
+        const response = await fetch(`/data/${meta.geojson_path}`);
+        const geojson = await response.json();
+        const trailFeatures = geojson.features.filter(
+          (feature: any) => feature.properties.feature_type === 'trail'
+        );
+        const layer = L.geoJSON(
+          { type: 'FeatureCollection', features: trailFeatures } as any,
+          {
+            style: { color: 'var(--color-trail, #E72323)', weight: 3, opacity: 0.8 },
+            onEachFeature: (_feature, featureLayer) => {
+              featureLayer.bindTooltip(`${meta.path_ref} — ${meta.path_name}`, { sticky: true });
+              featureLayer.on('click', () => {
+                window.location.href = `${prefix}/app/route/${meta.slug}`;
+              });
+              featureLayer.on('mouseover', () => {
+                (featureLayer as any).setStyle?.({ weight: 5, opacity: 1 });
+              });
+              featureLayer.on('mouseout', () => {
+                (featureLayer as any).setStyle?.({ weight: 3, opacity: 0.8 });
+              });
+            },
+          }
+        );
+        layer.addTo(map);
+        routeLayers.set(meta.id, layer);
+      })
+    );
+
+    allRoutesLoaded = true;
+    loadingOverlay.remove();
+
+    applyMapFilters();
+    fitMapToVisible();
+
+    // Theme switching
+    document.addEventListener('theme-change', () => {
+      if (!mapInstance) return;
+      mapInstance.removeLayer(tileLayer);
+      const dark = document.documentElement.classList.contains('dark');
+      tileLayer = L.tileLayer(
+        dark
+          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+          : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
+      ).addTo(mapInstance);
+    });
+  }
+
+  function getVisibleRouteIds(): Set<string> {
+    const visibleIds = new Set<string>();
+    document.querySelectorAll<HTMLElement>('.route-card').forEach((card) => {
+      if (card.style.display !== 'none') visibleIds.add(card.dataset.routeId!);
+    });
+    return visibleIds;
+  }
+
+  function applyMapFilters() {
+    if (!mapInstance || !allRoutesLoaded) return;
+    const visible = getVisibleRouteIds();
+    routeLayers.forEach((layer, id) => {
+      if (visible.has(id)) {
+        if (!mapInstance!.hasLayer(layer)) mapInstance!.addLayer(layer);
+      } else {
+        if (mapInstance!.hasLayer(layer)) mapInstance!.removeLayer(layer);
+      }
+    });
+  }
+
+  function fitMapToVisible() {
+    if (!mapInstance) return;
+    const bounds = L.latLngBounds([]);
+    routeLayers.forEach((layer) => {
+      if (mapInstance!.hasLayer(layer)) bounds.extend(layer.getBounds());
+    });
+    if (bounds.isValid()) mapInstance.fitBounds(bounds, { padding: [30, 30] });
+  }
+
+  document.addEventListener('map-tab-activated', () => {
+    initMap().then(() => {
+      setTimeout(() => mapInstance?.invalidateSize(), 50);
+    });
+  });
+
+  document.addEventListener('filters-applied', () => {
+    applyMapFilters();
+    fitMapToVisible();
+  });
+</script>

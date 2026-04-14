@@ -61,6 +61,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'filters.noResults': 'Aucune randonnée ne correspond à vos filtres.',
     'filters.resetFilters': 'Réinitialiser les filtres',
 
+    // Tabs
+    'tabs.list': 'Liste',
+    'tabs.map': 'Carte',
+    'map.loading': 'Chargement des sentiers…',
+
     // Hike count
     'hikes.count.zero': '0 randonnée',
     'hikes.count.one': '1 randonnée',
@@ -201,6 +206,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'terrain.plains': 'Plains',
     'filters.noResults': 'No hikes match your filters.',
     'filters.resetFilters': 'Reset filters',
+
+    // Tabs
+    'tabs.list': 'List',
+    'tabs.map': 'Map',
+    'map.loading': 'Loading trails…',
 
     // Hike count
     'hikes.count.zero': '0 hikes',

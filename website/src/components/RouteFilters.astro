@@ -118,6 +118,9 @@ const regions = [...new Set(routes.map((route) => route.region).filter(Boolean))
       ].filter(Boolean);
       if (activeTerrains.length > 0) params.set('terrain', activeTerrains.join(','));
 
+      const currentView = new URLSearchParams(window.location.search).get('view');
+      if (currentView) params.set('view', currentView);
+
       const queryString = params.toString();
       const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
       history.replaceState(null, '', newUrl);
@@ -177,6 +180,7 @@ const regions = [...new Set(routes.map((route) => route.region).filter(Boolean))
     }
 
     writeFiltersToUrl();
+    document.dispatchEvent(new CustomEvent('filters-applied'));
   }
 
   function resetFilters() {
