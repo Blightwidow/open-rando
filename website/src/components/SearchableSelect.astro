@@ -1,0 +1,307 @@
+---
+interface Props {
+  id: string;
+  placeholder?: string;
+}
+
+const { id, placeholder = '—' } = Astro.props;
+---
+
+<div class="relative" data-searchable-select>
+  <select
+    id={id}
+    class="sr-only"
+    tabindex={-1}
+    aria-hidden="true"
+  >
+    <option value="">—</option>
+  </select>
+  <input
+    type="text"
+    role="combobox"
+    autocomplete="off"
+    aria-autocomplete="list"
+    aria-expanded="false"
+    aria-controls={`${id}-listbox`}
+    aria-haspopup="listbox"
+    placeholder={placeholder}
+    class="w-full rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-3 py-2 text-sm pr-8"
+    data-combobox-input
+  />
+  <svg
+    class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+  <ul
+    id={`${id}-listbox`}
+    role="listbox"
+    class="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-stone-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 shadow-lg hidden"
+    data-combobox-listbox
+  >
+  </ul>
+</div>
+
+<script>
+  function normalizeText(text: string): string {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  interface OptionEntry {
+    value: string;
+    label: string;
+  }
+
+  class SearchableSelectController {
+    private wrapper: HTMLElement;
+    private select: HTMLSelectElement;
+    private input: HTMLInputElement;
+    private listbox: HTMLUListElement;
+    private options: OptionEntry[] = [];
+    private activeIndex = -1;
+    private isOpen = false;
+    private selectedLabel = '';
+
+    constructor(wrapper: HTMLElement) {
+      this.wrapper = wrapper;
+      this.select = wrapper.querySelector('select')!;
+      this.input = wrapper.querySelector('[data-combobox-input]')! as HTMLInputElement;
+      this.listbox = wrapper.querySelector('[data-combobox-listbox]')! as HTMLUListElement;
+
+      this.setupValueInterceptor();
+      this.setupMutationObserver();
+      this.setupEventListeners();
+      this.syncOptionsFromSelect();
+    }
+
+    private setupValueInterceptor() {
+      const controller = this;
+      const originalDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLSelectElement.prototype,
+        'value'
+      )!;
+
+      Object.defineProperty(this.select, 'value', {
+        get() {
+          return originalDescriptor.get!.call(this);
+        },
+        set(newValue: string) {
+          originalDescriptor.set!.call(this, newValue);
+          controller.syncInputFromSelect();
+        },
+      });
+    }
+
+    private setupMutationObserver() {
+      const observer = new MutationObserver(() => {
+        this.syncOptionsFromSelect();
+      });
+      observer.observe(this.select, { childList: true });
+    }
+
+    private syncOptionsFromSelect() {
+      this.options = Array.from(this.select.options)
+        .filter((option) => option.value !== '')
+        .map((option) => ({ value: option.value, label: option.textContent || '' }));
+      this.syncInputFromSelect();
+    }
+
+    private syncInputFromSelect() {
+      const currentValue = Object.getOwnPropertyDescriptor(
+        HTMLSelectElement.prototype,
+        'value'
+      )!.get!.call(this.select);
+
+      if (!currentValue) {
+        this.input.value = '';
+        this.selectedLabel = '';
+        return;
+      }
+
+      const match = this.options.find((option) => option.value === currentValue);
+      if (match) {
+        this.input.value = match.label;
+        this.selectedLabel = match.label;
+      }
+    }
+
+    private setupEventListeners() {
+      this.input.addEventListener('input', () => this.onInput());
+      this.input.addEventListener('focus', () => this.onFocus());
+      this.input.addEventListener('keydown', (event) => this.onKeyDown(event));
+
+      document.addEventListener('mousedown', (event) => {
+        if (!this.wrapper.contains(event.target as Node)) {
+          this.close(true);
+        }
+      });
+    }
+
+    private onFocus() {
+      this.input.select();
+      this.open();
+    }
+
+    private onInput() {
+      this.activeIndex = -1;
+      this.open();
+      this.renderOptions();
+    }
+
+    private onKeyDown(event: KeyboardEvent) {
+      const visibleItems = this.listbox.querySelectorAll('[role="option"]:not(.hidden)');
+
+      switch (event.key) {
+        case 'ArrowDown': {
+          event.preventDefault();
+          if (!this.isOpen) {
+            this.open();
+            return;
+          }
+          this.activeIndex = Math.min(this.activeIndex + 1, visibleItems.length - 1);
+          this.updateActiveDescendant(visibleItems);
+          break;
+        }
+        case 'ArrowUp': {
+          event.preventDefault();
+          if (!this.isOpen) {
+            this.open();
+            return;
+          }
+          this.activeIndex = Math.max(this.activeIndex - 1, 0);
+          this.updateActiveDescendant(visibleItems);
+          break;
+        }
+        case 'Enter': {
+          event.preventDefault();
+          if (this.isOpen && this.activeIndex >= 0 && visibleItems[this.activeIndex]) {
+            const selectedValue = (visibleItems[this.activeIndex] as HTMLElement).dataset.value!;
+            this.selectOption(selectedValue);
+          } else if (this.isOpen && visibleItems.length === 1) {
+            const selectedValue = (visibleItems[0] as HTMLElement).dataset.value!;
+            this.selectOption(selectedValue);
+          }
+          break;
+        }
+        case 'Escape': {
+          event.preventDefault();
+          this.close(true);
+          break;
+        }
+        case 'Tab': {
+          if (this.isOpen) {
+            if (this.activeIndex >= 0 && visibleItems[this.activeIndex]) {
+              const selectedValue = (visibleItems[this.activeIndex] as HTMLElement).dataset.value!;
+              this.selectOption(selectedValue);
+            } else {
+              this.close(true);
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    private updateActiveDescendant(visibleItems: NodeListOf<Element>) {
+      for (const item of visibleItems) {
+        item.classList.remove('bg-forest-100', 'dark:bg-neutral-600');
+      }
+
+      if (this.activeIndex >= 0 && visibleItems[this.activeIndex]) {
+        const activeItem = visibleItems[this.activeIndex] as HTMLElement;
+        activeItem.classList.add('bg-forest-100', 'dark:bg-neutral-600');
+        activeItem.scrollIntoView({ block: 'nearest' });
+        this.input.setAttribute('aria-activedescendant', activeItem.id);
+      } else {
+        this.input.removeAttribute('aria-activedescendant');
+      }
+    }
+
+    private selectOption(value: string) {
+      const originalDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLSelectElement.prototype,
+        'value'
+      )!;
+      originalDescriptor.set!.call(this.select, value);
+
+      const match = this.options.find((option) => option.value === value);
+      if (match) {
+        this.input.value = match.label;
+        this.selectedLabel = match.label;
+      }
+
+      this.close(false);
+      this.select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    private open() {
+      this.isOpen = true;
+      this.input.setAttribute('aria-expanded', 'true');
+      this.listbox.classList.remove('hidden');
+      this.renderOptions();
+    }
+
+    private close(restoreText: boolean) {
+      this.isOpen = false;
+      this.activeIndex = -1;
+      this.input.setAttribute('aria-expanded', 'false');
+      this.listbox.classList.add('hidden');
+      this.input.removeAttribute('aria-activedescendant');
+
+      if (restoreText) {
+        this.input.value = this.selectedLabel;
+      }
+    }
+
+    private renderOptions() {
+      const query = normalizeText(this.input.value);
+      const selectId = this.select.id;
+
+      this.listbox.innerHTML = '';
+
+      let visibleCount = 0;
+      for (let index = 0; index < this.options.length; index++) {
+        const option = this.options[index];
+        const normalizedLabel = normalizeText(option.label);
+        const isVisible = !query || normalizedLabel.includes(query);
+
+        if (!isVisible) continue;
+
+        const listItem = document.createElement('li');
+        listItem.id = `${selectId}-option-${index}`;
+        listItem.setAttribute('role', 'option');
+        listItem.setAttribute('aria-selected', 'false');
+        listItem.dataset.value = option.value;
+        listItem.className =
+          'px-3 py-2 text-sm cursor-pointer hover:bg-forest-100 dark:hover:bg-neutral-600';
+        listItem.textContent = option.label;
+
+        listItem.addEventListener('mousedown', (event) => {
+          event.preventDefault();
+          this.selectOption(option.value);
+        });
+
+        this.listbox.appendChild(listItem);
+        visibleCount++;
+      }
+
+      if (visibleCount === 0) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'px-3 py-2 text-sm text-stone-400 dark:text-stone-500';
+        emptyItem.textContent = 'Aucun résultat';
+        this.listbox.appendChild(emptyItem);
+      }
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-searchable-select]').forEach((wrapper) => {
+    new SearchableSelectController(wrapper);
+  });
+</script>
