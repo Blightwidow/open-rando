@@ -121,9 +121,27 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
               {t(locale, 'detail.sectionDownloadGpx')}
             </button>
+            <button id="section-qr-toggle" class="text-sm text-forest-700 dark:text-forest-400 hover:underline">
+              {t(locale, 'detail.sectionQrCode')}
+            </button>
             <button id="section-reset" class="text-sm text-forest-700 dark:text-forest-400 hover:underline">
               {t(locale, 'detail.sectionReset')}
             </button>
+          </div>
+          <div id="section-qr" class="hidden mt-6 bg-black/[0.03] dark:bg-white/[0.05] rounded-lg border border-black/[0.06] dark:border-white/[0.08] p-4 relative">
+            <button id="section-qr-close" class="absolute top-2 right-2 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="flex items-center gap-4 justify-center">
+              <div id="qr-container" class="bg-white p-3 rounded-md shrink-0"></div>
+              <div class="flex flex-col gap-2">
+                <p class="text-xs text-stone-500 dark:text-stone-400">{t(locale, 'detail.sectionQrDescription')}</p>
+                <button id="section-qr-download" class="inline-flex items-center gap-2 px-3 py-1.5 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-xs font-medium self-start">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
+                  {t(locale, 'detail.sectionQrDownload')}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -379,6 +397,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
 <script>
   import type { RouteElevationProfile } from '../../../../lib/catalog';
   import { formatTime } from '../../../../lib/elevation';
+  import qrGenerator from 'qrcode-generator';
 
   const selectorElement = document.getElementById('section-selector');
   if (selectorElement) {
@@ -395,6 +414,11 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
     const durationDisplay = document.getElementById('section-duration')!;
     const downloadButton = document.getElementById('section-download-gpx')!;
     const resetButton = document.getElementById('section-reset')!;
+    const qrToggleButton = document.getElementById('section-qr-toggle')!;
+    const qrPanel = document.getElementById('section-qr')!;
+    const qrContainer = document.getElementById('qr-container')!;
+    const qrDownloadButton = document.getElementById('section-qr-download')!;
+    const qrCloseButton = document.getElementById('section-qr-close')!;
 
     // Populate dropdowns
     for (const station of stations) {
@@ -490,6 +514,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       statsContainer.classList.remove('hidden');
 
       updateUrlParams(fromValue, toValue);
+      qrPanel.classList.add('hidden');
 
       document.dispatchEvent(new CustomEvent('section-change', {
         detail: { startKm, endKm }
@@ -503,8 +528,66 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       fromSelect.value = '';
       toSelect.value = '';
       statsContainer.classList.add('hidden');
+      qrPanel.classList.add('hidden');
       updateUrlParams('', '');
       document.dispatchEvent(new CustomEvent('section-change', { detail: null }));
+    });
+
+    function generateQrCode() {
+      const siteOrigin = 'https://rando.dammaretz.fr';
+      const fullUrl = `${siteOrigin}${window.location.pathname}${window.location.search}`;
+      const qr = qrGenerator(0, 'M');
+      qr.addData(fullUrl);
+      qr.make();
+      qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+    }
+
+    qrToggleButton.addEventListener('click', () => {
+      const isHidden = qrPanel.classList.contains('hidden');
+      if (isHidden) {
+        generateQrCode();
+        qrPanel.classList.remove('hidden');
+      } else {
+        qrPanel.classList.add('hidden');
+      }
+    });
+
+    qrCloseButton.addEventListener('click', () => {
+      qrPanel.classList.add('hidden');
+    });
+
+    qrDownloadButton.addEventListener('click', () => {
+      const svgElement = qrContainer.querySelector('svg');
+      if (!svgElement) return;
+
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const blobUrl = URL.createObjectURL(svgBlob);
+
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = 4;
+        canvas.width = image.width * scale;
+        canvas.height = image.height * scale;
+        const context = canvas.getContext('2d')!;
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((pngBlob) => {
+          if (!pngBlob) return;
+          const pngUrl = URL.createObjectURL(pngBlob);
+          const link = document.createElement('a');
+          link.href = pngUrl;
+          link.download = `${routeRef.replace(/\s+/g, '-')}-section-qr.png`;
+          link.click();
+          URL.revokeObjectURL(pngUrl);
+        }, 'image/png');
+
+        URL.revokeObjectURL(blobUrl);
+      };
+      image.src = blobUrl;
     });
 
     // Restore section from URL params on page load
