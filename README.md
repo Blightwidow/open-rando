@@ -2,7 +2,7 @@
 
 Train station-to-station hiking on French GR paths -- car-free hiking made easy.
 
-A Python pipeline fetches hiking routes and train station data from open sources, computes walkable multi-step hikes between stations, and exports a catalog. An Astro static website displays hikes on a map with filters and GPX download.
+A Python pipeline fetches hiking routes, train stations, bus stops, and elevation data from open sources, then exports a catalog. An Astro static website displays routes on a map with filters, elevation profiles, section selection, and GPX download.
 
 ## How it works
 
@@ -12,24 +12,27 @@ BUILD TIME                                    RUNTIME (static files)
 | Python Pipeline                         |   | Astro Static Site          |
 |                                         |   |                            |
 | Overpass API --+                        |   |  Leaflet Map + List/Filter |
-| OSM stations --+-> fetch -> match ->    |   |         |                  |
-| SRTM tiles ---+   step graph -> DFS ->  |   |    catalog.json            |
-|                    export               |   |    /gpx/{id}.gpx           |
-|               data/catalog.json         |   |    /geojson/{id}.json      |
-|               data/gpx/*.gpx            |   +----------------------------+
-|               data/geojson/*.json       |
+| SNCF stations -+-> fetch -> match ->   |   |  Elevation chart           |
+| GTFS bus data --+   geography ->        |   |  Section selector + QR     |
+| SRTM tiles ----+    elevation ->        |   |         |                  |
+|                      export             |   |    catalog.json            |
+|               data/catalog.json         |   |    /gpx/{id}.gpx           |
+|               data/gpx/*.gpx            |   |    /geojson/{id}.json      |
+|               data/geojson/*.json       |   |    /elevation/{id}.json    |
+|               data/elevation/*.json     |   +----------------------------+
 +-----------------------------------------+
 ```
 
 The pipeline:
 
-1. Fetches a GR hiking relation from the Overpass API (resolves super-relations recursively)
-2. Fetches active train stations near the route (filters out disused/abandoned)
-3. Matches stations to the trail using Shapely (keeps those within 5km)
-4. Builds a step graph with edges between station pairs 8-18km apart
-5. Finds all maximal hike chains via DFS, deduplicates sub-paths
+1. Loads curated GR routes from `routes.yaml` (176 trails with OSM relation IDs)
+2. Fetches trail geometry from the Overpass API (resolves super-relations recursively)
+3. Fetches active train stations near the route (OSM + SNCF filtering)
+4. Matches stations to the trail using Shapely
+5. Fetches bus stops with GTFS enrichment (route names from transport.data.gouv.fr)
 6. Fetches nearby accommodation (hotel, guest house, hostel, camping) for each station
-7. Exports GPX files, GeoJSON, and a `catalog.json` consumed by the website
+7. Samples elevation from SRTM tiles every 50m, classifies geography (region, terrain, difficulty)
+8. Exports GPX files, GeoJSON, elevation profiles, and a `catalog.json` consumed by the website
 
 ## Getting started
 
@@ -46,7 +49,15 @@ uv sync --all-extras
 uv run python -m open_rando
 ```
 
-This fetches data from OpenStreetMap and writes output to `data/`.
+Options:
+
+```bash
+uv run python -m open_rando --route "GR 13"   # single route
+uv run python -m open_rando --dry-run          # list routes without processing
+uv run python -m open_rando --reset            # clear catalog before processing
+```
+
+Pipeline output goes to `~/.local/share/open-rando/data/`, cache to `~/.cache/open-rando/`.
 
 ### Run the website
 
@@ -56,7 +67,7 @@ bun install
 bun run dev
 ```
 
-The dev server copies `data/` into `public/data/` automatically.
+The dev server copies pipeline data into `public/data/` automatically.
 
 To build for production:
 
@@ -68,51 +79,53 @@ Static output goes to `website/dist/`.
 
 ## Features
 
-- Interactive Leaflet map with trail visualization
-- Filter hikes by distance, duration, step count, and max step length
-- Filter by accommodation: show only hikes where every overnight stop has a hotel or camping
-- Hike detail pages with step breakdown, station list, and dedicated map
-- GPX download for each hike
-- Only active train stations (disused/abandoned filtered out)
-- Accommodation info (hotel/camping) displayed per station
+- Interactive Leaflet map with trail visualization and POI overlays
+- Filter routes by region and terrain type
+- Route detail pages with elevation profile (slope-colored), station list, and map
+- Section selector: pick start/end train stations, view section stats (distance, elevation, duration)
+- QR code sharing for selected sections (downloadable or scannable with companion app)
+- GPX download for full routes and selected sections
+- Bus stop display with GTFS route names
+- Accommodation info (hotel/camping) per station
+- Bilingual: French (default) and English
 
 ## Project structure
 
 ```
 open-rando/
-  pipeline/           Python data pipeline
+  pipeline/              Python data pipeline
     src/open_rando/
-      cli.py           Entry point
-      config.py        Constants (step distances, API config, search radius)
-      models.py        Station, Accommodation, HikeStep, Hike dataclasses
-      fetchers/        Overpass API, station fetcher, accommodation fetcher
-      processors/      Station-to-trail matching, step graph + DFS
-      exporters/       GPX, GeoJSON, catalog.json writers
-  website/            Astro static site
+      cli.py             Entry point
+      config.py          Constants (API config, search radius)
+      fetchers/          Overpass, SNCF, GTFS, SRTM, POI fetchers
+      processors/        Station matching, elevation, geography, slicing
+      exporters/         GPX, GeoJSON, elevation, catalog writers
+    routes.yaml          Curated GR route catalog (176 trails)
+  website/               Astro static site
     src/
-      pages/           Index (map + filters + list) and hike detail
-      components/      HikeMap, HikeCard, HikeFilters, HikeList
-      lib/catalog.ts   TypeScript types + data loading
-  data/               Pipeline output (gitignored)
-  docs/               Architecture, data sources, deployment
+      pages/             Landing, app (list + map), route detail (FR + EN)
+      components/        ElevationChart, RouteCard, RouteFilters, RouteList, SearchableSelect
+      lib/               catalog.ts, i18n.ts, elevation.ts, route-filters.ts
+  docs/                  Architecture, data sources, deployment
 ```
 
 ## Stack
 
 | Layer | Tech |
 |-------|------|
-| Pipeline | Python 3.13+, Shapely, requests, gpxpy |
-| Website | Astro, Leaflet, Tailwind CSS |
-| Data sources | OpenStreetMap Overpass API, SNCF open data, SRTM elevation tiles |
+| Pipeline | Python 3.13+, Shapely, requests, gpxpy, pyyaml |
+| Website | Astro, Leaflet, Tailwind CSS, qrcode-generator |
+| Data sources | OpenStreetMap Overpass API, SNCF open data, transport.data.gouv.fr GTFS, OSRM, SRTM elevation tiles |
 
 ## Data sources
 
 All data comes from open sources under the [ODbL license](https://opendatacommons.org/licenses/odbl/).
 
 - **Hiking routes**: OpenStreetMap via Overpass API (`route=hiking`, `ref~"^GR"`)
-- **Train stations**: OpenStreetMap (`railway=station` / `railway=halt`), filtered for active service
-- **Accommodation**: OpenStreetMap (`tourism=hotel|guest_house|hostel|camp_site`) within 2km of each station
-- **Elevation** (planned): SRTM `.hgt` tiles
+- **Train stations**: OpenStreetMap (`railway=station` / `railway=halt`), filtered for active service via SNCF data
+- **Bus stops**: OpenStreetMap, enriched with route names from GTFS feeds (transport.data.gouv.fr)
+- **Accommodation**: OpenStreetMap (`tourism=hotel|guest_house|hostel|camp_site`) near the trail
+- **Elevation**: SRTM `.hgt` tiles, sampled every 50m along the trail
 
 ## Development
 
