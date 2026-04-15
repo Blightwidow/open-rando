@@ -113,6 +113,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.sectionTo': "Jusqu'à",
     'detail.sectionReset': "Tout l'itinéraire",
     'detail.sectionDownloadGpx': 'Télécharger GPX section',
+    'detail.sectionQrCode': 'QR Code',
+    'detail.sectionQrDownload': 'Télécharger le QR code',
+    'detail.sectionQrDescription': 'Partagez ce QR code ou scannez-le avec l\'app compagnon pour ajouter cette section hors-ligne.',
 
     // Accommodation
     'accommodation.hotel': 'Hôtel',
@@ -263,6 +266,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.sectionTo': 'To',
     'detail.sectionReset': 'Full itinerary',
     'detail.sectionDownloadGpx': 'Download section GPX',
+    'detail.sectionQrCode': 'QR Code',
+    'detail.sectionQrDownload': 'Download QR code',
+    'detail.sectionQrDescription': 'Share this QR code with anyone, or scan it with the companion app to save this section offline.',
 
     // Accommodation
     'accommodation.hotel': 'Hotel',
@@ -343,6 +349,7 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
     'detail.loading',
     'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',
     'detail.sectionReset', 'detail.sectionDownloadGpx',
+    'detail.sectionQrCode', 'detail.sectionQrDownload',
     'suggest.resultsCount.one', 'suggest.resultsCount.many',
     'suggest.noResults', 'suggest.section', 'suggest.departs', 'suggest.arrives',
     'filters.sectionMatch',

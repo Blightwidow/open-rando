@@ -16,6 +16,7 @@
     "@astrojs/tailwind": "^6.0.0",
     "astro": "^5.0.0",
     "leaflet": "^1.9.0",
+    "qrcode-generator": "^1.4.4",
     "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
