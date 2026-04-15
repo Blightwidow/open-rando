@@ -27,7 +27,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.gpx.title': 'Traces GPX téléchargeables',
     'landing.feature.gpx.description': 'Téléchargez les traces GPX avec profil altimétrique pour chaque itinéraire.',
     'landing.feature.suggest.title': 'Trouvez votre randonnée',
-    'landing.feature.suggest.description': 'Choisissez votre gare de départ et votre temps disponible, on vous suggère les meilleurs itinéraires.',
+    'landing.feature.suggest.description': 'Filtrez par région, type de terrain ou difficulté pour trouver les itinéraires qui vous correspondent.',
     'landing.feature.map.title': 'Carte interactive',
     'landing.feature.map.description': 'Gares, arrêts de bus, hébergements et profil altimétrique synchronisés sur une carte interactive.',
 
@@ -177,7 +177,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.gpx.title': 'Downloadable GPX tracks',
     'landing.feature.gpx.description': 'Download GPX tracks with elevation profiles for every route.',
     'landing.feature.suggest.title': 'Find your hike',
-    'landing.feature.suggest.description': 'Pick your departure station and available time, and get the best route suggestions.',
+    'landing.feature.suggest.description': 'Filter by region, terrain type or difficulty to find routes that match your preferences.',
     'landing.feature.map.title': 'Interactive map',
     'landing.feature.map.description': 'Train stations, bus stops, accommodation and elevation profile synced on an interactive map.',
 
