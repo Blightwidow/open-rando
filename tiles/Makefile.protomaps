@@ -1,0 +1,87 @@
+# Vector tile pipeline: Protomaps regional extract
+#
+# Builds france.pmtiles by extracting France bbox from Protomaps daily planet build.
+# HTTP range requests only — no full planet download.
+#
+# Prerequisites: go-pmtiles binary (run ./download.sh)
+# Input: Protomaps daily build URL (pinned via SNAPSHOT)
+# Output: france.pmtiles (~500MB-1GB, world z0-6 + France z7-14)
+#
+# Contours remain separate — built by tiles/Makefile → contours.pmtiles
+# Both files upload to Cloudflare R2.
+#
+# Usage:
+#   ./download.sh                     # fetch go-pmtiles binary
+#   make -f Makefile.protomaps        # build france.pmtiles
+#   make -f Makefile.protomaps upload # upload to R2
+#   make -f Makefile.protomaps show   # inspect tiles
+#   make -f Makefile.protomaps clean  # remove output
+
+PMTILES := ./pmtiles
+
+# Protomaps daily build — bump SNAPSHOT to refresh OSM data
+SNAPSHOT := 20260417
+SOURCE_URL := https://build.protomaps.com/$(SNAPSHOT).pmtiles
+
+# France bbox: west,south,east,north (covers Corsica + overseas DOM excluded)
+BBOX := -5.5,41.0,10.0,51.5
+MAX_ZOOM := 13
+
+OUTPUT := france.pmtiles
+WORLD_OUTPUT := world-low.pmtiles
+WORLD_MAX_ZOOM := 5
+
+# R2 bucket name (accessed via rclone remote "r2" — see docs/VECTOR_TILES.md)
+R2_BUCKET := open-rando-tiles
+R2_REMOTE := r2
+CONTOURS_FILE := $(HOME)/.local/share/open-rando/data/contours.pmtiles
+
+RCLONE_UPLOAD := rclone copyto --s3-chunk-size=64M --s3-no-check-bucket --progress \
+	--header-upload "Cache-Control: public, max-age=604800, immutable" \
+	--header-upload "Content-Type: application/octet-stream"
+
+.PHONY: all world install upload upload-world upload-contours clean show
+
+all: $(OUTPUT) $(WORLD_OUTPUT)
+
+world: $(WORLD_OUTPUT)
+
+$(OUTPUT): $(PMTILES)
+	$(PMTILES) extract \
+		$(SOURCE_URL) \
+		$(OUTPUT) \
+		--bbox=$(BBOX) \
+		--maxzoom=$(MAX_ZOOM)
+
+$(WORLD_OUTPUT): $(PMTILES)
+	$(PMTILES) extract \
+		$(SOURCE_URL) \
+		$(WORLD_OUTPUT) \
+		--maxzoom=$(WORLD_MAX_ZOOM)
+
+install:
+	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) not found. Run ./download.sh first."; exit 1; }
+	@command -v rclone >/dev/null 2>&1 || { echo "ERROR: rclone not found. Install rclone (brew install rclone)."; exit 1; }
+	@echo "pmtiles version:"
+	@$(PMTILES) version
+
+# Upload base tiles to R2 via rclone (wrangler caps at 300 MiB)
+upload: $(OUTPUT)
+	$(RCLONE_UPLOAD) $(OUTPUT) $(R2_REMOTE):$(R2_BUCKET)/$(OUTPUT)
+	@echo "Uploaded $(OUTPUT) to R2 bucket $(R2_BUCKET)"
+
+upload-world: $(WORLD_OUTPUT)
+	$(RCLONE_UPLOAD) $(WORLD_OUTPUT) $(R2_REMOTE):$(R2_BUCKET)/$(WORLD_OUTPUT)
+	@echo "Uploaded $(WORLD_OUTPUT) to R2 bucket $(R2_BUCKET)"
+
+# Upload contours to R2 (built by tiles/Makefile)
+upload-contours: $(CONTOURS_FILE)
+	$(RCLONE_UPLOAD) $(CONTOURS_FILE) $(R2_REMOTE):$(R2_BUCKET)/contours.pmtiles
+	@echo "Uploaded contours.pmtiles to R2 bucket $(R2_BUCKET)"
+
+# Show tile metadata
+show: $(OUTPUT)
+	$(PMTILES) show $(OUTPUT)
+
+clean:
+	rm -f $(OUTPUT) $(WORLD_OUTPUT)

@@ -110,7 +110,9 @@ const routesMeta = routes.map((route) => ({
 </script>
 
 <script>
-  import L from 'leaflet';
+  import 'maplibre-gl/dist/maplibre-gl.css';
+  import maplibregl from 'maplibre-gl';
+  import { createMap, switchTheme, TRAIL_COLOR } from '../../../lib/map';
 
   interface RouteMeta {
     id: string;
@@ -121,13 +123,13 @@ const routesMeta = routes.map((route) => ({
     path_ref: string;
   }
 
-  let mapInstance: L.Map | null = null;
-  const routeLayers = new Map<string, L.GeoJSON>();
+  let mapInstance: maplibregl.Map | null = null;
+  const routeSourceIds: string[] = [];
   let allRoutesLoaded = false;
 
   async function initMap() {
     if (mapInstance) {
-      mapInstance.invalidateSize();
+      mapInstance.resize();
       return;
     }
 
@@ -136,24 +138,19 @@ const routesMeta = routes.map((route) => ({
     const locale = container.dataset.locale || 'fr';
     const prefix = locale === 'en' ? '/en' : '';
 
-    const map = L.map(container, { zoomControl: true, scrollWheelZoom: true });
+    const map = createMap(container);
     mapInstance = map;
-
-    const isDark = document.documentElement.classList.contains('dark');
-    let tileLayer = L.tileLayer(
-      isDark
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
-    ).addTo(map);
-
-    L.control.scale({ metric: true, imperial: false }).addTo(map);
 
     // Loading overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'absolute inset-0 z-[1000] flex items-center justify-center bg-white/70 dark:bg-neutral-900/70';
     loadingOverlay.innerHTML = '<span class="text-sm text-stone-500 dark:text-stone-400">Loading trails…</span>';
     container.appendChild(loadingOverlay);
+
+    await new Promise<void>((resolve) => {
+      if (map.isStyleLoaded()) resolve();
+      else map.on('load', () => resolve());
+    });
 
     // Fetch all GeoJSON traces in parallel
     await Promise.allSettled(
@@ -163,26 +160,58 @@ const routesMeta = routes.map((route) => ({
         const trailFeatures = geojson.features.filter(
           (feature: any) => feature.properties.feature_type === 'trail'
         );
-        const layer = L.geoJSON(
-          { type: 'FeatureCollection', features: trailFeatures } as any,
-          {
-            style: { color: 'var(--color-trail, #E72323)', weight: 3, opacity: 0.8 },
-            onEachFeature: (_feature, featureLayer) => {
-              featureLayer.bindTooltip(`${meta.path_ref} — ${meta.path_name}`, { sticky: true });
-              featureLayer.on('click', () => {
-                window.location.href = `${prefix}/app/route/${meta.slug}`;
-              });
-              featureLayer.on('mouseover', () => {
-                (featureLayer as any).setStyle?.({ weight: 5, opacity: 1 });
-              });
-              featureLayer.on('mouseout', () => {
-                (featureLayer as any).setStyle?.({ weight: 3, opacity: 0.8 });
-              });
-            },
-          }
-        );
-        layer.addTo(map);
-        routeLayers.set(meta.id, layer);
+
+        const sourceId = `route-${meta.id}`;
+        const layerId = `route-line-${meta.id}`;
+        routeSourceIds.push(sourceId);
+
+        map.addSource(sourceId, {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: trailFeatures },
+        });
+
+        map.addLayer({
+          id: layerId,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': TRAIL_COLOR,
+            'line-width': 3,
+            'line-opacity': 0.8,
+          },
+        });
+
+        // Hover: thicken line
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+          map.setPaintProperty(layerId, 'line-width', 5);
+          map.setPaintProperty(layerId, 'line-opacity', 1);
+        });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+          map.setPaintProperty(layerId, 'line-width', 3);
+          map.setPaintProperty(layerId, 'line-opacity', 0.8);
+        });
+
+        // Tooltip on hover
+        const tooltip = new maplibregl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+        });
+        map.on('mousemove', layerId, (event) => {
+          tooltip
+            .setLngLat(event.lngLat)
+            .setHTML(`${meta.path_ref} — ${meta.path_name}`)
+            .addTo(map);
+        });
+        map.on('mouseleave', layerId, () => {
+          tooltip.remove();
+        });
+
+        // Click: navigate to route detail
+        map.on('click', layerId, () => {
+          window.location.href = `${prefix}/app/route/${meta.slug}`;
+        });
       })
     );
 
@@ -190,20 +219,75 @@ const routesMeta = routes.map((route) => ({
     loadingOverlay.remove();
 
     applyMapFilters();
-    fitMapToVisible();
+    fitMapToVisible(routesMeta);
 
-    // Theme switching
+    // Theme switching: re-apply style and re-add contour layers
     document.addEventListener('theme-change', () => {
       if (!mapInstance) return;
-      mapInstance.removeLayer(tileLayer);
-      const dark = document.documentElement.classList.contains('dark');
-      tileLayer = L.tileLayer(
-        dark
-          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-          : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
-      ).addTo(mapInstance);
+      switchTheme(mapInstance);
+      mapInstance.once('style.load', () => {
+        reloadRouteLayers(routesMeta, prefix);
+      });
     });
+  }
+
+  async function reloadRouteLayers(routesMeta: RouteMeta[], prefix: string) {
+    if (!mapInstance) return;
+    const map = mapInstance;
+    routeSourceIds.length = 0;
+
+    await Promise.allSettled(
+      routesMeta.map(async (meta) => {
+        const response = await fetch(`/data/${meta.geojson_path}`);
+        const geojson = await response.json();
+        const trailFeatures = geojson.features.filter(
+          (feature: any) => feature.properties.feature_type === 'trail'
+        );
+
+        const sourceId = `route-${meta.id}`;
+        const layerId = `route-line-${meta.id}`;
+        routeSourceIds.push(sourceId);
+
+        map.addSource(sourceId, {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: trailFeatures },
+        });
+
+        map.addLayer({
+          id: layerId,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': TRAIL_COLOR,
+            'line-width': 3,
+            'line-opacity': 0.8,
+          },
+        });
+
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+          map.setPaintProperty(layerId, 'line-width', 5);
+          map.setPaintProperty(layerId, 'line-opacity', 1);
+        });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+          map.setPaintProperty(layerId, 'line-width', 3);
+          map.setPaintProperty(layerId, 'line-opacity', 0.8);
+        });
+
+        const tooltip = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+        map.on('mousemove', layerId, (event) => {
+          tooltip.setLngLat(event.lngLat).setHTML(`${meta.path_ref} — ${meta.path_name}`).addTo(map);
+        });
+        map.on('mouseleave', layerId, () => { tooltip.remove(); });
+        map.on('click', layerId, () => {
+          window.location.href = `${prefix}/app/route/${meta.slug}`;
+        });
+      })
+    );
+
+    allRoutesLoaded = true;
+    applyMapFilters();
   }
 
   function getVisibleRouteIds(): Set<string> {
@@ -217,27 +301,35 @@ const routesMeta = routes.map((route) => ({
   function applyMapFilters() {
     if (!mapInstance || !allRoutesLoaded) return;
     const visible = getVisibleRouteIds();
-    routeLayers.forEach((layer, id) => {
-      if (visible.has(id)) {
-        if (!mapInstance!.hasLayer(layer)) mapInstance!.addLayer(layer);
-      } else {
-        if (mapInstance!.hasLayer(layer)) mapInstance!.removeLayer(layer);
+    for (const sourceId of routeSourceIds) {
+      const routeId = sourceId.replace('route-', '');
+      const layerId = `route-line-${routeId}`;
+      if (mapInstance.getLayer(layerId)) {
+        mapInstance.setLayoutProperty(layerId, 'visibility', visible.has(routeId) ? 'visible' : 'none');
       }
-    });
+    }
   }
 
-  function fitMapToVisible() {
+  function fitMapToVisible(routesMeta?: RouteMeta[]) {
     if (!mapInstance) return;
-    const bounds = L.latLngBounds([]);
-    routeLayers.forEach((layer) => {
-      if (mapInstance!.hasLayer(layer)) bounds.extend(layer.getBounds());
-    });
-    if (bounds.isValid()) mapInstance.fitBounds(bounds, { padding: [30, 30] });
+    const visible = getVisibleRouteIds();
+    const container = document.getElementById('app-map')!;
+    const metas: RouteMeta[] = routesMeta ?? JSON.parse(container.dataset.routesMeta!);
+    const bounds = new maplibregl.LngLatBounds();
+    let hasBounds = false;
+    for (const meta of metas) {
+      if (visible.has(meta.id)) {
+        bounds.extend([meta.bbox[0], meta.bbox[1]]);
+        bounds.extend([meta.bbox[2], meta.bbox[3]]);
+        hasBounds = true;
+      }
+    }
+    if (hasBounds) mapInstance.fitBounds(bounds, { padding: 30 });
   }
 
   document.addEventListener('map-tab-activated', () => {
     initMap().then(() => {
-      setTimeout(() => mapInstance?.invalidateSize(), 50);
+      setTimeout(() => mapInstance?.resize(), 50);
     });
   });
 
