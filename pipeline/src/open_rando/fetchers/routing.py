@@ -15,6 +15,7 @@ from open_rando.config import (
     OSRM_CACHE_DIRECTORY,
     OSRM_CACHE_TTL_SECONDS,
     OSRM_COOLDOWN_SECONDS,
+    OSRM_TABLE_URL,
     OSRM_TIMEOUT_SECONDS,
 )
 
@@ -59,6 +60,91 @@ def fetch_pedestrian_route(
 
     geometry, distance_km = _parse_osrm_response(response_data)
     return geometry, distance_km, False
+
+
+def fetch_pedestrian_distance_matrix(
+    source: tuple[float, float],
+    destinations: list[tuple[float, float]],
+) -> list[float | None]:
+    """Fetch walking distances in meters from source to each destination via OSRM table.
+
+    source and destinations are (lat, lon) tuples. Returns one distance per destination;
+    unreachable destinations yield None. On complete failure (HTTP error, parse error),
+    returns a list of None of the same length as destinations.
+    """
+    if not destinations:
+        return []
+
+    cache_key = _build_table_cache_key(source, destinations)
+    cached = _read_cache(cache_key)
+    if cached is not None:
+        return _parse_table_response(cached, len(destinations))
+
+    coordinate_parts: list[str] = [
+        f"{source[1]:.{COORDINATE_PRECISION}f},{source[0]:.{COORDINATE_PRECISION}f}"
+    ]
+    for destination_latitude, destination_longitude in destinations:
+        coordinate_parts.append(
+            f"{destination_longitude:.{COORDINATE_PRECISION}f},"
+            f"{destination_latitude:.{COORDINATE_PRECISION}f}"
+        )
+
+    destination_indices = ";".join(str(index) for index in range(1, len(destinations) + 1))
+    url = (
+        f"{OSRM_TABLE_URL}/"
+        f"{';'.join(coordinate_parts)}"
+        f"?sources=0&destinations={destination_indices}&annotations=distance"
+    )
+
+    response_data = _fetch_with_retry(url)
+    if response_data is None:
+        return [None] * len(destinations)
+
+    _write_cache(cache_key, response_data)
+    time.sleep(OSRM_COOLDOWN_SECONDS)
+
+    return _parse_table_response(response_data, len(destinations))
+
+
+def _parse_table_response(
+    data: dict,  # type: ignore[type-arg]
+    destination_count: int,
+) -> list[float | None]:
+    """Extract one row of walking distances from an OSRM table response."""
+    try:
+        distances_row = data["distances"][0]
+    except (KeyError, IndexError, TypeError):
+        logger.warning("Failed to parse OSRM table response")
+        return [None] * destination_count
+
+    result: list[float | None] = []
+    for value in distances_row:
+        if value is None:
+            result.append(None)
+        else:
+            try:
+                result.append(float(value))
+            except (TypeError, ValueError):
+                result.append(None)
+    if len(result) != destination_count:
+        logger.warning(
+            "OSRM table returned %d distances, expected %d", len(result), destination_count
+        )
+        return [None] * destination_count
+    return result
+
+
+def _build_table_cache_key(
+    source: tuple[float, float],
+    destinations: list[tuple[float, float]],
+) -> str:
+    source_key = f"{source[1]:.{COORDINATE_PRECISION}f},{source[0]:.{COORDINATE_PRECISION}f}"
+    destination_keys = ";".join(
+        f"{longitude:.{COORDINATE_PRECISION}f},{latitude:.{COORDINATE_PRECISION}f}"
+        for latitude, longitude in destinations
+    )
+    raw = f"table:{source_key}|{destination_keys}"
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
 def make_straight_line_connector(
