@@ -1,0 +1,89 @@
+# Hillshade pipeline: SRTM .hgt → GDAL VRT → rio-rgbify RGB → PMTiles
+#
+# Builds hillshade.pmtiles: raster-dem source encoded as Mapbox RGB PNG tiles.
+# MapLibre GPU-renders hillshade at runtime via the `hillshade` layer type.
+#
+# Prerequisites: gdal (gdalbuildvrt, gdalwarp), uvx, ./pmtiles binary
+# Input: SRTM .hgt tiles in SRTM_DIR (cached by the Python pipeline)
+# Output: hillshade.pmtiles in OUTPUT_DIR
+#
+# Usage:
+#   make -f Makefile.hillshade install   # verify dependencies
+#   make -f Makefile.hillshade           # build hillshade.pmtiles
+#   make -f Makefile.hillshade upload    # upload to R2
+#   make -f Makefile.hillshade clean     # remove intermediates
+
+SRTM_DIR ?= $(HOME)/.cache/open-rando/srtm
+OUTPUT_DIR ?= $(HOME)/.local/share/open-rando/data
+BUILD_DIR := build-hillshade
+
+HGT_FILES := $(wildcard $(SRTM_DIR)/*.hgt)
+DEM_VRT := $(BUILD_DIR)/dem.vrt
+DEM_3857 := $(BUILD_DIR)/dem_3857.tif
+MBTILES := $(BUILD_DIR)/hillshade.mbtiles
+PMTILES_OUT := $(OUTPUT_DIR)/hillshade.pmtiles
+PMTILES := ./pmtiles
+FRANCE_POLYGON := $(OUTPUT_DIR)/france-boundary.geojson
+
+MIN_ZOOM := 6
+MAX_ZOOM := 11
+# France bbox: west,south,east,north (WGS84) — matches Protomaps extract
+BBOX_W := -5.5
+BBOX_S := 41.0
+BBOX_E := 10.0
+BBOX_N := 51.5
+R2_BUCKET := open-rando-tiles
+R2_REMOTE := r2
+
+.PHONY: all install upload clean
+
+all: $(PMTILES_OUT)
+
+$(BUILD_DIR):
+	mkdir -p $@
+
+$(DEM_VRT): | $(BUILD_DIR)
+	gdalbuildvrt $@ $(HGT_FILES)
+
+$(DEM_3857): $(DEM_VRT) $(FRANCE_POLYGON)
+	gdalwarp \
+		-t_srs EPSG:3857 \
+		-te $(BBOX_W) $(BBOX_S) $(BBOX_E) $(BBOX_N) -te_srs EPSG:4326 \
+		-cutline $(FRANCE_POLYGON) \
+		-cblend 5 \
+		-r cubic \
+		-ot Int16 \
+		-srcnodata -32768 -dstnodata 0 \
+		-tr 30 30 \
+		-co COMPRESS=DEFLATE -co PREDICTOR=2 -co TILED=YES -co BIGTIFF=IF_NEEDED \
+		-overwrite \
+		$< $@
+
+$(MBTILES): $(DEM_3857) encode_rgb_dem.py
+	rm -f $@
+	./encode_rgb_dem.py \
+		--min-z $(MIN_ZOOM) \
+		--max-z $(MAX_ZOOM) \
+		$< $@
+
+$(PMTILES_OUT): $(MBTILES) $(PMTILES)
+	mkdir -p $(OUTPUT_DIR)
+	$(PMTILES) convert $< $@
+
+upload: $(PMTILES_OUT)
+	rclone copyto --s3-chunk-size=64M --s3-no-check-bucket --progress \
+		--header-upload "Cache-Control: public, max-age=604800, immutable" \
+		--header-upload "Content-Type: application/octet-stream" \
+		$(PMTILES_OUT) $(R2_REMOTE):$(R2_BUCKET)/hillshade.pmtiles
+	@echo "Uploaded hillshade.pmtiles to R2 bucket $(R2_BUCKET)"
+
+install:
+	@command -v gdalbuildvrt >/dev/null 2>&1 || { echo "ERROR: gdalbuildvrt not found. Install GDAL."; exit 1; }
+	@command -v gdalwarp >/dev/null 2>&1 || { echo "ERROR: gdalwarp not found. Install GDAL."; exit 1; }
+	@command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found. Install uv."; exit 1; }
+	@command -v rclone >/dev/null 2>&1 || { echo "ERROR: rclone not found. Install rclone."; exit 1; }
+	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) missing. Run ./download.sh first."; exit 1; }
+	@echo "All dependencies found."
+
+clean:
+	rm -rf $(BUILD_DIR)

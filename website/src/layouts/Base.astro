@@ -56,7 +56,6 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={resolvedDescription} />
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('theme');
@@ -135,37 +134,31 @@ const languageSwitchPath = getAlternateUrl(Astro.url, alternateLocale);
     --color-station-end: #f87171;
   }
 
-  /* Leaflet dark mode overrides */
-  .dark .leaflet-popup-content-wrapper,
-  .dark .leaflet-popup-tip {
+  /* MapLibre dark mode overrides */
+  .dark .maplibregl-popup-content {
     background-color: #262626;
     color: #f5f5f4;
   }
-  .dark .leaflet-popup-content a {
+  .dark .maplibregl-popup-tip {
+    border-top-color: #262626;
+  }
+  .dark .maplibregl-popup-content a {
     color: #52b788;
   }
-  .dark .leaflet-control-zoom a {
+  .dark .maplibregl-ctrl button {
     background-color: #262626;
     color: #f5f5f4;
     border-color: #3a3a3a;
   }
-  .dark .leaflet-control-zoom a:hover {
+  .dark .maplibregl-ctrl button:hover {
     background-color: #333;
   }
-  .dark .leaflet-control-attribution {
+  .dark .maplibregl-ctrl-attrib {
     background-color: rgba(26, 26, 26, 0.8);
     color: #a8a29e;
   }
-  .dark .leaflet-control-attribution a {
+  .dark .maplibregl-ctrl-attrib a {
     color: #78716c;
-  }
-  .dark .leaflet-tooltip {
-    background-color: #262626;
-    color: #f5f5f4;
-    border-color: #3a3a3a;
-  }
-  .dark .leaflet-tooltip::before {
-    border-top-color: #262626;
   }
 
   /* Focus visible for keyboard navigation */

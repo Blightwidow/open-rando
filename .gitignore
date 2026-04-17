@@ -20,6 +20,12 @@ website/public/data/
 *.hgt
 *.hgt.zip
 
+# Tile build artifacts
+tiles/build/
+tiles/pmtiles
+tiles/build-hillshade/
+*.pmtiles
+
 # IDE
 .vscode/
 .idea/
@@ -31,3 +37,4 @@ Thumbs.db
 # Environment
 .env
 .env.*
+!website/.env.production

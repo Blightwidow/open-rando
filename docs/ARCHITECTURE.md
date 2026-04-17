@@ -7,18 +7,30 @@ BUILD TIME                                    RUNTIME (static files)
 +-----------------------------------------+   +----------------------------+
 | Python Pipeline                         |   | Astro Static Site          |
 |                                         |   |                            |
-| routes.yaml ---+                        |   |  Leaflet Map + POI markers |
-| Overpass API --+-> fetch trail ->       |   |  Route list + filters      |
-| SNCF stations -+   match stations ->    |   |  Elevation Chart (SVG)     |
-| GTFS API ------+   fetch POIs ->        |   |  Suggest panel             |
-| SRTM tiles ----+   elevation ->         |   |    catalog.json            |
-| OSRM router ---+   geography ->         |   |    /gpx/{id}.gpx           |
-|                     export              |   |    /geojson/{id}.json      |
-|        ~/.local/share/open-rando/data/  |   |    /elevation/{id}.json    |
-|               catalog.json              |   +----------------------------+
-|               gpx/*.gpx                 |
-|               geojson/*.json            |
-|               elevation/*.json          |
+| routes.yaml ---+                        |   |  MapLibre GL JS            |
+| Overpass API --+-> fetch trail ->       |   |    Vector base tiles       |
+| SNCF stations -+   match stations ->    |   |    Contour overlay         |
+| GTFS API ------+   fetch POIs ->        |   |    GeoJSON trails + POIs   |
+| SRTM tiles ----+   elevation ->         |   |  Route list + filters      |
+| OSRM router ---+   geography ->         |   |  Elevation Chart (SVG)     |
+|                     export              |   |  Suggest panel             |
+|        ~/.local/share/open-rando/data/  |   |    catalog.json            |
+|               catalog.json              |   |    /gpx/{id}.gpx           |
+|               gpx/*.gpx                 |   |    /geojson/{id}.json      |
+|               geojson/*.json            |   |    /elevation/{id}.json    |
+|               elevation/*.json          |   +----------------------------+
++-----------------------------------------+
+                                              +----------------------------+
++-----------------------------------------+  | Cloudflare R2              |
+| Tile Pipeline                           |  |                            |
+|                                         |  |  france.pmtiles  (base)    |
+| Protomaps daily -> go-pmtiles extract ->|  |  world-low.pmtiles (z0-5)  |
+| SRTM .hgt -> GDAL + tippecanoe ------>  |  |  contours.pmtiles (SRTM)   |
+| SRTM .hgt -> GDAL + encode_rgb_dem ->   |  |  hillshade.pmtiles (SRTM)  |
+|               france.pmtiles            |  +----------------------------+
+|               world-low.pmtiles         |
+|               contours.pmtiles          |
+|               hillshade.pmtiles         |
 +-----------------------------------------+
 ```
 
@@ -140,6 +152,8 @@ open-rando/
 |           +-- geojson.py       # GeoJSON FeatureCollection per route
 |           +-- catalog.py       # catalog.json writer
 |           +-- elevation.py     # per-route elevation profile JSON
++-- tiles/
+|   +-- Makefile                  # SRTM → GDAL → tippecanoe → contours.pmtiles
 +-- website/
 |   +-- package.json
 |   +-- bun.lock
@@ -169,6 +183,7 @@ open-rando/
 |   |   |   +-- ElevationChart.astro   # inline SVG elevation profile with map hover sync
 |   |   +-- lib/
 |   |       +-- catalog.ts             # types + data loading
+|   |       +-- map.ts                 # shared MapLibre utilities (createMap, contours, POIs, theme)
 |   |       +-- i18n.ts                # translation dictionary (FR/EN) + helpers
 |   |       +-- format.ts              # formatting utilities
 |   |       +-- elevation.ts           # elevation profile utilities
@@ -178,7 +193,7 @@ open-rando/
 ```
 
 **Python deps**: `requests`, `shapely`, `gpxpy`, `geojson`, `pyyaml`
-**JS deps**: `astro`, `@astrojs/sitemap`, `leaflet`, `tailwindcss`
+**JS deps**: `astro`, `@astrojs/sitemap`, `maplibre-gl`, `pmtiles`, `tailwindcss`
 
 ---
 
@@ -196,6 +211,42 @@ open-rando/
 Overpass responses are keyed by SHA256 of the query string. SRTM tiles are keyed by tile name (e.g., `N47E003.hgt`). Missing tiles are cached as sentinels to avoid re-downloading. All caches are in `~/.cache/open-rando/` (shared across worktrees).
 
 When an Overpass query is served from cache, the pipeline skips the cooldown sleep before the next API call. This makes re-runs with warm caches significantly faster (seconds instead of minutes).
+
+---
+
+## Tile Pipelines
+
+Three independent build chains in `tiles/`, all feeding Cloudflare R2 (`open-rando-tiles`):
+
+**1. Protomaps base** (`Makefile.protomaps`) — `go-pmtiles` extracts regional subsets from Protomaps' daily planet build via HTTP range requests (no full planet download).
+- `france.pmtiles` — France bbox `-5.5,41.0,10.0,51.5`, z6-13, Flat v4 schema
+- `world-low.pmtiles` — worldwide, z0-5 (~15MB), for zoomed-out context
+
+**2. Contours** (`Makefile`) — GDAL + tippecanoe from SRTM tiles, clipped to French admin border:
+```
+~/.cache/open-rando/srtm/*.hgt
+    → gdal_contour -i 25  → per-tile contours_25m/*.fgb
+    → gdal_contour -i 100 → per-tile contours_100m/*.fgb
+    → ogrmerge.py → contours_{25m,100m}.fgb
+    → ogr2ogr -clipsrc france-boundary.geojson → *_clipped.fgb
+    → tippecanoe → contours.pmtiles
+```
+- **25m minor contours**: z13-15
+- **100m major contours**: z8-15, elevation labels at z13+
+
+**3. Hillshade** (`Makefile.hillshade`) — GDAL + custom `encode_rgb_dem.py` (rasterio/mercantile/PIL):
+```
+~/.cache/open-rando/srtm/*.hgt
+    → gdalbuildvrt → dem.vrt
+    → gdalwarp (EPSG:3857, cutline france-boundary.geojson, Int16+DEFLATE) → dem_3857.tif
+    → encode_rgb_dem.py (Mapbox RGB PNG tiles) → hillshade.mbtiles
+    → pmtiles convert → hillshade.pmtiles  (z6-11)
+```
+Replaces `rio-rgbify` which failed with a PROJ error on our DEM. Int16 + DEFLATE compression keeps the intermediate DEM ~1-2GB instead of 88GB Float32.
+
+All four PMTiles live on R2 under the public `.r2.dev` URL. Upload via `rclone` (wrangler's 300 MiB per-object ceiling blocks the multi-GB files). MapLibre GL JS reads PMTiles natively via the `pmtiles://` protocol. See [VECTOR_TILES.md](VECTOR_TILES.md) for style integration + R2 setup.
+
+Prerequisites: `gdal` (gdal_contour, gdalbuildvrt, gdalwarp, ogrmerge.py, ogr2ogr), `tippecanoe`, `uv`, `rclone`, `go-pmtiles`.
 
 ---
 

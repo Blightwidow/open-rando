@@ -163,74 +163,128 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
   </main>
 </Base>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
 <script>
-  import L from 'leaflet';
+  import 'maplibre-gl/dist/maplibre-gl.css';
+  import maplibregl from 'maplibre-gl';
+  import { createMap, switchTheme, TRAIL_COLOR, POI_COLORS, POI_RADII } from '../../../lib/map';
 
   const mapElement = document.getElementById('detail-map')!;
   const routeData = JSON.parse(mapElement.dataset.route!);
 
-  const map = L.map(mapElement, { zoomControl: true, scrollWheelZoom: true });
+  const map = createMap(mapElement);
 
-  const isDark = document.documentElement.classList.contains('dark');
-  L.tileLayer(
-    isDark
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
-  ).addTo(map);
-
-  const trailLayer = L.layerGroup().addTo(map);
-  const trainLayer = L.layerGroup().addTo(map);
-  const busLayer = L.layerGroup().addTo(map);
-  const hotelLayer = L.layerGroup().addTo(map);
-  const campingLayer = L.layerGroup().addTo(map);
-
-  const poiStyles: Record<string, { radius: number; fillColor: string; layer: L.LayerGroup }> = {
-    train_station: { radius: 7, fillColor: '#22c55e', layer: trainLayer },
-    bus_stop:      { radius: 5, fillColor: '#3b82f6', layer: busLayer },
-    hotel:         { radius: 5, fillColor: '#a855f7', layer: hotelLayer },
-    camping:       { radius: 5, fillColor: '#f59e0b', layer: campingLayer },
+  // POI layer visibility state
+  const poiLayerVisibility: Record<string, boolean> = {
+    train_station: true,
+    bus_stop: true,
+    hotel: true,
+    camping: true,
   };
 
   async function loadRoute() {
+    await new Promise<void>((resolve) => {
+      if (map.isStyleLoaded()) resolve();
+      else map.on('load', () => resolve());
+    });
+
     try {
       const response = await fetch(`/data/${routeData.geojson_path}`);
       const geojson = await response.json();
 
       const trailFeatures = geojson.features.filter((feature: any) => feature.properties.feature_type === 'trail');
-      for (const feature of trailFeatures) {
-        L.geoJSON(feature, {
-          style: { color: 'var(--color-trail, #E72323)', weight: 3, opacity: 0.8 },
-        }).addTo(trailLayer);
-      }
+
+      // Trail layer
+      map.addSource('trail', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: trailFeatures },
+      });
+
+      map.addLayer({
+        id: 'trail-line',
+        type: 'line',
+        source: 'trail',
+        paint: {
+          'line-color': TRAIL_COLOR,
+          'line-width': 3,
+          'line-opacity': 0.8,
+        },
+      });
+
+      // POI layers — one per type
+      const poiFeatures: Record<string, any[]> = {
+        train_station: [],
+        bus_stop: [],
+        hotel: [],
+        camping: [],
+      };
 
       for (const poi of routeData.pois ?? []) {
-        const style = poiStyles[poi.poi_type];
-        if (!style) continue;
-
-        const marker = L.circleMarker([poi.lat, poi.lon], {
-          radius: style.radius,
-          fillColor: style.fillColor,
-          color: '#fff',
-          weight: 2,
-          fillOpacity: 0.9,
-        }).addTo(style.layer);
-
+        if (!poiFeatures[poi.poi_type]) continue;
         const lines = poi.transit_lines?.length
           ? `<br><span class="text-xs text-blue-600">${poi.transit_lines.join(', ')}</span>`
           : '';
         const urlLabel = (poi.poi_type === 'hotel' || poi.poi_type === 'camping') ? 'Site web' : 'Horaires';
-        let popupContent = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>${lines}`;
+        let popupHtml = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>${lines}`;
         if (poi.url) {
-          popupContent += `<br><a href="${poi.url}" target="_blank" rel="noopener noreferrer" class="text-xs underline">${urlLabel}</a>`;
+          popupHtml += `<br><a href="${poi.url}" target="_blank" rel="noopener noreferrer" class="text-xs underline">${urlLabel}</a>`;
         }
-        marker.bindPopup(popupContent);
+
+        poiFeatures[poi.poi_type].push({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [poi.lon, poi.lat] },
+          properties: { name: poi.name, popupHtml },
+        });
       }
 
-      const bounds = L.geoJSON(geojson).getBounds();
-      map.fitBounds(bounds, { padding: [30, 30] });
+      for (const [poiType, features] of Object.entries(poiFeatures)) {
+        map.addSource(`poi-${poiType}`, {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features },
+        });
+
+        map.addLayer({
+          id: `poi-${poiType}`,
+          type: 'circle',
+          source: `poi-${poiType}`,
+          paint: {
+            'circle-radius': POI_RADII[poiType] ?? 5,
+            'circle-color': POI_COLORS[poiType] ?? '#888',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+            'circle-opacity': 0.9,
+          },
+        });
+
+        // POI popup on click
+        map.on('click', `poi-${poiType}`, (event) => {
+          const feature = event.features?.[0];
+          if (!feature) return;
+          const coordinates = (feature.geometry as any).coordinates.slice();
+          new maplibregl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(feature.properties.popupHtml)
+            .addTo(map);
+        });
+        map.on('mouseenter', `poi-${poiType}`, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', `poi-${poiType}`, () => {
+          map.getCanvas().style.cursor = '';
+        });
+      }
+
+      // Fit to trail bounds
+      const bounds = new maplibregl.LngLatBounds();
+      for (const feature of trailFeatures) {
+        const geom = feature.geometry;
+        const rings = geom.type === 'MultiLineString' ? geom.coordinates : [geom.coordinates];
+        for (const ring of rings) {
+          for (const coord of ring) {
+            bounds.extend(coord);
+          }
+        }
+      }
+      map.fitBounds(bounds, { padding: 30 });
 
       // Build distance-to-coordinate lookup for elevation chart sync
       const allCoords: [number, number][] = [];
@@ -260,13 +314,29 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       }
       const totalTrailDistance = cumulativeDistances[cumulativeDistances.length - 1];
 
-      let hoverMarker: L.CircleMarker | null = null;
+      // Hover marker source for elevation chart sync
+      map.addSource('hover-marker', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: 'hover-marker',
+        type: 'circle',
+        source: 'hover-marker',
+        paint: {
+          'circle-radius': 7,
+          'circle-color': TRAIL_COLOR,
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 2,
+        },
+      });
 
       document.addEventListener('elevation-hover', ((event: CustomEvent) => {
         const distanceKm = event.detail.distanceKm;
+        const source = map.getSource('hover-marker') as maplibregl.GeoJSONSource;
 
         if (distanceKm === null || totalTrailDistance === 0) {
-          if (hoverMarker) { map.removeLayer(hoverMarker); hoverMarker = null; }
+          source.setData({ type: 'FeatureCollection', features: [] });
           return;
         }
 
@@ -285,46 +355,49 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
         const lat = allCoords[low][0] + (allCoords[high][0] - allCoords[low][0]) * interpolation;
         const lon = allCoords[low][1] + (allCoords[high][1] - allCoords[low][1]) * interpolation;
 
-        if (hoverMarker) {
-          hoverMarker.setLatLng([lat, lon]);
-        } else {
-          hoverMarker = L.circleMarker([lat, lon], {
-            radius: 7,
-            fillColor: '#E72323',
-            color: '#fff',
-            weight: 2,
-            fillOpacity: 1,
-          }).addTo(map);
-        }
+        source.setData({
+          type: 'FeatureCollection',
+          features: [{
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [lon, lat] },
+            properties: {},
+          }],
+        });
       }) as EventListener);
 
-      // Section highlighting
-      let sectionHighlightLayer: L.Polyline | null = null;
-      let originalTrailOpacity = 0.8;
+      // Section highlighting source
+      map.addSource('section-highlight', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: 'section-highlight',
+        type: 'line',
+        source: 'section-highlight',
+        paint: {
+          'line-color': '#2563eb',
+          'line-width': 5,
+          'line-opacity': 0.9,
+        },
+      });
 
       document.addEventListener('section-change', ((event: CustomEvent) => {
-        // Remove previous highlight
-        if (sectionHighlightLayer) {
-          map.removeLayer(sectionHighlightLayer);
-          sectionHighlightLayer = null;
-        }
+        const sectionSource = map.getSource('section-highlight') as maplibregl.GeoJSONSource;
 
         // Reset trail opacity
-        trailLayer.eachLayer((layer: any) => {
-          if (layer.setStyle) layer.setStyle({ opacity: originalTrailOpacity });
-        });
+        map.setPaintProperty('trail-line', 'line-opacity', 0.8);
 
         const detail = event.detail;
-        if (!detail || detail.startKm == null || detail.endKm == null) return;
+        if (!detail || detail.startKm == null || detail.endKm == null) {
+          sectionSource.setData({ type: 'FeatureCollection', features: [] });
+          return;
+        }
 
         const { startKm, endKm } = detail;
 
         // Dim main trail
-        trailLayer.eachLayer((layer: any) => {
-          if (layer.setStyle) layer.setStyle({ opacity: 0.25 });
-        });
+        map.setPaintProperty('trail-line', 'line-opacity', 0.25);
 
-        // Find coordinate indices for section
         function findCoordIndex(targetKm: number): number {
           let low = 0;
           let high = cumulativeDistances.length - 1;
@@ -340,17 +413,25 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
 
         const sectionCoords = allCoords.slice(startIndex, endIndex + 1);
         if (sectionCoords.length >= 2) {
-          sectionHighlightLayer = L.polyline(sectionCoords, {
-            color: '#2563eb',
-            weight: 5,
-            opacity: 0.9,
-          }).addTo(map);
-          map.fitBounds(sectionHighlightLayer.getBounds(), { padding: [30, 30] });
+          const lineCoords = sectionCoords.map(([lat, lon]) => [lon, lat]);
+          sectionSource.setData({
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: { type: 'LineString', coordinates: lineCoords },
+              properties: {},
+            }],
+          });
+
+          const sectionBounds = new maplibregl.LngLatBounds();
+          for (const [lon, lat] of lineCoords) {
+            sectionBounds.extend([lon, lat]);
+          }
+          map.fitBounds(sectionBounds, { padding: 30 });
         }
       }) as EventListener);
 
-      // If a section was already selected (e.g. restored from URL before map loaded),
-      // re-apply it now that the listener is ready.
+      // If a section was already selected, re-apply it
       const fromSelect = document.getElementById('section-from') as HTMLSelectElement | null;
       const toSelect = document.getElementById('section-to') as HTMLSelectElement | null;
       if (fromSelect?.value && toSelect?.value && fromSelect.value !== toSelect.value) {
@@ -367,28 +448,45 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
     }
   }
 
-  // Layer control
-  function colorDot(color: string, label: string): string {
-    return `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};margin-right:6px;vertical-align:middle;"></span>${label}`;
-  }
-  const overlays: Record<string, L.LayerGroup> = {
-    [colorDot('#22c55e', 'Gares')]: trainLayer,
-    [colorDot('#3b82f6', 'Bus')]: busLayer,
-    [colorDot('#a855f7', 'Hôtels')]: hotelLayer,
-    [colorDot('#f59e0b', 'Campings')]: campingLayer,
-  };
-  L.control.layers(undefined, overlays, { collapsed: false, position: 'topright' }).addTo(map);
-  L.control.scale({ metric: true, imperial: false }).addTo(map);
+  // Custom layer control (MapLibre has no built-in layer control)
+  const layerControlContainer = document.createElement('div');
+  layerControlContainer.className = 'absolute top-2 right-2 z-10 bg-white dark:bg-neutral-800 rounded-md shadow-md p-2 text-sm space-y-1';
 
+  const poiLabels: Record<string, string> = {
+    train_station: 'Gares',
+    bus_stop: 'Bus',
+    hotel: 'Hôtels',
+    camping: 'Campings',
+  };
+
+  for (const [poiType, label] of Object.entries(poiLabels)) {
+    const row = document.createElement('label');
+    row.className = 'flex items-center gap-2 cursor-pointer';
+    row.innerHTML = `
+      <input type="checkbox" checked class="rounded" data-poi-type="${poiType}" />
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${POI_COLORS[poiType]};"></span>
+      ${label}
+    `;
+    const checkbox = row.querySelector('input')!;
+    checkbox.addEventListener('change', () => {
+      poiLayerVisibility[poiType] = checkbox.checked;
+      if (map.getLayer(`poi-${poiType}`)) {
+        map.setLayoutProperty(`poi-${poiType}`, 'visibility', checkbox.checked ? 'visible' : 'none');
+      }
+    });
+    layerControlContainer.appendChild(row);
+  }
+
+  mapElement.style.position = 'relative';
+  mapElement.appendChild(layerControlContainer);
+
+  // Theme switching
   document.addEventListener('theme-change', () => {
-    const dark = document.documentElement.classList.contains('dark');
-    map.eachLayer((layer) => { if ((layer as any)._url) map.removeLayer(layer); });
-    L.tileLayer(
-      dark
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }
-    ).addTo(map);
+    switchTheme(map);
+    map.once('style.load', () => {
+      // Re-trigger loadRoute to re-add all sources and layers
+      loadRoute();
+    });
   });
 
   loadRoute();
