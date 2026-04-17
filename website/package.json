@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "predev": "cp -r ~/.local/share/open-rando/data/ public/data/ 2>/dev/null || echo 'No data/ found'",
+    "predev": "rsync -a --delete --exclude='*.pmtiles' ~/.local/share/open-rando/data/ public/data/ 2>/dev/null || echo 'No data/ found'",
     "dev": "astro dev",
-    "prebuild": "[ -f public/data/catalog.json ] || cp -r ~/.local/share/open-rando/data/ public/data/",
+    "prebuild": "rsync -a --delete --exclude='*.pmtiles' ~/.local/share/open-rando/data/ public/data/",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "bash deploy.sh",
