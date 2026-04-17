@@ -60,7 +60,10 @@ from open_rando.processors.geography import (
     resolve_departement,
     resolve_region,
 )
-from open_rando.processors.match import match_stations_to_trail
+from open_rando.processors.match import (
+    match_stations_to_trail,
+    refine_junctions_by_walking_distance,
+)
 from open_rando.processors.slice import _extract_substring, compute_segment_distance_km
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -266,6 +269,7 @@ def _process_route(
         trail,
         MAX_STATION_DISTANCE_METERS,
     )
+    matched_trains = refine_junctions_by_walking_distance(matched_trains, trail)
 
     if len(matched_trains) < MIN_TRAIN_STATIONS_PER_ROUTE:
         logger.warning(

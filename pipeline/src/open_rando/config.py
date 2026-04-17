@@ -42,7 +42,9 @@ SNCF_STATIONS_URL = "https://ressources.data.sncf.com/api/explore/v2.1/catalog/d
 SNCF_CACHE_DIRECTORY = "~/.cache/open-rando/sncf"
 SNCF_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
 
-OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/foot"
+OSRM_HOST = "http://router.project-osrm.org"
+OSRM_BASE_URL = f"{OSRM_HOST}/route/v1/foot"
+OSRM_TABLE_URL = f"{OSRM_HOST}/table/v1/foot"
 OSRM_CACHE_DIRECTORY = "~/.cache/open-rando/osrm"
 OSRM_CACHE_TTL_SECONDS = 90 * 24 * 3600  # 90 days
 OSRM_COOLDOWN_SECONDS = 1

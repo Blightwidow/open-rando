@@ -6,6 +6,7 @@ import math
 from shapely.geometry import LineString, MultiLineString, Point
 from shapely.ops import nearest_points
 
+from open_rando.fetchers.routing import fetch_pedestrian_distance_matrix
 from open_rando.models import Station
 
 logger = logging.getLogger("open_rando")
@@ -14,6 +15,9 @@ METERS_PER_DEGREE_LATITUDE = 111_320.0
 DEDUPLICATION_DISTANCE_METERS = 500.0
 MINIMUM_FRACTION_SEPARATION = 0.001
 NEAREST_STATION_RADIUS_METERS = 5000.0
+WALKING_REFINEMENT_SAMPLE_STEP_METERS = 150.0
+WALKING_REFINEMENT_RADIUS_METERS = 5000.0
+EARTH_RADIUS_METERS = 6_371_000
 
 
 def degrees_to_meters(distance_degrees: float, latitude: float) -> float:
@@ -21,6 +25,24 @@ def degrees_to_meters(distance_degrees: float, latitude: float) -> float:
     meters_per_degree_longitude = METERS_PER_DEGREE_LATITUDE * math.cos(math.radians(latitude))
     average_scale = (METERS_PER_DEGREE_LATITUDE + meters_per_degree_longitude) / 2
     return distance_degrees * average_scale
+
+
+def _haversine_meters(
+    latitude_a: float,
+    longitude_a: float,
+    latitude_b: float,
+    longitude_b: float,
+) -> float:
+    """Great-circle distance in meters between two WGS84 points."""
+    phi_a = math.radians(latitude_a)
+    phi_b = math.radians(latitude_b)
+    delta_phi = math.radians(latitude_b - latitude_a)
+    delta_lambda = math.radians(longitude_b - longitude_a)
+    half_chord = (
+        math.sin(delta_phi / 2) ** 2
+        + math.cos(phi_a) * math.cos(phi_b) * math.sin(delta_lambda / 2) ** 2
+    )
+    return EARTH_RADIUS_METERS * 2 * math.atan2(math.sqrt(half_chord), math.sqrt(1 - half_chord))
 
 
 MatchedStation = tuple[Station, float, tuple[float, float]]
@@ -264,3 +286,151 @@ def _filter_never_closest_stations(
         )
 
     return result
+
+
+def _sample_trail(
+    trail: LineString | MultiLineString,
+    step_meters: float = WALKING_REFINEMENT_SAMPLE_STEP_METERS,
+) -> list[tuple[float, tuple[float, float]]]:
+    """Sample the trail at regular along-arc intervals.
+
+    Returns (global_fraction_along_trail, (longitude, latitude)) pairs. The fraction
+    is based on cumulative haversine arc length so it matches the metric used for
+    reporting section distances. Supports LineString and MultiLineString (segments
+    are treated as contiguous, matching the existing global-fraction semantics).
+    """
+    segments = list(trail.geoms) if isinstance(trail, MultiLineString) else [trail]
+
+    vertices: list[tuple[float, float, float]] = []
+    cumulative_meters = 0.0
+    for segment in segments:
+        segment_coords = list(segment.coords)
+        if not segment_coords:
+            continue
+        for vertex_index, vertex in enumerate(segment_coords):
+            longitude = float(vertex[0])
+            latitude = float(vertex[1])
+            if not vertices:
+                vertices.append((longitude, latitude, 0.0))
+                continue
+            if vertex_index == 0:
+                vertices.append((longitude, latitude, cumulative_meters))
+                continue
+            previous_longitude, previous_latitude, previous_cumulative = vertices[-1]
+            step_distance = _haversine_meters(
+                previous_latitude, previous_longitude, latitude, longitude
+            )
+            cumulative_meters = previous_cumulative + step_distance
+            vertices.append((longitude, latitude, cumulative_meters))
+
+    if len(vertices) < 2:
+        return []
+    total_length_meters = vertices[-1][2]
+    if total_length_meters <= 0:
+        return []
+
+    samples: list[tuple[float, tuple[float, float]]] = []
+    next_target_meters = 0.0
+    vertex_cursor = 0
+    while vertex_cursor < len(vertices) - 1 and next_target_meters <= total_length_meters:
+        start_vertex = vertices[vertex_cursor]
+        end_vertex = vertices[vertex_cursor + 1]
+        if next_target_meters > end_vertex[2]:
+            vertex_cursor += 1
+            continue
+        piece_length = end_vertex[2] - start_vertex[2]
+        if piece_length <= 0:
+            vertex_cursor += 1
+            continue
+        interpolation = (next_target_meters - start_vertex[2]) / piece_length
+        longitude = start_vertex[0] + interpolation * (end_vertex[0] - start_vertex[0])
+        latitude = start_vertex[1] + interpolation * (end_vertex[1] - start_vertex[1])
+        samples.append((next_target_meters / total_length_meters, (longitude, latitude)))
+        next_target_meters += step_meters
+
+    last_vertex = vertices[-1]
+    if not samples or samples[-1][0] < 1.0 - 1e-9:
+        samples.append((1.0, (last_vertex[0], last_vertex[1])))
+
+    return samples
+
+
+def refine_junctions_by_walking_distance(
+    matched: list[MatchedStation],
+    trail: LineString | MultiLineString,
+    radius_meters: float = WALKING_REFINEMENT_RADIUS_METERS,
+    step_meters: float = WALKING_REFINEMENT_SAMPLE_STEP_METERS,
+) -> list[MatchedStation]:
+    """Re-pick each station's junction point to minimize actual walking distance.
+
+    For each matched station, gathers trail samples within radius_meters crow-fly,
+    queries OSRM foot routing (table API) for walking distance from the station to
+    each candidate, and replaces the junction with the minimum-walking-distance
+    sample. Falls back to the original junction when OSRM fails or no candidate is
+    reachable. The station's `distance_to_trail_meters` is updated to the actual
+    walking distance when refinement succeeds.
+    """
+    if not matched:
+        return matched
+
+    samples = _sample_trail(trail, step_meters=step_meters)
+    if not samples:
+        return matched
+
+    refined: list[MatchedStation] = []
+    for station, original_fraction, original_junction in matched:
+        candidate_indices: list[int] = []
+        for sample_index, (_sample_fraction, sample_point) in enumerate(samples):
+            sample_longitude, sample_latitude = sample_point
+            crow_fly_meters = _haversine_meters(
+                station.lat, station.lon, sample_latitude, sample_longitude
+            )
+            if crow_fly_meters <= radius_meters:
+                candidate_indices.append(sample_index)
+
+        if not candidate_indices:
+            refined.append((station, original_fraction, original_junction))
+            continue
+
+        destination_latlons = [
+            (samples[sample_index][1][1], samples[sample_index][1][0])
+            for sample_index in candidate_indices
+        ]
+        walking_distances = fetch_pedestrian_distance_matrix(
+            (station.lat, station.lon),
+            destination_latlons,
+        )
+
+        best_candidate_position = -1
+        best_walking_meters = float("inf")
+        for candidate_position, walking_meters in enumerate(walking_distances):
+            if walking_meters is None:
+                continue
+            if walking_meters < best_walking_meters:
+                best_walking_meters = walking_meters
+                best_candidate_position = candidate_position
+
+        if best_candidate_position < 0:
+            logger.warning(
+                "No reachable trail point for %s; keeping perpendicular junction",
+                station.name,
+            )
+            refined.append((station, original_fraction, original_junction))
+            continue
+
+        best_sample_index = candidate_indices[best_candidate_position]
+        new_fraction, new_junction = samples[best_sample_index]
+        previous_distance_meters = station.distance_to_trail_meters
+        station.distance_to_trail_meters = round(best_walking_meters, 1)
+        logger.info(
+            "Refined %s: fraction %.3f -> %.3f, distance %.0fm -> %.0fm (walking)",
+            station.name,
+            original_fraction,
+            new_fraction,
+            previous_distance_meters,
+            best_walking_meters,
+        )
+        refined.append((station, new_fraction, new_junction))
+
+    refined.sort(key=lambda item: item[1])
+    return _deduplicate_stations(refined)
