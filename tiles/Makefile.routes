@@ -1,0 +1,114 @@
+# Hybrid base + grid PMTiles bundles for mobile offline downloads.
+#
+# Each layer (france, contours, hillshade) is split into a shared low-zoom
+# base/<layer>.pmtiles (whole France, one file) and per-square high-zoom
+# grid/{col}_{row}/<layer>.pmtiles. Routes reference the squares that
+# intersect their padded bbox; base is always needed. Splitting avoids
+# low-zoom tile duplication across squares (a z8 contour tile is 1.4° vs
+# 1.3° squares so it lands in several squares when grid extraction starts
+# at z8). Mobile assembles a MapLibre offline style at download time using
+# the online style + grid.json + per-route manifest.
+#
+# See docs/VECTOR_TILES.md Stage F for the full pipeline.
+#
+# Prerequisites:
+#   - tiles/pmtiles binary (run ./download.sh)
+#   - Master archives present:
+#       tiles/france.pmtiles
+#       ~/.local/share/open-rando/data/contours.pmtiles
+#       ~/.local/share/open-rando/data/hillshade.pmtiles
+#       (use `make download-masters` to pull them from R2)
+#   - catalog.json in ~/.local/share/open-rando/data/
+#   - rclone with r2 remote configured (for upload)
+#
+# Usage:
+#   make -f Makefile.routes                      # build base + grid + route manifests
+#   make -f Makefile.routes build-grid           # base + grid (slow step)
+#   make -f Makefile.routes build-routes         # just the per-route manifests (fast)
+#   make -f Makefile.routes build-grid SQUARE=6_5  # one grid square (no base rebuild)
+#   make -f Makefile.routes build-routes ROUTE=xxx # one route manifest
+#   make -f Makefile.routes force                # rebuild base + all squares
+#   make -f Makefile.routes upload               # upload base/ + grid/ to R2
+#   make -f Makefile.routes show SQUARE=6_5      # inspect one square
+#   make -f Makefile.routes clean                # remove build-grid/
+
+GRID_DIR ?= build-grid
+DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+PMTILES := ./pmtiles
+
+R2_BUCKET := open-rando-tiles
+R2_REMOTE := r2
+
+FRANCE_MASTER := france.pmtiles
+CONTOURS_MASTER := $(DATA_DIR)/contours.pmtiles
+HILLSHADE_MASTER := $(DATA_DIR)/hillshade.pmtiles
+
+GRID_ARGS := --out $(GRID_DIR) --data-dir $(DATA_DIR)
+ifdef SQUARE
+GRID_ARGS += --square $(SQUARE)
+endif
+
+ROUTES_ARGS := --out $(DATA_DIR)
+ifdef ROUTE
+ROUTES_ARGS += --route $(ROUTE)
+endif
+
+.PHONY: all build build-grid build-routes force upload show clean install download-masters
+
+all: build
+
+build: build-grid build-routes
+
+download-masters:
+	@command -v rclone >/dev/null 2>&1 || { echo "ERROR: rclone not found."; exit 1; }
+	mkdir -p $(DATA_DIR)
+	rclone copyto --progress $(R2_REMOTE):$(R2_BUCKET)/france.pmtiles    $(FRANCE_MASTER)
+	rclone copyto --progress $(R2_REMOTE):$(R2_BUCKET)/contours.pmtiles  $(CONTOURS_MASTER)
+	rclone copyto --progress $(R2_REMOTE):$(R2_BUCKET)/hillshade.pmtiles $(HILLSHADE_MASTER)
+	@echo "Master archives ready."
+
+build-grid:
+	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) missing. Run ./download.sh."; exit 1; }
+	uv run ./build-grid.py $(GRID_ARGS)
+
+build-routes:
+	uv run ./build-routes.py $(ROUTES_ARGS)
+
+force:
+	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) missing. Run ./download.sh."; exit 1; }
+	uv run ./build-grid.py $(GRID_ARGS) --force
+	uv run ./build-routes.py $(ROUTES_ARGS)
+
+# Sync base/<layer>.pmtiles to R2 under base/ and per-square bundles under
+# grid/{col}_{row}/. grid.json + routes/{id}/pmtiles.json ship with the
+# website (mirrored into $(DATA_DIR) by the build scripts; the Astro
+# prebuild copies them to public/).
+upload:
+	@[ -d $(GRID_DIR)/base ] || { echo "ERROR: $(GRID_DIR)/base not built yet. Run 'make -f Makefile.routes build-grid'."; exit 1; }
+	rclone copy $(GRID_DIR)/base/ $(R2_REMOTE):$(R2_BUCKET)/base/ \
+		--include "*.pmtiles" \
+		--s3-chunk-size=64M --s3-no-check-bucket --progress \
+		--header-upload "Cache-Control: public, max-age=604800, immutable" \
+		--header-upload "Content-Type: application/octet-stream"
+	rclone copy $(GRID_DIR)/ $(R2_REMOTE):$(R2_BUCKET)/grid/ \
+		--include "[0-9]*_[0-9]*/*.pmtiles" \
+		--s3-chunk-size=64M --s3-no-check-bucket --progress \
+		--header-upload "Cache-Control: public, max-age=604800, immutable" \
+		--header-upload "Content-Type: application/octet-stream"
+	@echo "Uploaded base + grid bundles to R2 bucket $(R2_BUCKET)/"
+
+show:
+	@[ -n "$(SQUARE)" ] || { echo "ERROR: set SQUARE=<col>_<row>"; exit 1; }
+	@for layer in france contours hillshade; do \
+		echo "--- $$layer ---"; \
+		$(PMTILES) show $(GRID_DIR)/$(SQUARE)/$$layer.pmtiles; \
+	done
+
+install:
+	@command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found."; exit 1; }
+	@command -v rclone >/dev/null 2>&1 || { echo "ERROR: rclone not found."; exit 1; }
+	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) missing. Run ./download.sh first."; exit 1; }
+	@echo "All dependencies found."
+
+clean:
+	rm -rf $(GRID_DIR)
