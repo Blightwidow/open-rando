@@ -46,6 +46,11 @@ cd website && bun install && bun run dev
 - `make -f Makefile.protomaps upload-contours` (in tiles/) -- upload contours.pmtiles to R2
 - `make -f Makefile.hillshade` (in tiles/) -- build hillshade.pmtiles (Mapbox RGB raster-dem from SRTM, z6-11, FR-clipped)
 - `make -f Makefile.hillshade upload` (in tiles/) -- upload hillshade.pmtiles to R2
+- `make -f Makefile.routes download-masters` (in tiles/) -- pull france/contours/hillshade master archives from R2 via rclone
+- `make -f Makefile.routes` (in tiles/) -- build hybrid base + 12x8 grid PMTiles + per-route manifests for mobile offline (incremental; writes to data/grid.json + data/routes/)
+- `make -f Makefile.routes build-grid SQUARE=<col>_<row>` (in tiles/) -- build a single grid square (skips base rebuild)
+- `make -f Makefile.routes build-routes ROUTE=<id>` (in tiles/) -- rewrite one route's manifest
+- `make -f Makefile.routes upload` (in tiles/) -- upload base/ + grid/ bundles to R2
 - `bun run dev` (in website/) -- start dev server
 - `bun run build` (in website/) -- build static site to `dist/`
 
@@ -63,6 +68,6 @@ See `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` 
 
 Pipeline flow: load routes from `routes.yaml` -> for each route: fetch trail geometry (Overpass, superroute recursion) -> fetch train stations (OSM + SNCF filtering) -> match stations to trail -> fetch bus stops + GTFS enrichment (route names from transport.data.gouv.fr) -> fetch accommodation POIs (hotels, campings via Overpass) -> elevation profiling (SRTM sampling every 50m) -> geography classification (region, terrain, difficulty) -> export (GPX with POI waypoints + GeoJSON + elevation profiles) -> merge into catalog.json
 
-Tile pipelines: (1) go-pmtiles extracts france.pmtiles (France bbox, z6-13 Flat v4 schema: roads, landcover, landuse, water, buildings, pois, places, boundaries) + world-low.pmtiles (world z0-5) from the Protomaps daily planet build. (2) GDAL + tippecanoe builds contours.pmtiles from SRTM .hgt tiles (25m + 100m intervals, clipped to FR admin border). (3) GDAL + encode_rgb_dem.py builds hillshade.pmtiles (Mapbox RGB raster-dem, z6-11, clipped to FR admin border) from the same SRTM tiles. All hosted on Cloudflare R2 (uploaded via rclone). See `docs/VECTOR_TILES.md` for details.
+Tile pipelines: (1) go-pmtiles extracts france.pmtiles (France bbox, z6-13 Flat v4 schema: roads, landcover, landuse, water, buildings, pois, places, boundaries) + world-low.pmtiles (world z0-5) from the Protomaps daily planet build. (2) GDAL + tippecanoe builds contours.pmtiles from SRTM .hgt tiles (25m + 100m intervals, clipped to FR admin border). (3) GDAL + encode_rgb_dem.py builds hillshade.pmtiles (Mapbox RGB raster-dem, z6-11, clipped to FR admin border) from the same SRTM tiles. (4) `build-grid.py` splits each master archive into a shared low-zoom `base/<layer>.pmtiles` + a 12x8 grid of high-zoom `grid/{col}_{row}/<layer>.pmtiles` for mobile offline (base shared across all routes, grid squares shared across overlapping routes), and `build-routes.py` emits `routes/{id}/pmtiles.json` listing intersecting square coords; `grid.json` + per-route manifests ship with the static site. All hosted on Cloudflare R2 (uploaded via rclone). See `docs/VECTOR_TILES.md` for details.
 
 Website consumes `data/catalog.json` and serves GPX/GeoJSON/elevation profiles as static files. Routes displayed on MapLibre GL JS map with vector tile base (Protomaps-based hiking style, light+dark themes), contour overlay, and GeoJSON trail/POI markers (train stations, bus stops, hotels, campings). Map styles in `website/src/lib/styles/`. The explore page has filters (region, terrain, difficulty) and a suggest panel to find hikes from a departure station by time budget. Detail pages show an interactive SVG elevation chart with hover-synced map markers and POI overlays.

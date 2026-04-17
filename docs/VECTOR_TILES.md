@@ -11,6 +11,7 @@ Self-hosted vector tiles serving world coverage + France detail from a single PM
 | C. R2 hosting | Complete |
 | D. Website integration | Complete |
 | E. Hillshade (Mapbox RGB raster-dem) | Complete |
+| F. Grid-based extracts (mobile offline) | Complete |
 
 ## Architecture
 
@@ -191,6 +192,161 @@ make -f Makefile.hillshade upload           # upload to R2
 - Output: `hillshade.pmtiles` in `~/.local/share/open-rando/data/`
 
 MapLibre source config: `type: raster-dem`, `encoding: "mapbox"`, `tileSize: 512`. Light style: `exaggeration 0.4`, warm shadow `#5a4a3a`. Dark: `exaggeration 0.3`, black shadow.
+
+---
+
+## Stage F: Hybrid base + grid PMTiles for mobile offline
+
+MapLibre native `OfflineManager.createPack` on iOS/Android rejects `pmtiles://` sources — it downloads only HTTPS XYZ. To support offline, each layer (france, contours, hillshade) is split into two pieces: a shared **base** file (low zooms, whole France, one file per layer) plus per-square **grid** files (high zooms, 12×8 grid over France). Routes reference the squares that intersect their padded bbox; base is always fetched.
+
+This replaces two earlier attempts:
+1. **Per-route extract** (~14 GB total) — overlapping routes duplicated tiles.
+2. **Pure grid** (~6.7 GB) — low-zoom tiles (z8-10) were bigger than a 1.3° square and got included in several adjacent squares, driving grid contours alone to 2.95 GB.
+
+Hoisting z8-10 into a shared 633 MB base file collapses that duplication. Final footprint fits inside the ~10 GB R2 free tier with headroom.
+
+### Files
+
+- `tiles/build-grid.py` — PEP 723 script; writes `base/<layer>.pmtiles` once + `grid/{col}_{row}/<layer>.pmtiles` for each of 96 squares, plus `grid.json`
+- `tiles/build-routes.py` — PEP 723 script; for each route in `catalog.json` emits `routes/{id}/pmtiles.json` listing intersecting grid squares (no pmtiles extraction, trivially fast)
+- `tiles/Makefile.routes` — `download-masters` / `build-grid` / `build-routes` / `build` / `force` / `upload` / `show` / `clean`
+
+### Layers: base vs grid split
+
+| Layer | Source | Master zoom | Base zoom | Grid zoom |
+|-------|--------|-------------|-----------|-----------|
+| `france`    | `tiles/france.pmtiles`                             | 6-13 | 6-10 | 11-13 |
+| `contours`  | `~/.local/share/open-rando/data/contours.pmtiles`  | 8-15 | 8-10 | 11-13 |
+| `hillshade` | `~/.local/share/open-rando/data/hillshade.pmtiles` | 6-11 | 6-8  | 9-11  |
+
+Contours capped at z13 (master z15) because trail overlay renders on top — sub-z13 contour detail is not load-bearing for offline hiking UX. France + hillshade match master zoom for full parity. Base split at roughly half the master zoom range for each layer, where low-zoom tiles would duplicate most across grid squares.
+
+Approximate footprints:
+- Base (all layers): ~633 MB (one-time download shared by every route)
+- Grid (96 squares × 3 layers): ~5 GB projected (down from 6.7 GB pure-grid)
+- Total new artifacts: ~5.6 GB; total R2 with masters ~10 GB.
+
+`world-low` is intentionally omitted — offline viewport stays inside the route bbox. The mobile offline style drops the `protomaps_world` source.
+
+### Grid layout
+
+- Grid bbox tracks `BBOX` in `Makefile.protomaps` (`-5.5, 41.0, 10.0, 51.5`) — `build-grid.py` parses it alongside `SNAPSHOT`, so the grid stays in sync with the master extract.
+- 12 cols × 8 rows = 96 squares → ~1.29° × 1.31° each (~100 × 145 km).
+- Each square bbox is padded by `PAD_DEG = 0.02` (~2 km) so MapLibre has edge tiles when the viewport straddles two squares.
+
+### R2 + website layout
+
+```
+R2 (open-rando-tiles):
+  base/france.pmtiles                     ← z6-10 whole France, shared
+  base/contours.pmtiles                   ← z8-10
+  base/hillshade.pmtiles                  ← z6-8
+  grid/{col}_{row}/france.pmtiles         ← z11-13 per square
+  grid/{col}_{row}/contours.pmtiles       ← z11-13
+  grid/{col}_{row}/hillshade.pmtiles      ← z9-11
+
+Website (rando.dammaretz.fr):
+  /data/grid.json                         ← base URLs + per-square URLs + sizes
+  /data/routes/{routeId}/pmtiles.json     ← per-route square list
+```
+
+`grid.json` shape (`version: 2`):
+
+```json
+{
+  "version": 2,
+  "source_snapshot": "20260417",
+  "grid": { "bbox": [-5.5, 41.0, 10.0, 51.5], "cols": 12, "rows": 8, "pad_deg": 0.02 },
+  "layers": {
+    "france":    { "base_minzoom": 6, "base_maxzoom": 10, "grid_minzoom": 11, "grid_maxzoom": 13 },
+    "contours":  { "base_minzoom": 8, "base_maxzoom": 10, "grid_minzoom": 11, "grid_maxzoom": 13 },
+    "hillshade": { "base_minzoom": 6, "base_maxzoom": 8,  "grid_minzoom": 9,  "grid_maxzoom": 11 }
+  },
+  "base": {
+    "france":    { "url": "https://pub-…/base/france.pmtiles",    "size": 231696524, "minzoom": 6, "maxzoom": 10 },
+    "contours":  { "url": "https://pub-…/base/contours.pmtiles",  "size": 383806119, "minzoom": 8, "maxzoom": 10 },
+    "hillshade": { "url": "https://pub-…/base/hillshade.pmtiles", "size":  17535963, "minzoom": 6, "maxzoom": 8 }
+  },
+  "squares": {
+    "6_5": {
+      "bbox": [2.25, 47.875, 3.54, 49.19],
+      "files": {
+        "france":    { "url": "https://pub-…/grid/6_5/france.pmtiles",    "size": 5421312, "minzoom": 11, "maxzoom": 13 },
+        "contours":  { "url": "https://pub-…/grid/6_5/contours.pmtiles",  "size": 8430211, "minzoom": 11, "maxzoom": 13 },
+        "hillshade": { "url": "https://pub-…/grid/6_5/hillshade.pmtiles", "size": 2341255, "minzoom": 9,  "maxzoom": 11 }
+      }
+    }
+  }
+}
+```
+
+Per-route manifest shape:
+
+```json
+{
+  "route_id": "0fbbaf4616b4",
+  "source_snapshot": "20260417",
+  "bbox": [1.7160437, 48.2921791, 2.9390362, 49.1628759],
+  "squares": [[5, 5], [5, 6], [6, 5], [6, 6]]
+}
+```
+
+### Usage
+
+```bash
+cd tiles
+# Master archives — either rebuild locally:
+make -f Makefile.protomaps                   # france.pmtiles
+make                                         # contours.pmtiles
+make -f Makefile.hillshade                   # hillshade.pmtiles
+# …or pull them from R2 (much faster):
+make -f Makefile.routes download-masters
+
+make -f Makefile.routes                      # build base + grid + route manifests (incremental)
+make -f Makefile.routes build-grid           # only base + grid (slow step)
+make -f Makefile.routes build-routes         # only the per-route manifests (fast)
+make -f Makefile.routes build-grid SQUARE=6_5   # one square (skips base rebuild)
+make -f Makefile.routes build-routes ROUTE=0fbbaf4616b4
+make -f Makefile.routes force                # rebuild base + all squares
+make -f Makefile.routes upload               # rclone base/ + grid/ to R2
+make -f Makefile.routes show SQUARE=6_5
+```
+
+`grid.json` and every `routes/{id}/pmtiles.json` are written into `~/.local/share/open-rando/data/` — the website `prebuild` step copies that whole dir into `public/data/`, so they ship on the static site. Only the `.pmtiles` bundles go to R2.
+
+### Incremental rebuild
+
+The `base/` directory and each square directory hold a `.build-state.json` keyed by layer: `{layer: state_hash}` where `state_hash` covers `{bbox, snapshot, minzoom, maxzoom}`. A layer is skipped when the hash matches and its `.pmtiles` is on disk. Bump `SNAPSHOT` in `Makefile.protomaps` to force-invalidate; it is the single source of truth.
+
+### Size budget
+
+Projected R2 storage for this stage: ~633 MB base + ~5 GB grid = ~5.6 GB (vs ~6.7 GB pure-grid and ~14 GB per-route). Plus ~4.4 GB masters already on R2 = ~10 GB total, at the edge of the free tier. Route downloads range from ~650 MB (base + 1 square) to ~1.5 GB (base + 30+ squares for GR 5/GR 10).
+
+### Mobile-side contract
+
+Full implementation plan for the mobile team: [`MOBILE_OFFLINE.md`](./MOBILE_OFFLINE.md).
+
+Summary — on "download route" the mobile app:
+
+1. Fetch `https://rando.dammaretz.fr/data/routes/{id}/pmtiles.json`.
+2. Fetch (or reuse cached) `https://rando.dammaretz.fr/data/grid.json`.
+3. Download `base/<layer>.pmtiles` (once per device, reused across every route) into `Paths.document/base/`.
+4. For each `[col, row]` in the manifest's `squares`, download the three grid layers from R2 into `Paths.document/grid/{col}_{row}/`. Squares already on disk from a prior route are skipped.
+5. Build an offline MapLibre style:
+   - Clone the online style (light or dark).
+   - Drop the `protomaps_world` source + its layers.
+   - Add one source per layer-kind for `base` (URL: `pmtiles://file:///.../base/<kind>.pmtiles`) covering the full France bbox, then one source per `(square, kind)` pair (URL: `pmtiles://file:///.../grid/{col}_{row}/<kind>.pmtiles`, `bounds` matching the square bbox).
+   - Duplicate every online-style layer referencing a given source kind: one copy targeting the base source (with max zoom range `base_maxzoom`) and one copy per square (with zoom range `grid_minzoom`-`grid_maxzoom`), rewriting the `source` field.
+   - Cache the assembled style JSON per route on disk.
+5. On "remove download", delete the route's cached style + manifest entry. Keep squares on disk (shared); a separate GC pass removes squares no longer referenced by any downloaded route.
+
+Paths are contract: `grid/{col}_{row}/{layer}.pmtiles`. Bump `grid.json` `version` if the scheme changes.
+
+### Open items
+
+- Bumping master france maxzoom 13 → 14 for better mobile fidelity (costs ~40% on master size). Current z12 grid + overzoom is acceptable.
+- Sprite/glyph offline bundle — currently served by `protomaps.github.io`. Mobile needs a local cache; a one-shot `assets.zip` on R2 is the likely path.
+- Atomic grid publish: during R2 upload the files briefly lag the shipped `grid.json`. If it matters, publish `grid.json` (via the website deploy) after the R2 upload completes, or gate consumption on matching `source_snapshot`.
 
 ---
 

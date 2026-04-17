@@ -24,6 +24,7 @@ website/public/data/
 tiles/build/
 tiles/pmtiles
 tiles/build-hillshade/
+tiles/build-grid/
 *.pmtiles
 
 # IDE
