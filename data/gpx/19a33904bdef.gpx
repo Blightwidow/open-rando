@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="open-rando">
+  <metadata>
+    <name>GR 11: Saint-Mammès to Bourron-Marlotte - Grez</name>
+    <desc>Hiking on GR 11 (3 steps)</desc>
+  </metadata>
+  <trk>
+    <name>GR 11: Saint-Mammès to Bourron-Marlotte - Grez</name>
+    <trkseg>
+      <trkpt lat="48.73074547574546" lon="2.984787558952758">
+        <ele>114.52289509869655</ele>
+      </trkpt>
+      <trkpt lat="48.65268332744449" lon="2.9710400354906543">
+        <ele>108.08700198388614</ele>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="48.65268332744449" lon="2.9710400354906543">
+        <ele>108.08700198388614</ele>
+      </trkpt>
+      <trkpt lat="48.558499457161574" lon="2.95445331587497">
+        <ele>102.96806285010734</ele>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="48.558499457161574" lon="2.95445331587497">
+        <ele>102.96806285010734</ele>
+      </trkpt>
+      <trkpt lat="48.42250244499114" lon="2.930502884631638">
+        <ele>118.00880196809953</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

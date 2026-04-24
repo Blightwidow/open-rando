@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="open-rando">
+  <metadata>
+    <name>GR 11: Chamarande to Étampes</name>
+    <desc>Hiking on GR 11 (1 step)</desc>
+  </metadata>
+  <trk>
+    <name>GR 11: Chamarande to Étampes</name>
+    <trkseg>
+      <trkpt lat="48.59383861244813" lon="2.2397288508273947">
+        <ele>71.62278481646656</ele>
+      </trkpt>
+      <trkpt lat="48.53476418454962" lon="2.372373571641982">
+        <ele>48.917691378206335</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
