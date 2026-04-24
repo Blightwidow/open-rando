@@ -40,6 +40,7 @@ export interface RouteElevationProfile {
   distances_km: number[];
   elevations_m: number[];
   times_min: number[];
+  station_positions_km?: number[];
 }
 
 interface Catalog {

@@ -181,7 +181,7 @@ def estimate_duration(distance_km: float, elevation_gain_m: int) -> int:
 def classify_difficulty(gain_m: int, loss_m: int, distance_km: float) -> str:
     """Classify hike difficulty based on elevation gain per km and total gain."""
     if distance_km <= 0:
-        return "unknown"
+        return "easy"
 
     gain_per_km = gain_m / distance_km
 

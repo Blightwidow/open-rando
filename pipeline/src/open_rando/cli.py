@@ -441,6 +441,7 @@ def _process_route(
         profile=profile,
         route_id=route_id,
         output_directory=str(Path(ELEVATION_DIRECTORY).expanduser()),
+        station_positions_km=[poi.distance_km for poi in train_pois if poi.distance_km is not None],
     )
 
     logger.info(

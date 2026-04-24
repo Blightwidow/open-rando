@@ -57,19 +57,15 @@ class PointOfInterest:
     distance_km: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        result: dict[str, Any] = {
+        return {
             "name": self.name,
             "lat": self.lat,
             "lon": self.lon,
             "poi_type": self.poi_type,
+            "url": self.url or "",
+            "transit_lines": self.transit_lines,
+            "distance_km": self.distance_km if self.distance_km is not None else 0.0,
         }
-        if self.url:
-            result["url"] = self.url
-        if self.transit_lines:
-            result["transit_lines"] = self.transit_lines
-        if self.distance_km is not None:
-            result["distance_km"] = self.distance_km
-        return result
 
 
 @dataclass
