@@ -53,6 +53,7 @@ def export_elevation_profile(
         "elevations_m": elevations_m,
         "times_min": times_min,
         "step_boundaries_km": step_boundaries_km,
+        "station_positions_km": [],
     }
 
     output_path.write_text(json.dumps(data), encoding="utf-8")
@@ -62,6 +63,7 @@ def export_route_elevation(
     profile: ElevationProfile,
     route_id: str,
     output_directory: str,
+    station_positions_km: list[float] | None = None,
 ) -> None:
     """Export elevation profile for a full route."""
     if not profile.distances_km:
@@ -74,6 +76,9 @@ def export_route_elevation(
         "distances_km": [round(distance, 3) for distance in profile.distances_km],
         "elevations_m": [round(elevation, 1) for elevation in profile.elevations_m],
         "times_min": [round(time, 1) for time in profile.cumulative_times_min],
+        "station_positions_km": sorted(
+            round(position, 3) for position in (station_positions_km or [])
+        ),
     }
 
     output_path.write_text(json.dumps(data), encoding="utf-8")
