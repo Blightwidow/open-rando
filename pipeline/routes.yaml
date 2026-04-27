@@ -56,6 +56,8 @@ routes:
     name: "Du Gâtinais au Morvan"
     relation_id: 12798892
     description: "Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, rolling green hills and patchwork farmland. Featuring: a hilltop medieval castle (Château de la Motte), a hilltop medieval castle (Manoir du Chastenay). Atmosphere: Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 14"
     name: "De La Champagne aux Ardennes"
     relation_id: 10832894
