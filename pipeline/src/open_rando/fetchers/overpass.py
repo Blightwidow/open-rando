@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import math
 import time
 from pathlib import Path
 
@@ -21,6 +22,9 @@ logger = logging.getLogger("open_rando")
 
 MAX_GAP_DEGREES = 0.01  # ~1km warning threshold
 MAX_CHAIN_GAP_DEGREES = 0.05  # ~5km split threshold for MultiLineString
+SPURIOUS_SEGMENT_MAX_KM = 10.0  # absolute upper bound for spurious-fragment drop
+SPURIOUS_SEGMENT_MAX_FRACTION = 0.05  # fraction-of-longest upper bound for drop
+EARTH_RADIUS_METERS = 6_371_000
 RETRY_ATTEMPTS = 5
 RETRY_BACKOFF_SECONDS = 15
 
@@ -57,6 +61,7 @@ def _fetch_overpass(query: str) -> dict:  # type: ignore[type-arg]
             response = requests.post(
                 OVERPASS_API_URL,
                 data={"data": query},
+                headers={"User-Agent": "open-rando-pipeline/0.1"},
                 timeout=OVERPASS_TIMEOUT_SECONDS + 30,
             )
         except requests.exceptions.Timeout:
@@ -183,8 +188,13 @@ out geom;
         way_coords_list = [ways_by_id[way_id] for way_id in ordered_way_ids if way_id in ways_by_id]
         if not way_coords_list:
             raise RuntimeError(f"No ways found for relation {relation_id}")
-        trail = _chain_ways(way_coords_list)
-        logger.info("Trail has %d points", len(trail.coords))
+        segments = _chain_ways(way_coords_list)
+        trail = _drop_spurious_segments(chain_linestrings(segments))
+        if isinstance(trail, MultiLineString):
+            total_points = sum(len(geom.coords) for geom in trail.geoms)
+            logger.info("Trail has %d segments, %d points total", len(trail.geoms), total_points)
+        else:
+            logger.info("Trail has %d points", len(trail.coords))
         return trail, metadata, cache_hit
 
     # Process each child relation in order
@@ -204,14 +214,16 @@ out geom;
             logger.warning("No ways for child relation %d", child_id)
             continue
 
-        linestring = _chain_ways(way_coords_list)
-        logger.info("  Child %d: %d points", child_id, len(linestring.coords))
-        all_linestrings.append(linestring)
+        segments = _chain_ways(way_coords_list)
+        for index, linestring in enumerate(segments):
+            label = f"{child_id}#{index}" if len(segments) > 1 else str(child_id)
+            logger.info("  Child %s: %d points", label, len(linestring.coords))
+        all_linestrings.extend(segments)
 
     if not all_linestrings:
         raise RuntimeError(f"No geometry found for relation {relation_id}")
 
-    combined = chain_linestrings(all_linestrings)
+    combined = _drop_spurious_segments(chain_linestrings(all_linestrings))
     if isinstance(combined, MultiLineString):
         total_points = sum(len(geom.coords) for geom in combined.geoms)
         logger.info("Trail has %d segments, %d points total", len(combined.geoms), total_points)
@@ -220,36 +232,42 @@ out geom;
     return combined, metadata, cache_hit
 
 
-def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> LineString:
-    """Chain ordered ways into a single LineString, handling reversal and small gaps."""
-    chained: list[tuple[float, float]] = list(way_coords_list[0])
+def _chain_ways(way_coords_list: list[list[tuple[float, float]]]) -> list[LineString]:
+    """Chain ordered ways into one or more LineStrings.
+
+    Ways with endpoint gaps exceeding MAX_CHAIN_GAP_DEGREES start a new segment so
+    disconnected ways at the tail of an OSM relation do not draw a closing line
+    back across the trail.
+    """
+    segments: list[list[tuple[float, float]]] = []
+    current: list[tuple[float, float]] = list(way_coords_list[0])
 
     for way_index in range(1, len(way_coords_list)):
         next_coords = way_coords_list[way_index]
-        chain_end = chained[-1]
+        chain_end = current[-1]
 
         distance_forward = _point_distance(chain_end, next_coords[0])
         distance_reversed = _point_distance(chain_end, next_coords[-1])
 
-        if distance_forward <= distance_reversed:
-            if next_coords[0] == chain_end:
-                chained.extend(next_coords[1:])
-            else:
-                if distance_forward > MAX_GAP_DEGREES:
-                    logger.warning("Gap (%.4f deg) before way %d", distance_forward, way_index)
-                chained.extend(next_coords)
+        if distance_reversed < distance_forward:
+            next_coords = list(reversed(next_coords))
+            gap = distance_reversed
         else:
-            reversed_coords = list(reversed(next_coords))
-            if reversed_coords[0] == chain_end:
-                chained.extend(reversed_coords[1:])
-            else:
-                if distance_reversed > MAX_GAP_DEGREES:
-                    logger.warning(
-                        "Gap (%.4f deg) before way %d (reversed)", distance_reversed, way_index
-                    )
-                chained.extend(reversed_coords)
+            gap = distance_forward
 
-    return LineString(chained)
+        if gap > MAX_CHAIN_GAP_DEGREES:
+            logger.warning("Large gap (%.4f deg) before way %d, splitting trail", gap, way_index)
+            segments.append(current)
+            current = list(next_coords)
+        elif next_coords[0] == chain_end:
+            current.extend(next_coords[1:])
+        else:
+            if gap > MAX_GAP_DEGREES:
+                logger.warning("Gap (%.4f deg) before way %d", gap, way_index)
+            current.extend(next_coords)
+
+    segments.append(current)
+    return [LineString(segment) for segment in segments]
 
 
 def chain_linestrings(
@@ -305,3 +323,54 @@ def chain_linestrings(
 def _point_distance(point_a: tuple[float, float], point_b: tuple[float, float]) -> float:
     """Euclidean distance in degrees (for comparison only)."""
     return float(((point_a[0] - point_b[0]) ** 2 + (point_a[1] - point_b[1]) ** 2) ** 0.5)
+
+
+def _segment_length_km(segment: LineString) -> float:
+    coords = list(segment.coords)
+    total_meters = 0.0
+    for index in range(len(coords) - 1):
+        longitude_1, latitude_1 = coords[index][0], coords[index][1]
+        longitude_2, latitude_2 = coords[index + 1][0], coords[index + 1][1]
+        phi_1 = math.radians(latitude_1)
+        phi_2 = math.radians(latitude_2)
+        delta_phi = math.radians(latitude_2 - latitude_1)
+        delta_lambda = math.radians(longitude_2 - longitude_1)
+        a = (
+            math.sin(delta_phi / 2) ** 2
+            + math.cos(phi_1) * math.cos(phi_2) * math.sin(delta_lambda / 2) ** 2
+        )
+        total_meters += 2 * EARTH_RADIUS_METERS * math.asin(math.sqrt(a))
+    return total_meters / 1000.0
+
+
+def _drop_spurious_segments(
+    geom: LineString | MultiLineString,
+) -> LineString | MultiLineString:
+    """Drop tiny disconnected fragments left over from OSM relation noise.
+
+    A fragment is dropped when it is shorter than SPURIOUS_SEGMENT_MAX_KM AND
+    shorter than SPURIOUS_SEGMENT_MAX_FRACTION of the longest segment. Real
+    alternates of a GR are typically longer than 10 km, so this filter targets
+    the small stray ways that bookend some OSM superroutes.
+    """
+    if isinstance(geom, LineString):
+        return geom
+
+    segments = list(geom.geoms)
+    lengths_km = [_segment_length_km(segment) for segment in segments]
+    longest_km = max(lengths_km)
+    fraction_threshold_km = longest_km * SPURIOUS_SEGMENT_MAX_FRACTION
+
+    kept: list[LineString] = []
+    for segment, length_km in zip(segments, lengths_km, strict=True):
+        if length_km < SPURIOUS_SEGMENT_MAX_KM and length_km < fraction_threshold_km:
+            logger.info("Dropping spurious segment (%.2f km)", length_km)
+            continue
+        kept.append(segment)
+
+    if not kept:
+        longest_index = max(range(len(segments)), key=lambda i: lengths_km[i])
+        return segments[longest_index]
+    if len(kept) == 1:
+        return kept[0]
+    return MultiLineString(kept)
