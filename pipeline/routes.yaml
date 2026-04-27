@@ -34,7 +34,7 @@ routes:
     description: "1 467 km longeant la ligne de partage des eaux entre Atlantique et Méditerranée, du Ballon d'Alsace à Andorre."
   - ref: "GR 8"
     name: "De la Loire à la Sèvre"
-    relation_id: 4043074
+    # relation_id: 4043074  # disabled: OSM relation has a 122km gap between children 10 and 11 (La Rochelle/Charente coast unmapped)
     description: "Le long de la côte atlantique, entre pêcheries traditionnelles, marais salants, Marais Breton Vendéen et Parc naturel du Marais Poitevin."
   - ref: "GR 9"
     name: "Du Jura à la Méditerranée"
