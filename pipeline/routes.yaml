@@ -178,12 +178,15 @@ routes:
   - ref: "GR 56"
     name: "Tour de l'Ubaye (Alpes-de-Haute-Provence, Alpes-Maritimes)"
     description: ""
+    relation_id: 1738444
   - ref: "GR 57"
     name: "Mont Thabor (Hautes-Alpes)"
     description: ""
+    relation_id: 16101643
   - ref: "GR 58"
     name: "Tour du Queyras (Hautes-Alpes)"
     description: ""
+    relation_id: 9711201
   - ref: "GR 59"
     name: "Du Ballon d'Alsace à Culoz"
     relation_id: 12827833
@@ -195,23 +198,19 @@ routes:
   - ref: "GR 61"
     name: "De Anduze au Col de l'Asclier (Gard-Cévennes)"
     description: ""
+    relation_id: 2399821
   - ref: "GR 62"
-    name: "De Roque-Rouge à Conques"
-    relation_id: 2787404
-    description: "222 km de Conques à Roque-Rouge à travers le Parc naturel régional des Grands Causses, ses plateaux et formations rocheuses remarquables."
-  - ref: "GR 62A"
-    name: "Du Ravin de Combescure (Aveyron) à Meyrueis (Lozère)"
-    description: ""
-  - ref: "GR 62B"
     name: "GR 62B"
     relation_id: 15662377
     description: ""
   - ref: "GR 63"
     name: "De Avignon (Vaucluse) au col de la Cabane-Vieille (Gard)"
     description: ""
+    relation_id: 11206372
   - ref: "GR 64"
     name: "Du pont sur l'Ouysse (Lot) aux Eyzies-de-Tayac-Sireuil (Dordogne)"
     description: ""
+    relation_id: 13078092
   - ref: "GR 65"
     name: "Chemin de Saint-Jacques via Le Puy"
     relation_id: 11959152
@@ -219,9 +218,11 @@ routes:
   - ref: "GR 66"
     name: "Tour du Mont Aigoual (Parc national des Cévennes)"
     description: ""
+    relation_id: 2785117
   - ref: "GR 67"
     name: "Tour du Pays Cévenol (Gard, Lozère)"
     description: ""
+    relation_id: 10752254
   - ref: "GR 68"
     name: "Tour du Mont Lozère"
     relation_id: 5869504
@@ -237,6 +238,7 @@ routes:
   - ref: "GR 71"
     name: "De L'Espérou (Gard) à Lodève (Hérault)"
     description: ""
+    relation_id: 6423545
   - ref: "GR 71C"
     name: "Larzac Templier et Hospitalier"
     relation_id: 10997965
@@ -244,6 +246,7 @@ routes:
   - ref: "GR 71D"
     name: "Tour du Larzac (Aveyron)"
     description: ""
+    relation_id: 4111357
   - ref: "GR 72"
     name: "Du Col du Bez à Barre-des-Cévennes"
     relation_id: 2958766
@@ -251,21 +254,27 @@ routes:
   - ref: "GR 74"
     name: "De St Maurice-Navacelles au Jouquet (Hérault)"
     description: ""
+    relation_id: 17637988
   - ref: "GR 75"
     name: "Tour de Paris"
     description: ""
+    relation_id: 13363916
   - ref: "GR 76"
     name: "De Chagny (Saône-et-Loire) à Affoux (Rhône)"
     description: ""
+    relation_id: 14316345
   - ref: "GR 76A"
     name: "De St-Vallerin (Saône-et-Loire) au Mt Saint-Rigaud (Rhône)"
     description: ""
+    relation_id: 14313152
   - ref: "GR 76B"
     name: "Du Martrat (Le Rousset) à Tournus (Saône-et-Loire)"
     description: ""
+    relation_id: 14313151
   - ref: "GR 77"
     name: "Du Saut de Vézoles (Hérault) au Signal de l'Alaric (Aude)"
     description: ""
+    relation_id: 3728404
   - ref: "GR 78"
     name: "Chemin du Piémont Pyrénéen"
     relation_id: 2785399
@@ -273,9 +282,12 @@ routes:
   - ref: "GR 81"
     name: "Chemin d'Amadour"
     description: ""
+    relation_id: 15676218
+    relation_id: 
   - ref: "GR 86"
     name: "De Toulouse à Bagnères-de-Luchon (Haute-Garonne)"
     description: ""
+    relation_id: 15034692
   - ref: "GR 89"
     name: "Chemin de Montaigne"
     relation_id: 15000703
@@ -283,6 +295,7 @@ routes:
   - ref: "GR 90"
     name: "Du Lavandou à Notre Dame des Anges (Var)"
     description: ""
+    relation_id: 6338835
   - ref: "GR 91"
     name: "Traversée des Hauts Plateaux du Vercors"
     description: ""
