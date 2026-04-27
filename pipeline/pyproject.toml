@@ -13,6 +13,7 @@ dependencies = [
     "geojson>=3.1",
     "gpxpy>=1.6",
     "pyyaml>=6.0.3",
+    "ruamel.yaml>=0.18",
 ]
 
 [project.optional-dependencies]
@@ -22,6 +23,16 @@ dev = [
     "pytest>=8.0",
     "types-requests",
     "types-PyYAML",
+]
+images = [
+    "diffusers>=0.32",
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "transformers>=4.45",
+    "accelerate>=1.0",
+    "sentencepiece>=0.2",
+    "protobuf>=4.25",
+    "pillow>=10.4",
 ]
 
 [tool.ruff]
@@ -36,7 +47,7 @@ python_version = "3.13"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["shapely.*", "gpxpy.*"]
+module = ["shapely.*", "gpxpy.*", "PIL.*", "torch.*", "diffusers.*", "ruamel.*"]
 ignore_missing_imports = true
 
 [dependency-groups]

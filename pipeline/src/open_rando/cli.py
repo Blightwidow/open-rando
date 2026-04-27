@@ -28,6 +28,7 @@ from open_rando.exporters.catalog import export_route_catalog
 from open_rando.exporters.elevation import export_route_elevation
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
+from open_rando.exporters.image_generator import generate_image
 from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.gtfs import (
     annotate_station_connectivity,
@@ -37,6 +38,7 @@ from open_rando.fetchers.gtfs import (
     filter_and_annotate_bus_stops,
     resolve_transit_line_names,
 )
+from open_rando.fetchers.landmarks import fetch_landmarks
 from open_rando.fetchers.overpass import chain_linestrings, fetch_trail
 from open_rando.fetchers.pois import (
     POI_ACCOMMODATION_RADIUS_METERS,
@@ -87,6 +89,16 @@ def main() -> None:
         action="store_true",
         help="Clear the catalog before processing. "
         "Without this flag, existing routes are preserved.",
+    )
+    parser.add_argument(
+        "--skip-images",
+        action="store_true",
+        help="Skip per-route AI image generation entirely.",
+    )
+    parser.add_argument(
+        "--regenerate-images",
+        action="store_true",
+        help="Force regeneration of images even when the prompt is unchanged.",
     )
     arguments = parser.parse_args()
 
@@ -172,6 +184,13 @@ def main() -> None:
                 sncf_insee=sncf_insee,
             )
             if processed_route is not None:
+                if not arguments.skip_images:
+                    image_path = generate_image(
+                        processed_route,
+                        Path(OUTPUT_DIRECTORY).expanduser(),
+                        force=arguments.regenerate_images,
+                    )
+                    processed_route.image_path = image_path
                 all_routes.append(processed_route)
                 poi_counts: dict[str, int] = {}
                 for poi in processed_route.pois:
@@ -351,6 +370,12 @@ def _process_route(
     )
     all_cached = all_cached and accommodation_cached
 
+    if not accommodation_cached:
+        time.sleep(OVERPASS_COOLDOWN_SECONDS)
+
+    landmarks, landmarks_cached = fetch_landmarks(trail)
+    all_cached = all_cached and landmarks_cached
+
     all_pois = train_pois + bus_pois + accommodation_pois
 
     # Trail metadata
@@ -473,6 +498,7 @@ def _process_route(
         geojson_path=geojson_path,
         gpx_path=gpx_path,
         last_updated=date.today().isoformat(),
+        landmarks=landmarks,
     )
 
     return route, all_cached

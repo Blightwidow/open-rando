@@ -45,6 +45,21 @@ class Station:
 
 
 @dataclass
+class Landmark:
+    """A scenic or historical feature near the trail.
+
+    Pipeline-internal: used to enrich the AI image prompt for a route.
+    Not serialized in the public catalog.
+    """
+
+    name: str
+    kind: str
+    lat: float
+    lon: float
+    elevation_m: int | None = None
+
+
+@dataclass
 class PointOfInterest:
     """A point of interest near a trail — displayed on the map only."""
 
@@ -93,6 +108,8 @@ class Route:
     geojson_path: str
     gpx_path: str
     last_updated: str
+    landmarks: list[Landmark] = field(default_factory=list)
+    image_path: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -117,6 +134,7 @@ class Route:
             "geojson_path": self.geojson_path,
             "gpx_path": self.gpx_path,
             "last_updated": self.last_updated,
+            "image_path": self.image_path,
         }
 
 

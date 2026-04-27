@@ -34,6 +34,7 @@ export interface Route {
   geojson_path: string;
   gpx_path: string;
   last_updated: string;
+  image_path?: string | null;
 }
 
 export interface RouteElevationProfile {
