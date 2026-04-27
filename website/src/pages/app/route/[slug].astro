@@ -38,6 +38,16 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       {route.description && (
         <p class="mt-2 text-sm text-stone-600 dark:text-stone-400 leading-relaxed">{route.description}</p>
       )}
+      {route.image_path && (
+        <img
+          src={`/data/${route.image_path}`}
+          alt={`Illustration aquarelle de ${route.path_name}`}
+          class="mt-4 w-full aspect-[8/3] object-cover rounded-lg border border-stone-200 dark:border-neutral-700"
+          loading="eager"
+          width="1024"
+          height="384"
+        />
+      )}
     </div>
   </header>
 
