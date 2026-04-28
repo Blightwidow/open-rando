@@ -8,22 +8,32 @@ routes:
     name: "Tour de l'Île-de-France"
     relation_id: 386891
     description: "Une boucle de plus de 570 km autour de Paris, alternant entre immenses forêts domaniales et vastes plaines agricoles du Bassin parisien."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, open plains and meandering rivers. Atmosphere: Une boucle de plus de 570 km autour de Paris, alternant entre immenses forêts domaniales et vastes plaines agricoles du Bassin parisien. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 2"
     name: "Au fil de la Seine"
     relation_id: 1959668
     description: "858 km le long de la Seine, de sa source à Saint-Seine-l'Abbaye jusqu'au Havre, entre abbayes, châteaux et falaises normandes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rolling green hills and patchwork farmland. Atmosphere: 858 km le long de la Seine, de sa source à Saint-Seine-l'Abbaye jusqu'au Havre, entre abbayes, châteaux et falaises normandes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 3"
     name: "La Loire sauvage à pied"
     relation_id: 2704569
     description: "1 300 km le long du dernier grand fleuve sauvage d'Europe, du Mont Gerbier de Jonc aux châteaux de la Loire classés à l'UNESCO."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Pays de la Loire, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 300 km le long du dernier grand fleuve sauvage d'Europe, du Mont Gerbier de Jonc aux châteaux de la Loire classés à l'UNESCO. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 4"
     name: "De la Méditerranée à l'Océan"
     relation_id: 7457566
     description: "1 578 km de Royan à Grasse, traversant des paysages en constante évolution des plages atlantiques aux plateaux volcaniques et champs de lavande."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Nouvelle-Aquitaine, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 578 km de Royan à Grasse, traversant des paysages en constante évolution des plages atlantiques aux plateaux volcaniques et champs de lavande. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 5"
     name: "Grande Traversée des Alpes"
     relation_id: 2704286
     description: "1 526 km du Luxembourg à Nice, des collines verdoyantes aux montagnes escarpées des Alpes, en passant par les vignobles de la Moselle."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 526 km du Luxembourg à Nice, des collines verdoyantes aux montagnes escarpées des Alpes, en passant par les vignobles de la Moselle. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 6"
     name: "Des Alpes à la Nouvelle Aquitaine"
     relation_id: 9870817
@@ -32,6 +42,8 @@ routes:
     name: "Des Vosges aux Pyrénées"
     relation_id: 11193072
     description: "1 467 km longeant la ligne de partage des eaux entre Atlantique et Méditerranée, du Ballon d'Alsace à Andorre."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 467 km longeant la ligne de partage des eaux entre Atlantique et Méditerranée, du Ballon d'Alsace à Andorre. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 8"
     name: "De la Loire à la Sèvre"
     # relation_id: 4043074  # disabled: OSM relation has a 122km gap between children 10 and 11 (La Rochelle/Charente coast unmapped)
@@ -40,32 +52,44 @@ routes:
     name: "Du Jura à la Méditerranée"
     relation_id: 10670467
     description: "970 km des forêts du Jura aux collines provençales, en passant par la Chartreuse, le Lubéron et la Sainte-Victoire."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rugged mountain ridges and snow-flecked peaks. Atmosphere: 970 km des forêts du Jura aux collines provençales, en passant par la Chartreuse, le Lubéron et la Sainte-Victoire. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 10"
     name: "La traversée des Pyrénées"
     relation_id: 7411272
     description: "Près de 900 km d'Hendaye à Banyuls-sur-Mer, traversant les parcs naturels pyrénéens du Pays basque à la Méditerranée."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: Près de 900 km d'Hendaye à Banyuls-sur-Mer, traversant les parcs naturels pyrénéens du Pays basque à la Méditerranée. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 11"
     name: "Grand Tour de Paris"
     relation_id: 355981
     description: "Un long ruban bouclant autour de la capitale, dévoilant massifs forestiers, vallées fluviales, cités médiévales et châteaux royaux d'Île-de-France."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, open plains and meandering rivers. Atmosphere: Un long ruban bouclant autour de la capitale, dévoilant massifs forestiers, vallées fluviales, cités médiévales et châteaux royaux d'Île-de-France. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 12"
     name: "De Gué-d'Hossus (Ardennes) aux Etangs de Commelles (Oise)"
     relation_id: 12825428
     description: "284 km à travers le nord de la France, des forêts denses des Ardennes aux plateaux calcaires et forêts domaniales de l'Oise."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Hauts-de-France, rolling green hills and patchwork farmland. Atmosphere: 284 km à travers le nord de la France, des forêts denses des Ardennes aux plateaux calcaires et forêts domaniales de l'Oise. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 13"
     name: "Du Gâtinais au Morvan"
     relation_id: 12798892
     description: "Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire."
     image_prompt: |-
-      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, rolling green hills and patchwork farmland. Featuring: a hilltop medieval castle (Château de la Motte), a hilltop medieval castle (Manoir du Chastenay). Atmosphere: Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, rolling green hills and patchwork farmland. Atmosphere: Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 14"
     name: "De La Champagne aux Ardennes"
     relation_id: 10832894
     description: "Des Ardennes belges à la Champagne, traversant forêts denses et vallées encaissées avant de s'adoucir vers les plaines champenoises."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rolling green hills and patchwork farmland. Atmosphere: Des Ardennes belges à la Champagne, traversant forêts denses et vallées encaissées avant de s'adoucir vers les plaines champenoises. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 15"
     name: "La Vallée de la Marne"
     relation_id: 15989093
     description: ""
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, open plains and meandering rivers. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 20"
     name: "Traversée de la Corse"
     relation_id: 101692
@@ -74,10 +98,14 @@ routes:
     name: "Sentier des Falaises"
     relation_id: 14868379
     description: "Le long de la spectaculaire Côte d'Albâtre en Seine-Maritime, avec ses majestueuses falaises de craie blanche dominant la Manche."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in rural France, open plains and meandering rivers. Atmosphere: Le long de la spectaculaire Côte d'Albâtre en Seine-Maritime, avec ses majestueuses falaises de craie blanche dominant la Manche. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 22"
     name: "De Paris au Mont-Saint-Michel"
     relation_id: 451519
     description: "567 km de Paris à la Normandie, traversant territoires irrigués, forêts, vallées et bocages à travers six départements jusqu'au Mont-Saint-Michel."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, rolling green hills and patchwork farmland. Atmosphere: 567 km de Paris à la Normandie, traversant territoires irrigués, forêts, vallées et bocages à travers six départements jusqu'au Mont-Saint-Michel. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 23"
     name: "De La Bouille à Honfleur"
     relation_id: 14752331
@@ -86,6 +114,8 @@ routes:
     name: "De Sotteville-sous-le-Val à Montville"
     relation_id: 14465600
     description: "Une immersion dans les paysages contrastés de la Seine-Maritime, entre plateaux calcaires et vues spectaculaires sur les méandres de la Seine."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, windswept sea cliffs and distant blue horizon. Atmosphere: Une immersion dans les paysages contrastés de la Seine-Maritime, entre plateaux calcaires et vues spectaculaires sur les méandres de la Seine. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 26"
     name: "De Poissy (Yvelines) à Villers-sur-Mer (Calvados)"
     description: "Des bords de la Seine à la Manche, de Poissy à Villers-sur-Mer, traversant forêts d'Île-de-France, plaines céréalières et bocage normand."
@@ -98,34 +128,50 @@ routes:
     name: "Traversée de la Sologne"
     relation_id: 13046192
     description: "283 km à travers la Sologne, de Cosne-Cours-sur-Loire à Blois, entre étangs, forêts de chênes et riche faune sauvage."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rolling green hills and patchwork farmland. Atmosphere: 283 km à travers la Sologne, de Cosne-Cours-sur-Loire à Blois, entre étangs, forêts de chênes et riche faune sauvage. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 32"
     name: "De La Seine à La Loire"
     relation_id: 13481848
     description: "136 km entre Seine-et-Marne et Loiret, sillonnant forêts denses, lacs paisibles et sites historiques de St-Fargeau-Ponthierry à Chécy."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Île-de-France, open plains and meandering rivers. Atmosphere: 136 km entre Seine-et-Marne et Loiret, sillonnant forêts denses, lacs paisibles et sites historiques de St-Fargeau-Ponthierry à Chécy. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 34"
     name: "Chemin des Douaniers"
     relation_id: 7790332
     description: "Plus de 2 000 km le long de la côte bretonne, des plages de sable fin aux falaises avec vues plongeantes sur l'océan et villages chargés d'histoire."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bretagne, rolling green hills and patchwork farmland. Atmosphere: Plus de 2 000 km le long de la côte bretonne, des plages de sable fin aux falaises avec vues plongeantes sur l'océan et villages chargés d'histoire. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 35"
     name: "Du Perche à la Loire"
     relation_id: 7477707
     description: "Du Perche à l'Anjou en suivant la vallée du Loir, entre collines verdoyantes, châteaux de caractère et coteaux viticoles."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, open plains and meandering rivers. Atmosphere: Du Perche à l'Anjou en suivant la vallée du Loir, entre collines verdoyantes, châteaux de caractère et coteaux viticoles. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 36"
     name: "De la Manche aux Pyrénées"
     relation_id: 10805122
     description: "1 928 km d'Ouistreham à Bourg-Madame, des plages normandes aux montagnes pyrénéennes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Pays de la Loire, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 928 km d'Ouistreham à Bourg-Madame, des plages normandes aux montagnes pyrénéennes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 37"
     name: "Cœur de Bretagne"
     relation_id: 8373372
     description: "780 km du Mont-Saint-Michel à Camaret-sur-Mer à travers la Bretagne intérieure, passant par la forêt de Brocéliande et le canal de Nantes à Brest."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bretagne, rolling green hills and patchwork farmland. Atmosphere: 780 km du Mont-Saint-Michel à Camaret-sur-Mer à travers la Bretagne intérieure, passant par la forêt de Brocéliande et le canal de Nantes à Brest. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 38"
     name: "De Douarnenez (Finistère) à Redon (Ille-et-Vilaine)"
     description: "De Douarnenez à Redon sur 366 km à travers les paysages bretons, des côtes sauvages aux Monts d'Arrée en passant par la forêt de Brocéliande."
     relation_id: 12035546
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bretagne, open plains and meandering rivers. Atmosphere: De Douarnenez à Redon sur 366 km à travers les paysages bretons, des côtes sauvages aux Monts d'Arrée en passant par la forêt de Brocéliande. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 39"
     name: "Du Mont-Saint-Michel à La Grande Brière"
     relation_id: 1824726
     description: "314 km à travers la Haute-Bretagne, du Mont-Saint-Michel à Hoscas, entre châteaux médiévaux, églises romanes et paysages atlantiques."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bretagne, windswept sea cliffs and distant blue horizon. Atmosphere: 314 km à travers la Haute-Bretagne, du Mont-Saint-Michel à Hoscas, entre châteaux médiévaux, églises romanes et paysages atlantiques. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 40"
     name: "Tour des Volcans du Velay (Haute-Loire)"
     description: "Boucle de 188 km autour du Puy-en-Velay dans les paysages volcaniques du Velay, entre forêts luxuriantes, lacs pittoresques et montagnes du Massif central."
@@ -133,6 +179,8 @@ routes:
     name: "La Vallée du Cher"
     relation_id: 15706394
     description: "Le long du Cher, entre cités médiévales et de la Renaissance, châteaux, vignobles pittoresques et sites comme le zoo de Beauval."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Centre-Val de Loire, rolling green hills and patchwork farmland. Atmosphere: Le long du Cher, entre cités médiévales et de la Renaissance, châteaux, vignobles pittoresques et sites comme le zoo de Beauval. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 42"
     name: "Balcons du Rhône"
     description: "De Saint-Étienne au Grau-du-Roi en suivant le Rhône sur 453 km, des forêts de montagne aux vignobles de la vallée du Rhône puis aux marais de Camargue."
@@ -141,15 +189,21 @@ routes:
     name: "Sentier du Col des Faïsses à Sainte-Eulalie"
     relation_id: 6438029
     description: "Des sommets granitiques du Mont Lozère aux plateaux mystérieux de la Margeride, une traversée spectaculaire entre Cévennes et terres de légendes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: Des sommets granitiques du Mont Lozère aux plateaux mystérieux de la Margeride, une traversée spectaculaire entre Cévennes et terres de légendes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 44"
   - ref: "GR 46"
     name: "De Tours à Toulouse"
     relation_id: 6439515
     description: "Près de 1 000 km de Tours à Toulouse, traversant vignobles de la Loire, Berry, Creuse et patrimoine médiéval du sud de la France."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Centre-Val de Loire, rolling green hills and patchwork farmland. Atmosphere: Près de 1 000 km de Tours à Toulouse, traversant vignobles de la Loire, Berry, Creuse et patrimoine médiéval du sud de la France. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 48"
     name: "De Chinon (Indre-et-Loire) à La Ribière (Haute-Vienne)"
     description: ""
     relation_id: 10169937
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Nouvelle-Aquitaine, rolling green hills and patchwork farmland. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 49"
     name: "De Saint Raphaël (Var) à Rougon (Alpes de Haute-Provence)"
     description: ""
@@ -162,6 +216,8 @@ routes:
     name: "Balcons de la Méditerranée"
     relation_id: 11087038
     description: "436 km entre Menton et La Madrague, reliant le parc national des Calanques, le massif de l'Esterel et les villages perchés de la Côte d'Azur."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Provence-Alpes-Côte d'Azur, rugged mountain ridges and snow-flecked peaks. Atmosphere: 436 km entre Menton et La Madrague, reliant le parc national des Calanques, le massif de l'Esterel et les villages perchés de la Côte d'Azur. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 52"
     name: "Traversée du Mercantour"
     relation_id: 3315112
@@ -170,6 +226,8 @@ routes:
     name: "De Wissembourg (Bas-Rhin) au col de l'Engin (Moselle)"
     description: "Le GR53 est une immersion spectaculaire au cœur des Vosges du Nord, reliant Wissembourg au col de l'Engin. Ce sentier historique et pionnier vous fera traverser une forêt dense de hêtres et de pins sylvestres. Le paysage y est dominé par d’impressionnants éperons de grès rose, sculptés par les siècles. Cette géologie unique a servi de fondation à une fascinante ligne de défense médiévale, que l'on observe dans des châteaux forts comme le Fleckenstein. Entre vallons secrets et crêtes panoramiques, la biodiversité est riche : c'est un sanctuaire où évoluent le lynx boréal et le grand tétras, tandis que la flore déploie ses fougères rares et ses orchidées sauvages. Le GR53 vous offre ainsi une double découverte : celle d’un passé tumultueux et celui d’une nature préservée au rythme de l'Alsace."
     relation_id: 2603124
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rolling green hills and patchwork farmland. Atmosphere: Le GR53 est une immersion spectaculaire au cœur des Vosges du Nord, reliant Wissembourg au col de l'Engin. Ce sentier historique et pionnier vous fera traverser une forêt dense de hêtres et de pins sy Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 54"
     name: "Tour des massifs de l'Oisans et des Ecrins (Isère, Hautes-Alpes)"
     description: ""
@@ -193,6 +251,8 @@ routes:
     name: "Du Ballon d'Alsace à Culoz"
     relation_id: 12827833
     description: "605 km du Ballon d'Alsace aux contreforts du Jura, traversant montagnes et vallées vosgiennes riches en biodiversité."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rugged mountain ridges and snow-flecked peaks. Atmosphere: 605 km du Ballon d'Alsace aux contreforts du Jura, traversant montagnes et vallées vosgiennes riches en biodiversité. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 60"
     name: "Chemin du signal de Mailhebiau à Saint-Mathieu-de-Tréviers - Tracé principal"
     relation_id: 13880221
@@ -205,6 +265,8 @@ routes:
     name: "GR 62B"
     relation_id: 15662377
     description: ""
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: 222 km de Conques à Roque-Rouge à travers le Parc naturel régional des Grands Causses, ses plateaux et formations rocheuses remarquables. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 63"
     name: "De Avignon (Vaucluse) au col de la Cabane-Vieille (Gard)"
     description: ""
@@ -217,6 +279,8 @@ routes:
     name: "Chemin de Saint-Jacques via Le Puy"
     relation_id: 11959152
     description: "1 139 km sur le chemin de Saint-Jacques-de-Compostelle, de Genève au Puy-en-Velay puis jusqu'à Roncevalles, à travers un riche patrimoine médiéval."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 1 139 km sur le chemin de Saint-Jacques-de-Compostelle, de Genève au Puy-en-Velay puis jusqu'à Roncevalles, à travers un riche patrimoine médiéval. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 66"
     name: "Tour du Mont Aigoual (Parc national des Cévennes)"
     description: ""
@@ -229,14 +293,20 @@ routes:
     name: "Tour du Mont Lozère"
     relation_id: 5869504
     description: "115 km autour du Mont Lozère, terre de granit où l'histoire et la nature se confondent dans un paysage sauvage de landes et de chaos rocheux."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: 115 km autour du Mont Lozère, terre de granit où l'histoire et la nature se confondent dans un paysage sauvage de landes et de chaos rocheux. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 69"
     name: "La Routo"
     relation_id: 14234324
     description: "404 km sur les traces historiques de la transhumance, d'Arles au Col de Ruburent, des plaines de Crau aux champs de lavande du plateau de Valensole."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Provence-Alpes-Côte d'Azur, rugged mountain ridges and snow-flecked peaks. Atmosphere: 404 km sur les traces historiques de la transhumance, d'Arles au Col de Ruburent, des plaines de Crau aux champs de lavande du plateau de Valensole. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 70"
     name: "Chemin de Stevenson"
     relation_id: 223039
     description: "268 km sur les traces de Robert Louis Stevenson et de son ânesse Modestine, du Puy-en-Velay à Alès à travers l'Auvergne et les Cévennes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: 268 km sur les traces de Robert Louis Stevenson et de son ânesse Modestine, du Puy-en-Velay à Alès à travers l'Auvergne et les Cévennes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 71"
     name: "De L'Espérou (Gard) à Lodève (Hérault)"
     description: ""
@@ -245,6 +315,8 @@ routes:
     name: "Larzac Templier et Hospitalier"
     relation_id: 10997965
     description: ""
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rolling green hills and patchwork farmland. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 71D"
     name: "Tour du Larzac (Aveyron)"
     description: ""
@@ -281,11 +353,12 @@ routes:
     name: "Chemin du Piémont Pyrénéen"
     relation_id: 2785399
     description: "613 km le long du canal du Midi puis en balcon permanent sur la chaîne des Pyrénées, de Carcassonne au col d'Oihantzarre."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: 613 km le long du canal du Midi puis en balcon permanent sur la chaîne des Pyrénées, de Carcassonne au col d'Oihantzarre. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 81"
     name: "Chemin d'Amadour"
     description: ""
     relation_id: 15676218
-    relation_id: 
   - ref: "GR 86"
     name: "De Toulouse à Bagnères-de-Luchon (Haute-Garonne)"
     description: ""
@@ -294,6 +367,8 @@ routes:
     name: "Chemin de Montaigne"
     relation_id: 15000703
     description: "Sur les traces du voyage retour de Michel de Montaigne en 1581, de Lyon à son château en Dordogne, des montagnes lyonnaises aux volcans d'Auvergne."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: Sur les traces du voyage retour de Michel de Montaigne en 1581, de Lyon à son château en Dordogne, des montagnes lyonnaises aux volcans d'Auvergne. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 90"
     name: "Du Lavandou à Notre Dame des Anges (Var)"
     description: ""
@@ -378,6 +453,8 @@ routes:
     name: "De Nolay à Autun"
     relation_id: 14075709
     description: "51 km en Bourgogne entre Autun et Nolay, alternant forêts denses, plateaux calcaires et escarpements rocheux annonçant les vignobles bourguignons."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rolling green hills and patchwork farmland. Atmosphere: 51 km en Bourgogne entre Autun et Nolay, alternant forêts denses, plateaux calcaires et escarpements rocheux annonçant les vignobles bourguignons. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 142"
     name: "De Verzenay (Marne) à Laon (Aisne)"
     description: "Près de 100 km entre les coteaux viticoles de Verzenay et la cité médiévale de Laon, alternant vignobles de la Montagne de Reims et plaines céréalières."
@@ -388,10 +465,14 @@ routes:
     name: "Tour de Lyon par les Forts"
     relation_id: 15622517
     description: "171 km ceinturant Lyon en reliant les forts de la deuxième ceinture, entre plaines agricoles, vallons boisés et berges du Rhône et de la Saône."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rolling green hills and patchwork farmland. Atmosphere: 171 km ceinturant Lyon en reliant les forts de la deuxième ceinture, entre plaines agricoles, vallons boisés et berges du Rhône et de la Saône. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 210"
     name: "Sur les traces du Chasse-marée"
     relation_id: 9258722
     description: "Sur le parcours historique des mareyeurs, des falaises de la Côte d'Albâtre aux méandres de la Seine à travers le Pays de Caux normand."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, windswept sea cliffs and distant blue horizon. Atmosphere: Sur le parcours historique des mareyeurs, des falaises de la Côte d'Albâtre aux méandres de la Seine à travers le Pays de Caux normand. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 211"
     name: "De Veulettes-sur-Mer à Caudebec-en-Caux (Seine-Maritime)"
     description: "Au sommet des falaises de craie blanche avec panoramas vertigineux sur la Manche, puis à travers les plateaux et valleuses du Pays de Caux jusqu'aux abbayes de la Seine."
@@ -402,6 +483,8 @@ routes:
     name: "Fontenay - Vézelay"
     relation_id: 12854245
     description: "De la haute vallée de la Seine aux collines de l'Yonne, passant par l'abbaye de Fontenay et Montbard jusqu'à la basilique de Vézelay."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rolling green hills and patchwork farmland. Atmosphere: De la haute vallée de la Seine aux collines de l'Yonne, passant par l'abbaye de Fontenay et Montbard jusqu'à la basilique de Vézelay. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 221"
     name: "Le Bocage Normand"
     relation_id: 13524440
@@ -410,10 +493,14 @@ routes:
     name: "D'Avre à la Seine"
     relation_id: 14717233
     description: "129 km du confluent de la Seine et de l'Andelle aux portes du Perche, entre falaises de craie, forêts et vallées intimistes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, open plains and meandering rivers. Atmosphere: 129 km du confluent de la Seine et de l'Andelle aux portes du Perche, entre falaises de craie, forêts et vallées intimistes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 223"
     name: "Littoral de la Normandie"
     relation_id: 1731774
     description: "619 km sur l'ancien sentier des douaniers, des falaises normandes aux plages du Débarquement jusqu'au Mont-Saint-Michel."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, windswept sea cliffs and distant blue horizon. Atmosphere: 619 km sur l'ancien sentier des douaniers, des falaises normandes aux plages du Débarquement jusqu'au Mont-Saint-Michel. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 223A"
     name: "Balcons de Cherbourg"
     description: ""
@@ -421,6 +508,8 @@ routes:
     name: "De Verneuil-sur-Avre à Berville-sur-mer"
     relation_id: 14023215
     description: "Le long du cours sinueux de la Risle en Eure, de l'estuaire de la Seine à Verneuil, entre falaises, zones humides et patrimoine architectural."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Normandie, open plains and meandering rivers. Atmosphere: Le long du cours sinueux de la Risle en Eure, de l'estuaire de la Seine à Verneuil, entre falaises, zones humides et patrimoine architectural. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 226"
     name: "De Vaux (Calvados) à Gué-Rochoux (Manche)"
     description: "Traversée de la Suisse Normande et du Bocage virois, entre crêtes schisteuses et vallées encaissées du Massif armoricain, sur d'anciens chemins creux."
@@ -428,10 +517,14 @@ routes:
     name: "De la Sarthe au Loir"
     relation_id: 14707539
     description: "211 km à travers les vallonnements du Maine, entre plaines alluviales, coteaux boisés, manoirs en pierre et moulins anciens."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Pays de la Loire, rolling green hills and patchwork farmland. Atmosphere: 211 km à travers les vallonnements du Maine, entre plaines alluviales, coteaux boisés, manoirs en pierre et moulins anciens. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 300"
     name: "Chemin de Saint-Michel"
     relation_id: 16195169
     description: "378 km sur cet ancien chemin de pèlerinage de Sancoins au Puy-en-Velay, entre églises romanes et paysages du Berry et du Velay."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Occitanie, rugged mountain ridges and snow-flecked peaks. Atmosphere: 378 km sur cet ancien chemin de pèlerinage de Sancoins au Puy-en-Velay, entre églises romanes et paysages du Berry et du Velay. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 302"
     name: "Source et gorges de la Loire"
     description: "Sentier suivant les gorges de la Loire depuis sa source en Ardèche, entre volcans, plateaux granitiques et vallées encaissées."
@@ -439,6 +532,8 @@ routes:
     name: "À travers le Bourbonnais"
     relation_id: 15665421
     description: "263 km à travers la région historique des Bourbons, de Boussac à Montcombroux-les-Mines, entre histoire dynastique et patrimoine médiéval."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rolling green hills and patchwork farmland. Atmosphere: 263 km à travers la région historique des Bourbons, de Boussac à Montcombroux-les-Mines, entre histoire dynastique et patrimoine médiéval. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 340"
     name: "Tour de Belle-Ile-en-Mer (Morbihan)"
     description: "Tour complet de Belle-Île-en-Mer, la plus grande île bretonne, entre falaises spectaculaires, criques sauvages et landes fleuries."
@@ -453,10 +548,14 @@ routes:
     name: "Tour de Saintonge"
     relation_id: 5414606
     description: "465 km en boucle au départ de Saintes, entre vignobles de Cognac, marais, forêts de chênes et églises romanes finement sculptées."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Nouvelle-Aquitaine, windswept sea cliffs and distant blue horizon. Atmosphere: 465 km en boucle au départ de Saintes, entre vignobles de Cognac, marais, forêts de chênes et églises romanes finement sculptées. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 364"
     name: "Du Poitou à L'Océan"
     relation_id: 14924818
     description: "495 km du Poitou aux Sables-d'Olonne, traversant vallées verdoyantes, Marais poitevin, châteaux et abbayes jusqu'aux dunes atlantiques."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Pays de la Loire, open plains and meandering rivers. Atmosphere: 495 km du Poitou aux Sables-d'Olonne, traversant vallées verdoyantes, Marais poitevin, châteaux et abbayes jusqu'aux dunes atlantiques. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 365"
     name: "De La Chapelle-Janson (Ille-et-Vilaine) à Durtal (Maine-et-Loire)"
     description: ""
@@ -498,10 +597,14 @@ routes:
     name: "Des monts du Cantal à la vallée du Lot"
     relation_id: 8600862
     description: "133 km sur l'ancienne voie de pèlerinage des Clunisiens, des plateaux du Cantal à l'abbatiale romane de Conques."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 133 km sur l'ancienne voie de pèlerinage des Clunisiens, des plateaux du Cantal à l'abbatiale romane de Conques. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 470"
     name: "Sentier du Haut-Allier"
     relation_id: 3377491
     description: "180 km remontant l'une des dernières rivières sauvages d'Europe, de Brioude aux crêtes de Lozère, entre gorges spectaculaires et châteaux perchés."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 180 km remontant l'une des dernières rivières sauvages d'Europe, de Brioude aux crêtes de Lozère, entre gorges spectaculaires et châteaux perchés. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 480"
     name: "De Turenne aux Gorges de la Cère (Corrèze)"
     description: "De Turenne aux gorges de la Cère en Corrèze, entre villages de caractère, vallées encaissées et plateaux boisés du Limousin."
@@ -509,6 +612,8 @@ routes:
     name: "Chemin de la Moselle"
     relation_id: 3159559
     description: "404 km de Bussang à Sierck-les-Bains, entre forêts de sapins, prairies humides et coteaux viticoles le long de la vallée de la Moselle."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rugged mountain ridges and snow-flecked peaks. Atmosphere: 404 km de Bussang à Sierck-les-Bains, entre forêts de sapins, prairies humides et coteaux viticoles le long de la vallée de la Moselle. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 509"
     name: "Grande Traversée du Jura"
     description: "Grande Traversée du Jura sur les crêtes, entre forêts d'épicéas, pâturages d'altitude et vues sur les Alpes et le Mont-Blanc."
@@ -531,6 +636,8 @@ routes:
     name: "De Lons-le-Saunier aux Rousses (Jura)"
     relation_id: 6265097
     description: "Le Chemin des Grands Lacs, de Lons-le-Saunier aux Rousses, entre vignobles, forêts et lacs glaciaires turquoise du Haut-Jura."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Bourgogne-Franche-Comté, rugged mountain ridges and snow-flecked peaks. Atmosphere: Le Chemin des Grands Lacs, de Lons-le-Saunier aux Rousses, entre vignobles, forêts et lacs glaciaires turquoise du Haut-Jura. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 559A"
     name: "Du Bayard (Foncine-le-Haut) à La Clouterie (Bonlieu) (Jura)"
     description: ""
@@ -550,22 +657,32 @@ routes:
     name: "Voie de Rocamadour"
     relation_id: 15471251
     description: "342 km sur une variante jacquaire traversant le Quercy et la Gascogne, passant par le sanctuaire médiéval de Rocamadour."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rolling green hills and patchwork farmland. Atmosphere: 342 km sur une variante jacquaire traversant le Quercy et la Gascogne, passant par le sanctuaire médiéval de Rocamadour. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 653"
     name: "La voie d'Arles"
     relation_id: 11813130
     description: "807 km sur la voie d'Arles vers Saint-Jacques-de-Compostelle, des vignobles du Languedoc aux collines de Gascogne jusqu'au Col du Somport."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Provence-Alpes-Côte d'Azur, rugged mountain ridges and snow-flecked peaks. Atmosphere: 807 km sur la voie d'Arles vers Saint-Jacques-de-Compostelle, des vignobles du Languedoc aux collines de Gascogne jusqu'au Col du Somport. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 653A"
     name: "Via Aurelia"
     relation_id: 12748333
     description: ""
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Provence-Alpes-Côte d'Azur, rolling green hills and patchwork farmland. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 653D"
     name: "Via Domitia"
     relation_id: 6132056
     description: ""
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Provence-Alpes-Côte d'Azur, rugged mountain ridges and snow-flecked peaks. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 654"
     name: "Voie de Vézelay"
     relation_id: 14900298
     description: "1 570 km sur la voie de Vézelay, de la basilique Sainte-Marie-Madeleine aux Pyrénées, entre forêts ardennaises, vignobles champenois et bocages périgourdins."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rolling green hills and patchwork farmland. Atmosphere: 1 570 km sur la voie de Vézelay, de la basilique Sainte-Marie-Madeleine aux Pyrénées, entre forêts ardennaises, vignobles champenois et bocages périgourdins. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 654 EST"
     name: "De Bergerac (Dordogne) à Montréal-du-Gers (Gers)"
     description: ""
@@ -573,6 +690,8 @@ routes:
     name: "Via Turonensis"
     relation_id: 6026933
     description: "1 486 km sur la Via Turonensis, le plus ancien chemin de pèlerinage vers Compostelle, du Nord de la France aux Pyrénées-Atlantiques."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Hauts-de-France, open plains and meandering rivers. Atmosphere: 1 486 km sur la Via Turonensis, le plus ancien chemin de pèlerinage vers Compostelle, du Nord de la France aux Pyrénées-Atlantiques. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 655 EST"
     name: "De Villebon-sur-Yvette (Essonne) à Vouvray (Indre-et-Loire)"
     description: ""
@@ -583,10 +702,14 @@ routes:
     name: "Chemin de Régordane"
     relation_id: 8289243
     description: "244 km sur cette voie historique de pèlerinage reliant le Velay au sud de la France, entre hauts plateaux et patrimoine religieux médiéval."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 244 km sur cette voie historique de pèlerinage reliant le Velay au sud de la France, entre hauts plateaux et patrimoine religieux médiéval. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 703"
     name: "Sentier Historique de Jeanne d'Arc"
     relation_id: 10861384
     description: "235 km sur les traces de Jeanne d'Arc de Toul à Bagneux-la-Fosse, entre plateaux calcaires lorrains, forêts denses et vignobles champenois."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Grand Est, rolling green hills and patchwork farmland. Atmosphere: 235 km sur les traces de Jeanne d'Arc de Toul à Bagneux-la-Fosse, entre plateaux calcaires lorrains, forêts denses et vignobles champenois. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 714"
     name: "De Bar-le-Duc (Meuse) à Dombrot-le-Sec (Vosges)"
     description: "De Bar-le-Duc aux Vosges, entre côtes de Meuse, forêts lorraines et patrimoine thermal."
@@ -597,6 +720,8 @@ routes:
     name: "La Haute Traversée de Belledonne"
     relation_id: 11999802
     description: "124 km de traversée alpine entre Aiguebelle et Vizille, célébrant le patrimoine pastoral et minier du massif de Belledonne."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Auvergne-Rhône-Alpes, rugged mountain ridges and snow-flecked peaks. Atmosphere: 124 km de traversée alpine entre Aiguebelle et Vizille, célébrant le patrimoine pastoral et minier du massif de Belledonne. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 765"
     name: "De Cluny (Saône-et-Loire) au Puy-en-Velay (Haute-Loire)"
     description: "De Cluny au Puy-en-Velay, sur un ancien chemin de pèlerinage entre vignobles bourguignons et volcans du Velay."
@@ -613,6 +738,8 @@ routes:
     name: "Au fil de la Somme"
     relation_id: 14292840
     description: "Le long de la Somme de sa source à la Baie de Somme, entre vallées verdoyantes, cathédrales d'Amiens et Saint-Quentin et paysages maritimes."
+    image_prompt: |-
+      A detailed pen-and-ink drawing in cross-hatching style, antique engraving aesthetic reminiscent of 19th-century travel illustrations, monochrome black ink on a clean white background, fine line work with dense hatching for shadow and depth. Subject: a hiking landscape in Hauts-de-France, open plains and meandering rivers. Atmosphere: Le long de la Somme de sa source à la Baie de Somme, entre vallées verdoyantes, cathédrales d'Amiens et Saint-Quentin et paysages maritimes. Style: intricate stippling and cross-hatching, etching-like texture, wide cinematic banner composition, sketchbook feel, no color, no text or labels of any kind. Avoid: text, letters, words, labels, signage, captions, modern buildings, cars, people, photo realism, color washes, paper texture, aged paper, sepia tones, watermarks, frames, borders.
   - ref: "GR 861"
     name: "Via Garona"
     description: "Via Garona le long de la Garonne, de Toulouse à Saint-Bertrand-de-Comminges, entre patrimoine roman et contreforts pyrénéens."

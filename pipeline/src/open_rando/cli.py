@@ -10,6 +10,7 @@ from typing import Any
 
 from shapely.geometry import LineString, MultiLineString
 
+from open_rando.commands.images import add_images_subparser
 from open_rando.config import (
     CATALOG_PATH,
     ELEVATION_DIRECTORY,
@@ -28,7 +29,6 @@ from open_rando.exporters.catalog import export_route_catalog
 from open_rando.exporters.elevation import export_route_elevation
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
-from open_rando.exporters.image_generator import generate_image
 from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.gtfs import (
     annotate_station_connectivity,
@@ -73,35 +73,40 @@ logger = logging.getLogger("open_rando")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate route catalog from GR paths")
-    parser.add_argument(
+    parser = argparse.ArgumentParser(
+        description="open-rando — GR route catalog + image generation",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    pipeline_parser = subparsers.add_parser(
+        "pipeline",
+        help="Build/refresh the route catalog from OSM + SNCF + GTFS sources.",
+    )
+    pipeline_parser.add_argument(
         "--route",
         type=str,
         help="Process a single route by ref (e.g. 'GR 13').",
     )
-    parser.add_argument(
+    pipeline_parser.add_argument(
         "--dry-run",
         action="store_true",
         help="List discovered routes without processing them.",
     )
-    parser.add_argument(
+    pipeline_parser.add_argument(
         "--reset",
         action="store_true",
         help="Clear the catalog before processing. "
         "Without this flag, existing routes are preserved.",
     )
-    parser.add_argument(
-        "--skip-images",
-        action="store_true",
-        help="Skip per-route AI image generation entirely.",
-    )
-    parser.add_argument(
-        "--regenerate-images",
-        action="store_true",
-        help="Force regeneration of images even when the prompt is unchanged.",
-    )
-    arguments = parser.parse_args()
+    pipeline_parser.set_defaults(func=run_pipeline)
 
+    add_images_subparser(subparsers)
+
+    arguments = parser.parse_args()
+    arguments.func(arguments)
+
+
+def run_pipeline(arguments: argparse.Namespace) -> None:
     discovered = discover_routes()
 
     if arguments.route:
@@ -154,6 +159,12 @@ def main() -> None:
     elif arguments.reset:
         logger.info("Catalog reset — starting fresh")
 
+    existing_image_paths: dict[int, str] = {
+        int(entry["osm_relation_id"]): str(entry["image_path"])
+        for entry in existing_route_dicts
+        if entry.get("image_path")
+    }
+
     previous_route_used_api = False
 
     for route_index, discovered_route in enumerate(discovered):
@@ -184,13 +195,9 @@ def main() -> None:
                 sncf_insee=sncf_insee,
             )
             if processed_route is not None:
-                if not arguments.skip_images:
-                    image_path = generate_image(
-                        processed_route,
-                        Path(OUTPUT_DIRECTORY).expanduser(),
-                        force=arguments.regenerate_images,
-                    )
-                    processed_route.image_path = image_path
+                processed_route.image_path = existing_image_paths.get(
+                    processed_route.osm_relation_id
+                )
                 all_routes.append(processed_route)
                 poi_counts: dict[str, int] = {}
                 for poi in processed_route.pois:

@@ -24,7 +24,7 @@ Train station-to-station hiking on French GR paths.
 ```bash
 # Pipeline
 cd pipeline && uv sync --all-extras
-uv run python -m open_rando
+uv run python -m open_rando pipeline
 
 # Website
 cd website && bun install && bun run dev
@@ -32,10 +32,14 @@ cd website && bun install && bun run dev
 
 ## Commands
 
-- `python -m open_rando` -- run pipeline for all GR routes, outputs to `data/`
-- `python -m open_rando --route "GR 13"` -- run pipeline for a single route
-- `python -m open_rando --dry-run` -- list discovered routes without processing
-- `python -m open_rando --reset` -- clear catalog before processing (default: merge with existing)
+- `python -m open_rando pipeline` -- run data pipeline for all GR routes, outputs to `data/`
+- `python -m open_rando pipeline --route "GR 13"` -- run pipeline for a single route
+- `python -m open_rando pipeline --dry-run` -- list discovered routes without processing
+- `python -m open_rando pipeline --reset` -- clear catalog before processing (default: merge with existing)
+- `python -m open_rando images` -- generate AI hero illustrations for every route in the catalog
+- `python -m open_rando images --route "GR 13"` -- generate the image for a single route
+- `python -m open_rando images --regenerate` -- force regeneration even when the prompt is unchanged
+- `python -m open_rando images --dry-run` -- report cache hit/miss per route without loading the model
 - `make` (in tiles/) -- build contour tiles (requires GDAL + tippecanoe)
 - `make install` (in tiles/) -- verify contour pipeline dependencies
 - `./download.sh` (in tiles/) -- fetch go-pmtiles binary
