@@ -16,11 +16,14 @@ from typing import Any
 from open_rando.config import CATALOG_PATH, OUTPUT_DIRECTORY
 from open_rando.exporters.image_generator import (
     IMAGES_SUBDIRECTORY,
-    build_image_prompt,
+    build_image_content,
     generate_image,
 )
 from open_rando.exporters.image_generator import (
     _read_stored_prompt as read_stored_prompt,
+)
+from open_rando.exporters.image_generator import (
+    _write_stored_prompt as write_stored_prompt,
 )
 from open_rando.models import Landmark, PointOfInterest, Route
 
@@ -47,6 +50,14 @@ def add_images_subparser(subparsers: argparse._SubParsersAction[argparse.Argumen
         action="store_true",
         help="Report cache hit/miss/forced per route without loading the model.",
     )
+    parser.add_argument(
+        "--populate-prompts",
+        action="store_true",
+        help=(
+            "Write freshly-built image_prompt content for every catalog route into "
+            "routes.yaml. Overwrites existing entries. Skips image generation."
+        ),
+    )
     parser.set_defaults(func=run_images)
 
 
@@ -71,6 +82,10 @@ def run_images(arguments: argparse.Namespace) -> None:
 
     output_directory = Path(OUTPUT_DIRECTORY).expanduser()
 
+    if arguments.populate_prompts:
+        _populate_prompts(targets)
+        return
+
     if arguments.dry_run:
         _report_cache_status(targets, output_directory)
         return
@@ -78,6 +93,21 @@ def run_images(arguments: argparse.Namespace) -> None:
     updates: dict[str, str | None] = {}
     for route_dict in targets:
         route = _route_from_catalog_entry(route_dict)
+        relative_path = f"{IMAGES_SUBDIRECTORY}/{route.identifier}.webp"
+        output_path = output_directory / relative_path
+
+        if read_stored_prompt(route.path_ref) is None:
+            if output_path.exists():
+                output_path.unlink()
+                logger.info(
+                    "  Removed %s for %s — image_prompt absent in routes.yaml",
+                    relative_path,
+                    route.path_ref,
+                )
+            if route_dict.get("image_path"):
+                updates[route.identifier] = None
+            continue
+
         image_path = generate_image(route, output_directory, force=arguments.regenerate)
         if image_path is not None:
             updates[route.identifier] = image_path
@@ -87,8 +117,13 @@ def run_images(arguments: argparse.Namespace) -> None:
         return
 
     for entry in route_dicts:
-        new_path = updates.get(str(entry.get("id")))
-        if new_path is not None:
+        identifier = str(entry.get("id"))
+        if identifier not in updates:
+            continue
+        new_path = updates[identifier]
+        if new_path is None:
+            entry.pop("image_path", None)
+        else:
             entry["image_path"] = new_path
 
     catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -98,20 +133,27 @@ def run_images(arguments: argparse.Namespace) -> None:
 def _report_cache_status(targets: list[dict[str, Any]], output_directory: Path) -> None:
     for route_dict in targets:
         route = _route_from_catalog_entry(route_dict)
-        prompt = build_image_prompt(route)
-        stored_prompt = read_stored_prompt(route.path_ref)
+        stored_content = read_stored_prompt(route.path_ref)
         relative_path = f"{IMAGES_SUBDIRECTORY}/{route.identifier}.webp"
         file_exists = (output_directory / relative_path).exists()
 
-        if stored_prompt == prompt and file_exists:
-            status = "hit"
-        elif stored_prompt is None:
-            status = "miss (no stored prompt)"
-        elif stored_prompt != prompt:
-            status = "miss (prompt changed)"
-        else:
-            status = "miss (file missing)"
+        if stored_content is None:
+            logger.info("  %-12s skip (no image_prompt)", route.path_ref)
+            continue
+
+        status = "hit" if file_exists else "miss (file missing)"
         logger.info("  %-12s %s — %s", route.path_ref, status, relative_path)
+        logger.info("    content: %s", stored_content)
+
+
+def _populate_prompts(targets: list[dict[str, Any]]) -> None:
+    written = 0
+    for route_dict in targets:
+        route = _route_from_catalog_entry(route_dict)
+        content = build_image_content(route)
+        write_stored_prompt(route.path_ref, content)
+        written += 1
+    logger.info("Wrote image_prompt content for %d routes to routes.yaml", written)
 
 
 def _route_from_catalog_entry(entry: dict[str, Any]) -> Route:

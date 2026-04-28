@@ -1,16 +1,21 @@
 """Generate vintage-poster cover images per route via local FLUX.2 Klein 4B.
 
-Prompts are stored back into ``routes.yaml`` under ``image_prompt`` per route.
-On the next run, the regenerated prompt is compared with the stored one — if
-unchanged and the image file exists, generation is skipped. This means the
-prompt itself is the cache key (no separate hash field needed) and the user
-can hand-tune prompts by editing the yaml.
+Per-route content (subject, landmarks, landscape, description) is stored in
+``routes.yaml`` under ``image_prompt`` so the user can hand-tune each entry.
+The shared style suffix (pen-and-ink, hatching, banner composition, lighting)
+lives as a Python constant in this module — single source of truth, swap once
+to restyle the whole catalog. Final FLUX prompt = ``stored_content + STYLE``.
+
+Cache key: stored content equality + image file existence. Stored content
+wins over freshly built content, so hand-edits are never overwritten by
+``generate_image``. Bulk-seed via ``images --populate-prompts``.
 """
 
 from __future__ import annotations
 
-import hashlib
 import logging
+import re
+import secrets
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -28,12 +33,6 @@ IMAGE_HEIGHT = 384
 WEBP_QUALITY = 82
 NUM_INFERENCE_STEPS = 10
 GUIDANCE_SCALE = 0.0
-PROMPT_NEGATIVE_SUFFIX = (
-    " Avoid: text, letters, words, labels, signage, captions, "
-    "modern buildings, cars, people, photo realism, "
-    "color washes, paper texture, aged paper, sepia tones, "
-    "watermarks, frames, borders."
-)
 
 IMAGES_SUBDIRECTORY = "images"
 
@@ -64,34 +63,68 @@ _LANDMARK_PROSE: dict[str, str] = {
 }
 
 
-def build_image_prompt(route: Route) -> str:
-    """Build a pen-and-ink hatching prompt from route metadata + landmarks.
+IMAGE_STYLE_SUFFIX = (
+    "scene unfolding across a wide cinematic vista, foreground trail "
+    "winding into the middle distance, ridges receding toward the horizon, "
+    "detailed pen-and-ink drawing in cross-hatching style, monochrome "
+    "black ink on clean white background, fine line work with dense "
+    "hatching and stippling for shadow and depth, etching-like texture, "
+    "wide banner composition, pure pictorial illustration with empty "
+    "margins and a smooth uninterrupted white sky, "
+    "soft natural daylight casting long directional shadows, tranquil and timeless atmosphere"
+)
 
-    Deterministic for a given route+landmark snapshot — prompt equality is
-    used as the regeneration cache key.
+
+def build_image_content(route: Route) -> str:
+    """Build the per-route content portion of the prompt (no style, English only).
+
+    Lead with proper-noun anchor (landmark name or destination from path_name),
+    then "sweeping hiking landscape" + terrain phrase. French region names and
+    description text are dropped — anchor is a proper noun, the rest is English
+    so FLUX has clean prompt tokens to work with.
     """
-    region = route.region or "rural France"
     terrain_phrase = _build_terrain_phrase(route.terrain)
-    landmark_phrase, _ = _build_landmark_phrases(route.landmarks)
-    description_excerpt = (route.description or "").strip()[:200]
+    landmark_phrase = _build_landmark_phrase(route.landmarks)
+    anchor = landmark_phrase or _extract_destination(route.path_name)
 
-    parts = [
-        "A detailed pen-and-ink drawing in cross-hatching style, "
-        "antique engraving aesthetic reminiscent of 19th-century travel "
-        "illustrations, monochrome black ink on a clean white background, "
-        "fine line work with dense hatching for shadow and depth.",
-        f"Subject: a hiking landscape in {region}, {terrain_phrase}.",
-    ]
-    if landmark_phrase:
-        parts.append(f"Featuring: {landmark_phrase}.")
-    if description_excerpt:
-        parts.append(f"Atmosphere: {description_excerpt}")
-    parts.append(
-        "Style: intricate stippling and cross-hatching, etching-like texture, "
-        "wide cinematic banner composition, sketchbook feel, no color, "
-        "no text or labels of any kind."
-    )
-    return " ".join(parts) + PROMPT_NEGATIVE_SUFFIX
+    parts: list[str] = []
+    if anchor:
+        parts.append(anchor)
+    parts.append("sweeping hiking landscape")
+    parts.append(terrain_phrase)
+
+    return ", ".join(parts)
+
+
+_DESTINATION_PATTERN = re.compile(
+    r"^(?:De|Du|Des)\b.*?\s+(?:à|au|aux)\s+([A-ZÀÂÉÈÊÎÔÛÇ][^,]+?)\s*$"
+)
+
+
+def _extract_destination(path_name: str) -> str | None:
+    """Pull the destination proper noun from a path like ``De X à Y``.
+
+    Strict shape: must start with ``De/Du/Des`` and the destination must begin
+    with an uppercase letter. Rejects idioms (``Au fil de la Seine``, ``à pied``)
+    that would otherwise smuggle French common nouns into the prompt.
+    """
+    if not path_name:
+        return None
+    match = _DESTINATION_PATTERN.match(path_name.strip())
+    if not match:
+        return None
+    return match.group(1).strip() or None
+
+
+def build_image_prompt(route: Route) -> str:
+    """Full FLUX prompt = stored-or-built content + shared style suffix.
+
+    Hand-edits in ``routes.yaml`` win: if stored content exists, use it as-is.
+    Otherwise build fresh from route metadata.
+    """
+    stored = _read_stored_prompt(route.path_ref)
+    content = stored if stored is not None else build_image_content(route)
+    return f"{content}, {IMAGE_STYLE_SUFFIX}"
 
 
 def _build_terrain_phrase(terrain_tags: list[str]) -> str:
@@ -103,26 +136,22 @@ def _build_terrain_phrase(terrain_tags: list[str]) -> str:
     return ", ".join(phrases[:-1]) + " and " + phrases[-1]
 
 
-def _build_landmark_phrases(landmarks: list[Landmark]) -> tuple[str, str]:
-    """Return (subject_phrase, label_phrase).
+def _build_landmark_phrase(landmarks: list[Landmark]) -> str:
+    """Describe up to 3 landmarks for the scene composition.
 
-    subject_phrase describes the landmarks for the scene composition.
-    label_phrase lists the names that should be drawn as text labels.
+    Named landmarks are anchored by name (e.g. "Mont-Saint-Michel abbey") so
+    FLUX can draw the actual monument; unnamed ones fall back to generic prose.
     """
     if not landmarks:
-        return "", ""
-    subject_pieces: list[str] = []
-    label_pieces: list[str] = []
-    for landmark in landmarks[:2]:
+        return ""
+    pieces: list[str] = []
+    for landmark in landmarks[:3]:
+        descriptor = _LANDMARK_PROSE.get(landmark.kind, landmark.kind.replace("_", " "))
         if landmark.name:
-            descriptor = _LANDMARK_PROSE.get(landmark.kind, landmark.kind.replace("_", " "))
-            subject_pieces.append(f"{descriptor} ({landmark.name})")
-            label_pieces.append(f'"{landmark.name}"')
-        else:
-            unnamed = _LANDMARK_PROSE.get(landmark.kind)
-            if unnamed:
-                subject_pieces.append(unnamed)
-    return ", ".join(subject_pieces), ", ".join(label_pieces)
+            pieces.append(f"{landmark.name} ({descriptor})")
+        elif landmark.kind in _LANDMARK_PROSE:
+            pieces.append(descriptor)
+    return ", ".join(pieces)
 
 
 def generate_image(
@@ -133,24 +162,27 @@ def generate_image(
 ) -> str | None:
     """Generate (or reuse) the cover image for a route.
 
-    Returns the relative path under the data directory (e.g.
-    ``images/abc123.webp``) on success, or ``None`` if generation was skipped
-    because the image extra is not installed.
+    Image generation is opt-in: routes without ``image_prompt`` in
+    ``routes.yaml`` are skipped. Bulk-seed via ``--populate-prompts``, then
+    keep the entries you want and delete the rest.
 
-    Cache contract: if the route's stored ``image_prompt`` in ``routes.yaml``
-    matches the freshly built prompt and the output file exists, regeneration
-    is skipped. ``force=True`` overrides the cache.
+    Returns the relative path under the data directory (e.g.
+    ``images/abc123.webp``) on success, or ``None`` when generation was
+    skipped (no stored prompt, missing image extra, or pipeline error).
+
+    Cache contract: if the output file exists, regeneration is skipped.
+    ``force=True`` overrides the cache. Stored content is never overwritten.
     """
-    prompt = build_image_prompt(route)
     relative_path = f"{IMAGES_SUBDIRECTORY}/{route.identifier}.webp"
     output_path = output_directory / relative_path
 
-    stored_prompt = _read_stored_prompt(route.path_ref)
+    stored_content = _read_stored_prompt(route.path_ref)
+    if stored_content is None:
+        logger.info("  Skipping %s — no image_prompt in routes.yaml", route.path_ref)
+        return None
+    prompt = f"{stored_content}, {IMAGE_STYLE_SUFFIX}"
 
-    cache_hit = (
-        not force and stored_prompt is not None and stored_prompt == prompt and output_path.exists()
-    )
-    if cache_hit:
+    if not force and output_path.exists():
         logger.info("  Image cache hit for %s — reusing %s", route.path_ref, relative_path)
         return relative_path
 
@@ -168,7 +200,7 @@ def generate_image(
         return None
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    seed = _seed_for_route(route.identifier)
+    seed = secrets.randbits(32)
 
     logger.info("  Generating image for %s (seed=%d)", route.path_ref, seed)
     try:
@@ -180,14 +212,7 @@ def generate_image(
     image.save(output_path, format="WEBP", quality=WEBP_QUALITY, method=6)
     logger.info("  Wrote %s", output_path)
 
-    _write_stored_prompt(route.path_ref, prompt)
-
     return relative_path
-
-
-def _seed_for_route(route_id: str) -> int:
-    digest = hashlib.sha256(route_id.encode()).hexdigest()
-    return int(digest[:8], 16)
 
 
 # Pipeline singleton, lazy-loaded ----------------------------------------------
