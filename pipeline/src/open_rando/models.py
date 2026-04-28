@@ -48,8 +48,9 @@ class Station:
 class Landmark:
     """A scenic or historical feature near the trail.
 
-    Pipeline-internal: used to enrich the AI image prompt for a route.
-    Not serialized in the public catalog.
+    Used to enrich the AI image prompt for a route. Persisted to the catalog
+    so the `images` subcommand can rebuild prompts without rerunning the
+    pipeline.
     """
 
     name: str
@@ -57,6 +58,25 @@ class Landmark:
     lat: float
     lon: float
     elevation_m: int | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "kind": self.kind,
+            "lat": self.lat,
+            "lon": self.lon,
+            "elevation_m": self.elevation_m,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Landmark:
+        return cls(
+            name=str(data.get("name", "")),
+            kind=str(data.get("kind", "")),
+            lat=float(data["lat"]),
+            lon=float(data["lon"]),
+            elevation_m=data.get("elevation_m"),
+        )
 
 
 @dataclass
@@ -135,6 +155,7 @@ class Route:
             "gpx_path": self.gpx_path,
             "last_updated": self.last_updated,
             "image_path": self.image_path,
+            "landmarks": [landmark.to_dict() for landmark in self.landmarks],
         }
 
 
