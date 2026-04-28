@@ -67,7 +67,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, open plains and meandering rivers
   - ref: "GR 12"
-    name: "De Gué-d'Hossus (Ardennes) aux Etangs de Commelles (Oise)"
+    name: "De Gué-d'Hossus aux Etangs de Commelles"
     relation_id: 12825428
     description: "284 km à travers le nord de la France, des forêts denses des Ardennes aux plateaux calcaires et forêts domaniales de l'Oise."
     # image_prompt: |-
@@ -117,11 +117,11 @@ routes:
     # image_prompt: |-
     #   Montville, sweeping hiking landscape, windswept sea cliffs and distant blue horizon
   - ref: "GR 26"
-    name: "De Poissy (Yvelines) à Villers-sur-Mer (Calvados)"
+    name: "De Poissy à Villers-sur-Mer"
     description: "Des bords de la Seine à la Manche, de Poissy à Villers-sur-Mer, traversant forêts d'Île-de-France, plaines céréalières et bocage normand."
     relation_id: 1731864
   - ref: "GR 30"
-    name: "Tour des volcans et lacs d'Auvergne (Puy-de-Dôme)"
+    name: "Tour des volcans et lacs d'Auvergne"
     description: "Boucle autour des monts et lacs volcaniques du Puy-de-Dôme, dominée par les dômes et cratères du Massif du Sancy."
     relation_id: 10699408
   - ref: "GR 31"
@@ -161,7 +161,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 38"
-    name: "De Douarnenez (Finistère) à Redon (Ille-et-Vilaine)"
+    name: "De Douarnenez à Redon"
     description: "De Douarnenez à Redon sur 366 km à travers les paysages bretons, des côtes sauvages aux Monts d'Arrée en passant par la forêt de Brocéliande."
     relation_id: 12035546
     # image_prompt: |-
@@ -173,7 +173,7 @@ routes:
     # image_prompt: |-
     #   La Grande Brière, sweeping hiking landscape, windswept sea cliffs and distant blue horizon
   - ref: "GR 40"
-    name: "Tour des Volcans du Velay (Haute-Loire)"
+    name: "Tour des Volcans du Velay"
     description: "Boucle de 188 km autour du Puy-en-Velay dans les paysages volcaniques du Velay, entre forêts luxuriantes, lacs pittoresques et montagnes du Massif central."
   - ref: "GR 41"
     name: "La Vallée du Cher"
@@ -199,17 +199,17 @@ routes:
     # image_prompt: |-
     #   Toulouse, sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 48"
-    name: "De Chinon (Indre-et-Loire) à La Ribière (Haute-Vienne)"
+    name: "De Chinon (Indre-et-Loire) à La Ribière"
     description: ""
     relation_id: 10169937
     # image_prompt: |-
     #   Chinon, sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 49"
-    name: "De Saint Raphaël (Var) à Rougon (Alpes de Haute-Provence)"
+    name: "De Saint Raphaël (Var) à Rougon"
     description: ""
     realtion_id: 1623140
   - ref: "GR 50"
-    name: "Tour du Parc National des Ecrins (Hautes-Alpes, Isère)"
+    name: "Tour du Parc National des Ecrins"
     description: "Le Tour des Écrins est une boucle épique de 370 km au cœur du massif le plus sauvage d’Europe. En passant par les Hautes-Alpes et l'Isère, ce sentier en balcon offre un panorama glaciaire spectaculaire (Meije, Barre des Écrins). Vous y découvrirez un patrimoine alpin unique – hameaux de pierre séculaires – tout en traversant forêts de mélèzes et pelouses alpines. C'est le terrain de jeu privilégié pour observer la faune emblématique : chamois, bouquetin et aigle royal."
     relation_id: 11097196
   - ref: "GR 51"
@@ -223,28 +223,28 @@ routes:
     relation_id: 3315112
     description: "214 km à travers le Parc national du Mercantour, des pics granitiques aux oliveraies littorales, sur d'anciennes routes de transhumance."
   - ref: "GR 53"
-    name: "De Wissembourg (Bas-Rhin) au col de l'Engin (Moselle)"
+    name: "De Wissembourg (Bas-Rhin) au col de l'Engin"
     description: "Le GR53 est une immersion spectaculaire au cœur des Vosges du Nord, reliant Wissembourg au col de l'Engin. Ce sentier historique et pionnier vous fera traverser une forêt dense de hêtres et de pins sylvestres. Le paysage y est dominé par d’impressionnants éperons de grès rose, sculptés par les siècles. Cette géologie unique a servi de fondation à une fascinante ligne de défense médiévale, que l'on observe dans des châteaux forts comme le Fleckenstein. Entre vallons secrets et crêtes panoramiques, la biodiversité est riche : c'est un sanctuaire où évoluent le lynx boréal et le grand tétras, tandis que la flore déploie ses fougères rares et ses orchidées sauvages. Le GR53 vous offre ainsi une double découverte : celle d’un passé tumultueux et celui d’une nature préservée au rythme de l'Alsace."
     relation_id: 2603124
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 54"
-    name: "Tour des massifs de l'Oisans et des Ecrins (Isère, Hautes-Alpes)"
+    name: "Tour des massifs de l'Oisans et des Ecrins"
     description: ""
     relation_id: 2909096
   - ref: "GR 55"
-    name: "Parc National de la Vanoise De Tignes à Modane (Savoie)"
+    name: "Parc National de la Vanoise De Tignes à Modane"
     description: ""
   - ref: "GR 56"
-    name: "Tour de l'Ubaye (Alpes-de-Haute-Provence, Alpes-Maritimes)"
+    name: "Tour de l'Ubaye"
     description: ""
     relation_id: 1738444
   - ref: "GR 57"
-    name: "Mont Thabor (Hautes-Alpes)"
+    name: "Mont Thabor"
     description: ""
     relation_id: 16101643
   - ref: "GR 58"
-    name: "Tour du Queyras (Hautes-Alpes)"
+    name: "Tour du Queyras"
     description: ""
     relation_id: 9711201
   - ref: "GR 59"
@@ -258,7 +258,7 @@ routes:
     relation_id: 13880221
     description: "176 km des hauts plateaux granitiques de l'Aubrac aux plaines méditerranéennes de l'Hérault, entre traditions pastorales et steppes des Causses."
   - ref: "GR 61"
-    name: "De Anduze au Col de l'Asclier (Gard-Cévennes)"
+    name: "De Anduze au Col de l'Asclier"
     description: ""
     relation_id: 2399821
   - ref: "GR 62"
@@ -268,11 +268,11 @@ routes:
     # image_prompt: |-
     #   Conques, sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 63"
-    name: "De Avignon (Vaucluse) au col de la Cabane-Vieille (Gard)"
+    name: "De Avignon (Vaucluse) au col de la Cabane-Vieille"
     description: ""
     relation_id: 11206372
   - ref: "GR 64"
-    name: "Du pont sur l'Ouysse (Lot) aux Eyzies-de-Tayac-Sireuil (Dordogne)"
+    name: "Du pont sur l'Ouysse (Lot) aux Eyzies-de-Tayac-Sireuil"
     description: ""
     relation_id: 13078092
   - ref: "GR 65"
@@ -282,11 +282,11 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 66"
-    name: "Tour du Mont Aigoual (Parc national des Cévennes)"
+    name: "Tour du Mont Aigoual"
     description: ""
     relation_id: 2785117
   - ref: "GR 67"
-    name: "Tour du Pays Cévenol (Gard, Lozère)"
+    name: "Tour du Pays Cévenol"
     description: ""
     relation_id: 10752254
   - ref: "GR 68"
@@ -308,7 +308,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 71"
-    name: "De L'Espérou (Gard) à Lodève (Hérault)"
+    name: "De L'Espérou (Gard) à Lodève"
     description: ""
     relation_id: 6423545
   - ref: "GR 71C"
@@ -318,7 +318,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 71D"
-    name: "Tour du Larzac (Aveyron)"
+    name: "Tour du Larzac"
     description: ""
     relation_id: 4111357
   - ref: "GR 72"
@@ -326,7 +326,7 @@ routes:
     relation_id: 2958766
     description: "Sur la ligne de partage des eaux entre Ardèche et Lozère, empruntant d'anciennes voies de transhumance à travers le Parc national des Cévennes."
   - ref: "GR 74"
-    name: "De St Maurice-Navacelles au Jouquet (Hérault)"
+    name: "De St Maurice-Navacelles au Jouquet"
     description: ""
     relation_id: 17637988
   - ref: "GR 75"
@@ -334,19 +334,19 @@ routes:
     description: ""
     relation_id: 13363916
   - ref: "GR 76"
-    name: "De Chagny (Saône-et-Loire) à Affoux (Rhône)"
+    name: "De Chagny (Saône-et-Loire) à Affoux"
     description: ""
     relation_id: 14316345
   - ref: "GR 76A"
-    name: "De St-Vallerin (Saône-et-Loire) au Mt Saint-Rigaud (Rhône)"
+    name: "De St-Vallerin (Saône-et-Loire) au Mt Saint-Rigaud"
     description: ""
     relation_id: 14313152
   - ref: "GR 76B"
-    name: "Du Martrat (Le Rousset) à Tournus (Saône-et-Loire)"
+    name: "Du Martrat (Le Rousset) à Tournus"
     description: ""
     relation_id: 14313151
   - ref: "GR 77"
-    name: "Du Saut de Vézoles (Hérault) au Signal de l'Alaric (Aude)"
+    name: "Du Saut de Vézoles (Hérault) au Signal de l'Alaric"
     description: ""
     relation_id: 3728404
   - ref: "GR 78"
@@ -360,7 +360,7 @@ routes:
     description: ""
     relation_id: 15676218
   - ref: "GR 86"
-    name: "De Toulouse à Bagnères-de-Luchon (Haute-Garonne)"
+    name: "De Toulouse à Bagnères-de-Luchon"
     description: ""
     relation_id: 15034692
   - ref: "GR 89"
@@ -370,7 +370,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 90"
-    name: "Du Lavandou à Notre Dame des Anges (Var)"
+    name: "Du Lavandou à Notre Dame des Anges"
     description: ""
     relation_id: 6338835
   - ref: "GR 91"
@@ -380,16 +380,16 @@ routes:
     name: "Traversée du Vercors"
     description: ""
   - ref: "GR 94"
-    name: "De Vaunières au Col des Praux (Hautes-Alpes)"
+    name: "De Vaunières au Col des Praux"
     description: ""
   - ref: "GR 95"
-    name: "De Saillans (Drôme) à Vaunières (Hautes Alpes)"
+    name: "De Saillans (Drôme) à Vaunières"
     description: ""
   - ref: "GR 96"
-    name: "De Samoëns (Haute-Savoie) à Aix-les-Bains (Savoie)"
+    name: "De Samoëns (Haute-Savoie) à Aix-les-Bains"
     description: ""
   - ref: "GR 98"
-    name: "De La Madrague au Col du Pilon (Bouches-du-Rhône)"
+    name: "De La Madrague au Col du Pilon"
     description: ""
   - ref: "GR 99"
     name: "De Revest-les-Eaux à Trigance"
@@ -399,43 +399,43 @@ routes:
     name: "Les Chemins de la Guerre de Cent Ans"
     description: "Sur les traces du conflit franco-anglais du XIVe siècle à travers une trentaine de citadelles médiévales et cinq départements, des bocages verdoyants aux étangs de la Brenne."
   - ref: "GR 101"
-    name: "De Nogaro (Gers) au Col de Saucède (Hautes-Pyrénées)"
+    name: "De Nogaro (Gers) au Col de Saucède"
     description: "De Nogaro en terre d'Armagnac à travers la Gascogne et ses vignobles, puis les Hautes-Pyrénées où les paysages se transforment en pâturages d'altitude et forêts de hêtres."
   - ref: "GR 105"
     name: "Chemin de la vallée d'Aure"
     description: "Ancien chemin de pèlerinage reliant le Piémont à l'Aragon, traversant forêts de hêtres et sapins avant les alpages d'altitude avec panorama sur les massifs du Batchimale et des Posets."
   - ref: "GR 107"
-    name: "Chemin des Bonshommes (Ariège, Aude, Pyrénées Orientales)"
+    name: "Chemin des Bonshommes"
     description: "Itinéraire mythique sur les traces des Cathares fuyant l'Inquisition au XIIIe siècle, traversant les Pyrénées ariégeoises depuis Foix jusqu'à la frontière espagnole."
   - ref: "GR 108"
-    name: "Voie d'Ossau (Pyrénées-Atlantiques)"
+    name: "Voie d'Ossau"
     description: "Variante sauvage de la Via Tolosana vers Saint-Jacques-de-Compostelle, franchissant les Pyrénées par les hautes vallées dominées par le Pic du Midi d'Ossau."
   - ref: "GR 113"
-    name: "De Provins (Seine-et-Marne) à Auxerre (Yonne)"
+    name: "De Provins (Seine-et-Marne) à Auxerre"
     description: "De la cité médiévale de Provins à Auxerre, traversant les plaines céréalières de la Brie et la vallée de l'Yonne, sur les traces des marchands des foires de Champagne."
   - ref: "GR 120"
     name: "Sentier du Littoral"
     description: "De la frontière belge aux portes de la Normandie, des massifs dunaires du Nord aux falaises vertigineuses de la Côte d'Opale, entre architecture balnéaire et citadelles fortifiées."
   - ref: "GR 121"
-    name: "De Bon-Secours (Belgique) à Equihen-Plage (Pas-de-Calais)"
+    name: "De Bon-Secours (Belgique) à Equihen-Plage"
     description: "Des terres de l'Escaut aux falaises de la Côte d'Opale, traversant le bassin minier et les plaines de l'Artois avec les fortifications de Vauban et les sites mémoriels de la Grande Guerre."
   - ref: "GR 121B"
-    name: "De Bailleul (Frontière France-Belgique) à Rieulay (Nord)"
+    name: "De Bailleul (Frontière France-Belgique) à Rieulay"
     description: ""
   - ref: "GR 121C"
-    name: "De Aubigny-au-Bac à Le Quesnoy (Nord)"
+    name: "De Aubigny-au-Bac à Le Quesnoy"
     description: ""
   - ref: "GR 122"
-    name: "Bon-Secours (Belgique) à Son (Ardennes)"
+    name: "Bon-Secours (Belgique) à Son"
     description: "Traversée de la Wallonie et de la Picardie en passant par la forêt de Mormal et le canal de la Sambre à l'Oise, entre bocages et églises fortifiées de la Thiérache."
   - ref: "GR 123"
-    name: "De Contes (Pas-de-Calais) à Carlepont (Oise)"
+    name: "De Contes (Pas-de-Calais) à Carlepont"
     description: "Des plaines du Pas-de-Calais aux forêts denses et vallées profondes de l'Oise, jalonné d'églises romanes et de châteaux picards."
   - ref: "GR 124"
-    name: "De Rebreuviette (Pas-de-Calais) à Cires-lès-Mello (Oise)"
+    name: "De Rebreuviette (Pas-de-Calais) à Cires-lès-Mello"
     description: "Ancien chemin de pèlerinage vers Saint-Jacques-de-Compostelle reliant les Pays-Bas à Paris, traversant le Pas-de-Calais et l'Oise sur 222 km."
   - ref: "GR 125"
-    name: "De la Cressonnière (Val-d'Oise) à St Valery-sur-Somme (Somme)"
+    name: "De la Cressonnière (Val-d'Oise) à St Valery-sur-Somme"
     description: "Traversée du Vexin avec ses collines douces et vallées verdoyantes avant de rejoindre la Baie de Somme, réputée pour sa biodiversité remarquable."
   - ref: "GR 128"
     name: "Route de Flandre"
@@ -444,10 +444,10 @@ routes:
     name: "Sentier de l'Yser"
     description: "Immersion dans la Flandre intérieure, de la frontière belge aux sources de l'Yser à travers plaines fertiles, zones humides et villages aux clochers à bulbe typiques."
   - ref: "GR 131"
-    name: "Du Mont-Beuvray (Morvan) à Issy-l'Evêque (Saône-et-Loire)"
+    name: "Du Mont-Beuvray (Morvan) à Issy-l'Evêque"
     description: "Au départ de l'oppidum de Bibracte, ancien haut lieu celte, ce sentier traverse les monts de la Basse-Bourgogne entre crêtes boisées et vallons bocagers du Morvan."
   - ref: "GR 132"
-    name: "De La Sausselière (Loiret) à Chaumot (Yonne)"
+    name: "De La Sausselière (Loiret) à Chaumot"
     description: "Chemins ruraux entre le domaine royal et les terres bourguignonnes, à travers bocages, zones humides et forêts de feuillus jusqu'aux premiers contreforts de l'Yonne."
   - ref: "GR 137"
     name: "De Nolay à Autun"
@@ -456,7 +456,7 @@ routes:
     # image_prompt: |-
     #   Autun, sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 142"
-    name: "De Verzenay (Marne) à Laon (Aisne)"
+    name: "De Verzenay (Marne) à Laon"
     description: "Près de 100 km entre les coteaux viticoles de Verzenay et la cité médiévale de Laon, alternant vignobles de la Montagne de Reims et plaines céréalières."
   - ref: "GR 145"
     name: "Via Francigena"
@@ -474,10 +474,10 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, windswept sea cliffs and distant blue horizon
   - ref: "GR 211"
-    name: "De Veulettes-sur-Mer à Caudebec-en-Caux (Seine-Maritime)"
+    name: "De Veulettes-sur-Mer à Caudebec-en-Caux"
     description: "Au sommet des falaises de craie blanche avec panoramas vertigineux sur la Manche, puis à travers les plateaux et valleuses du Pays de Caux jusqu'aux abbayes de la Seine."
   - ref: "GR 212"
-    name: "De Ste Marguerite-sur-Mer à Le Paulu (Seine-Maritime)"
+    name: "De Ste Marguerite-sur-Mer à Le Paulu"
     description: "Du littoral de la Côte d'Albâtre aux boucles de la Seine, traversant l'arrière-pays cauchois avec ses manoirs en briques et silex et ses valleuses maritimes."
   - ref: "GR 213"
     name: "Fontenay - Vézelay"
@@ -511,7 +511,7 @@ routes:
     # image_prompt: |-
     #   Berville-sur-mer, sweeping hiking landscape, open plains and meandering rivers
   - ref: "GR 226"
-    name: "De Vaux (Calvados) à Gué-Rochoux (Manche)"
+    name: "De Vaux (Calvados) à Gué-Rochoux"
     description: "Traversée de la Suisse Normande et du Bocage virois, entre crêtes schisteuses et vallées encaissées du Massif armoricain, sur d'anciens chemins creux."
   - ref: "GR 235"
     name: "De la Sarthe au Loir"
@@ -535,14 +535,14 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 340"
-    name: "Tour de Belle-Ile-en-Mer (Morbihan)"
+    name: "Tour de Belle-Ile-en-Mer"
     description: "Tour complet de Belle-Île-en-Mer, la plus grande île bretonne, entre falaises spectaculaires, criques sauvages et landes fleuries."
   - ref: "GR 341"
     name: "De Lanester au Lac de Guerlédan"
     relation_id: 12923652
     description: ""
   - ref: "GR 342"
-    name: "De Montluçon (Allier) à Roanne (Loire)"
+    name: "De Montluçon (Allier) à Roanne"
     description: "De Montluçon à Roanne à travers le Bourbonnais et les monts de la Madeleine, entre bocages, gorges de la Sioule et forêts d'altitude."
   - ref: "GR 360"
     name: "Tour de Saintonge"
@@ -557,41 +557,41 @@ routes:
     # image_prompt: |-
     #   L'Océan, sweeping hiking landscape, open plains and meandering rivers
   - ref: "GR 365"
-    name: "De La Chapelle-Janson (Ille-et-Vilaine) à Durtal (Maine-et-Loire)"
+    name: "De La Chapelle-Janson (Ille-et-Vilaine) à Durtal"
     description: ""
   - ref: "GR 367"
     name: "Sentier Cathare"
     relation_id: 3394595
     description: "229 km de Port-la-Nouvelle à Foix, sur les traces du catharisme entre châteaux forts perchés et paysages montagneux de l'Aude et de l'Ariège."
   - ref: "GR 380"
-    name: "Tour des Monts d'Arrée (Finistère, Côtes-d'Armor)"
+    name: "Tour des Monts d'Arrée"
     description: "Tour des Monts d'Arrée au cœur du Finistère, entre landes de bruyère, tourbières et crêtes rocheuses du massif armoricain."
   - ref: "GR 400"
-    name: "Tour des Volcans du Cantal (Auvergne)"
+    name: "Tour des Volcans du Cantal"
     description: "Tour des Volcans du Cantal au cœur du plus grand stratovolcan d'Europe, entre estives d'altitude, burons traditionnels et cirques glaciaires."
   - ref: "GR 406"
     name: "Route Napoléon"
     description: "Sur les traces de Napoléon de Golfe-Juan à Grenoble, à travers la Provence et les Préalpes du Sud."
   - ref: "GR 413"
-    name: "De la Chaussée-le-Comte à Villefranche-sur-Cher (Loir-et-Cher)"
+    name: "De la Chaussée-le-Comte à Villefranche-sur-Cher"
     description: "Du Cher à la Loire à travers la Sologne viticole, entre châteaux, vignobles et forêts de feuillus."
   - ref: "GR 420"
-    name: "Tour du Haut-Vivarais (Ardèche)"
+    name: "Tour du Haut-Vivarais"
     description: "Tour du Haut-Vivarais en Ardèche, entre volcans éteints, plateaux basaltiques et vallées profondes."
   - ref: "GR 422"
     name: "Sur les pas de Charles IX"
     description: "Sur les pas de Charles IX et Catherine de Médicis à travers l'Ardèche, entre châteaux Renaissance et paysages volcaniques."
   - ref: "GR 429"
-    name: "De Dieulefit (Drôme) à Viviers (Ardèche)"
+    name: "De Dieulefit (Drôme) à Viviers"
     description: "De Dieulefit à Viviers en Ardèche, traversant lavandes, garrigues et villages perchés de la Drôme provençale."
   - ref: "GR 430"
-    name: "Chemin de Saint Régis (Haute-Loire, Ardèche)"
+    name: "Chemin de Saint Régis"
     description: "Chemin de Saint-Régis de la Haute-Loire à l'Ardèche, sur les traces du saint patron des dentellières."
   - ref: "GR 440"
-    name: "Tour de la montagne Limousine (Corrèze, Haute-Vienne, Creuse)"
+    name: "Tour de la montagne Limousine"
     description: "Tour de la montagne Limousine entre Corrèze, Haute-Vienne et Creuse, à travers plateaux granitiques, tourbières et forêts de hêtres."
   - ref: "GR 441"
-    name: "Tour de la Chaîne des Puys (Puy-de-Dôme)"
+    name: "Tour de la Chaîne des Puys"
     description: "Tour de la Chaîne des Puys dans le Puy-de-Dôme, classée UNESCO, entre volcans endormis, cratères et coulées de lave."
   - ref: "GR 465"
     name: "Des monts du Cantal à la vallée du Lot"
@@ -606,7 +606,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 480"
-    name: "De Turenne aux Gorges de la Cère (Corrèze)"
+    name: "De Turenne aux Gorges de la Cère"
     description: "De Turenne aux gorges de la Cère en Corrèze, entre villages de caractère, vallées encaissées et plateaux boisés du Limousin."
   - ref: "GR 501"
     name: "Chemin de la Moselle"
@@ -618,7 +618,7 @@ routes:
     name: "Grande Traversée du Jura"
     description: "Grande Traversée du Jura sur les crêtes, entre forêts d'épicéas, pâturages d'altitude et vues sur les Alpes et le Mont-Blanc."
   - ref: "GR 510"
-    name: "Sentier des 8 Vallées (Alpes-Maritimes)"
+    name: "Sentier des 8 Vallées"
     description: "Sentier des Huit Vallées dans les Alpes-Maritimes, reliant l'arrière-pays niçois au Mercantour entre oliviers et sommets alpins."
   - ref: "GR 531"
     name: "Traversée du Massif des Vosges"
@@ -633,25 +633,25 @@ routes:
     name: "Sentier Stanislas-Kléber"
     description: "Sentier Stanislas-Kléber à travers la Lorraine, entre châteaux, salines royales et patrimoine historique."
   - ref: "GR 559"
-    name: "De Lons-le-Saunier aux Rousses (Jura)"
+    name: "De Lons-le-Saunier aux Rousses"
     relation_id: 6265097
     description: "Le Chemin des Grands Lacs, de Lons-le-Saunier aux Rousses, entre vignobles, forêts et lacs glaciaires turquoise du Haut-Jura."
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 559A"
-    name: "Du Bayard (Foncine-le-Haut) à La Clouterie (Bonlieu) (Jura)"
+    name: "Du Bayard (Foncine-le-Haut) à La Clouterie (Bonlieu) "
     description: ""
   - ref: "GR 620"
     name: "Horizons et clochers du Rouergue"
     description: "Horizons et clochers du Rouergue en Aveyron, entre causses calcaires, vallées verdoyantes et villages médiévaux perchés."
   - ref: "GR 636"
-    name: "De Bernasse (Dordogne) à Lacapelle-Biron (Lot-et-Garonne)"
+    name: "De Bernasse (Dordogne) à Lacapelle-Biron"
     description: "De la Dordogne au Lot-et-Garonne, entre bastides médiévales, forêts de chênes et paysages vallonnés du Périgord pourpre."
   - ref: "GR 646"
-    name: "De Périgueux (Dordogne) à Ste-Foy-la-Grande (Gironde)"
+    name: "De Périgueux (Dordogne) à Ste-Foy-la-Grande"
     description: "De Périgueux à Sainte-Foy-la-Grande en Dordogne, à travers vignobles, bastides et vallées de la Double et du Landais."
   - ref: "GR 651"
-    name: "Vallée du Célé (Lot)"
+    name: "Vallée du Célé "
     description: "Le long de la vallée du Célé dans le Lot, entre falaises calcaires, grottes préhistoriques et villages de pierre."
   - ref: "GR 652"
     name: "Voie de Rocamadour"
@@ -684,7 +684,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 654 EST"
-    name: "De Bergerac (Dordogne) à Montréal-du-Gers (Gers)"
+    name: "De Bergerac (Dordogne) à Montréal-du-Gers"
     description: ""
   - ref: "GR 655"
     name: "Via Turonensis"
@@ -693,10 +693,10 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, open plains and meandering rivers
   - ref: "GR 655 EST"
-    name: "De Villebon-sur-Yvette (Essonne) à Vouvray (Indre-et-Loire)"
+    name: "De Villebon-sur-Yvette (Essonne) à Vouvray"
     description: ""
   - ref: "GR 670"
-    name: "De Saint Flour (Cantal) à St Germain-de-Calberte (Lozère)"
+    name: "De Saint Flour (Cantal) à St Germain-de-Calberte"
     description: "De Saint-Flour à Saint-Germain-de-Calberte, traversant les hauts plateaux de la Margeride et les Cévennes entre volcans et schiste."
   - ref: "GR 700"
     name: "Chemin de Régordane"
@@ -711,7 +711,7 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rolling green hills and patchwork farmland
   - ref: "GR 714"
-    name: "De Bar-le-Duc (Meuse) à Dombrot-le-Sec (Vosges)"
+    name: "De Bar-le-Duc (Meuse) à Dombrot-le-Sec"
     description: "De Bar-le-Duc aux Vosges, entre côtes de Meuse, forêts lorraines et patrimoine thermal."
   - ref: "GR 736"
     name: "Vallée et Gorges du Tarn"
@@ -723,16 +723,16 @@ routes:
     # image_prompt: |-
     #   sweeping hiking landscape, rugged mountain ridges and snow-flecked peaks
   - ref: "GR 765"
-    name: "De Cluny (Saône-et-Loire) au Puy-en-Velay (Haute-Loire)"
+    name: "De Cluny (Saône-et-Loire) au Puy-en-Velay"
     description: "De Cluny au Puy-en-Velay, sur un ancien chemin de pèlerinage entre vignobles bourguignons et volcans du Velay."
   - ref: "GR 765 EST"
-    name: "De Lyon (Rhône) au Puy-en-Velay (Haute-Loire)"
+    name: "De Lyon (Rhône) au Puy-en-Velay"
     description: ""
   - ref: "GR 782"
     name: "Chemin Henri IV"
     description: "Chemin Henri IV du Béarn à la Bigorre, entre gave d'Oloron, coteaux de Jurançon et vallées pyrénéennes."
   - ref: "GR 787"
-    name: "De St-Gervais-sur-Mare à Capestang (Hérault)"
+    name: "De St-Gervais-sur-Mare à Capestang"
     description: "De Saint-Gervais-sur-Mare à Capestang dans l'Hérault, entre Monts de l'Espinouse, vignobles et canal du Midi."
   - ref: "GR 800"
     name: "Au fil de la Somme"

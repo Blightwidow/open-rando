@@ -187,8 +187,10 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
 
         try:
             route_description = str(discovered_route.get("description", ""))
+            route_name = str(discovered_route.get("name", ""))
             processed_route, all_cached = _process_route(
                 relation_ids=route_relation_ids,
+                route_name=route_name,
                 route_description=route_description,
                 srtm_reader=srtm_reader,
                 sncf_codes=sncf_codes,
@@ -270,6 +272,7 @@ def _fetch_and_fuse_trails(
 
 def _process_route(
     relation_ids: list[int],
+    route_name: str,
     route_description: str,
     srtm_reader: SrtmReader,
     sncf_codes: set[str],
@@ -387,7 +390,7 @@ def _process_route(
 
     # Trail metadata
     path_ref = str(trail_metadata["ref"])
-    path_name = str(trail_metadata["name"])
+    path_name = route_name or str(trail_metadata["name"])
     osm_relation_id = int(trail_metadata["osm_relation_id"])
 
     route_id = generate_route_id(path_ref, osm_relation_id)
