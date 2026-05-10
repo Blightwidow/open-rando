@@ -138,7 +138,7 @@ const routesMeta = routes.map((route) => ({
     const locale = container.dataset.locale || 'fr';
     const prefix = locale === 'en' ? '/en' : '';
 
-    const map = createMap(container);
+    const map = createMap(container, { lowRes: true });
     mapInstance = map;
 
     // Loading overlay
