@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="open-rando">
+  <metadata>
+    <name>GR 11: Vernou-sur-Seine to Montigny-sur-Loing</name>
+    <desc>Hiking on GR 11 (1 step)</desc>
+  </metadata>
+  <trk>
+    <name>GR 11: Vernou-sur-Seine to Montigny-sur-Loing</name>
+    <trkseg>
+      <trkpt lat="48.76042086062435" lon="2.99001369042299">
+        <ele>116.9157083730019</ele>
+      </trkpt>
+      <trkpt lat="48.616234328434025" lon="2.964621002963716">
+        <ele>113.7972473495217</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

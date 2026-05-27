@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="open-rando">
+  <metadata>
+    <name>GR 36: Fontpédrouse Saint-Thomas les Bains to Bourg-Madame</name>
+    <desc>Hiking on GR 36 (3 steps)</desc>
+  </metadata>
+  <trk>
+    <name>GR 36: Fontpédrouse Saint-Thomas les Bains to Bourg-Madame</name>
+    <trkseg>
+      <trkpt lat="44.67592679901992" lon="1.627618421070122">
+        <ele>348.76279232414754</ele>
+      </trkpt>
+      <trkpt lat="44.809595138608834" lon="1.5439953935371646">
+        <ele>229.28550194750736</ele>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="44.809595138608834" lon="1.5439953935371646">
+        <ele>229.28550194750736</ele>
+      </trkpt>
+      <trkpt lat="44.90944386716427" lon="1.4815299435824405">
+        <ele>179.05410372163922</ele>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="44.90944386716427" lon="1.4815299435824405">
+        <ele>179.05410372163922</ele>
+      </trkpt>
+      <trkpt lat="45.03531609908034" lon="1.4027841676752713">
+        <ele>270.9652922824954</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
