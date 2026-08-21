@@ -164,8 +164,19 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 overflow-hidden"
       style="height: 450px;"
       data-route={JSON.stringify(route)}
+      data-rail-labels={JSON.stringify({
+        weekday: t(locale, 'rail.weekday'),
+        saturday: t(locale, 'rail.saturday'),
+        sunday: t(locale, 'rail.sunday'),
+        noService: t(locale, 'rail.noService'),
+        departures: t(locale, 'rail.departures'),
+      })}
     >
     </div>
+
+    <p class="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
+      {t(locale, 'rail.sourceNote')}
+    </p>
 
     <p class="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
       {t(locale, 'detail.disclaimer')}
@@ -177,9 +188,11 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
   import 'maplibre-gl/dist/maplibre-gl.css';
   import maplibregl from 'maplibre-gl';
   import { createMap, switchTheme, TRAIL_COLOR, POI_COLORS, POI_RADII } from '../../../lib/map';
+  import { buildRailServiceRows, type RailServiceLabels } from '../../../lib/rail';
 
   const mapElement = document.getElementById('detail-map')!;
   const routeData = JSON.parse(mapElement.dataset.route!);
+  const railLabels: RailServiceLabels = JSON.parse(mapElement.dataset.railLabels!);
 
   const map = createMap(mapElement);
 
@@ -237,6 +250,14 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
         let popupHtml = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>${lines}`;
         if (poi.url) {
           popupHtml += `<br><a href="${poi.url}" target="_blank" rel="noopener noreferrer" class="text-xs underline">${urlLabel}</a>`;
+        }
+
+        const railRows = buildRailServiceRows(poi.rail_service, railLabels);
+        if (railRows.length > 0) {
+          const rowsHtml = railRows
+            .map((row) => `<div><span class="font-medium">${row.label}</span> ${row.text}</div>`)
+            .join('');
+          popupHtml += `<div class="mt-1 text-xs text-stone-600 dark:text-stone-300">${rowsHtml}</div>`;
         }
 
         poiFeatures[poi.poi_type].push({

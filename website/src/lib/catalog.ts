@@ -3,6 +3,8 @@ import { join } from 'node:path';
 
 export { formatDuration } from './format';
 
+import type { RailService } from './rail';
+
 export interface POI {
   name: string;
   lat: number;
@@ -10,6 +12,8 @@ export interface POI {
   poi_type: 'hotel' | 'camping' | 'train_station' | 'bus_stop';
   transit_lines?: string[];
   distance_km?: number;
+  /** Train stations only: departures read from GTFS feeds. */
+  rail_service?: RailService | null;
 }
 
 export interface Route {
@@ -31,6 +35,10 @@ export interface Route {
   difficulty: 'easy' | 'moderate' | 'difficult' | 'very_difficult' | 'unknown';
   is_circular_trail: boolean;
   terrain: string[];
+  /** Mapped segments the trail is made of; more than one means it has gaps. */
+  trail_segment_count?: number;
+  /** Straight-line length of those gaps. Not included in distance_km. */
+  trail_gap_km?: number;
   geojson_path: string;
   gpx_path: string;
   last_updated: string;
@@ -42,6 +50,8 @@ export interface RouteElevationProfile {
   elevations_m: number[];
   times_min: number[];
   station_positions_km?: number[];
+  /** Distances where the trail breaks between two mapped segments. */
+  segment_boundaries_km?: number[];
 }
 
 interface Catalog {

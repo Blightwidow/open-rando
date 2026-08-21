@@ -25,7 +25,7 @@ describe('t', () => {
   });
 
   test('replaces multiple placeholders', () => {
-    expect(t('fr', 'suggest.section', { from: 1, to: 3 })).toBe('Étapes 1–3');
+    expect(t('fr', '{first} and {second}', { first: 'A', second: 'B' })).toBe('A and B');
   });
 
   test('returns value without replacements when none provided', () => {
@@ -104,8 +104,6 @@ describe('getClientTranslations', () => {
       'hike.loop', 'hike.loopFrom',
       'filters.noResults', 'filters.resetFilters',
       'detail.loading',
-      'suggest.resultsCount.one', 'suggest.resultsCount.many',
-      'suggest.noResults', 'suggest.section', 'suggest.departs', 'suggest.arrives',
     ];
     for (const key of expectedKeys) {
       expect(key in translations).toBe(true);
@@ -116,6 +114,6 @@ describe('getClientTranslations', () => {
   test('English translations differ from French', () => {
     const frTranslations = getClientTranslations('fr');
     const enTranslations = getClientTranslations('en');
-    expect(frTranslations['suggest.noResults']).not.toBe(enTranslations['suggest.noResults']);
+    expect(frTranslations['filters.noResults']).not.toBe(enTranslations['filters.noResults']);
   });
 });

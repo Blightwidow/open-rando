@@ -26,8 +26,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.accommodation.description': 'Les randonnées de plusieurs jours passent par des gares intermédiaires avec hôtels ou campings à proximité.',
     'landing.feature.gpx.title': 'Traces GPX téléchargeables',
     'landing.feature.gpx.description': 'Téléchargez les traces GPX avec profil altimétrique pour chaque itinéraire.',
-    'landing.feature.suggest.title': 'Trouvez votre randonnée',
-    'landing.feature.suggest.description': 'Filtrez par région, type de terrain ou difficulté pour trouver les itinéraires qui vous correspondent.',
+    'landing.feature.filters.title': 'Trouvez votre randonnée',
+    'landing.feature.filters.description': 'Filtrez par région, type de terrain ou difficulté pour trouver les itinéraires qui vous correspondent.',
     'landing.feature.map.title': 'Carte interactive',
     'landing.feature.map.description': 'Gares, arrêts de bus, hébergements et profil altimétrique synchronisés sur une carte interactive.',
 
@@ -80,10 +80,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.moderate': 'Modéré',
     'difficulty.difficult': 'Difficile',
     'difficulty.very_difficult': 'Très difficile',
-    'difficulty.tooltip.easy': 'Moins de 500m de dénivelé positif et moins de 30m/km',
-    'difficulty.tooltip.moderate': 'Moins de 1000m de dénivelé positif et moins de 50m/km',
-    'difficulty.tooltip.difficult': 'Moins de 1500m de dénivelé positif et moins de 70m/km',
-    'difficulty.tooltip.very_difficult': '1500m ou plus de dénivelé positif, ou 70m/km ou plus',
+    'difficulty.tooltip.easy': 'Moins de 15m de dénivelé positif par km (ou moins de 300m au total)',
+    'difficulty.tooltip.moderate': 'De 15 à 30m de dénivelé positif par km',
+    'difficulty.tooltip.difficult': 'De 30 à 50m de dénivelé positif par km',
+    'difficulty.tooltip.very_difficult': '50m ou plus de dénivelé positif par km',
 
     // Hike types
     'hike.loop': 'Boucle',
@@ -117,6 +117,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.sectionQrDownload': 'Télécharger le QR code',
     'detail.sectionQrDescription': 'Partagez ce QR code ou scannez-le avec l\'app compagnon pour ajouter cette section hors-ligne.',
 
+    // Rail service
+    'rail.weekday': 'Semaine',
+    'rail.saturday': 'Samedi',
+    'rail.sunday': 'Dimanche',
+    'rail.noService': 'Pas de service',
+    'rail.departures': '{count} départs',
+    'rail.sourceNote': 'Horaires indicatifs : premier et dernier départ et nombre de trains par type de jour, calculés depuis les flux GTFS de transport.data.gouv.fr. Vérifiez les horaires du jour avant de partir.',
+
     // Accommodation
     'accommodation.hotel': 'Hôtel',
     'accommodation.camping': 'Camping',
@@ -130,23 +138,8 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     'footer.data': 'Données',
 
-    // Suggest
-    'suggest.title': 'Trouver une randonnée',
-    'suggest.stationPlaceholder': 'Gare de départ...',
-    'suggest.time.halfDay': 'Demi-journée (4h)',
-    'suggest.time.fullDay': 'Journée (8h)',
-    'suggest.time.weekend': 'Week-end (2j)',
-    'suggest.time.multiDay': '3+ jours',
-    'suggest.clear': 'Effacer',
-    'suggest.resultsCount.one': '1 suggestion',
-    'suggest.resultsCount.many': '{count} suggestions',
-    'suggest.noResults': 'Aucune randonnée depuis cette gare pour cette durée.',
-    'suggest.section': 'Étapes {from}–{to}',
-    'suggest.departs': 'Départ',
-    'suggest.arrives': 'Arrivée',
 
     // Section filter
-    'filters.sectionMatch': 'Étapes {from}–{to} dans la limite',
 
     // Disclaimer
     'detail.disclaimer': 'Les informations présentées (tracés, hébergements, gares) sont issues de données ouvertes et peuvent être incomplètes ou obsolètes. Vérifiez la disponibilité des hébergements, campings et horaires de train avant de partir.',
@@ -179,8 +172,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.feature.accommodation.description': 'Multi-day hikes pass through intermediate stations with nearby hotels or campsites.',
     'landing.feature.gpx.title': 'Downloadable GPX tracks',
     'landing.feature.gpx.description': 'Download GPX tracks with elevation profiles for every route.',
-    'landing.feature.suggest.title': 'Find your hike',
-    'landing.feature.suggest.description': 'Filter by region, terrain type or difficulty to find routes that match your preferences.',
+    'landing.feature.filters.title': 'Find your hike',
+    'landing.feature.filters.description': 'Filter by region, terrain type or difficulty to find routes that match your preferences.',
     'landing.feature.map.title': 'Interactive map',
     'landing.feature.map.description': 'Train stations, bus stops, accommodation and elevation profile synced on an interactive map.',
 
@@ -233,10 +226,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'difficulty.moderate': 'Moderate',
     'difficulty.difficult': 'Difficult',
     'difficulty.very_difficult': 'Very difficult',
-    'difficulty.tooltip.easy': 'Less than 500m elevation gain and less than 30m/km',
-    'difficulty.tooltip.moderate': 'Less than 1000m elevation gain and less than 50m/km',
-    'difficulty.tooltip.difficult': 'Less than 1500m elevation gain and less than 70m/km',
-    'difficulty.tooltip.very_difficult': '1500m or more elevation gain, or 70m/km or more',
+    'difficulty.tooltip.easy': 'Under 15m of ascent per km (or under 300m in total)',
+    'difficulty.tooltip.moderate': '15 to 30m of ascent per km',
+    'difficulty.tooltip.difficult': '30 to 50m of ascent per km',
+    'difficulty.tooltip.very_difficult': '50m or more of ascent per km',
 
     // Hike types
     'hike.loop': 'Loop',
@@ -270,6 +263,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'detail.sectionQrDownload': 'Download QR code',
     'detail.sectionQrDescription': 'Share this QR code with anyone, or scan it with the companion app to save this section offline.',
 
+    // Rail service
+    'rail.weekday': 'Weekdays',
+    'rail.saturday': 'Saturday',
+    'rail.sunday': 'Sunday',
+    'rail.noService': 'No service',
+    'rail.departures': '{count} departures',
+    'rail.sourceNote': 'Indicative timetable: first and last departure and the number of trains per kind of day, computed from the transport.data.gouv.fr GTFS feeds. Check the timetable of the day before you leave.',
+
     // Accommodation
     'accommodation.hotel': 'Hotel',
     'accommodation.camping': 'Campsite',
@@ -283,23 +284,8 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     'footer.data': 'Data',
 
-    // Suggest
-    'suggest.title': 'Find a hike',
-    'suggest.stationPlaceholder': 'Departure station...',
-    'suggest.time.halfDay': 'Half day (4h)',
-    'suggest.time.fullDay': 'Full day (8h)',
-    'suggest.time.weekend': 'Weekend (2d)',
-    'suggest.time.multiDay': '3+ days',
-    'suggest.clear': 'Clear',
-    'suggest.resultsCount.one': '1 suggestion',
-    'suggest.resultsCount.many': '{count} suggestions',
-    'suggest.noResults': 'No hikes found from this station for this duration.',
-    'suggest.section': 'Steps {from}–{to}',
-    'suggest.departs': 'Departs',
-    'suggest.arrives': 'Arrives',
 
     // Section filter
-    'filters.sectionMatch': 'Steps {from}–{to} within limit',
 
     // Disclaimer
     'detail.disclaimer': 'The information shown (trails, accommodation, stations) is based on open data and may be incomplete or outdated. Please verify accommodation, campsite and train schedule availability before setting out.',
@@ -350,9 +336,6 @@ export function getClientTranslations(locale: Locale): Record<string, string> {
     'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',
     'detail.sectionReset', 'detail.sectionDownloadGpx',
     'detail.sectionQrCode', 'detail.sectionQrDownload',
-    'suggest.resultsCount.one', 'suggest.resultsCount.many',
-    'suggest.noResults', 'suggest.section', 'suggest.departs', 'suggest.arrives',
-    'filters.sectionMatch',
   ];
   const result: Record<string, string> = {};
   for (const key of keys) {

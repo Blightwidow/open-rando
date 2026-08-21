@@ -5,11 +5,12 @@
   "scripts": {
     "predev": "rsync -a --delete --exclude='*.pmtiles' ~/.local/share/open-rando/data/ public/data/ 2>/dev/null || echo 'No data/ found'",
     "dev": "astro dev",
-    "prebuild": "rsync -a --delete --exclude='*.pmtiles' ~/.local/share/open-rando/data/ public/data/",
+    "prebuild": "bun run check:env && rsync -a --delete --exclude='*.pmtiles' ~/.local/share/open-rando/data/ public/data/",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "bash deploy.sh",
-    "test": "bun test"
+    "test": "bun test",
+    "check:env": "test \"$ALLOW_MISSING_PMTILES_BASE\" = \"1\" || bun scripts/check-pmtiles-base.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
