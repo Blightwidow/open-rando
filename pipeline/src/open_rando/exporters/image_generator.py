@@ -19,6 +19,7 @@ import secrets
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from open_rando.config import OUTPUT_DIRECTORY
 from open_rando.fetchers.discovery import ROUTES_YAML_PATH
 from open_rando.models import Landmark, Route
 
@@ -152,6 +153,17 @@ def _build_landmark_phrase(landmarks: list[Landmark]) -> str:
         elif landmark.kind in _LANDMARK_PROSE:
             pieces.append(descriptor)
     return ", ".join(pieces)
+
+
+def find_image_on_disk(route_identifier: str) -> str | None:
+    """Relative path of a route's already generated image, if the file exists.
+
+    Images are named after the deterministic route id, so a catalog rebuilt
+    from scratch can pick up what the `images` subcommand produced earlier.
+    """
+    relative_path = f"{IMAGES_SUBDIRECTORY}/{route_identifier}.webp"
+    output_path = Path(OUTPUT_DIRECTORY).expanduser() / relative_path
+    return relative_path if output_path.exists() else None
 
 
 def generate_image(

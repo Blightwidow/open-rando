@@ -49,12 +49,14 @@ Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts
    3. **Filter** train stations against SNCF reference data (UIC codes) to keep only real passenger stations
    4. **Match** train stations to trail via Shapely linear referencing, keep if < 5km from trail. Skip route if fewer than 2 matched train stations.
    5. **Match** bus stops to trail (< 2km threshold)
-   6. **Enrich** bus stops with GTFS route names from transport.data.gouv.fr API (match OSM stops to GTFS feeds, extract transit line names)
+   6. **Enrich** with GTFS data from transport.data.gouv.fr: bus stops get transit line names, train stations get departures (first train, last train, number of trains per kind of day — weekday / Saturday / Sunday). Feeds are downloaded and parsed once per resource, then cached per reference month.
    7. **Fetch** accommodation POIs (hotels, campings) within 2km of trail via Overpass
-   8. **Elevation** profiling via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold
-   9. **Geography**: resolve region/departement from SNCF INSEE codes, classify terrain (coastal, mountain, hills, forest, plains based on elevation, forest ratio, departement), classify difficulty
+   8. **Elevation** profiling via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold. A trail mapped in several segments is profiled segment by segment and stitched, so the straight jump across an unmapped gap costs no distance, climb or time; the gaps are reported as `trail_gap_km` and their positions as `segment_boundaries_km`
+   9. **Geography**: resolve region/departement from SNCF INSEE codes, classify terrain (coastal, mountain, hills, forest, plains based on elevation, forest ratio, departement), classify difficulty (bands of ascent per km: <15 easy, <30 moderate, <50 difficult, else very difficult, with routes under 300m of total ascent always easy)
    10. **Export** GPX files with `<ele>` tags and POI waypoints, GeoJSON, and elevation profiles (per-route JSON)
 3. **Merge** into `catalog.json`: new routes replace existing entries by relation ID, unprocessed routes from previous runs are preserved (use `--reset` to start fresh)
+4. **Validate** the merged catalog against `src/open_rando/data/catalog.schema.json`. The website and the mobile client both read `catalog.json`, so a shape change fails the run instead of shipping: nothing is written when validation fails.
+5. **Report** what the run changed to `data/run-report.json` and to the logs: routes added / changed / removed, per-route deltas (distance, stations, POIs, elevation gain), rail service coverage, failed and skipped routes, and regression warnings (route shrunk by more than 10%, train stations lost, stations that lost their train departures, elevation gain down by more than 20%).
 
 ---
 
@@ -67,6 +69,18 @@ class Accommodation:
     has_camping: bool = False # camp_site
 
 @dataclass
+class ServiceWindow:
+    first_departure_minutes: int  # minutes after midnight; >1440 means after midnight
+    last_departure_minutes: int
+    departure_count: int
+
+@dataclass
+class RailService:
+    weekday: ServiceWindow | None   # None = the GTFS feeds report no departure
+    saturday: ServiceWindow | None
+    sunday: ServiceWindow | None
+
+@dataclass
 class Station:
     name: str
     code: str                 # SNCF UIC code or OSM node ID
@@ -77,6 +91,7 @@ class Station:
     accommodation: Accommodation
     transport_type: str       # "train" or "bus"
     connected_route_ids: set[str]  # GTFS route IDs for bus stops
+    rail_service: RailService | None  # train stations only
 
 @dataclass
 class PointOfInterest:
@@ -88,6 +103,7 @@ class PointOfInterest:
     url: str | None           # website URL (accommodation) or SNCF timetable link (train)
     transit_lines: list[str]  # GTFS route names for bus stops
     distance_km: float | None # distance along trail (train stations only)
+    rail_service: RailService | None  # departures (train stations only)
 
 @dataclass
 class Route:
@@ -109,6 +125,8 @@ class Route:
     difficulty: str           # easy/moderate/difficult/very_difficult
     is_circular_trail: bool
     terrain: list[str]        # ["coastal", "mountain", "hills", "forest", "plains"]
+    trail_segment_count: int # mapped segments; > 1 means the trail has gaps
+    trail_gap_km: float      # straight-line length of those gaps, not walked
     geojson_path: str
     gpx_path: str
     last_updated: str

@@ -11,6 +11,7 @@ from typing import Any
 from shapely.geometry import LineString, MultiLineString
 
 from open_rando.commands.images import add_images_subparser
+from open_rando.commands.osm_index import add_osm_index_subparser
 from open_rando.config import (
     CATALOG_PATH,
     ELEVATION_DIRECTORY,
@@ -22,20 +23,27 @@ from open_rando.config import (
     MIN_TRAIN_STATIONS_PER_ROUTE,
     OUTPUT_DIRECTORY,
     OVERPASS_COOLDOWN_SECONDS,
+    RUN_REPORT_PATH,
     SRTM_BASE_URL,
     SRTM_CACHE_DIRECTORY,
+    TRAIN_GTFS_MATCH_RADIUS_METERS,
 )
 from open_rando.exporters.catalog import export_route_catalog
 from open_rando.exporters.elevation import export_route_elevation
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
+from open_rando.exporters.image_generator import find_image_on_disk
+from open_rando.exporters.report import build_run_report, export_run_report, log_run_report
 from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.gtfs import (
+    GtfsStop,
     annotate_station_connectivity,
-    fetch_gtfs_route_connectivity,
+    build_rail_service,
+    fetch_gtfs_feed_data,
     fetch_gtfs_stops,
     fetch_resource_url_map,
     filter_and_annotate_bus_stops,
+    match_stations_to_gtfs_stops,
     resolve_transit_line_names,
 )
 from open_rando.fetchers.landmarks import fetch_landmarks
@@ -51,7 +59,7 @@ from open_rando.fetchers.stations import fetch_stations, filter_stations_by_sncf
 from open_rando.models import PointOfInterest, Route, generate_route_id, slugify, slugify_sncf
 from open_rando.processors.elevation import (
     classify_difficulty,
-    compute_elevation_profile,
+    compute_trail_elevation_profile,
     elevations_for_geometry,
 )
 from open_rando.processors.geography import (
@@ -66,7 +74,11 @@ from open_rando.processors.match import (
     match_stations_to_trail,
     refine_junctions_by_walking_distance,
 )
-from open_rando.processors.slice import _extract_substring, compute_segment_distance_km
+from open_rando.processors.slice import (
+    compute_segments_distance_km,
+    compute_trail_gaps_km,
+    extract_substring_segments,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("open_rando")
@@ -101,6 +113,7 @@ def main() -> None:
     pipeline_parser.set_defaults(func=run_pipeline)
 
     add_images_subparser(subparsers)
+    add_osm_index_subparser(subparsers)
 
     arguments = parser.parse_args()
     arguments.func(arguments)
@@ -144,6 +157,7 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
     all_routes: list[Route] = []
     successful_routes = 0
     failed_routes: list[str] = []
+    skipped_routes: list[str] = []
     catalog_path = str(Path(CATALOG_PATH).expanduser())
 
     # Load existing catalog for merging (default), or start fresh with --reset
@@ -159,6 +173,9 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
     elif arguments.reset:
         logger.info("Catalog reset — starting fresh")
 
+    # Images are named after the route id, which is derived from ref + relation
+    # id, so they can be recovered from disk. Reading the previous catalog alone
+    # would orphan every generated image on a --reset run.
     existing_image_paths: dict[int, str] = {
         int(entry["osm_relation_id"]): str(entry["image_path"])
         for entry in existing_route_dicts
@@ -200,7 +217,7 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
             if processed_route is not None:
                 processed_route.image_path = existing_image_paths.get(
                     processed_route.osm_relation_id
-                )
+                ) or find_image_on_disk(processed_route.identifier)
                 all_routes.append(processed_route)
                 poi_counts: dict[str, int] = {}
                 for poi in processed_route.pois:
@@ -209,6 +226,8 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
                     f"{count} {poi_type}" for poi_type, count in sorted(poi_counts.items())
                 )
                 logger.info("  -> %s: %s", processed_route.path_ref, counts_str)
+            else:
+                skipped_routes.append(route_ref)
             successful_routes += 1
             previous_route_used_api = not all_cached
         except Exception:
@@ -229,14 +248,26 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
             entry.path_ref if isinstance(entry, Route) else entry.get("path_ref", "")
         )
     )
-    export_route_catalog(merged_dicts, catalog_path)
+    current_route_dicts: list[dict[str, Any]] = [
+        entry.to_dict() if isinstance(entry, Route) else entry for entry in merged_dicts
+    ]
+    export_route_catalog(current_route_dicts, catalog_path)
+
+    report_path = str(Path(RUN_REPORT_PATH).expanduser())
+    report = build_run_report(
+        previous_routes=existing_route_dicts,
+        current_routes=current_route_dicts,
+        failed_route_refs=failed_routes,
+        skipped_route_refs=skipped_routes,
+    )
+    export_run_report(report, report_path)
 
     logger.info("=== Summary ===")
     logger.info("Routes processed: %d/%d", successful_routes, len(discovered))
     logger.info("Total routes in catalog: %d", len(merged_dicts))
     logger.info("Catalog written to %s", catalog_path)
-    if failed_routes:
-        logger.warning("Failed routes: %s", ", ".join(failed_routes))
+    log_run_report(report)
+    logger.info("Run report written to %s", report_path)
 
 
 def _fetch_and_fuse_trails(
@@ -329,30 +360,64 @@ def _process_route(
         MAX_BUS_STOP_DISTANCE_METERS,
     )
 
-    # GTFS enrichment: match bus stops to GTFS feeds and extract route names
+    # GTFS enrichment: bus stops get route names, train stations get departures
     route_names: dict[str, str] = {}
-    if matched_buses:
-        trail_bounds = trail.bounds
-        gtfs_stops, gtfs_cached = fetch_gtfs_stops(
-            south=trail_bounds[1] - 0.05,
-            west=trail_bounds[0] - 0.05,
-            north=trail_bounds[3] + 0.05,
-            east=trail_bounds[2] + 0.05,
-        )
-        all_cached = all_cached and gtfs_cached
+    matched_train_stations = [station for station, _fraction, _junction in matched_trains]
+    matched_bus_stations = [station for station, _fraction, _junction in matched_buses]
 
-        matched_bus_stations = [station for station, _fraction, _junction in matched_buses]
-        _, gtfs_stop_id_map = filter_and_annotate_bus_stops(matched_bus_stations, gtfs_stops)
+    gtfs_bounds = trail.bounds
+    gtfs_stops, gtfs_cached = fetch_gtfs_stops(
+        south=gtfs_bounds[1] - 0.05,
+        west=gtfs_bounds[0] - 0.05,
+        north=gtfs_bounds[3] + 0.05,
+        east=gtfs_bounds[2] + 0.05,
+    )
+    all_cached = all_cached and gtfs_cached
 
-        resource_ids = {
-            gtfs_stop.resource_id for matches in gtfs_stop_id_map.values() for gtfs_stop in matches
-        }
-        if resource_ids:
-            resource_url_map = fetch_resource_url_map()
-            connectivity, route_names = fetch_gtfs_route_connectivity(
-                resource_ids, resource_url_map
+    bus_gtfs_stop_map: dict[str, list[GtfsStop]] = {}
+    if matched_bus_stations:
+        _, bus_gtfs_stop_map = filter_and_annotate_bus_stops(matched_bus_stations, gtfs_stops)
+
+    train_gtfs_stop_map = match_stations_to_gtfs_stops(
+        matched_train_stations,
+        gtfs_stops,
+        TRAIN_GTFS_MATCH_RADIUS_METERS,
+    )
+
+    resource_ids = {
+        gtfs_stop.resource_id
+        for matches in (*bus_gtfs_stop_map.values(), *train_gtfs_stop_map.values())
+        for gtfs_stop in matches
+    }
+    if resource_ids:
+        resource_url_map = fetch_resource_url_map()
+        feed_data = fetch_gtfs_feed_data(resource_ids, resource_url_map)
+        route_names = feed_data.route_names
+
+        if matched_bus_stations:
+            annotate_station_connectivity(
+                matched_bus_stations,
+                bus_gtfs_stop_map,
+                feed_data.connectivity,
             )
-            annotate_station_connectivity(matched_bus_stations, gtfs_stop_id_map, connectivity)
+
+        for station in matched_train_stations:
+            station.rail_service = build_rail_service(
+                train_gtfs_stop_map.get(station.code, []),
+                feed_data.departures,
+            )
+
+        stations_with_service = sum(
+            1 for station in matched_train_stations if station.rail_service is not None
+        )
+        logger.info(
+            "  Rail service: %d/%d train stations with GTFS departures",
+            stations_with_service,
+            len(matched_train_stations),
+        )
+
+    for poi, station in zip(train_pois, matched_train_stations, strict=True):
+        poi.rail_service = station.rail_service
 
     bus_pois = []
     for station, _fraction, _junction in matched_buses:
@@ -398,31 +463,42 @@ def _process_route(
     route_id = generate_route_id(path_ref, osm_relation_id)
     route_slug = slugify(path_ref)
 
-    # Elevation profile for the full trail
+    # Elevation profile for the full trail, segment by segment so the gaps
+    # between mapped segments are never charged as distance, climb or time.
+    profile = compute_trail_elevation_profile(
+        trail,
+        srtm_reader,
+        ELEVATION_SAMPLE_INTERVAL_METERS,
+    )
+
+    # GPX carries an elevation per vertex, in trail order — no distance involved.
     if isinstance(trail, MultiLineString):
         all_coords: list[tuple[float, ...]] = []
         for segment in trail.geoms:
             all_coords.extend(segment.coords)
-        full_line = LineString(all_coords)
+        vertex_line = LineString(all_coords)
     else:
-        full_line = trail
-
-    profile = compute_elevation_profile(
-        full_line,
-        srtm_reader,
-        ELEVATION_SAMPLE_INTERVAL_METERS,
-    )
-    vertex_elevations = elevations_for_geometry(full_line, srtm_reader)
+        vertex_line = trail
+    vertex_elevations = elevations_for_geometry(vertex_line, srtm_reader)
 
     total_distance_km = round(profile.distances_km[-1], 1) if profile.distances_km else 0.0
+
+    trail_segment_count = len(trail.geoms) if isinstance(trail, MultiLineString) else 1
+    trail_gap_km = round(compute_trail_gaps_km(trail), 2)
+    if trail_gap_km >= 1.0:
+        logger.warning(
+            "  Trail has %d segments with %.1f km of unmapped gaps (not counted as walked)",
+            trail_segment_count,
+            trail_gap_km,
+        )
 
     # Annotate train station POIs with haversine distance along the trail.
     # We cannot use fraction * total_distance_km because the fraction comes from
     # Shapely's Euclidean project() in degree-space, while the elevation profile
     # uses haversine distances. Extract the actual trail substring and measure it.
     for poi, (_station, fraction, _junction) in zip(train_pois, matched_trains, strict=True):
-        segment_to_station = _extract_substring(trail, 0.0, fraction)
-        poi.distance_km = round(compute_segment_distance_km(segment_to_station), 2)
+        pieces_to_station = extract_substring_segments(trail, 0.0, fraction)
+        poi.distance_km = round(compute_segments_distance_km(pieces_to_station), 2)
 
     # Geography
     trail_bounds = trail.bounds
@@ -507,6 +583,8 @@ def _process_route(
         difficulty=difficulty,
         is_circular_trail=is_circular,
         terrain=terrain,
+        trail_segment_count=trail_segment_count,
+        trail_gap_km=trail_gap_km,
         geojson_path=geojson_path,
         gpx_path=gpx_path,
         last_updated=date.today().isoformat(),

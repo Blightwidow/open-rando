@@ -8,7 +8,8 @@ import time
 from pathlib import Path
 
 import requests
-from shapely.geometry import LineString, MultiLineString
+from shapely.geometry import LineString, MultiLineString, Point
+from shapely.ops import nearest_points
 
 from open_rando.config import (
     OVERPASS_API_URL,
@@ -17,6 +18,7 @@ from open_rando.config import (
     OVERPASS_TIMEOUT_SECONDS,
     OVERPASS_TRAIL_CACHE_TTL_SECONDS,
 )
+from open_rando.fetchers.osm_extract import LAYER_TRAILS, open_layer
 
 logger = logging.getLogger("open_rando")
 
@@ -24,6 +26,17 @@ MAX_GAP_DEGREES = 0.01  # ~1km warning threshold
 MAX_CHAIN_GAP_DEGREES = 0.05  # ~5km split threshold for MultiLineString
 SPURIOUS_SEGMENT_MAX_KM = 10.0  # absolute upper bound for spurious-fragment drop
 SPURIOUS_SEGMENT_MAX_FRACTION = 0.05  # fraction-of-longest upper bound for drop
+# A segment whose BOTH ends sit this close to the main line is a branch: it
+# leaves the trail at a junction and rejoins it at another. Testing the ends
+# (not the nearest approach) is what separates a branch from a continuation
+# that happens to run past the trail again later — a coastal path rounding a
+# peninsula does exactly that.
+BRANCH_MAX_DISTANCE_KM = 1.0
+# A branch can be long, but a segment that carries most of the route is the
+# route, whatever its ends touch.
+BRANCH_MAX_FRACTION = 0.5
+# A fragment this far from the main line belongs to another trail entirely.
+SPURIOUS_SEGMENT_MAX_DISTANCE_KM = 25.0
 EARTH_RADIUS_METERS = 6_371_000
 RETRY_ATTEMPTS = 5
 RETRY_BACKOFF_SECONDS = 15
@@ -119,6 +132,19 @@ def fetch_trail(
     when there are gaps exceeding MAX_CHAIN_GAP_DEGREES between child relations.
     The cache_hit boolean indicates whether the Overpass response came from cache.
     """
+    index = open_layer(LAYER_TRAILS)
+    if index is not None:
+        try:
+            local_data = index.trail_elements(relation_id)
+        finally:
+            index.close()
+        if local_data is not None:
+            logger.info("Building relation %d from the local extract", relation_id)
+            return _build_trail_from_elements(relation_id, local_data, cache_hit=True)
+        logger.info(
+            "Relation %d absent from the local extract, falling back to Overpass", relation_id
+        )
+
     logger.info("Fetching relation %d with full recursion...", relation_id)
 
     # Single query: get the superroute, its child relations, and all ways with geometry
@@ -138,7 +164,15 @@ way(r);
 out geom;
 """
     data, cache_hit = query_overpass(query, cache_ttl_seconds=OVERPASS_TRAIL_CACHE_TTL_SECONDS)
+    return _build_trail_from_elements(relation_id, data, cache_hit=cache_hit)
 
+
+def _build_trail_from_elements(
+    relation_id: int,
+    data: dict,  # type: ignore[type-arg]
+    cache_hit: bool,
+) -> tuple[LineString | MultiLineString, dict[str, str | int], bool]:
+    """Assemble a trail geometry from Overpass-shaped relation/way elements."""
     # Sort elements by type
     superroute = None
     child_relations: dict[int, dict] = {}  # type: ignore[type-arg]
@@ -325,6 +359,45 @@ def _point_distance(point_a: tuple[float, float], point_b: tuple[float, float]) 
     return float(((point_a[0] - point_b[0]) ** 2 + (point_a[1] - point_b[1]) ** 2) ** 0.5)
 
 
+def _haversine_km(
+    longitude_1: float,
+    latitude_1: float,
+    longitude_2: float,
+    latitude_2: float,
+) -> float:
+    phi_1 = math.radians(latitude_1)
+    phi_2 = math.radians(latitude_2)
+    delta_phi = math.radians(latitude_2 - latitude_1)
+    delta_lambda = math.radians(longitude_2 - longitude_1)
+    a = (
+        math.sin(delta_phi / 2) ** 2
+        + math.cos(phi_1) * math.cos(phi_2) * math.sin(delta_lambda / 2) ** 2
+    )
+    return 2 * EARTH_RADIUS_METERS * math.asin(math.sqrt(a)) / 1000.0
+
+
+def _is_branch_of(main_line: LineString, segment: LineString) -> bool:
+    """Whether both ends of a segment sit on the main line.
+
+    A branch leaves the trail at one junction and rejoins at another, so both of
+    its ends touch the line. A continuation after an unmapped stretch, or a
+    detached fragment, has at least one end away from it.
+    """
+    for longitude, latitude in (segment.coords[0], segment.coords[-1]):
+        end_point = Point(longitude, latitude)
+        nearest_on_line, _ = nearest_points(main_line, end_point)
+        distance_km = _haversine_km(nearest_on_line.x, nearest_on_line.y, end_point.x, end_point.y)
+        if distance_km > BRANCH_MAX_DISTANCE_KM:
+            return False
+    return True
+
+
+def _distance_between_geometries_km(reference: LineString, other: LineString) -> float:
+    """Shortest real-world distance between two geometries."""
+    reference_point, other_point = nearest_points(reference, other)
+    return _haversine_km(reference_point.x, reference_point.y, other_point.x, other_point.y)
+
+
 def _segment_length_km(segment: LineString) -> float:
     coords = list(segment.coords)
     total_meters = 0.0
@@ -346,12 +419,18 @@ def _segment_length_km(segment: LineString) -> float:
 def _drop_spurious_segments(
     geom: LineString | MultiLineString,
 ) -> LineString | MultiLineString:
-    """Drop tiny disconnected fragments left over from OSM relation noise.
+    """Drop disconnected fragments left over from OSM relation noise.
 
-    A fragment is dropped when it is shorter than SPURIOUS_SEGMENT_MAX_KM AND
-    shorter than SPURIOUS_SEGMENT_MAX_FRACTION of the longest segment. Real
-    alternates of a GR are typically longer than 10 km, so this filter targets
-    the small stray ways that bookend some OSM superroutes.
+    Distance to the longest segment tells the three cases apart:
+
+    - both ends within BRANCH_MAX_DISTANCE_KM of the main line: a branch
+      leaving and rejoining the trail at junctions. Not part of the line walked
+      end to end, so it goes — unless it carries most of the route's length.
+    - beyond SPURIOUS_SEGMENT_MAX_DISTANCE_KM, and short: a fragment of some
+      other trail the relation happens to collect. It goes too, as does any
+      stub that is tiny both absolutely and relative to the longest segment.
+    - in between: the trail continuing after an unmapped stretch. Kept, and the
+      jump is reported as `trail_gap_km` rather than walked.
     """
     if isinstance(geom, LineString):
         return geom
@@ -359,13 +438,38 @@ def _drop_spurious_segments(
     segments = list(geom.geoms)
     lengths_km = [_segment_length_km(segment) for segment in segments]
     longest_km = max(lengths_km)
+    longest_index = max(range(len(segments)), key=lambda index: lengths_km[index])
+    main_line = segments[longest_index]
     fraction_threshold_km = longest_km * SPURIOUS_SEGMENT_MAX_FRACTION
 
     kept: list[LineString] = []
-    for segment, length_km in zip(segments, lengths_km, strict=True):
+    for index, (segment, length_km) in enumerate(zip(segments, lengths_km, strict=True)):
+        if index == longest_index:
+            kept.append(segment)
+            continue
+
+        distance_km = _distance_between_geometries_km(main_line, segment)
+
+        if length_km < longest_km * BRANCH_MAX_FRACTION and _is_branch_of(main_line, segment):
+            logger.info(
+                "Dropping branch segment (%.2f km, both ends on the trail)",
+                length_km,
+            )
+            continue
+
         if length_km < SPURIOUS_SEGMENT_MAX_KM and length_km < fraction_threshold_km:
             logger.info("Dropping spurious segment (%.2f km)", length_km)
             continue
+
+        is_short = length_km < SPURIOUS_SEGMENT_MAX_KM or length_km < fraction_threshold_km
+        if is_short and distance_km > SPURIOUS_SEGMENT_MAX_DISTANCE_KM:
+            logger.info(
+                "Dropping detached segment (%.2f km, %.0f km from the main line)",
+                length_km,
+                distance_km,
+            )
+            continue
+
         kept.append(segment)
 
     if not kept:

@@ -17,9 +17,14 @@ Train station-to-station hiking on French GR paths.
 - **Pipeline**: Python 3.12+, Shapely, requests, gpxpy, pyyaml
 - **Website**: Astro, MapLibre GL JS, Tailwind CSS
 - **Tiles**: go-pmtiles (Protomaps extract), GDAL, tippecanoe, PMTiles, Cloudflare R2
-- **Data sources**: OpenStreetMap Overpass API, SNCF open data, transport.data.gouv.fr GTFS API, OSRM, SRTM elevation tiles
+- **Data sources**: OpenStreetMap (local Geofabrik extracts via osmium, Overpass API as fallback), SNCF open data, transport.data.gouv.fr GTFS API, OSRM, SRTM elevation tiles
 
 ## Development
+
+```bash
+# Native tools (macOS): uv, osmium-tool, gdal, tippecanoe, rclone, bun
+brew bundle
+```
 
 ```bash
 # Pipeline
@@ -40,6 +45,13 @@ cd website && bun install && bun run dev
 - `python -m open_rando images --route "GR 13"` -- generate the image for a single route
 - `python -m open_rando images --regenerate` -- force regeneration even when the prompt is unchanged
 - `python -m open_rando images --dry-run` -- report cache hit/miss per route without loading the model
+- `python -m open_rando osm-index` -- build the local OSM extract index from the per-layer PBFs (replaces Overpass queries)
+- `python -m open_rando osm-index --status` -- report which layers the index holds
+- `brew bundle` (repo root) -- install native tools (uv, osmium-tool, gdal, tippecanoe, rclone, bun)
+- `make -f Makefile.osm check` (in pipeline/) -- verify osmium-tool + curl are installed
+- `make -f Makefile.osm` (in pipeline/) -- download france-latest.osm.pbf (~5GB, once), filter per-layer extracts, build the index
+- `make -f Makefile.osm extracts` (in pipeline/) -- re-filter the per-layer extracts only
+- `make -f Makefile.osm clean` (in pipeline/) -- drop extracts + index, keep the downloaded planet file
 - `make` (in tiles/) -- build contour tiles (requires GDAL + tippecanoe)
 - `make install` (in tiles/) -- verify contour pipeline dependencies
 - `./download.sh` (in tiles/) -- fetch go-pmtiles binary
@@ -70,8 +82,10 @@ cd website && bun install && bun run dev
 
 See `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks, `docs/DEPLOYMENT.md` for GitHub Pages deployment.
 
-Pipeline flow: load routes from `routes.yaml` -> for each route: fetch trail geometry (Overpass, superroute recursion) -> fetch train stations (OSM + SNCF filtering) -> match stations to trail -> fetch bus stops + GTFS enrichment (route names from transport.data.gouv.fr) -> fetch accommodation POIs (hotels, campings via Overpass) -> elevation profiling (SRTM sampling every 50m) -> geography classification (region, terrain, difficulty) -> export (GPX with POI waypoints + GeoJSON + elevation profiles) -> merge into catalog.json
+OSM access: every OSM query (trail geometry, stations, accommodation, landmarks, forest) reads the local extract index at `~/.cache/open-rando/osm/extract-index.sqlite` when the matching layer is built, and falls back to the Overpass API otherwise. Build it with `make -f Makefile.osm` (needs `osmium-tool`); the public Overpass API returns 504s under load.
+
+Pipeline flow: load routes from `routes.yaml` -> for each route: fetch trail geometry (local extract or Overpass, superroute recursion) -> fetch train stations (OSM + SNCF filtering) -> match stations to trail -> fetch bus stops + GTFS enrichment (bus route names, plus train departures per kind of day from transport.data.gouv.fr feeds) -> fetch accommodation POIs (hotels, campings via Overpass) -> elevation profiling (SRTM sampling every 50m) -> geography classification (region, terrain, difficulty) -> export (GPX with POI waypoints + GeoJSON + elevation profiles) -> merge into catalog.json -> validate against `src/open_rando/data/catalog.schema.json` -> write `data/run-report.json` (catalog diff + regression warnings)
 
 Tile pipelines: (1) go-pmtiles extracts france.pmtiles (France bbox, z6-13 Flat v4 schema: roads, landcover, landuse, water, buildings, pois, places, boundaries) + world-low.pmtiles (world z0-5) from the Protomaps daily planet build. (2) GDAL + tippecanoe builds contours.pmtiles from SRTM .hgt tiles (25m + 100m intervals, clipped to FR admin border). (3) GDAL + encode_rgb_dem.py builds hillshade.pmtiles (Mapbox RGB raster-dem, z6-11, clipped to FR admin border) from the same SRTM tiles. (4) `build-grid.py` splits each master archive into a shared low-zoom `base/<layer>.pmtiles` + a 12x8 grid of high-zoom `grid/{col}_{row}/<layer>.pmtiles` for mobile offline (base shared across all routes, grid squares shared across overlapping routes), and `build-routes.py` emits `routes/{id}/pmtiles.json` listing intersecting square coords; `grid.json` + per-route manifests ship with the static site. All hosted on Cloudflare R2 (uploaded via rclone). See `docs/VECTOR_TILES.md` for details.
 
-Website consumes `data/catalog.json` and serves GPX/GeoJSON/elevation profiles as static files. Routes displayed on MapLibre GL JS map with vector tile base (Protomaps-based hiking style, light+dark themes), contour overlay, and GeoJSON trail/POI markers (train stations, bus stops, hotels, campings). Map styles in `website/src/lib/styles/`. The explore page has filters (region, terrain, difficulty) and a suggest panel to find hikes from a departure station by time budget. Detail pages show an interactive SVG elevation chart with hover-synced map markers and POI overlays.
+Website consumes `data/catalog.json` and serves GPX/GeoJSON/elevation profiles as static files. Routes displayed on MapLibre GL JS map with vector tile base (Protomaps-based hiking style, light+dark themes), contour overlay, and GeoJSON trail/POI markers (train stations, bus stops, hotels, campings). Map styles in `website/src/lib/styles/`. The explore page has filters (region, terrain, difficulty) and a list/map tab switcher. Detail pages show an interactive SVG elevation chart with hover-synced map markers and POI overlays.

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import math
 from collections import defaultdict
+from collections.abc import Iterable
 
 from shapely.geometry import LineString, MultiLineString
 from shapely.ops import substring
@@ -18,21 +19,21 @@ EARTH_RADIUS_METERS = 6_371_000
 MAX_CIRCULAR_ENDPOINT_GAP_KM = 1.0
 
 
-def _extract_substring(
+def extract_substring_segments(
     trail: LineString | MultiLineString,
     start_fraction: float,
     end_fraction: float,
-) -> LineString:
-    """Extract geometry between two normalized fractions along the trail.
+) -> list[LineString]:
+    """Clip the trail between two normalized fractions, one piece per segment.
 
-    For MultiLineString, fractions are relative to cumulative segment lengths
-    (matching the system used by match_stations_to_trail). Gap portions between
-    non-adjacent segments are skipped entirely — only real trail coordinates
-    are included.
+    Fractions are relative to cumulative segment lengths (the system used by
+    match_stations_to_trail). Keeping the pieces apart matters for measuring:
+    the straight jump between two segments is not walkable trail.
     """
     if isinstance(trail, LineString):
         trail_length = trail.length
-        return substring(trail, start_fraction * trail_length, end_fraction * trail_length)
+        clipped = substring(trail, start_fraction * trail_length, end_fraction * trail_length)
+        return [clipped] if isinstance(clipped, LineString) else []
 
     segments = list(trail.geoms)
     segment_lengths = [segment.length for segment in segments]
@@ -41,7 +42,7 @@ def _extract_substring(
     start_distance = start_fraction * total_length
     end_distance = end_fraction * total_length
 
-    all_coords: list[tuple[float, ...]] = []
+    pieces: list[LineString] = []
     cumulative = 0.0
 
     for segment, segment_length in zip(segments, segment_lengths, strict=True):
@@ -57,18 +58,37 @@ def _extract_substring(
         clip_end = min(segment_length, end_distance - segment_start)
 
         clipped = substring(segment, clip_start, clip_end)
-        coords = list(clipped.coords)
+        if isinstance(clipped, LineString) and len(clipped.coords) >= 2:
+            pieces.append(clipped)
 
+        cumulative = segment_end
+
+    return pieces
+
+
+def _extract_substring(
+    trail: LineString | MultiLineString,
+    start_fraction: float,
+    end_fraction: float,
+) -> LineString:
+    """Extract geometry between two normalized fractions along the trail.
+
+    Gap portions between non-adjacent segments are skipped, so the result holds
+    only real trail coordinates — but consecutive segments end up joined, so
+    measure with extract_substring_segments instead of this geometry.
+    """
+    pieces = extract_substring_segments(trail, start_fraction, end_fraction)
+
+    all_coords: list[tuple[float, ...]] = []
+    for piece in pieces:
+        coords = list(piece.coords)
         # Deduplicate shared endpoints between adjacent segments
         if all_coords and coords and coords[0] == all_coords[-1]:
             coords = coords[1:]
-
         all_coords.extend(coords)
-        cumulative = segment_end
 
     if len(all_coords) < 2:
         return LineString()
-
     return LineString(all_coords)
 
 
@@ -463,6 +483,30 @@ def _find_connected_components(
         components.append(component)
 
     return components
+
+
+def compute_segments_distance_km(segments: Iterable[LineString]) -> float:
+    """Total walked distance of several pieces, ignoring the gaps between them."""
+    return sum(compute_segment_distance_km(segment) for segment in segments)
+
+
+def compute_trail_gaps_km(trail: LineString | MultiLineString) -> float:
+    """Straight-line distance of the gaps between a trail's mapped segments."""
+    if isinstance(trail, LineString):
+        return 0.0
+
+    segments = list(trail.geoms)
+    total_meters = 0.0
+    for previous, following in zip(segments, segments[1:], strict=False):
+        previous_longitude, previous_latitude = previous.coords[-1]
+        next_longitude, next_latitude = following.coords[0]
+        total_meters += haversine_distance(
+            latitude_1=previous_latitude,
+            longitude_1=previous_longitude,
+            latitude_2=next_latitude,
+            longitude_2=next_longitude,
+        )
+    return total_meters / 1000.0
 
 
 def compute_segment_distance_km(segment: LineString) -> float:

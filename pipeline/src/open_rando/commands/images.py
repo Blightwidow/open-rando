@@ -197,6 +197,8 @@ def _route_from_catalog_entry(entry: dict[str, Any]) -> Route:
         difficulty=str(entry.get("difficulty", "")),
         is_circular_trail=bool(entry.get("is_circular_trail", False)),
         terrain=list(entry.get("terrain", []) or []),
+        trail_segment_count=int(entry.get("trail_segment_count", 1)),
+        trail_gap_km=float(entry.get("trail_gap_km", 0.0)),
         geojson_path=str(entry.get("geojson_path", "")),
         gpx_path=str(entry.get("gpx_path", "")),
         last_updated=str(entry.get("last_updated", "")),

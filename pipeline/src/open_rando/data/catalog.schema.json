@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rando.dammaretz.fr/schemas/catalog.schema.json",
+  "title": "open-rando route catalog",
+  "description": "Contract for data/catalog.json, consumed by the website and the mobile client. Fields are only ever added as optional; removing or retyping one is a breaking change.",
+  "type": "object",
+  "required": [
+    "generated_at",
+    "source",
+    "license",
+    "routes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "generated_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "license": {
+      "type": "string"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/route"
+      }
+    }
+  },
+  "$defs": {
+    "route": {
+      "type": "object",
+      "required": [
+        "id",
+        "slug",
+        "path_ref",
+        "path_name",
+        "description",
+        "osm_relation_id",
+        "pois",
+        "distance_km",
+        "elevation_gain_m",
+        "elevation_loss_m",
+        "max_elevation_m",
+        "min_elevation_m",
+        "bbox",
+        "region",
+        "departement",
+        "difficulty",
+        "is_circular_trail",
+        "terrain",
+        "geojson_path",
+        "gpx_path",
+        "last_updated"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "osm_relation_id": {
+          "type": "integer"
+        },
+        "pois": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/poi"
+          }
+        },
+        "distance_km": {
+          "type": "number",
+          "minimum": 0
+        },
+        "elevation_gain_m": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "elevation_loss_m": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_elevation_m": {
+          "type": "integer"
+        },
+        "min_elevation_m": {
+          "type": "integer"
+        },
+        "bbox": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "region": {
+          "type": "string"
+        },
+        "departement": {
+          "type": "string"
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": [
+            "easy",
+            "moderate",
+            "difficult",
+            "very_difficult",
+            "unknown"
+          ]
+        },
+        "is_circular_trail": {
+          "type": "boolean"
+        },
+        "terrain": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "geojson_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gpx_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        },
+        "image_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "landmarks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/landmark"
+          }
+        },
+        "trail_segment_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Mapped segments the trail is made of; more than one means it has gaps."
+        },
+        "trail_gap_km": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Straight-line distance of the gaps between segments. Not included in distance_km."
+        }
+      }
+    },
+    "poi": {
+      "type": "object",
+      "required": [
+        "name",
+        "lat",
+        "lon",
+        "poi_type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "poi_type": {
+          "type": "string",
+          "enum": [
+            "train_station",
+            "bus_stop",
+            "hotel",
+            "camping"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "transit_lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "distance_km": {
+          "type": "number"
+        },
+        "rail_service": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rail_service"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "rail_service": {
+      "description": "Departures read from the GTFS feeds serving this station, per kind of day. A null window means the feeds report no departure on that kind of day.",
+      "type": "object",
+      "required": [
+        "weekday",
+        "saturday",
+        "sunday"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "weekday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "saturday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sunday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "service_window": {
+      "type": "object",
+      "required": [
+        "first_departure_minutes",
+        "last_departure_minutes",
+        "departure_count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "first_departure_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_departure_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "departure_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sample_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Calendar date the departures were counted on."
+        }
+      }
+    },
+    "landmark": {
+      "type": "object",
+      "required": [
+        "name",
+        "kind",
+        "lat",
+        "lon"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lon": {
+          "type": "number"
+        },
+        "elevation_m": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

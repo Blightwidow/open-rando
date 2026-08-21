@@ -10,6 +10,7 @@ from open_rando.config import (
     OVERPASS_COOLDOWN_SECONDS,
     OVERPASS_TIMEOUT_SECONDS,
 )
+from open_rando.fetchers.osm_extract import LAYER_ACCOMMODATION, open_layer
 from open_rando.fetchers.overpass import query_overpass
 from open_rando.models import PointOfInterest
 
@@ -48,6 +49,16 @@ def _fetch_accommodation_bbox(
     west = min_lon - BOUNDING_BOX_MARGIN_DEGREES
     north = max_lat + BOUNDING_BOX_MARGIN_DEGREES
     east = max_lon + BOUNDING_BOX_MARGIN_DEGREES
+
+    index = open_layer(LAYER_ACCOMMODATION, (south, west, north, east))
+    if index is not None:
+        try:
+            local_data = index.point_elements(LAYER_ACCOMMODATION, south, west, north, east)
+        finally:
+            index.close()
+        pois = _parse_accommodation_elements(local_data)
+        logger.info("Found %d accommodation POIs in bbox (local extract)", len(pois))
+        return pois, True
 
     query = f"""
 [out:json][timeout:{OVERPASS_TIMEOUT_SECONDS}];

@@ -20,6 +20,70 @@ class Accommodation:
 
 
 @dataclass
+class ServiceWindow:
+    """Rail service on one kind of day, as minutes after midnight.
+
+    Values above 1440 mean the train runs after midnight (GTFS allows
+    departure times such as "25:10:00" for a service that belongs to the
+    previous service day).
+    """
+
+    first_departure_minutes: int
+    last_departure_minutes: int
+    departure_count: int
+    # The calendar date these figures were counted on, when known.
+    sample_date: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "first_departure_minutes": self.first_departure_minutes,
+            "last_departure_minutes": self.last_departure_minutes,
+            "departure_count": self.departure_count,
+            "sample_date": self.sample_date,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ServiceWindow:
+        return cls(
+            first_departure_minutes=int(data["first_departure_minutes"]),
+            last_departure_minutes=int(data["last_departure_minutes"]),
+            departure_count=int(data["departure_count"]),
+            sample_date=data.get("sample_date"),
+        )
+
+
+@dataclass
+class RailService:
+    """Departures from a train station, per kind of day.
+
+    A missing window means the GTFS feeds report no departure on that kind of
+    day (station closed on Sundays, seasonal service, and so on).
+    """
+
+    weekday: ServiceWindow | None = None
+    saturday: ServiceWindow | None = None
+    sunday: ServiceWindow | None = None
+
+    def has_service(self) -> bool:
+        return any(window is not None for window in (self.weekday, self.saturday, self.sunday))
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "weekday": self.weekday.to_dict() if self.weekday else None,
+            "saturday": self.saturday.to_dict() if self.saturday else None,
+            "sunday": self.sunday.to_dict() if self.sunday else None,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RailService:
+        def window(key: str) -> ServiceWindow | None:
+            raw = data.get(key)
+            return ServiceWindow.from_dict(raw) if raw else None
+
+        return cls(weekday=window("weekday"), saturday=window("saturday"), sunday=window("sunday"))
+
+
+@dataclass
 class Station:
     name: str
     code: str
@@ -30,6 +94,7 @@ class Station:
     accommodation: Accommodation = field(default_factory=Accommodation)
     transport_type: str = "train"
     connected_route_ids: set[str] = field(default_factory=set)
+    rail_service: RailService | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -41,6 +106,7 @@ class Station:
             "transit_lines": self.transit_lines,
             "accommodation": self.accommodation.to_dict(),
             "transport_type": self.transport_type,
+            "rail_service": self.rail_service.to_dict() if self.rail_service else None,
         }
 
 
@@ -90,6 +156,7 @@ class PointOfInterest:
     url: str | None = None
     transit_lines: list[str] = field(default_factory=list)
     distance_km: float | None = None
+    rail_service: RailService | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -100,6 +167,7 @@ class PointOfInterest:
             "url": self.url or "",
             "transit_lines": self.transit_lines,
             "distance_km": self.distance_km if self.distance_km is not None else 0.0,
+            "rail_service": self.rail_service.to_dict() if self.rail_service else None,
         }
 
 
@@ -130,6 +198,10 @@ class Route:
     last_updated: str
     landmarks: list[Landmark] = field(default_factory=list)
     image_path: str | None = None
+    # A trail mapped in several pieces has gaps between them. The gaps are not
+    # walked, so they are excluded from distance_km and reported separately.
+    trail_segment_count: int = 1
+    trail_gap_km: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -151,6 +223,8 @@ class Route:
             "difficulty": self.difficulty,
             "is_circular_trail": self.is_circular_trail,
             "terrain": self.terrain,
+            "trail_segment_count": self.trail_segment_count,
+            "trail_gap_km": self.trail_gap_km,
             "geojson_path": self.geojson_path,
             "gpx_path": self.gpx_path,
             "last_updated": self.last_updated,

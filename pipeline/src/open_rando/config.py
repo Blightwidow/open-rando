@@ -7,6 +7,12 @@ DISCOVERY_CACHE_TTL_SECONDS = 60 * 24 * 3600  # 60 days
 
 OVERPASS_COOLDOWN_SECONDS = 5
 
+# Local OSM extracts (see pipeline/Makefile.osm). When the index holds a layer,
+# the matching fetcher reads it instead of calling Overpass.
+OSM_EXTRACT_DIRECTORY = "~/.cache/open-rando/osm"
+OSM_INDEX_PATH = "~/.cache/open-rando/osm/extract-index.sqlite"
+OSM_PBF_URL = "https://download.geofabrik.de/europe/france-latest.osm.pbf"
+
 MAX_STATION_DISTANCE_METERS = 5000
 MAX_STATION_BBOX_DEGREES = 3.0
 
@@ -14,6 +20,7 @@ OUTPUT_DIRECTORY = "~/.local/share/open-rando/data"
 GPX_DIRECTORY = "~/.local/share/open-rando/data/gpx"
 GEOJSON_DIRECTORY = "~/.local/share/open-rando/data/geojson"
 CATALOG_PATH = "~/.local/share/open-rando/data/catalog.json"
+RUN_REPORT_PATH = "~/.local/share/open-rando/data/run-report.json"
 
 WALKING_SPEED_KMH = 4.5
 
@@ -32,6 +39,9 @@ GTFS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs"
 GTFS_FEEDS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs/feeds"
 GTFS_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
 GTFS_MATCH_RADIUS_METERS = 150
+# Train stations sprawl (several platforms, several operators), so their GTFS
+# stops sit further from the OSM node than a bus stop pole does.
+TRAIN_GTFS_MATCH_RADIUS_METERS = 500
 
 SRTM_CACHE_DIRECTORY = "~/.cache/open-rando/srtm"
 SRTM_BASE_URL = "https://elevation-tiles-prod.s3.amazonaws.com/skadi"

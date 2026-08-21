@@ -1,0 +1,91 @@
+# Build local OSM extracts so the pipeline stops depending on the public
+# Overpass API (which answers 504 under load).
+#
+#   make -f Makefile.osm check      verify osmium + curl are installed
+#   make -f Makefile.osm            download france.osm.pbf, filter, index
+#   make -f Makefile.osm extracts   only re-filter the per-layer extracts
+#   make -f Makefile.osm index      only rebuild the SQLite index
+#   make -f Makefile.osm status     report what the index holds
+#   make -f Makefile.osm clean      drop extracts and index (keeps the planet file)
+
+OSM_DIR ?= $(HOME)/.cache/open-rando/osm
+PBF_URL ?= https://download.geofabrik.de/europe/france-latest.osm.pbf
+# Named after the URL so a regional extract can be used for a quick trial:
+#   make -f Makefile.osm PBF_URL=https://download.geofabrik.de/europe/france/bourgogne-latest.osm.pbf
+# Regional extracts only answer queries inside their own bounding box; the
+# fetchers fall back to Overpass elsewhere.
+PBF := $(OSM_DIR)/$(notdir $(PBF_URL))
+INDEX := $(OSM_DIR)/extract-index.sqlite
+
+STATIONS := $(OSM_DIR)/stations.osm.pbf
+ACCOMMODATION := $(OSM_DIR)/accommodation.osm.pbf
+LANDMARKS := $(OSM_DIR)/landmarks.osm.pbf
+FOREST := $(OSM_DIR)/forest.osm.pbf
+TRAILS := $(OSM_DIR)/trails.osm.pbf
+
+EXTRACTS := $(STATIONS) $(ACCOMMODATION) $(LANDMARKS) $(FOREST) $(TRAILS)
+
+.PHONY: all check download extracts index status clean distclean
+
+all: index
+
+check:
+	@command -v osmium >/dev/null || { echo "osmium missing: brew install osmium-tool"; exit 1; }
+	@command -v curl >/dev/null || { echo "curl missing"; exit 1; }
+	@osmium --version | head -1
+	@echo "OK — extracts go to $(OSM_DIR)"
+
+download: $(PBF)
+
+$(PBF):
+	@mkdir -p $(OSM_DIR)
+	@echo "Downloading $(PBF_URL) (~5GB, once)"
+	curl -fL --retry 3 --continue-at - -o $(PBF).part $(PBF_URL)
+	mv $(PBF).part $(PBF)
+
+extracts: $(EXTRACTS)
+
+# Stations, halts and bus stops — nodes only, matching fetchers/stations.py.
+$(STATIONS): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		n/railway=station,halt \
+		n/highway=bus_stop \
+		n/public_transport=platform
+
+# Hotels, guest houses, hostels and campsites — nodes and ways.
+$(ACCOMMODATION): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		nw/tourism=hotel,guest_house,hostel,camp_site
+
+# Scenic and historical features used to enrich image prompts.
+$(LANDMARKS): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		nw/historic=castle,monument,ruins,memorial,archaeological_site,fort,tower,wayside_cross \
+		nw/tourism=attraction,viewpoint \
+		nw/natural=peak,cliff,cave_entrance,waterfall \
+		nw/man_made=lighthouse,tower
+
+# Forest and wood areas, including multipolygon members.
+# osmium tags-filter pulls in referenced members and nodes by default, which is
+# what gives the ways their geometry (-R would omit them).
+$(FOREST): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		w/landuse=forest w/natural=wood \
+		r/landuse=forest r/natural=wood
+
+# Hiking route relations with every member way and node.
+$(TRAILS): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		r/route=hiking,foot
+
+index: $(EXTRACTS)
+	cd $(CURDIR) && uv run python -m open_rando osm-index --extracts-dir $(OSM_DIR)
+
+status:
+	cd $(CURDIR) && uv run python -m open_rando osm-index --status
+
+clean:
+	rm -f $(EXTRACTS) $(INDEX)
+
+distclean: clean
+	rm -f $(PBF)

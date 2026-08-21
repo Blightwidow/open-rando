@@ -79,6 +79,8 @@ def export_route_elevation(
         "station_positions_km": sorted(
             round(position, 3) for position in (station_positions_km or [])
         ),
+        # Distances where the trail breaks between two mapped segments.
+        "segment_boundaries_km": list(profile.segment_boundaries_km),
     }
 
     output_path.write_text(json.dumps(data), encoding="utf-8")
