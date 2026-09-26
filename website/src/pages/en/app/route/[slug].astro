@@ -177,6 +177,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
   import 'maplibre-gl/dist/maplibre-gl.css';
   import maplibregl from 'maplibre-gl';
   import { createMap, switchTheme, TRAIL_COLOR, POI_COLORS, POI_RADII } from '../../../../lib/map';
+  import { buildPoiPopupHtml } from '../../../../lib/poi-popup';
 
   const mapElement = document.getElementById('detail-map')!;
   const routeData = JSON.parse(mapElement.dataset.route!);
@@ -230,14 +231,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
 
       for (const poi of routeData.pois ?? []) {
         if (!poiFeatures[poi.poi_type]) continue;
-        const lines = poi.transit_lines?.length
-          ? `<br><span class="text-xs text-blue-600">${poi.transit_lines.join(', ')}</span>`
-          : '';
-        const urlLabel = (poi.poi_type === 'hotel' || poi.poi_type === 'camping') ? 'Website' : 'Timetable';
-        let popupHtml = `<strong>${poi.name}</strong><br><span class="text-xs">${poi.poi_type.replace('_', ' ')}</span>${lines}`;
-        if (poi.url) {
-          popupHtml += `<br><a href="${poi.url}" target="_blank" rel="noopener noreferrer" class="text-xs underline">${urlLabel}</a>`;
-        }
+        const popupHtml = buildPoiPopupHtml(poi, { website: 'Website', timetable: 'Timetable' });
 
         poiFeatures[poi.poi_type].push({
           type: 'Feature',
