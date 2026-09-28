@@ -43,7 +43,7 @@ jobs:
       - name: Create stub catalog for type checking
         run: |
           mkdir -p public/data
-          echo '{"generated_at":"","source":"","license":"","hikes":[]}' > public/data/catalog.json
+          echo '{"generated_at":"","source":"","license":"","routes":[]}' > public/data/catalog.json
 
       - run: bun test
       - run: bun run astro check
