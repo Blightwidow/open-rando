@@ -8,7 +8,8 @@ import logging
 import math
 import time
 import zipfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import date, timedelta
 from pathlib import Path
 
 import requests
@@ -21,7 +22,7 @@ from open_rando.config import (
     GTFS_MATCH_RADIUS_METERS,
     GTFS_STOPS_API_URL,
 )
-from open_rando.models import Station
+from open_rando.models import RailService, ServiceWindow, Station
 
 logger = logging.getLogger("open_rando")
 
@@ -29,9 +30,46 @@ REQUEST_TIMEOUT_SECONDS = 60
 FEED_DOWNLOAD_TIMEOUT_SECONDS = 120
 TRAIN_ROUTE_SENTINEL = "__train__"
 
+DAY_TYPE_WEEKDAY = "weekday"
+DAY_TYPE_SATURDAY = "saturday"
+DAY_TYPE_SUNDAY = "sunday"
+DAY_TYPES = (DAY_TYPE_WEEKDAY, DAY_TYPE_SATURDAY, DAY_TYPE_SUNDAY)
+
+# GTFS route_type values that mean rail: 2 in the base spec, 100-117 in the
+# extended set (long distance, regional, suburban railway...). Departures are
+# only counted for these, so a city bus stop next to a station cannot inflate
+# a station's train count.
+RAIL_ROUTE_TYPES = frozenset({2, *range(100, 118)})
+
+# How many occurrences of each kind of day are sampled. Timetables change with
+# seasons and lines close for works, so a single sampled date would report "no
+# service" for a station whose trains resume a fortnight later.
+CANDIDATE_DATES_PER_DAY_TYPE = 4
+
+# calendar.txt service day columns, Monday first (GTFS order).
+CALENDAR_DAY_COLUMNS = (
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+)
+
 # Approximate meters per degree at mid-latitudes (France ~46°N)
 METERS_PER_DEGREE_LAT = 111_320
 METERS_PER_DEGREE_LON_AT_46 = 77_400
+
+
+@dataclass
+class FeedData:
+    """Everything the pipeline extracts from a set of GTFS feeds."""
+
+    connectivity: dict[str, set[str]] = field(default_factory=dict)
+    route_names: dict[str, str] = field(default_factory=dict)
+    # stop_id -> day type -> departures on that kind of day
+    departures: dict[str, dict[str, ServiceWindow]] = field(default_factory=dict)
 
 
 @dataclass
@@ -213,14 +251,29 @@ def filter_and_annotate_bus_stops(
     return filtered, gtfs_stop_id_map
 
 
+def match_stations_to_gtfs_stops(
+    stations: list[Station],
+    gtfs_stops: list[GtfsStop],
+    radius_meters: float = GTFS_MATCH_RADIUS_METERS,
+) -> dict[str, list[GtfsStop]]:
+    """Map station codes to the GTFS stops sitting within radius_meters."""
+    matches: dict[str, list[GtfsStop]] = {}
+    for station in stations:
+        nearby = _find_nearby_gtfs_stops(station.lat, station.lon, gtfs_stops, radius_meters)
+        if nearby:
+            matches[station.code] = nearby
+    return matches
+
+
 def _find_nearby_gtfs_stops(
     latitude: float,
     longitude: float,
     gtfs_stops: list[GtfsStop],
+    radius_meters: float = GTFS_MATCH_RADIUS_METERS,
 ) -> list[GtfsStop]:
-    """Find all GTFS stops within GTFS_MATCH_RADIUS_METERS."""
-    threshold_lat = GTFS_MATCH_RADIUS_METERS / METERS_PER_DEGREE_LAT
-    threshold_lon = GTFS_MATCH_RADIUS_METERS / METERS_PER_DEGREE_LON_AT_46
+    """Find all GTFS stops within radius_meters."""
+    threshold_lat = radius_meters / METERS_PER_DEGREE_LAT
+    threshold_lon = radius_meters / METERS_PER_DEGREE_LON_AT_46
 
     matches: list[GtfsStop] = []
     for gtfs_stop in gtfs_stops:
@@ -234,7 +287,7 @@ def _find_nearby_gtfs_stops(
             (delta_lat * METERS_PER_DEGREE_LAT) ** 2
             + (delta_lon * METERS_PER_DEGREE_LON_AT_46) ** 2
         )
-        if distance_meters <= GTFS_MATCH_RADIUS_METERS:
+        if distance_meters <= radius_meters:
             matches.append(gtfs_stop)
     return matches
 
@@ -273,17 +326,18 @@ def fetch_resource_url_map() -> dict[int, str]:
     return resource_map
 
 
-def fetch_gtfs_route_connectivity(
+def fetch_gtfs_feed_data(
     resource_ids: set[int],
     resource_url_map: dict[int, str],
-) -> tuple[dict[str, set[str]], dict[str, str]]:
-    """Download GTFS feeds and build stop_id → set[route_id] mapping.
+    reference_date: date | None = None,
+) -> FeedData:
+    """Download GTFS feeds and extract connectivity, route names and departures.
 
-    Only downloads feeds for the given resource_ids.
-    Returns (combined_connectivity, combined_route_names).
+    Only downloads feeds for the given resource_ids. Feeds are parsed once and
+    cached, so route connectivity and departures share a single download.
     """
-    combined_connectivity: dict[str, set[str]] = {}
-    combined_route_names: dict[str, str] = {}
+    reference = reference_date or date.today()
+    combined = FeedData()
 
     for resource_id in resource_ids:
         url = resource_url_map.get(resource_id)
@@ -291,37 +345,90 @@ def fetch_gtfs_route_connectivity(
             logger.warning("No download URL for GTFS resource %d", resource_id)
             continue
 
-        connectivity, route_names = _fetch_feed_connectivity(resource_id, url)
-        for stop_id, route_ids in connectivity.items():
-            if stop_id in combined_connectivity:
-                combined_connectivity[stop_id].update(route_ids)
-            else:
-                combined_connectivity[stop_id] = set(route_ids)
-        combined_route_names.update(route_names)
+        feed = _fetch_feed_data(resource_id, url, reference)
+
+        for stop_id, route_ids in feed.connectivity.items():
+            combined.connectivity.setdefault(stop_id, set()).update(route_ids)
+        combined.route_names.update(feed.route_names)
+        for stop_id, windows in feed.departures.items():
+            merged = combined.departures.setdefault(stop_id, {})
+            for day_type, window in windows.items():
+                merged[day_type] = _merge_service_windows(merged.get(day_type), window)
 
     logger.info(
-        "Built route connectivity for %d stops from %d feeds",
-        len(combined_connectivity),
+        "Built feed data for %d stops (%d with departures) from %d feeds",
+        len(combined.connectivity),
+        len(combined.departures),
         len(resource_ids),
     )
-    return combined_connectivity, combined_route_names
+    return combined
 
 
-def _fetch_feed_connectivity(
-    resource_id: int, url: str
-) -> tuple[dict[str, set[str]], dict[str, str]]:
-    """Download a single GTFS feed and extract stop→route mapping + route names.
+def build_rail_service(
+    matched_gtfs_stops: list[GtfsStop],
+    departures: dict[str, dict[str, ServiceWindow]],
+) -> RailService | None:
+    """Merge the departures of every GTFS stop matched to one train station.
 
-    Cached per resource_id (cache key includes route names).
+    A large station is often split into several GTFS stops (one per platform,
+    one per operator), so windows are merged: earliest first departure, latest
+    last departure, summed departure counts.
     """
-    cache_path = _generic_cache_path(f"feed_data_{resource_id}")
+    merged: dict[str, ServiceWindow | None] = {day_type: None for day_type in DAY_TYPES}
+
+    for gtfs_stop in matched_gtfs_stops:
+        for day_type, window in departures.get(gtfs_stop.stop_id, {}).items():
+            if day_type not in merged:
+                continue
+            merged[day_type] = _merge_service_windows(merged[day_type], window)
+
+    rail_service = RailService(
+        weekday=merged[DAY_TYPE_WEEKDAY],
+        saturday=merged[DAY_TYPE_SATURDAY],
+        sunday=merged[DAY_TYPE_SUNDAY],
+    )
+    return rail_service if rail_service.has_service() else None
+
+
+def _merge_service_windows(
+    existing: ServiceWindow | None,
+    addition: ServiceWindow,
+) -> ServiceWindow:
+    if existing is None:
+        return ServiceWindow(
+            first_departure_minutes=addition.first_departure_minutes,
+            last_departure_minutes=addition.last_departure_minutes,
+            departure_count=addition.departure_count,
+            sample_date=addition.sample_date,
+        )
+    # Platforms and feeds can be sampled on different dates; keep the date of
+    # whichever side carried more departures.
+    busier = existing if existing.departure_count >= addition.departure_count else addition
+    return ServiceWindow(
+        first_departure_minutes=min(
+            existing.first_departure_minutes, addition.first_departure_minutes
+        ),
+        last_departure_minutes=max(
+            existing.last_departure_minutes, addition.last_departure_minutes
+        ),
+        departure_count=existing.departure_count + addition.departure_count,
+        sample_date=busier.sample_date,
+    )
+
+
+def _fetch_feed_data(resource_id: int, url: str, reference_date: date) -> FeedData:
+    """Download a single GTFS feed and extract stop→routes, names, departures.
+
+    Cached per resource_id and per reference week: departures are counted on
+    representative dates of that week, so a new week needs a fresh parse. A
+    feed that cannot be parsed caches an empty result; a feed that cannot be
+    downloaded does not, since that failure is usually transient.
+    """
+    week_start = reference_date - timedelta(days=reference_date.weekday())
+    cache_path = _generic_cache_path(f"feed_data_v4_{resource_id}_{week_start:%Y-%m-%d}")
     cached = _read_generic_cache(cache_path)
     if cached is not None:
-        connectivity = {
-            stop_id: set(route_ids) for stop_id, route_ids in cached.get("connectivity", {}).items()
-        }
-        route_names = cached.get("route_names", {})
-        return connectivity, route_names
+        return _feed_data_from_cache(cached)
 
     logger.info("Downloading GTFS feed for resource %d", resource_id)
 
@@ -330,49 +437,100 @@ def _fetch_feed_connectivity(
         response.raise_for_status()
     except (requests.RequestException, requests.Timeout) as error:
         logger.warning("Failed to download GTFS feed %d: %s", resource_id, error)
-        return {}, {}
+        return FeedData()
 
     try:
-        connectivity, route_names = _parse_gtfs_zip(response.content)
+        feed = parse_gtfs_zip(response.content, reference_date)
     except (zipfile.BadZipFile, KeyError, csv.Error) as error:
-        logger.warning("Failed to parse GTFS feed %d: %s", resource_id, error)
-        return {}, {}
+        # A feed that is not GTFS (NeTEx behind a GTFS label, nested archive,
+        # missing table) fails the same way on every run, so the empty result
+        # is cached: re-downloading megabytes weekly to fail again is waste.
+        logger.warning(
+            "Failed to parse GTFS feed %d: %s (caching empty result)", resource_id, error
+        )
+        empty = FeedData()
+        _write_generic_cache(cache_path, _feed_data_to_cache(empty))
+        return empty
 
-    # Cache as JSON-serializable format
-    serializable = {
-        "connectivity": {stop_id: list(route_ids) for stop_id, route_ids in connectivity.items()},
-        "route_names": route_names,
-    }
-    _write_generic_cache(cache_path, serializable)
+    _write_generic_cache(cache_path, _feed_data_to_cache(feed))
 
     logger.info(
-        "Parsed GTFS feed %d: %d stops, %d route names",
+        "Parsed GTFS feed %d: %d stops, %d route names, %d stops with departures",
         resource_id,
-        len(connectivity),
-        len(route_names),
+        len(feed.connectivity),
+        len(feed.route_names),
+        len(feed.departures),
     )
-    return connectivity, route_names
+    return feed
 
 
-def _parse_gtfs_zip(content: bytes) -> tuple[dict[str, set[str]], dict[str, str]]:
+def _feed_data_to_cache(feed: FeedData) -> dict[str, object]:
+    return {
+        "connectivity": {
+            stop_id: sorted(route_ids) for stop_id, route_ids in feed.connectivity.items()
+        },
+        "route_names": feed.route_names,
+        "departures": {
+            stop_id: {day_type: window.to_dict() for day_type, window in windows.items()}
+            for stop_id, windows in feed.departures.items()
+        },
+    }
+
+
+def _feed_data_from_cache(cached: dict) -> FeedData:  # type: ignore[type-arg]
+    return FeedData(
+        connectivity={
+            stop_id: set(route_ids) for stop_id, route_ids in cached.get("connectivity", {}).items()
+        },
+        route_names=cached.get("route_names", {}),
+        departures={
+            stop_id: {
+                day_type: ServiceWindow.from_dict(window) for day_type, window in windows.items()
+            }
+            for stop_id, windows in cached.get("departures", {}).items()
+        },
+    )
+
+
+def parse_gtfs_zip(content: bytes, reference_date: date) -> FeedData:
     """Parse a GTFS zip in memory.
 
-    Returns (stop_id → route_ids, route_id → display_name).
-    Reads trips.txt, stop_times.txt, and routes.txt.
+    Reads routes.txt, the service calendars, trips.txt and stop_times.txt.
+    Departures are counted for rail routes only, on real calendar dates: each
+    kind of day (weekday, Saturday, Sunday) is sampled on several upcoming
+    dates and the busiest one is kept, so the numbers read as "trains on a
+    Saturday" instead of a sum over every timetable variant.
     """
+    candidate_dates = _candidate_dates(reference_date)
+    all_candidates = [day for days in candidate_dates.values() for day in days]
+
     with zipfile.ZipFile(io.BytesIO(content)) as zip_file:
-        # Step 1: Build trip_id → route_id from trips.txt
+        route_names, rail_route_ids = _parse_routes(zip_file)
+        service_dates = _parse_service_dates(zip_file, all_candidates)
+
+        # Step 1: trips.txt gives trip → route and trip → service. Only rail
+        # trips need their running dates resolved.
         trip_to_route: dict[str, str] = {}
+        rail_trip_dates: dict[str, frozenset[date]] = {}
         with zip_file.open("trips.txt") as trips_file:
             reader = csv.DictReader(io.TextIOWrapper(trips_file, encoding="utf-8-sig"))
             for row in reader:
                 trip_id = row.get("trip_id", "")
                 route_id = row.get("route_id", "")
-                if trip_id and route_id:
-                    trip_to_route[trip_id] = route_id
+                if not trip_id or not route_id:
+                    continue
+                trip_to_route[trip_id] = route_id
+                if route_id not in rail_route_ids:
+                    continue
+                running_dates = service_dates.get(row.get("service_id", ""))
+                if running_dates:
+                    rail_trip_dates[trip_id] = running_dates
 
-        # Step 2: Build stop_id → route_ids from stop_times.txt
+        # Step 2: Walk stop_times.txt once for connectivity and departures.
+        # Aggregates stay as [first, last, count] lists: stop_times.txt holds
+        # millions of rows in national feeds, so no object is built per row.
         stop_to_routes: dict[str, set[str]] = {}
+        raw_departures: dict[str, dict[date, list[int]]] = {}
         with zip_file.open("stop_times.txt") as stop_times_file:
             reader = csv.DictReader(io.TextIOWrapper(stop_times_file, encoding="utf-8-sig"))
             for row in reader:
@@ -380,31 +538,204 @@ def _parse_gtfs_zip(content: bytes) -> tuple[dict[str, set[str]], dict[str, str]
                 trip_id = row.get("trip_id", "")
                 if not stop_id or not trip_id:
                     continue
+
                 route_id = trip_to_route.get(trip_id)
                 if route_id:
                     if stop_id not in stop_to_routes:
                         stop_to_routes[stop_id] = set()
                     stop_to_routes[stop_id].add(route_id)
 
-        # Step 3: Build route_id → display name from routes.txt
-        route_names: dict[str, str] = {}
-        try:
-            with zip_file.open("routes.txt") as routes_file:
-                reader = csv.DictReader(io.TextIOWrapper(routes_file, encoding="utf-8-sig"))
-                for row in reader:
-                    route_id = row.get("route_id", "")
-                    if not route_id:
-                        continue
-                    short_name = row.get("route_short_name", "").strip()
-                    long_name = row.get("route_long_name", "").strip()
-                    if short_name:
-                        route_names[route_id] = short_name
-                    elif long_name:
-                        route_names[route_id] = long_name
-        except KeyError:
-            logger.debug("No routes.txt in GTFS feed, skipping route names")
+                running_dates = rail_trip_dates.get(trip_id)
+                if not running_dates:
+                    continue
+                departure_minutes = _parse_departure_minutes(row.get("departure_time", ""))
+                if departure_minutes is None:
+                    continue
 
-    return stop_to_routes, route_names
+                per_date = raw_departures.setdefault(stop_id, {})
+                for running_date in running_dates:
+                    aggregate = per_date.get(running_date)
+                    if aggregate is None:
+                        per_date[running_date] = [departure_minutes, departure_minutes, 1]
+                        continue
+                    if departure_minutes < aggregate[0]:
+                        aggregate[0] = departure_minutes
+                    if departure_minutes > aggregate[1]:
+                        aggregate[1] = departure_minutes
+                    aggregate[2] += 1
+
+    departures = {
+        stop_id: _pick_representative_windows(per_date, candidate_dates)
+        for stop_id, per_date in raw_departures.items()
+    }
+    return FeedData(
+        connectivity=stop_to_routes,
+        route_names=route_names,
+        departures={stop_id: windows for stop_id, windows in departures.items() if windows},
+    )
+
+
+def _pick_representative_windows(
+    per_date: dict[date, list[int]],
+    candidate_dates: dict[str, list[date]],
+) -> dict[str, ServiceWindow]:
+    """Keep the busiest sampled date for each kind of day."""
+    windows: dict[str, ServiceWindow] = {}
+    for day_type, days in candidate_dates.items():
+        sampled = [(day, per_date[day]) for day in days if day in per_date]
+        if not sampled:
+            continue
+        # Most departures wins; the earliest date breaks ties.
+        best_day, aggregate = max(sampled, key=lambda entry: (entry[1][2], -entry[0].toordinal()))
+        windows[day_type] = ServiceWindow(
+            first_departure_minutes=aggregate[0],
+            last_departure_minutes=aggregate[1],
+            departure_count=aggregate[2],
+            sample_date=best_day.isoformat(),
+        )
+    return windows
+
+
+def _parse_routes(zip_file: zipfile.ZipFile) -> tuple[dict[str, str], set[str]]:
+    """Read routes.txt for display names and for which routes are rail."""
+    route_names: dict[str, str] = {}
+    rail_route_ids: set[str] = set()
+
+    try:
+        routes_file = zip_file.open("routes.txt")
+    except KeyError:
+        logger.debug("No routes.txt in GTFS feed, skipping route names and departures")
+        return route_names, rail_route_ids
+
+    with routes_file:
+        reader = csv.DictReader(io.TextIOWrapper(routes_file, encoding="utf-8-sig"))
+        for row in reader:
+            route_id = row.get("route_id", "")
+            if not route_id:
+                continue
+            short_name = row.get("route_short_name", "").strip()
+            long_name = row.get("route_long_name", "").strip()
+            if short_name:
+                route_names[route_id] = short_name
+            elif long_name:
+                route_names[route_id] = long_name
+            if _is_rail_route_type(row.get("route_type", "")):
+                rail_route_ids.add(route_id)
+
+    return route_names, rail_route_ids
+
+
+def _is_rail_route_type(raw: str) -> bool:
+    try:
+        return int(raw.strip()) in RAIL_ROUTE_TYPES
+    except ValueError:
+        return False
+
+
+def _candidate_dates(reference_date: date) -> dict[str, list[date]]:
+    """Dates sampled for each kind of day, starting from the reference week.
+
+    A Wednesday stands in for a weekday because Mondays and Fridays carry the
+    most timetable exceptions. Anchoring on the reference week (rather than on
+    the exact day) keeps the parsed feed cache stable for a whole week.
+    """
+    week_start = reference_date - timedelta(days=reference_date.weekday())
+    offsets = {DAY_TYPE_WEEKDAY: 2, DAY_TYPE_SATURDAY: 5, DAY_TYPE_SUNDAY: 6}
+    return {
+        day_type: [
+            week_start + timedelta(days=offset + 7 * week)
+            for week in range(CANDIDATE_DATES_PER_DAY_TYPE)
+        ]
+        for day_type, offset in offsets.items()
+    }
+
+
+def _parse_service_dates(
+    zip_file: zipfile.ZipFile,
+    candidate_dates: list[date],
+) -> dict[str, frozenset[date]]:
+    """Map service_id → which of the candidate dates the service runs on.
+
+    calendar.txt gives the weekly pattern and the validity range;
+    calendar_dates.txt adds one-off dates (feeds built only from exceptions
+    have no calendar.txt) and removes cancelled ones.
+    """
+    active: dict[str, set[date]] = {}
+    names = set(zip_file.namelist())
+
+    if "calendar.txt" in names:
+        with zip_file.open("calendar.txt") as calendar_file:
+            reader = csv.DictReader(io.TextIOWrapper(calendar_file, encoding="utf-8-sig"))
+            for row in reader:
+                service_id = row.get("service_id", "")
+                if not service_id:
+                    continue
+                start_date = _parse_gtfs_date(row.get("start_date", ""))
+                end_date = _parse_gtfs_date(row.get("end_date", ""))
+                for day in candidate_dates:
+                    if start_date is not None and day < start_date:
+                        continue
+                    if end_date is not None and day > end_date:
+                        continue
+                    if row.get(CALENDAR_DAY_COLUMNS[day.weekday()], "").strip() != "1":
+                        continue
+                    active.setdefault(service_id, set()).add(day)
+
+    if "calendar_dates.txt" in names:
+        sampled = set(candidate_dates)
+        with zip_file.open("calendar_dates.txt") as calendar_dates_file:
+            reader = csv.DictReader(io.TextIOWrapper(calendar_dates_file, encoding="utf-8-sig"))
+            for row in reader:
+                service_id = row.get("service_id", "")
+                exception_date = _parse_gtfs_date(row.get("date", ""))
+                if not service_id or exception_date not in sampled:
+                    continue
+                exception_type = row.get("exception_type", "").strip()
+                if exception_type == "1":
+                    active.setdefault(service_id, set()).add(exception_date)
+                elif exception_type == "2":
+                    active.get(service_id, set()).discard(exception_date)
+
+    return {service_id: frozenset(days) for service_id, days in active.items() if days}
+
+
+def _day_type_for_weekday(weekday_index: int) -> str:
+    """Map a Monday-first weekday index to a day type."""
+    if weekday_index == 5:
+        return DAY_TYPE_SATURDAY
+    if weekday_index == 6:
+        return DAY_TYPE_SUNDAY
+    return DAY_TYPE_WEEKDAY
+
+
+def _parse_gtfs_date(raw: str) -> date | None:
+    """Parse a GTFS YYYYMMDD date."""
+    cleaned = raw.strip()
+    if len(cleaned) != 8 or not cleaned.isdigit():
+        return None
+    try:
+        return date(int(cleaned[0:4]), int(cleaned[4:6]), int(cleaned[6:8]))
+    except ValueError:
+        return None
+
+
+def _parse_departure_minutes(raw: str) -> int | None:
+    """Parse a GTFS HH:MM:SS time into minutes after midnight.
+
+    Hours can exceed 23 for trips running past midnight; those values are kept
+    as-is so a 00:35 last train stays greater than the 23:50 one before it.
+    """
+    parts = raw.strip().split(":")
+    if len(parts) < 2:
+        return None
+    try:
+        hours = int(parts[0])
+        minutes = int(parts[1])
+    except ValueError:
+        return None
+    if hours < 0 or not 0 <= minutes <= 59:
+        return None
+    return hours * 60 + minutes
 
 
 # ---------------------------------------------------------------------------

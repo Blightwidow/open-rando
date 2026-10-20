@@ -90,6 +90,15 @@ Style JSONs reference `pmtiles:///data/<file>.pmtiles` (site-relative). At runti
 - **Dev**: `PUBLIC_PMTILES_BASE` unset → URLs stay `pmtiles:///data/<file>.pmtiles`, resolved by Astro from `website/public/data/` (predev symlinks from `~/.local/share/open-rando/data/`)
 - **Prod**: `PUBLIC_PMTILES_BASE=https://pub-8869314668be498091e185b1a6fe798d.r2.dev` (set in `website/.env.production`) → URLs become `pmtiles://https://<pub>.r2.dev/<file>.pmtiles`
 
+`website/.env.production` is not in the repository, so a fresh clone or worktree has to create it before deploying:
+
+```bash
+echo 'PUBLIC_PMTILES_BASE=https://pub-8869314668be498091e185b1a6fe798d.r2.dev' > website/.env.production
+```
+
+Without it the styles keep their site-relative `pmtiles:///data/` URLs while `prebuild` excludes `*.pmtiles` from `public/data/`, so every base tile 404s and the map loses its background while trail and POI overlays keep working. `bun run build` now fails with that message instead of shipping such a build; `ALLOW_MISSING_PMTILES_BASE=1` skips the check on purpose.
+
+
 If R2 is unreachable, MapLibre fires `error` but trail GeoJSON overlays still render.
 
 See [VECTOR_TILES.md](VECTOR_TILES.md) for full implementation details.

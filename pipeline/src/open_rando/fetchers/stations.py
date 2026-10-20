@@ -10,6 +10,7 @@ from open_rando.config import (
     OVERPASS_COOLDOWN_SECONDS,
     OVERPASS_TIMEOUT_SECONDS,
 )
+from open_rando.fetchers.osm_extract import LAYER_STATIONS, open_layer
 from open_rando.fetchers.overpass import query_overpass
 from open_rando.models import Station
 
@@ -46,6 +47,16 @@ def _fetch_stations_bbox(
     west = min_lon - BOUNDING_BOX_MARGIN_DEGREES
     north = max_lat + BOUNDING_BOX_MARGIN_DEGREES
     east = max_lon + BOUNDING_BOX_MARGIN_DEGREES
+
+    index = open_layer(LAYER_STATIONS, (south, west, north, east))
+    if index is not None:
+        try:
+            local_data = index.point_elements(LAYER_STATIONS, south, west, north, east)
+        finally:
+            index.close()
+        stations = _parse_station_elements(local_data)
+        logger.info("Found %d named stations in bounding box (local extract)", len(stations))
+        return stations, True
 
     query = f"""
 [out:json][timeout:{OVERPASS_TIMEOUT_SECONDS}];

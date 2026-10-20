@@ -10,6 +10,7 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
 from shapely.prepared import prep
 
+from open_rando.fetchers.osm_extract import LAYER_FOREST, open_layer
 from open_rando.fetchers.overpass import query_overpass
 
 logger = logging.getLogger("open_rando")
@@ -243,6 +244,17 @@ def fetch_forest_areas(
     Returns a list of Shapely Polygons.
     """
     min_lon, min_lat, max_lon, max_lat = bbox
+
+    index = open_layer(LAYER_FOREST, (min_lat, min_lon, max_lat, max_lon))
+    if index is not None:
+        try:
+            data = index.area_elements(LAYER_FOREST, min_lat, min_lon, max_lat, max_lon)
+        finally:
+            index.close()
+        polygons = _parse_forest_elements(data)
+        logger.info("Fetched %d forest polygons in bbox (local extract)", len(polygons))
+        return polygons
+
     query = f"""
 [out:json][timeout:120];
 (
@@ -254,6 +266,14 @@ def fetch_forest_areas(
 out geom;
 """
     data, _cache_hit = query_overpass(query)
+    polygons = _parse_forest_elements(data)
+
+    logger.info("Fetched %d forest polygons in bbox", len(polygons))
+    return polygons
+
+
+def _parse_forest_elements(data: dict[str, Any]) -> list[Polygon]:
+    """Build polygons from Overpass-shaped forest elements."""
     polygons: list[Polygon] = []
 
     for element in data.get("elements", []):
@@ -278,7 +298,6 @@ out geom;
             except Exception:
                 continue
 
-    logger.info("Fetched %d forest polygons in bbox", len(polygons))
     return polygons
 
 

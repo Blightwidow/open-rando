@@ -38,8 +38,11 @@ The pipeline:
 
 ### Prerequisites
 
+On macOS, `brew bundle` at the repo root installs every native tool (uv, osmium-tool, gdal, tippecanoe, rclone, bun). Otherwise:
+
 - Python 3.13+ with [uv](https://docs.astral.sh/uv/)
 - [Bun](https://bun.sh/) (or Node.js)
+- [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (optional: the pipeline falls back to the Overpass API)
 
 ### Run the pipeline
 
