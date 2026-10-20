@@ -53,7 +53,11 @@ from open_rando.fetchers.gtfs import (
     resolve_transit_line_names,
 )
 from open_rando.fetchers.landmarks import fetch_landmarks
-from open_rando.fetchers.overpass import chain_linestrings, fetch_trail
+from open_rando.fetchers.overpass import (
+    chain_linestrings,
+    fetch_trail,
+    order_segments_along_route,
+)
 from open_rando.fetchers.pois import (
     POI_ACCOMMODATION_RADIUS_METERS,
     fetch_accommodation_pois,
@@ -334,7 +338,7 @@ def _fetch_and_fuse_trails(
     if len(all_linestrings) == 1:
         combined = all_linestrings[0]
     else:
-        combined = chain_linestrings(all_linestrings)
+        combined = order_segments_along_route(chain_linestrings(all_linestrings))
 
     primary_metadata["osm_relation_id"] = relation_ids[0]
     return combined, primary_metadata, all_cached

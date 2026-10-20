@@ -35,6 +35,8 @@ BRANCH_MAX_DISTANCE_KM = 1.0
 # A branch can be long, but a segment that carries most of the route is the
 # route, whatever its ends touch.
 BRANCH_MAX_FRACTION = 0.5
+# ~0.1m: enough precision to order endpoints, coarse enough to be stable.
+ENDPOINT_COMPARISON_DECIMALS = 6
 # A fragment this far from the main line belongs to another trail entirely.
 SPURIOUS_SEGMENT_MAX_DISTANCE_KM = 25.0
 EARTH_RADIUS_METERS = 6_371_000
@@ -223,7 +225,7 @@ def _build_trail_from_elements(
         if not way_coords_list:
             raise RuntimeError(f"No ways found for relation {relation_id}")
         segments = _chain_ways(way_coords_list)
-        trail = _drop_spurious_segments(chain_linestrings(segments))
+        trail = order_segments_along_route(_drop_spurious_segments(chain_linestrings(segments)))
         if isinstance(trail, MultiLineString):
             total_points = sum(len(geom.coords) for geom in trail.geoms)
             logger.info("Trail has %d segments, %d points total", len(trail.geoms), total_points)
@@ -257,7 +259,9 @@ def _build_trail_from_elements(
     if not all_linestrings:
         raise RuntimeError(f"No geometry found for relation {relation_id}")
 
-    combined = _drop_spurious_segments(chain_linestrings(all_linestrings))
+    combined = order_segments_along_route(
+        _drop_spurious_segments(chain_linestrings(all_linestrings))
+    )
     if isinstance(combined, MultiLineString):
         total_points = sum(len(geom.coords) for geom in combined.geoms)
         logger.info("Trail has %d segments, %d points total", len(combined.geoms), total_points)
@@ -414,6 +418,96 @@ def _segment_length_km(segment: LineString) -> float:
         )
         total_meters += 2 * EARTH_RADIUS_METERS * math.asin(math.sqrt(a))
     return total_meters / 1000.0
+
+
+def order_segments_along_route(
+    geom: LineString | MultiLineString,
+) -> LineString | MultiLineString:
+    """Order a trail's segments so they follow the route on the ground.
+
+    Segments come out of `chain_linestrings` in OSM member order, which says
+    nothing about where the pieces sit: GR 70 is stored as its middle, then its
+    southern end, then its northern extension. Anything measured between
+    consecutive segments — the gaps, the elevation profile, distances to
+    stations — then compares pieces that are not neighbours.
+
+    Walks a greedy chain from the most isolated endpoint, reversing segments as
+    needed, so consecutive segments are the closest ones available.
+    """
+    if isinstance(geom, LineString):
+        return geom
+
+    segments = list(geom.geoms)
+    if len(segments) < 2:
+        return segments[0] if segments else geom
+
+    remaining = list(segments)
+    start_index, start_reversed = _terminal_segment(remaining)
+    current = remaining.pop(start_index)
+    ordered = [_reverse_line(current) if start_reversed else current]
+
+    while remaining:
+        tail = ordered[-1].coords[-1]
+        best_index = 0
+        best_reversed = False
+        best_distance = float("inf")
+
+        for index, segment in enumerate(remaining):
+            for is_reversed in (False, True):
+                head = segment.coords[-1] if is_reversed else segment.coords[0]
+                distance = _point_distance(tail, head)
+                if distance < best_distance:
+                    best_distance = distance
+                    best_index = index
+                    best_reversed = is_reversed
+
+        segment = remaining.pop(best_index)
+        ordered.append(_reverse_line(segment) if best_reversed else segment)
+
+    return MultiLineString(ordered)
+
+
+def _terminal_segment(segments: list[LineString]) -> tuple[int, bool]:
+    """Index of the segment holding the most isolated endpoint, and whether to
+    reverse it so that endpoint comes first — the route's likely start.
+
+    Both ends of a trail are equally valid starts, so ties break on position:
+    the same relation must always yield the same geometry, or route ids, station
+    distances and elevation profiles would shift between runs.
+    """
+    best_index = 0
+    best_reversed = False
+    best_key: tuple[float, float, float] | None = None
+
+    for index, segment in enumerate(segments):
+        for is_last, endpoint in ((False, segment.coords[0]), (True, segment.coords[-1])):
+            isolation = min(
+                min(
+                    _point_distance(endpoint, other.coords[0]),
+                    _point_distance(endpoint, other.coords[-1]),
+                )
+                for other_index, other in enumerate(segments)
+                if other_index != index
+            )
+            # Most isolated first, then westernmost, then southernmost.
+            # Rounded to ~0.1m so floating-point noise cannot flip the route's
+            # direction between runs: the ?from=/?to= links the site hands out
+            # are distances measured along it.
+            key = (
+                -round(isolation, ENDPOINT_COMPARISON_DECIMALS),
+                round(endpoint[0], ENDPOINT_COMPARISON_DECIMALS),
+                round(endpoint[1], ENDPOINT_COMPARISON_DECIMALS),
+            )
+            if best_key is None or key < best_key:
+                best_key = key
+                best_index = index
+                best_reversed = is_last
+
+    return best_index, best_reversed
+
+
+def _reverse_line(line: LineString) -> LineString:
+    return LineString(list(line.coords)[::-1])
 
 
 def _drop_spurious_segments(
