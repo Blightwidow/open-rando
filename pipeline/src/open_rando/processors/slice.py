@@ -306,15 +306,16 @@ def _compute_cumulative_distances(
     trail: LineString | MultiLineString,
     matched_stations: list[MatchedStation],
 ) -> list[float]:
-    """Compute cumulative haversine distances along the trail for each station."""
+    """Cumulative walked distance along the trail at each matched station."""
     cumulative_km: list[float] = [0.0]
 
     for index in range(1, len(matched_stations)):
         previous_fraction = matched_stations[index - 1][1]
         current_fraction = matched_stations[index][1]
-        segment = _extract_substring(trail, previous_fraction, current_fraction)
-        segment_distance = compute_segment_distance_km(segment)
-        cumulative_km.append(cumulative_km[-1] + segment_distance)
+        # Measured per piece: a step spanning two mapped segments must not be
+        # charged the straight jump across the unmapped stretch between them.
+        pieces = extract_substring_segments(trail, previous_fraction, current_fraction)
+        cumulative_km.append(cumulative_km[-1] + compute_segments_distance_km(pieces))
 
     return cumulative_km
 

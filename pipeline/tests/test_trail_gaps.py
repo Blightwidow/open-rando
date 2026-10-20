@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from shapely.geometry import LineString, MultiLineString
 
+from open_rando.models import Station
 from open_rando.processors.elevation import compute_trail_elevation_profile
 from open_rando.processors.slice import (
+    _compute_cumulative_distances,
     compute_segment_distance_km,
     compute_segments_distance_km,
     compute_trail_gaps_km,
@@ -126,3 +128,20 @@ def pytest_approx(value: float, tolerance: float) -> object:
     import pytest
 
     return pytest.approx(value, abs=tolerance)
+
+
+class TestCumulativeStationDistances:
+    def test_a_step_across_a_gap_excludes_the_jump(self) -> None:
+        """Station distances feed the step filters, so they must be walked km."""
+        station_before = Station(name="Before", code="A", lat=45.0, lon=0.05)
+        station_after = Station(name="After", code="B", lat=45.0, lon=1.05)
+        matched = [(station_before, 0.25, None), (station_after, 0.75, None)]
+
+        cumulative_km = _compute_cumulative_distances(GAPPED_TRAIL, matched)
+
+        walked_km = compute_segments_distance_km(
+            extract_substring_segments(GAPPED_TRAIL, 0.25, 0.75)
+        )
+        assert cumulative_km[0] == 0.0
+        assert cumulative_km[1] == walked_km
+        assert cumulative_km[1] < compute_trail_gaps_km(GAPPED_TRAIL)
