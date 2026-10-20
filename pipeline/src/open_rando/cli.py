@@ -16,6 +16,7 @@ from open_rando.config import (
     CATALOG_PATH,
     ELEVATION_DIRECTORY,
     ELEVATION_SAMPLE_INTERVAL_METERS,
+    FAILURE_LOG_PATH,
     GEOJSON_DIRECTORY,
     GPX_DIRECTORY,
     MAX_BUS_STOP_DISTANCE_METERS,
@@ -30,6 +31,11 @@ from open_rando.config import (
 )
 from open_rando.exporters.catalog import export_route_catalog
 from open_rando.exporters.elevation import export_route_elevation
+from open_rando.exporters.failures import (
+    build_failure_entry,
+    export_failure_log,
+    load_failure_log,
+)
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
 from open_rando.exporters.image_generator import find_image_on_disk
@@ -110,6 +116,12 @@ def main() -> None:
         help="Clear the catalog before processing. "
         "Without this flag, existing routes are preserved.",
     )
+    pipeline_parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Only process routes that failed in a previous run "
+        "(listed in data/failed-routes.json).",
+    )
     pipeline_parser.set_defaults(func=run_pipeline)
 
     add_images_subparser(subparsers)
@@ -127,6 +139,16 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
         if not discovered:
             logger.error("Route '%s' not found in discovered routes", arguments.route)
             return
+
+    failure_log_path = str(Path(FAILURE_LOG_PATH).expanduser())
+    failure_log = load_failure_log(failure_log_path)
+
+    if arguments.retry_failed:
+        discovered = [route for route in discovered if route["ref"] in failure_log]
+        if not discovered:
+            logger.info("No failed routes to retry (%s)", failure_log_path)
+            return
+        logger.info("Retrying %d previously failed route(s)", len(discovered))
 
     if arguments.dry_run:
         logger.info("Discovered %d routes:", len(discovered))
@@ -230,10 +252,20 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
                 skipped_routes.append(route_ref)
             successful_routes += 1
             previous_route_used_api = not all_cached
-        except Exception:
+            if failure_log.pop(route_ref, None) is not None:
+                export_failure_log(failure_log, failure_log_path)
+        except Exception as error:
             logger.exception("Failed to process %s, skipping", route_ref)
             failed_routes.append(route_ref)
             previous_route_used_api = True
+            # Written after every failure so an interrupted run still keeps it.
+            failure_log[route_ref] = build_failure_entry(
+                route_ref=route_ref,
+                relation_ids=route_relation_ids,
+                error=error,
+                previous_entry=failure_log.get(route_ref),
+            )
+            export_failure_log(failure_log, failure_log_path)
 
     # Merge: replace updated routes in existing catalog, keep the rest
     processed_relation_ids = {route.osm_relation_id for route in all_routes}
@@ -268,6 +300,12 @@ def run_pipeline(arguments: argparse.Namespace) -> None:
     logger.info("Catalog written to %s", catalog_path)
     log_run_report(report)
     logger.info("Run report written to %s", report_path)
+    if failure_log:
+        logger.warning(
+            "%d route(s) in failure log %s — rerun with --retry-failed",
+            len(failure_log),
+            failure_log_path,
+        )
 
 
 def _fetch_and_fuse_trails(

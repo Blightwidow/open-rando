@@ -21,6 +21,9 @@ GPX_DIRECTORY = "~/.local/share/open-rando/data/gpx"
 GEOJSON_DIRECTORY = "~/.local/share/open-rando/data/geojson"
 CATALOG_PATH = "~/.local/share/open-rando/data/catalog.json"
 RUN_REPORT_PATH = "~/.local/share/open-rando/data/run-report.json"
+# Routes whose last run raised (timeouts, rate limits), so --retry-failed
+# reruns only those instead of the whole catalog.
+FAILURE_LOG_PATH = "~/.local/share/open-rando/data/failed-routes.json"
 
 WALKING_SPEED_KMH = 4.5
 
