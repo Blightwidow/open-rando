@@ -17,8 +17,6 @@ MAX_STATION_DISTANCE_METERS = 5000
 MAX_STATION_BBOX_DEGREES = 3.0
 
 OUTPUT_DIRECTORY = "~/.local/share/open-rando/data"
-GPX_DIRECTORY = "~/.local/share/open-rando/data/gpx"
-GEOJSON_DIRECTORY = "~/.local/share/open-rando/data/geojson"
 TRACKS_DIRECTORY = "~/.local/share/open-rando/data/tracks"
 LINKS_DIRECTORY = "~/.local/share/open-rando/data/links"
 POIS_DIRECTORY = "~/.local/share/open-rando/data/pois"
@@ -52,7 +50,6 @@ TRAIN_GTFS_MATCH_RADIUS_METERS = 500
 SRTM_CACHE_DIRECTORY = "~/.cache/open-rando/srtm"
 SRTM_BASE_URL = "https://elevation-tiles-prod.s3.amazonaws.com/skadi"
 ELEVATION_SAMPLE_INTERVAL_METERS = 50
-ELEVATION_DIRECTORY = "~/.local/share/open-rando/data/elevation"
 
 SNCF_STATIONS_URL = "https://ressources.data.sncf.com/api/explore/v2.1/catalog/datasets/gares-de-voyageurs/exports/json?limit=-1"
 SNCF_CACHE_DIRECTORY = "~/.cache/open-rando/sncf"
