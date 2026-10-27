@@ -3,17 +3,17 @@ import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
 
 interface Props {
-  routeId: string;
+  elevationPath: string;
   locale?: Locale;
 }
 
-const { routeId, locale = 'fr' } = Astro.props;
+const { elevationPath, locale = 'fr' } = Astro.props;
 ---
 
 <div
   id="elevation-chart"
   class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5"
-  data-route-id={routeId}
+  data-elevation-path={elevationPath}
 >
   <h2 class="text-lg font-semibold mb-3">{t(locale, 'detail.elevationProfile')}</h2>
   <div id="elevation-chart-container" class="relative" style="height: 240px;">
@@ -39,13 +39,13 @@ const { routeId, locale = 'fr' } = Astro.props;
   const chartElement = document.getElementById('elevation-chart')!;
   const container = document.getElementById('elevation-chart-container')!;
   const loading = document.getElementById('elevation-loading')!;
-  const routeId = chartElement.dataset.routeId!;
+  const elevationPath = chartElement.dataset.elevationPath!;
 
   let fullProfile: RouteElevationProfile | null = null;
 
   async function loadAndRender() {
     try {
-      const response = await fetch(`/data/elevation/${routeId}.json`);
+      const response = await fetch(`/data/${elevationPath}`);
       if (!response.ok) {
         chartElement.style.display = 'none';
         return;

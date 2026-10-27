@@ -2,7 +2,7 @@
 import Base from '../../../../layouts/Base.astro';
 import ElevationChart from '../../../../components/ElevationChart.astro';
 import SearchableSelect from '../../../../components/SearchableSelect.astro';
-import { getAllRoutes, getRouteBySlug, getTrainStations } from '../../../../lib/catalog';
+import { getAllRoutes, getRoutePois, getRouteBySlug, getTrainStations } from '../../../../lib/catalog';
 import type { Route } from '../../../../lib/catalog';
 import { t } from '../../../../lib/i18n';
 
@@ -17,8 +17,8 @@ export function getStaticPaths() {
 
 const { slug } = Astro.params;
 const route = getRouteBySlug(slug!) as Route;
-const pois = route.pois ?? [];
-const trainStations = getTrainStations(route);
+const pois = getRoutePois(route);
+const trainStations = getTrainStations(pois);
 const hotelCount = pois.filter((poi) => poi.poi_type === 'hotel').length;
 const campingCount = pois.filter((poi) => poi.poi_type === 'camping').length;
 const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
@@ -101,7 +101,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
             .sort((stationA, stationB) => stationA.distance_km! - stationB.distance_km!)
             .map((station) => ({ name: station.name, distance_km: station.distance_km }))
         )}
-        data-route-id={route.id}
+        data-elevation-path={route.elevation_path}
         data-route-ref={route.path_ref}
       >
         <h2 class="text-lg font-semibold">{t(locale, 'detail.sectionTitle')}</h2>
@@ -157,13 +157,13 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
       </div>
     )}
 
-    <ElevationChart routeId={route.id} locale={locale} />
+    <ElevationChart elevationPath={route.elevation_path} locale={locale} />
 
     <div
       id="detail-map"
       class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 overflow-hidden"
       style="height: 450px;"
-      data-route={JSON.stringify(route)}
+      data-route={JSON.stringify({ ...route, pois })}
       data-rail-labels={JSON.stringify({
         weekday: t(locale, 'rail.weekday'),
         saturday: t(locale, 'rail.saturday'),
@@ -524,7 +524,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
   const selectorElement = document.getElementById('section-selector');
   if (selectorElement) {
     const stations: { name: string; distance_km: number }[] = JSON.parse(selectorElement.dataset.stations!);
-    const routeId = selectorElement.dataset.routeId!;
+    const elevationPath = selectorElement.dataset.elevationPath!;
     const routeRef = selectorElement.dataset.routeRef!;
 
     const fromSelect = document.getElementById('section-from') as HTMLSelectElement;
@@ -560,7 +560,7 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
     async function loadElevationProfile(): Promise<RouteElevationProfile | null> {
       if (elevationProfile) return elevationProfile;
       try {
-        const response = await fetch(`/data/elevation/${routeId}.json`);
+        const response = await fetch(`/data/${elevationPath}`);
         if (!response.ok) return null;
         elevationProfile = await response.json();
         return elevationProfile;

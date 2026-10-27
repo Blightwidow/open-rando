@@ -1,19 +1,20 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export { formatDuration } from './format';
 
-import type { RailService } from './rail';
+import { joinRoutePois, type PoiRecord, type PoiLink, type RoutePoi } from './route-pois';
+import { squareFileName, squaresForBoundingBox, type PoiGridDefinition } from './poi-grid';
 
-export interface POI {
-  name: string;
-  lat: number;
-  lon: number;
-  poi_type: 'hotel' | 'camping' | 'train_station' | 'bus_stop';
-  transit_lines?: string[];
-  distance_km?: number;
-  /** Train stations only: departures read from GTFS feeds. */
-  rail_service?: RailService | null;
+export type { RoutePoi } from './route-pois';
+export { getTrainStations } from './route-pois';
+
+export interface PoiCounts {
+  train_station: number;
+  bus_stop: number;
+  hotel: number;
+  camping: number;
+  train_station_with_rail_service: number;
 }
 
 export interface Route {
@@ -23,7 +24,6 @@ export interface Route {
   path_name: string;
   description: string;
   osm_relation_id: number;
-  pois: POI[];
   distance_km: number;
   elevation_gain_m: number;
   elevation_loss_m: number;
@@ -41,6 +41,9 @@ export interface Route {
   trail_gap_km?: number;
   geojson_path: string;
   gpx_path: string;
+  elevation_path: string;
+  /** Linked POIs per kind. The POIs themselves come from `getRoutePois`. */
+  poi_counts: PoiCounts;
   last_updated: string;
   image_path?: string | null;
 }
@@ -72,6 +75,45 @@ export function getRouteBySlug(slug: string): Route | undefined {
   return getAllRoutes().find((route) => route.slug === slug);
 }
 
-export function getTrainStations(route: Route): POI[] {
-  return (route.pois ?? []).filter((poi) => poi.poi_type === 'train_station');
+const DATA_DIRECTORY = join(process.cwd(), 'public', 'data');
+
+// Must match CANDIDATE_BUFFER_DEGREES in pipeline/src/open_rando/processors/link.py:
+// the squares read here are the squares the `link` stage linked from.
+const LINK_MARGIN_DEGREES = 0.07;
+
+interface PoiIndex {
+  grid: PoiGridDefinition;
+}
+
+const poiSquareCache = new Map<string, PoiRecord[]>();
+
+function readDataFile<T>(relativePath: string): T {
+  return JSON.parse(readFileSync(join(DATA_DIRECTORY, relativePath), 'utf-8')) as T;
+}
+
+function readPoiSquare(squareName: string): PoiRecord[] {
+  let pois = poiSquareCache.get(squareName);
+  if (pois === undefined) {
+    // A square without a file is built but empty (the index lists empty squares too).
+    const squarePath = `pois/${squareName}`;
+    pois = existsSync(join(DATA_DIRECTORY, squarePath))
+      ? readDataFile<{ pois: PoiRecord[] }>(squarePath).pois
+      : [];
+    poiSquareCache.set(squareName, pois);
+  }
+  return pois;
+}
+
+/** POIs of one route: its links joined with the POI grid, at build time. */
+export function getRoutePois(route: Route): RoutePoi[] {
+  const { links } = readDataFile<{ links: PoiLink[] }>(`links/${route.id}.json`);
+  const { grid } = readDataFile<PoiIndex>('pois/index.json');
+
+  const poisById = new Map<string, PoiRecord>();
+  for (const square of squaresForBoundingBox(grid, route.bbox, LINK_MARGIN_DEGREES)) {
+    for (const poi of readPoiSquare(squareFileName(square))) {
+      poisById.set(poi.id, poi);
+    }
+  }
+  return joinRoutePois(links, poisById);
 }

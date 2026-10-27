@@ -1,6 +1,5 @@
 ---
 import type { Route } from '../lib/catalog';
-import { getTrainStations } from '../lib/catalog';
 import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
 
@@ -11,7 +10,6 @@ interface Props {
 
 const { route, locale = 'fr' } = Astro.props;
 const routeUrl = locale === 'en' ? `/en/app/route/${route.slug}` : `/app/route/${route.slug}`;
-const trainStations = getTrainStations(route);
 
 const terrainLabel: Record<string, string> = {
   coastal: t(locale, 'terrain.coastal'),
@@ -69,7 +67,7 @@ const difficulty = route.difficulty ?? 'unknown';
     <span>{route.distance_km} km</span>
     {route.elevation_gain_m > 0 && <span>+{route.elevation_gain_m}m</span>}
     <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full">
-      {trainStations.length} {locale === 'fr' ? 'gares' : 'stations'}
+      {route.poi_counts.train_station} {locale === 'fr' ? 'gares' : 'stations'}
     </span>
     {(route.terrain || []).map((tag) => (
       <span class:list={["text-xs px-2 py-0.5 rounded-full", terrainColor[tag] || 'bg-stone-100 text-stone-600']}>
