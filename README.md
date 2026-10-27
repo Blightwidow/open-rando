@@ -42,22 +42,25 @@ On macOS, `brew bundle` at the repo root installs every native tool (uv, osmium-
 
 - Python 3.13+ with [uv](https://docs.astral.sh/uv/)
 - [Bun](https://bun.sh/) (or Node.js)
-- [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (optional: the pipeline falls back to the Overpass API)
+- [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (required by the `pois` stage; tracks fall back to the Overpass API)
 
 ### Run the pipeline
 
 ```bash
 cd pipeline
 uv sync --all-extras
-uv run python -m open_rando
+uv run python -m open_rando pipeline
 ```
+
+`pipeline` chains five stages: `tracks`, `gtfs`, `pois`, `link`, `catalog`. The POI stage reads the local OSM extract index, so build it first (`make -f Makefile.osm`). Each stage also runs alone, see [docs/SPLIT_PIPELINE.md](docs/SPLIT_PIPELINE.md).
 
 Options:
 
 ```bash
-uv run python -m open_rando --route "GR 13"   # single route
-uv run python -m open_rando --dry-run          # list routes without processing
-uv run python -m open_rando --reset            # clear catalog before processing
+uv run python -m open_rando pipeline --route "GR 13"   # single route
+uv run python -m open_rando pipeline --dry-run          # list routes without processing
+uv run python -m open_rando pipeline --retry-failed     # only routes that failed before
+uv run python -m open_rando pipeline --skip-gtfs        # reuse the GTFS stop index
 ```
 
 Pipeline output goes to `~/.local/share/open-rando/data/`, cache to `~/.cache/open-rando/`.

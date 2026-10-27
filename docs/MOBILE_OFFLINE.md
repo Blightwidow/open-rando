@@ -32,7 +32,10 @@ The current **hybrid base + grid** layout hoists low zooms into a single shared 
 |------|------------|------------|
 | `/data/grid.json` | Global manifest: bbox, grid dims, **base URLs + sizes**, per-square URLs + sizes, version, snapshot. | Yes. Reuse until `source_snapshot` changes. ~73 KB. |
 | `/data/routes/{routeId}/pmtiles.json` | Per-route manifest: route id, bbox, snapshot, list of grid `[col, row]` the route intersects. | Yes. Stable until snapshot bumps. ~300 B. |
-| `/data/catalog.json` | Existing route catalog (already consumed). | — |
+| `/data/catalog.json` | Route catalog: tracks only, no POIs. Each route carries `poi_counts`, `geojson_path`, `gpx_path`, `elevation_path` (all under `tracks/{routeId}/`). Schema: `catalog.schema.json`. | — |
+| `/data/links/{routeId}.json` | POIs belonging to a track: `poi_id`, `kind`, `distance_to_trail_m`, `distance_km` (position along the trail, train stations only), `junction`. Schema: `links.schema.json`. | Yes. Changes with `link` runs. |
+| `/data/pois/index.json` | POI grid definition (same 12x8 grid and bbox as the map squares) and every built square with its count. | Yes. |
+| `/data/pois/{col}_{row}.json` | Every POI inside one grid square, with stable OSM ids, GTFS lines and train departures. Independent of any track: load the squares intersecting an imported GPX and link them with the rules in `pipeline/src/open_rando/processors/link.py` (train stations 5 km, bus stops 2 km, hotels and campings 3 km). Schema: `poi-square.schema.json`. | Yes. ~0.2-3 MB per square. |
 
 ### R2 endpoints (`https://pub-8869314668be498091e185b1a6fe798d.r2.dev`)
 

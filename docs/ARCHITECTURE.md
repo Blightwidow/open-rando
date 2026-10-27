@@ -34,7 +34,7 @@ BUILD TIME                                    RUNTIME (static files)
 +-----------------------------------------+
 ```
 
-Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
+Build flow: `cd pipeline && uv run python -m open_rando pipeline` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
 
 **CI/CD**: GitHub Actions deploys the website to GitHub Pages on push to `main`. See [Deployment](DEPLOYMENT.md) for the full workflow details.
 
@@ -42,21 +42,20 @@ Build flow: `cd pipeline && uv run python -m open_rando` produces data artifacts
 
 ## Pipeline Algorithm
 
-1. **Load** curated route catalog from `pipeline/routes.yaml` (GR trails with relation IDs, descriptions, and metadata)
-2. **For each route** (with `--route` filter support):
-   1. **Fetch** trail geometry from Overpass API (resolves super-relations recursively, fuses multiple relation IDs into a single LineString or MultiLineString)
-   2. **Fetch** train and bus stations near the trail bounding box (OSM data)
-   3. **Filter** train stations against SNCF reference data (UIC codes) to keep only real passenger stations
-   4. **Match** train stations to trail via Shapely linear referencing, keep if < 5km from trail. Skip route if fewer than 2 matched train stations.
-   5. **Match** bus stops to trail (< 2km threshold)
-   6. **Enrich** with GTFS data from transport.data.gouv.fr: bus stops get transit line names, train stations get departures (first train, last train, number of trains per kind of day — weekday / Saturday / Sunday). Feeds are downloaded and parsed once per resource, then cached per reference month.
-   7. **Fetch** accommodation POIs (hotels, campings) within 2km of trail via Overpass
-   8. **Elevation** profiling via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold. A trail mapped in several segments is profiled segment by segment and stitched, so the straight jump across an unmapped gap costs no distance, climb or time; the gaps are reported as `trail_gap_km` and their positions as `segment_boundaries_km`
-   9. **Geography**: resolve region/departement from SNCF INSEE codes, classify terrain (coastal, mountain, hills, forest, plains based on elevation, forest ratio, departement), classify difficulty (bands of ascent per km: <15 easy, <30 moderate, <50 difficult, else very difficult, with routes under 300m of total ascent always easy)
-   10. **Export** GPX files with `<ele>` tags and POI waypoints, GeoJSON, and elevation profiles (per-route JSON)
-3. **Merge** into `catalog.json`: new routes replace existing entries by relation ID, unprocessed routes from previous runs are preserved (use `--reset` to start fresh)
-4. **Validate** the merged catalog against `src/open_rando/data/catalog.schema.json`. The website and the mobile client both read `catalog.json`, so a shape change fails the run instead of shipping: nothing is written when validation fails.
-5. **Report** what the run changed to `data/run-report.json` and to the logs: routes added / changed / removed, per-route deltas (distance, stations, POIs, elevation gain), rail service coverage, failed and skipped routes, and regression warnings (route shrunk by more than 10%, train stations lost, stations that lost their train departures, elevation gain down by more than 20%).
+The pipeline is five stages. Each one reads files the previous stage wrote and can run alone; `pipeline` chains them. See [Split pipeline](SPLIT_PIPELINE.md) for the file contracts.
+
+1. **`tracks`**: for each curated route in `pipeline/routes.yaml` (with `--route`, `--retry-failed`):
+   1. **Fetch** trail geometry (local OSM extract, Overpass as fallback; resolves super-relations recursively, fuses multiple relation IDs into a single LineString or MultiLineString)
+   2. **Elevation** profiling via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold. A trail mapped in several segments is profiled segment by segment and stitched, so the straight jump across an unmapped gap costs no distance, climb or time; the gaps are reported as `trail_gap_km` and their positions as `segment_boundaries_km`
+   3. **Geography**: département from the SNCF station nearest to the trail start, region from the département, terrain (coastal, mountain, hills, forest, plains from elevation, forest ratio, département) and difficulty (bands of ascent per km: <15 easy, <30 moderate, <50 difficult, else very difficult, with routes under 300m of total ascent always easy)
+   4. **Landmarks** near the trail, for the AI hero image prompt
+   5. **Export** `tracks/<id>/{track.json, trail.geojson, trail.gpx, elevation.json}`. A track knows nothing about POIs.
+2. **`gtfs`**: download every national GTFS feed once (feed list from one transport.data.gouv.fr catalog call). One pass per feed fills the local stop index (`~/.cache/open-rando/gtfs/stops-index.sqlite`) and the per-feed departures cache (cached per ISO week).
+3. **`pois`**: build the France-wide POI grid, 12x8 squares (same grid as the mobile tiles), from the local OSM extract index. Train stations are filtered against SNCF reference data (UIC codes) and get departures per kind of day (weekday / Saturday / Sunday); bus stops get GTFS line names (OSM-tagged lines when no GTFS stop is within 150 m); hotels and campings are kept as is. POIs carry stable OSM ids (`node/123`).
+4. **`link`**: join the POI grid to each track, writing `links/<id>.json`. Train stations within 5 km (duplicate and never-closest filtering, then OSRM walking-distance junction refinement), bus stops within 2 km, hotels and campings within 3 km. Train stations get their position along the trail.
+5. **`catalog`**: merge every `track.json` with its link counts into `catalog.json`, keeping tracks with at least 2 linked train stations. The catalog is rebuilt from the tracks on disk, so partial runs never drop other tracks. It is validated against `src/open_rando/data/catalog.schema.json` (nothing is written when validation fails), then `data/run-report.json` records what changed: routes added / changed / removed, per-route deltas (distance, stations, POIs, elevation gain), rail service coverage, failed and skipped routes, and regression warnings (route shrunk by more than 10%, train stations lost, stations that lost their train departures, elevation gain down by more than 20%).
+
+A companion app importing a custom GPX loads the POI squares that intersect it and applies the same link rules (see `processors/link.py`).
 
 ---
 
@@ -95,25 +94,33 @@ class Station:
 
 @dataclass
 class PointOfInterest:
-    """A point of interest near a trail — displayed on the map only."""
+    """A POI, independent of any track. Stored in the POI grid."""
+    osm_id: str               # stable "node/123", "way/456"
     name: str
     lat: float
     lon: float
     poi_type: str             # "hotel", "camping", "train_station", "bus_stop"
     url: str | None           # website URL (accommodation) or SNCF timetable link (train)
     transit_lines: list[str]  # GTFS route names for bus stops
-    distance_km: float | None # distance along trail (train stations only)
     rail_service: RailService | None  # departures (train stations only)
 
 @dataclass
-class Route:
+class PoiLink:
+    """How one POI relates to one track. Stored in links/<id>.json."""
+    poi_id: str
+    kind: str
+    distance_to_trail_meters: float
+    distance_km: float | None            # position along the trail (train stations only)
+    junction: tuple[float, float] | None # (lon, lat) where the walk meets the trail
+
+@dataclass
+class Track:
     identifier: str           # deterministic hash of path_ref + relation_id
     slug: str                 # "gr-13"
     path_ref: str             # "GR 13"
     path_name: str
     description: str          # flavor text from routes.yaml
     osm_relation_id: int
-    pois: list[PointOfInterest]
     distance_km: float
     elevation_gain_meters: int
     elevation_loss_meters: int
@@ -129,7 +136,9 @@ class Route:
     trail_gap_km: float      # straight-line length of those gaps, not walked
     geojson_path: str
     gpx_path: str
+    elevation_path: str
     last_updated: str
+    landmarks: list[Landmark]
 ```
 
 ---
