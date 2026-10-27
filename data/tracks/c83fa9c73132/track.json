@@ -1,0 +1,118 @@
+{
+  "id": "c83fa9c73132",
+  "slug": "gr-2",
+  "path_ref": "GR 2",
+  "path_name": "Au fil de la Seine",
+  "description": "858 km le long de la Seine, de sa source à Saint-Seine-l'Abbaye jusqu'au Havre, entre abbayes, châteaux et falaises normandes.",
+  "osm_relation_id": 1959668,
+  "distance_km": 873.3,
+  "elevation_gain_m": 15077,
+  "elevation_loss_m": 15328,
+  "max_elevation_m": 575,
+  "min_elevation_m": 0,
+  "bbox": [
+    0.1244311,
+    47.3239568,
+    5.0315686,
+    49.5287562
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "21",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/c83fa9c73132/trail.geojson",
+  "gpx_path": "tracks/c83fa9c73132/trail.gpx",
+  "elevation_path": "tracks/c83fa9c73132/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Castel",
+      "kind": "castle",
+      "lat": 47.3106069,
+      "lon": 5.0366305,
+      "elevation_m": null
+    },
+    {
+      "name": "Palais abbatial",
+      "kind": "castle",
+      "lat": 47.4395128,
+      "lon": 4.7894906,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Duesme",
+      "kind": "castle",
+      "lat": 47.6423997,
+      "lon": 4.6850667999999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Quemigny-sur-Seine",
+      "kind": "castle",
+      "lat": 47.6625985,
+      "lon": 4.6690645,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tavannes",
+      "kind": "castle",
+      "lat": 47.7503903,
+      "lon": 4.58214785,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des ducs de Bourgogne (ruines)",
+      "kind": "castle",
+      "lat": 47.85838905,
+      "lon": 4.5774339,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Ducs de Bourgogne (ancien)",
+      "kind": "castle",
+      "lat": 47.8588363,
+      "lon": 4.5773882,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mussy",
+      "kind": "castle",
+      "lat": 47.9798155,
+      "lon": 4.4951135,
+      "elevation_m": null
+    },
+    {
+      "name": "Chateau des tertres",
+      "kind": "castle",
+      "lat": 47.9821735,
+      "lon": 4.4986135,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Polisy",
+      "kind": "castle",
+      "lat": 48.063167899999996,
+      "lon": 4.3820118,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Polisy",
+      "kind": "castle",
+      "lat": 48.0633879,
+      "lon": 4.3805492,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Cordelière",
+      "kind": "castle",
+      "lat": 48.069812999999996,
+      "lon": 4.163544,
+      "elevation_m": null
+    }
+  ]
+}

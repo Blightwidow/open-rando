@@ -1,0 +1,497 @@
+{
+  "generated_at": "2026-10-27T12:45:02.503703+00:00",
+  "source": "OpenStreetMap, SNCF open data, transport.data.gouv.fr GTFS",
+  "license": "ODbL",
+  "grid": {
+    "bbox": [
+      -5.5,
+      41.0,
+      10.0,
+      51.5
+    ],
+    "cols": 12,
+    "rows": 8
+  },
+  "squares": [
+    {
+      "col": 0,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 3,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 4,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 5,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 6,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 7,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 8,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 9,
+      "row": 0,
+      "count": 0
+    },
+    {
+      "col": 10,
+      "row": 0,
+      "count": 106
+    },
+    {
+      "col": 11,
+      "row": 0,
+      "count": 785
+    },
+    {
+      "col": 0,
+      "row": 1,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 1,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 1,
+      "count": 413
+    },
+    {
+      "col": 3,
+      "row": 1,
+      "count": 3813
+    },
+    {
+      "col": 4,
+      "row": 1,
+      "count": 2097
+    },
+    {
+      "col": 5,
+      "row": 1,
+      "count": 5571
+    },
+    {
+      "col": 6,
+      "row": 1,
+      "count": 5781
+    },
+    {
+      "col": 7,
+      "row": 1,
+      "count": 2002
+    },
+    {
+      "col": 8,
+      "row": 1,
+      "count": 15434
+    },
+    {
+      "col": 9,
+      "row": 1,
+      "count": 6475
+    },
+    {
+      "col": 10,
+      "row": 1,
+      "count": 15
+    },
+    {
+      "col": 11,
+      "row": 1,
+      "count": 586
+    },
+    {
+      "col": 0,
+      "row": 2,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 2,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 2,
+      "count": 0
+    },
+    {
+      "col": 3,
+      "row": 2,
+      "count": 6310
+    },
+    {
+      "col": 4,
+      "row": 2,
+      "count": 2077
+    },
+    {
+      "col": 5,
+      "row": 2,
+      "count": 4607
+    },
+    {
+      "col": 6,
+      "row": 2,
+      "count": 2076
+    },
+    {
+      "col": 7,
+      "row": 2,
+      "count": 10150
+    },
+    {
+      "col": 8,
+      "row": 2,
+      "count": 12052
+    },
+    {
+      "col": 9,
+      "row": 2,
+      "count": 9807
+    },
+    {
+      "col": 10,
+      "row": 2,
+      "count": 772
+    },
+    {
+      "col": 11,
+      "row": 2,
+      "count": 0
+    },
+    {
+      "col": 0,
+      "row": 3,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 3,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 3,
+      "count": 0
+    },
+    {
+      "col": 3,
+      "row": 3,
+      "count": 4004
+    },
+    {
+      "col": 4,
+      "row": 3,
+      "count": 3587
+    },
+    {
+      "col": 5,
+      "row": 3,
+      "count": 3628
+    },
+    {
+      "col": 6,
+      "row": 3,
+      "count": 3210
+    },
+    {
+      "col": 7,
+      "row": 3,
+      "count": 9166
+    },
+    {
+      "col": 8,
+      "row": 3,
+      "count": 18057
+    },
+    {
+      "col": 9,
+      "row": 3,
+      "count": 5889
+    },
+    {
+      "col": 10,
+      "row": 3,
+      "count": 0
+    },
+    {
+      "col": 11,
+      "row": 3,
+      "count": 0
+    },
+    {
+      "col": 0,
+      "row": 4,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 4,
+      "count": 252
+    },
+    {
+      "col": 2,
+      "row": 4,
+      "count": 4278
+    },
+    {
+      "col": 3,
+      "row": 4,
+      "count": 7869
+    },
+    {
+      "col": 4,
+      "row": 4,
+      "count": 5245
+    },
+    {
+      "col": 5,
+      "row": 4,
+      "count": 1695
+    },
+    {
+      "col": 6,
+      "row": 4,
+      "count": 2364
+    },
+    {
+      "col": 7,
+      "row": 4,
+      "count": 2816
+    },
+    {
+      "col": 8,
+      "row": 4,
+      "count": 5403
+    },
+    {
+      "col": 9,
+      "row": 4,
+      "count": 2655
+    },
+    {
+      "col": 10,
+      "row": 4,
+      "count": 69
+    },
+    {
+      "col": 11,
+      "row": 4,
+      "count": 0
+    },
+    {
+      "col": 0,
+      "row": 5,
+      "count": 2819
+    },
+    {
+      "col": 1,
+      "row": 5,
+      "count": 9018
+    },
+    {
+      "col": 2,
+      "row": 5,
+      "count": 9285
+    },
+    {
+      "col": 3,
+      "row": 5,
+      "count": 3592
+    },
+    {
+      "col": 4,
+      "row": 5,
+      "count": 3228
+    },
+    {
+      "col": 5,
+      "row": 5,
+      "count": 9504
+    },
+    {
+      "col": 6,
+      "row": 5,
+      "count": 18193
+    },
+    {
+      "col": 7,
+      "row": 5,
+      "count": 1606
+    },
+    {
+      "col": 8,
+      "row": 5,
+      "count": 1009
+    },
+    {
+      "col": 9,
+      "row": 5,
+      "count": 5914
+    },
+    {
+      "col": 10,
+      "row": 5,
+      "count": 3545
+    },
+    {
+      "col": 11,
+      "row": 5,
+      "count": 0
+    },
+    {
+      "col": 0,
+      "row": 6,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 6,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 6,
+      "count": 417
+    },
+    {
+      "col": 3,
+      "row": 6,
+      "count": 2455
+    },
+    {
+      "col": 4,
+      "row": 6,
+      "count": 3693
+    },
+    {
+      "col": 5,
+      "row": 6,
+      "count": 10921
+    },
+    {
+      "col": 6,
+      "row": 6,
+      "count": 13983
+    },
+    {
+      "col": 7,
+      "row": 6,
+      "count": 2633
+    },
+    {
+      "col": 8,
+      "row": 6,
+      "count": 1596
+    },
+    {
+      "col": 9,
+      "row": 6,
+      "count": 2027
+    },
+    {
+      "col": 10,
+      "row": 6,
+      "count": 291
+    },
+    {
+      "col": 11,
+      "row": 6,
+      "count": 0
+    },
+    {
+      "col": 0,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 1,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 2,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 3,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 4,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 5,
+      "row": 7,
+      "count": 2194
+    },
+    {
+      "col": 6,
+      "row": 7,
+      "count": 12893
+    },
+    {
+      "col": 7,
+      "row": 7,
+      "count": 1676
+    },
+    {
+      "col": 8,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 9,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 10,
+      "row": 7,
+      "count": 0
+    },
+    {
+      "col": 11,
+      "row": 7,
+      "count": 0
+    }
+  ]
+}

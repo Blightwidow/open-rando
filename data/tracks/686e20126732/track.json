@@ -1,0 +1,118 @@
+{
+  "id": "686e20126732",
+  "slug": "gr-169",
+  "path_ref": "GR 169",
+  "path_name": "Tour de Lyon par les Forts",
+  "description": "171 km ceinturant Lyon en reliant les forts de la deuxième ceinture, entre plaines agricoles, vallons boisés et berges du Rhône et de la Saône.",
+  "osm_relation_id": 15622517,
+  "distance_km": 175.1,
+  "elevation_gain_m": 2632,
+  "elevation_loss_m": 2626,
+  "max_elevation_m": 577,
+  "min_elevation_m": 155,
+  "bbox": [
+    4.7061677,
+    45.6564412,
+    5.0156965,
+    45.877326
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "69",
+  "difficulty": "moderate",
+  "is_circular_trail": true,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/686e20126732/trail.geojson",
+  "gpx_path": "tracks/686e20126732/trail.gpx",
+  "elevation_path": "tracks/686e20126732/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Bégude",
+      "kind": "castle",
+      "lat": 45.6725651,
+      "lon": 4.8612093000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Damette",
+      "kind": "castle",
+      "lat": 45.6743291,
+      "lon": 4.829643,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Corbas",
+      "kind": "castle",
+      "lat": 45.677082999999996,
+      "lon": 4.9087217,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lumagne",
+      "kind": "castle",
+      "lat": 45.6865487,
+      "lon": 4.7976431,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Beauregard",
+      "kind": "castle",
+      "lat": 45.69311605,
+      "lon": 4.7876855,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Saint-Priest",
+      "kind": "castle",
+      "lat": 45.69475475,
+      "lon": 4.966359000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Priest",
+      "kind": "castle",
+      "lat": 45.69667765,
+      "lon": 4.9440478500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir du Grand-Perron",
+      "kind": "castle",
+      "lat": 45.69972385,
+      "lon": 4.80957695,
+      "elevation_m": null
+    },
+    {
+      "name": "Château le Petit-Perron",
+      "kind": "castle",
+      "lat": 45.7004319,
+      "lon": 4.81122,
+      "elevation_m": null
+    },
+    {
+      "name": "Vieux Château",
+      "kind": "castle",
+      "lat": 45.7365033,
+      "lon": 4.77013945,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mathan",
+      "kind": "castle",
+      "lat": 45.74346195,
+      "lon": 5.01273355,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Tourelles",
+      "kind": "castle",
+      "lat": 45.74379605,
+      "lon": 4.96343675,
+      "elevation_m": null
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "id": "c8663cf8fd62",
+  "slug": "gr-15",
+  "path_ref": "GR 15",
+  "path_name": "La Vallée de la Marne",
+  "description": "",
+  "osm_relation_id": 15989093,
+  "distance_km": 374.2,
+  "elevation_gain_m": 4145,
+  "elevation_loss_m": 4035,
+  "max_elevation_m": 281,
+  "min_elevation_m": 30,
+  "bbox": [
+    2.4122077,
+    48.5541381,
+    4.8753841,
+    49.1102714
+  ],
+  "region": "Île-de-France",
+  "departement": "94",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 21.11,
+  "geojson_path": "tracks/c8663cf8fd62/trail.geojson",
+  "gpx_path": "tracks/c8663cf8fd62/trail.gpx",
+  "elevation_path": "tracks/c8663cf8fd62/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Motte",
+      "kind": "castle",
+      "lat": 48.6251966,
+      "lon": 4.64189925,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 48.629167949999996,
+      "lon": 4.634533449999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bussemont",
+      "kind": "castle",
+      "lat": 48.7282261,
+      "lon": 4.78683955,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 48.77151265,
+      "lon": 2.52157245,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Rancy",
+      "kind": "castle",
+      "lat": 48.775859,
+      "lon": 2.485316,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Rets",
+      "kind": "castle",
+      "lat": 48.7901495,
+      "lon": 2.5260165,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Réghat, Musée de Maisons-Alfort",
+      "kind": "castle",
+      "lat": 48.80042615,
+      "lon": 2.4356285,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Champigny",
+      "kind": "castle",
+      "lat": 48.8035406,
+      "lon": 2.5338588,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Parangon",
+      "kind": "castle",
+      "lat": 48.8139385,
+      "lon": 2.47082165,
+      "elevation_m": null
+    },
+    {
+      "name": "Centre de rétention administrative Paris 1",
+      "kind": "castle",
+      "lat": 48.81894145,
+      "lon": 2.4543853,
+      "elevation_m": null
+    },
+    {
+      "name": "Mairie de Charenton-le-Pont",
+      "kind": "castle",
+      "lat": 48.819717999999995,
+      "lon": 2.4161270000000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Reine de Cœur",
+      "kind": "castle",
+      "lat": 48.87474385,
+      "lon": 2.77462815,
+      "elevation_m": null
+    }
+  ]
+}

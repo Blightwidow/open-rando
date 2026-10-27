@@ -1,0 +1,118 @@
+{
+  "id": "17cf3c3c7761",
+  "slug": "gr-71",
+  "path_ref": "GR 71",
+  "path_name": "De L'Espérou (Gard) à Lodève",
+  "description": "",
+  "osm_relation_id": 6423545,
+  "distance_km": 165.3,
+  "elevation_gain_m": 4800,
+  "elevation_loss_m": 5069,
+  "max_elevation_m": 1343,
+  "min_elevation_m": 159,
+  "bbox": [
+    2.8398038,
+    43.5986489,
+    3.5634525,
+    44.0923377
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/17cf3c3c7761/trail.geojson",
+  "gpx_path": "tracks/17cf3c3c7761/trail.gpx",
+  "elevation_path": "tracks/17cf3c3c7761/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Fozières",
+      "kind": "castle",
+      "lat": 43.7518083,
+      "lon": 3.3565799,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Soubès",
+      "kind": "castle",
+      "lat": 43.7666306,
+      "lon": 3.3479571999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Point Sublime",
+      "kind": "viewpoint",
+      "lat": 43.6307,
+      "lon": 2.9491,
+      "elevation_m": null
+    },
+    {
+      "name": "Croix de Marcou",
+      "kind": "viewpoint",
+      "lat": 43.698,
+      "lon": 3.00644,
+      "elevation_m": null
+    },
+    {
+      "name": "Abri (en bois) + vue",
+      "kind": "viewpoint",
+      "lat": 43.7126194,
+      "lon": 3.0890764,
+      "elevation_m": null
+    },
+    {
+      "name": "La Vierge",
+      "kind": "viewpoint",
+      "lat": 43.7276995,
+      "lon": 3.3266225,
+      "elevation_m": null
+    },
+    {
+      "name": "Table d'Orientation",
+      "kind": "viewpoint",
+      "lat": 43.7488217,
+      "lon": 3.096792,
+      "elevation_m": null
+    },
+    {
+      "name": "L'eau des Vallées",
+      "kind": "viewpoint",
+      "lat": 43.7541893,
+      "lon": 3.2834754,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de Vue sur Lauroux",
+      "kind": "viewpoint",
+      "lat": 43.779744,
+      "lon": 3.2778943,
+      "elevation_m": null
+    },
+    {
+      "name": "Pique dangereux",
+      "kind": "viewpoint",
+      "lat": 43.7805877,
+      "lon": 3.2522584,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère de la Serreyrède",
+      "kind": "viewpoint",
+      "lat": 44.1052796,
+      "lon": 3.5464408,
+      "elevation_m": null
+    },
+    {
+      "name": "Saint-Pierre de l'Espinouse",
+      "kind": "ruins",
+      "lat": 43.61204835,
+      "lon": 2.8990025,
+      "elevation_m": null
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "id": "6c699cbefc9e",
+  "slug": "gr-72",
+  "path_ref": "GR 72",
+  "path_name": "Du Col du Bez à Barre-des-Cévennes",
+  "description": "Sur la ligne de partage des eaux entre Ardèche et Lozère, empruntant d'anciennes voies de transhumance à travers le Parc national des Cévennes.",
+  "osm_relation_id": 2958766,
+  "distance_km": 26.3,
+  "elevation_gain_m": 1020,
+  "elevation_loss_m": 665,
+  "max_elevation_m": 1455,
+  "min_elevation_m": 600,
+  "bbox": [
+    3.7670368,
+    44.3596842,
+    3.9332389,
+    44.4376419
+  ],
+  "region": "Occitanie",
+  "departement": "48",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain",
+    "forest"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/6c699cbefc9e/trail.geojson",
+  "gpx_path": "tracks/6c699cbefc9e/trail.gpx",
+  "elevation_path": "tracks/6c699cbefc9e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Croix de l'Hermite",
+      "kind": "peak",
+      "lat": 44.3826378,
+      "lon": 3.907243,
+      "elevation_m": 1507
+    },
+    {
+      "name": "Roc de la Fenêtre",
+      "kind": "peak",
+      "lat": 44.3804707,
+      "lon": 3.7758764,
+      "elevation_m": 1422
+    },
+    {
+      "name": "Le Chaumadou",
+      "kind": "peak",
+      "lat": 44.3675313,
+      "lon": 3.8050176,
+      "elevation_m": 1395
+    },
+    {
+      "name": "Le Bousquillou",
+      "kind": "peak",
+      "lat": 44.4054302,
+      "lon": 3.917473,
+      "elevation_m": 1115
+    },
+    {
+      "name": "Plo de la Voulp",
+      "kind": "peak",
+      "lat": 44.4258442,
+      "lon": 3.9231766,
+      "elevation_m": 982
+    },
+    {
+      "name": "Gratassac",
+      "kind": "peak",
+      "lat": 44.4456569,
+      "lon": 3.9236603,
+      "elevation_m": 821
+    },
+    {
+      "name": "Pont du Tarn",
+      "kind": "attraction",
+      "lat": 44.373712600000005,
+      "lon": 3.82235985,
+      "elevation_m": null
+    },
+    {
+      "name": "Pic Cassini",
+      "kind": "information",
+      "lat": 44.4009589,
+      "lon": 3.8460378,
+      "elevation_m": 1680
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.3861883,
+      "lon": 3.9061368,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.4002275,
+      "lon": 3.8557791,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.4010725,
+      "lon": 3.8535063,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.4520472,
+      "lon": 3.9341863,
+      "elevation_m": null
+    }
+  ]
+}

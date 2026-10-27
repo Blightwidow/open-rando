@@ -1,0 +1,118 @@
+{
+  "id": "16c221b0415d",
+  "slug": "gr-653d",
+  "path_ref": "GR 653D",
+  "path_name": "Via Domitia",
+  "description": "",
+  "osm_relation_id": 6132056,
+  "distance_km": 438.3,
+  "elevation_gain_m": 12173,
+  "elevation_loss_m": 13938,
+  "max_elevation_m": 1863,
+  "min_elevation_m": 2,
+  "bbox": [
+    4.6300678,
+    43.6767113,
+    6.7448241,
+    44.9360205
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "73",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/16c221b0415d/trail.geojson",
+  "gpx_path": "tracks/16c221b0415d/trail.gpx",
+  "elevation_path": "tracks/16c221b0415d/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Montauban",
+      "kind": "castle",
+      "lat": 43.7261414,
+      "lon": 4.71423755,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Romanin",
+      "kind": "castle",
+      "lat": 43.7626014,
+      "lon": 4.8947103,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour Saint-Gabriel",
+      "kind": "castle",
+      "lat": 43.766715399999995,
+      "lon": 4.6980431,
+      "elevation_m": null
+    },
+    {
+      "name": "Mas de la Brune",
+      "kind": "castle",
+      "lat": 43.77218815,
+      "lon": 4.9450647,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Roussan",
+      "kind": "castle",
+      "lat": 43.790969000000004,
+      "lon": 4.8074185,
+      "elevation_m": null
+    },
+    {
+      "name": "Oppidum du Grand Clapier",
+      "kind": "castle",
+      "lat": 43.8638258,
+      "lon": 5.5796291,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sauvan",
+      "kind": "castle",
+      "lat": 43.920184750000004,
+      "lon": 5.7600032,
+      "elevation_m": null
+    },
+    {
+      "name": "Citadelle de Mane",
+      "kind": "castle",
+      "lat": 43.9381093,
+      "lon": 5.7683894,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lurs",
+      "kind": "castle",
+      "lat": 43.9702662,
+      "lon": 5.889489,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Peyruis",
+      "kind": "castle",
+      "lat": 44.028497099999996,
+      "lon": 5.9385712,
+      "elevation_m": null
+    },
+    {
+      "name": "voûtes de Fons-Chaude et le Grand Couvert",
+      "kind": "castle",
+      "lat": 44.1976657,
+      "lon": 5.9452534,
+      "elevation_m": null
+    },
+    {
+      "name": "Citadelle de Sisteron",
+      "kind": "castle",
+      "lat": 44.19892435,
+      "lon": 5.94272705,
+      "elevation_m": null
+    }
+  ]
+}

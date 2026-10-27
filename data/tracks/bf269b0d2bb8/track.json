@@ -1,0 +1,118 @@
+{
+  "id": "bf269b0d2bb8",
+  "slug": "gr-62",
+  "path_ref": "GR 62",
+  "path_name": "GR 62B",
+  "description": "",
+  "osm_relation_id": 15662377,
+  "distance_km": 142.1,
+  "elevation_gain_m": 4358,
+  "elevation_loss_m": 4351,
+  "max_elevation_m": 630,
+  "min_elevation_m": 234,
+  "bbox": [
+    2.0258217,
+    44.3298701,
+    2.5651889,
+    44.5603359
+  ],
+  "region": "Occitanie",
+  "departement": "12",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/bf269b0d2bb8/trail.geojson",
+  "gpx_path": "tracks/bf269b0d2bb8/trail.gpx",
+  "elevation_path": "tracks/bf269b0d2bb8/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Castel Gaillard",
+      "kind": "castle",
+      "lat": 44.340944,
+      "lon": 2.563494,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Ampiac",
+      "kind": "castle",
+      "lat": 44.3450629,
+      "lon": 2.49211425,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Réquista",
+      "kind": "castle",
+      "lat": 44.345539099999996,
+      "lon": 2.1330478,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rodat",
+      "kind": "castle",
+      "lat": 44.347858599999995,
+      "lon": 2.5489636,
+      "elevation_m": null
+    },
+    {
+      "name": "Le château du Cayla",
+      "kind": "castle",
+      "lat": 44.3484076,
+      "lon": 2.4532268000000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Graves",
+      "kind": "castle",
+      "lat": 44.3660652,
+      "lon": 2.02714865,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Veuzac",
+      "kind": "castle",
+      "lat": 44.37905755,
+      "lon": 2.04615685,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Belcastel",
+      "kind": "castle",
+      "lat": 44.388944800000004,
+      "lon": 2.33598885,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Marinesque",
+      "kind": "castle",
+      "lat": 44.497927,
+      "lon": 2.0951424,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Inférieur",
+      "kind": "castle",
+      "lat": 44.498197,
+      "lon": 2.1389034000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort d'Aubin",
+      "kind": "castle",
+      "lat": 44.5292829,
+      "lon": 2.2498395,
+      "elevation_m": null
+    },
+    {
+      "name": "Fenestras de la Boule d'Or",
+      "kind": "viewpoint",
+      "lat": 44.346585,
+      "lon": 2.57644,
+      "elevation_m": null
+    }
+  ]
+}

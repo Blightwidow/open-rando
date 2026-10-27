@@ -1,0 +1,118 @@
+{
+  "id": "051319dd4c46",
+  "slug": "gr-800",
+  "path_ref": "GR 800",
+  "path_name": "Au fil de la Somme",
+  "description": "Le long de la Somme de sa source à la Baie de Somme, entre vallées verdoyantes, cathédrales d'Amiens et Saint-Quentin et paysages maritimes.",
+  "osm_relation_id": 14292840,
+  "distance_km": 227.4,
+  "elevation_gain_m": 1303,
+  "elevation_loss_m": 1389,
+  "max_elevation_m": 134,
+  "min_elevation_m": 1,
+  "bbox": [
+    1.6381954,
+    49.7409915,
+    3.403829,
+    50.1869243
+  ],
+  "region": "Hauts-de-France",
+  "departement": "02",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/051319dd4c46/trail.geojson",
+  "gpx_path": "tracks/051319dd4c46/trail.gpx",
+  "elevation_path": "tracks/051319dd4c46/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Pilule",
+      "kind": "castle",
+      "lat": 49.860257,
+      "lon": 3.3066075,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tronville",
+      "kind": "castle",
+      "lat": 49.8803575,
+      "lon": 2.411124,
+      "elevation_m": null
+    },
+    {
+      "name": "Citadelle d'Amiens",
+      "kind": "castle",
+      "lat": 49.9046121,
+      "lon": 2.2982913500000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montières",
+      "kind": "castle",
+      "lat": 49.9147442,
+      "lon": 2.2593131,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Argoeuves",
+      "kind": "castle",
+      "lat": 49.929787000000005,
+      "lon": 2.2251605,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du château",
+      "kind": "castle",
+      "lat": 49.9431073,
+      "lon": 2.1414413,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Suzanne",
+      "kind": "castle",
+      "lat": 49.9484455,
+      "lon": 2.765844,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'En-Bas",
+      "kind": "castle",
+      "lat": 49.961974,
+      "lon": 2.1316296,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vieulaines",
+      "kind": "castle",
+      "lat": 50.0241787,
+      "lon": 1.9602401999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Long",
+      "kind": "castle",
+      "lat": 50.0386173,
+      "lon": 1.981045,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pont-Remy",
+      "kind": "castle",
+      "lat": 50.052883,
+      "lon": 1.9049735,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue de Sainte-Colette",
+      "kind": "viewpoint",
+      "lat": 49.9211951,
+      "lon": 2.5207728,
+      "elevation_m": null
+    }
+  ]
+}

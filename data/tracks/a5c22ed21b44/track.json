@@ -1,0 +1,118 @@
+{
+  "id": "a5c22ed21b44",
+  "slug": "gr-35",
+  "path_ref": "GR 35",
+  "path_name": "Du Perche à la Loire",
+  "description": "Du Perche à l'Anjou en suivant la vallée du Loir, entre collines verdoyantes, châteaux de caractère et coteaux viticoles.",
+  "osm_relation_id": 7477707,
+  "distance_km": 488.3,
+  "elevation_gain_m": 4209,
+  "elevation_loss_m": 4350,
+  "max_elevation_m": 289,
+  "min_elevation_m": 10,
+  "bbox": [
+    -0.6587811,
+    47.3548847,
+    1.4018153,
+    48.7388288
+  ],
+  "region": "Normandie",
+  "departement": "27",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/a5c22ed21b44/trail.geojson",
+  "gpx_path": "tracks/a5c22ed21b44/trail.gpx",
+  "elevation_path": "tracks/a5c22ed21b44/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de l'Éperonnière",
+      "kind": "castle",
+      "lat": 47.3411366,
+      "lon": -0.6611734,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Symphorien",
+      "kind": "castle",
+      "lat": 47.3606766,
+      "lon": -0.667385,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mantelon",
+      "kind": "castle",
+      "lat": 47.3741293,
+      "lon": -0.6287903,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Vaults",
+      "kind": "castle",
+      "lat": 47.383319,
+      "lon": -0.6553354,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Varennes",
+      "kind": "castle",
+      "lat": 47.3852277,
+      "lon": -0.6494073,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Bizolière",
+      "kind": "castle",
+      "lat": 47.3947465,
+      "lon": -0.6627579,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chamboureau",
+      "kind": "castle",
+      "lat": 47.3959399,
+      "lon": -0.6371724000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Epiré",
+      "kind": "castle",
+      "lat": 47.3986314,
+      "lon": -0.6343753999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit-Serrant",
+      "kind": "castle",
+      "lat": 47.4103556,
+      "lon": -0.6178279,
+      "elevation_m": null
+    },
+    {
+      "name": "Château le Fresne",
+      "kind": "castle",
+      "lat": 47.41544795,
+      "lon": -0.61653565,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Boule",
+      "kind": "castle",
+      "lat": 47.4276146,
+      "lon": -0.589314,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Le Puits de Rezé",
+      "kind": "castle",
+      "lat": 47.4374494,
+      "lon": -0.5778421,
+      "elevation_m": null
+    }
+  ]
+}

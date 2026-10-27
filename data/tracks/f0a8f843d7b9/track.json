@@ -1,0 +1,118 @@
+{
+  "id": "f0a8f843d7b9",
+  "slug": "gr-738",
+  "path_ref": "GR 738",
+  "path_name": "La Haute Traversée de Belledonne",
+  "description": "124 km de traversée alpine entre Aiguebelle et Vizille, célébrant le patrimoine pastoral et minier du massif de Belledonne.",
+  "osm_relation_id": 11999802,
+  "distance_km": 132.1,
+  "elevation_gain_m": 10776,
+  "elevation_loss_m": 10811,
+  "max_elevation_m": 2560,
+  "min_elevation_m": 280,
+  "bbox": [
+    5.7736014,
+    45.0682266,
+    6.3063632,
+    45.5501347
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "73",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/f0a8f843d7b9/trail.geojson",
+  "gpx_path": "tracks/f0a8f843d7b9/trail.gpx",
+  "elevation_path": "tracks/f0a8f843d7b9/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Vizille",
+      "kind": "castle",
+      "lat": 45.075652000000005,
+      "lon": 5.7733065,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Rochette",
+      "kind": "castle",
+      "lat": 45.545851,
+      "lon": 6.301728499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Grand Colon",
+      "kind": "viewpoint",
+      "lat": 45.163058,
+      "lon": 5.9268015,
+      "elevation_m": 2394
+    },
+    {
+      "name": "L'Aiguille",
+      "kind": "viewpoint",
+      "lat": 45.129954,
+      "lon": 5.8835197,
+      "elevation_m": 1839
+    },
+    {
+      "name": "Belvédère",
+      "kind": "viewpoint",
+      "lat": 45.0645491,
+      "lon": 5.7826739,
+      "elevation_m": null
+    },
+    {
+      "name": "La Roche",
+      "kind": "viewpoint",
+      "lat": 45.0716294,
+      "lon": 5.8142085,
+      "elevation_m": null
+    },
+    {
+      "name": "Panorama sur Vizille",
+      "kind": "viewpoint",
+      "lat": 45.0843793,
+      "lon": 5.8021928,
+      "elevation_m": null
+    },
+    {
+      "name": "Col du Pouta",
+      "kind": "viewpoint",
+      "lat": 45.2443503,
+      "lon": 6.0324181,
+      "elevation_m": null
+    },
+    {
+      "name": "Cascade du Pissou",
+      "kind": "viewpoint",
+      "lat": 45.2720841,
+      "lon": 6.0803356,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue vers le Mont Blanc",
+      "kind": "viewpoint",
+      "lat": 45.4125515,
+      "lon": 6.1874823,
+      "elevation_m": null
+    },
+    {
+      "name": "Vue sur le massif de la Lauziere",
+      "kind": "viewpoint",
+      "lat": 45.4897916,
+      "lon": 6.2484244,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du château du Roy",
+      "kind": "ruins",
+      "lat": 45.0780371,
+      "lon": 5.7749717,
+      "elevation_m": null
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "id": "3dd5e59ee3a6",
+  "slug": "gr-63",
+  "path_ref": "GR 63",
+  "path_name": "De Avignon (Vaucluse) au col de la Cabane-Vieille",
+  "description": "",
+  "osm_relation_id": 11206372,
+  "distance_km": 148.7,
+  "elevation_gain_m": 2983,
+  "elevation_loss_m": 2258,
+  "max_elevation_m": 747,
+  "min_elevation_m": 18,
+  "bbox": [
+    3.8010241,
+    43.8918091,
+    4.8037515,
+    44.0755138
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "84",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/3dd5e59ee3a6/trail.geojson",
+  "gpx_path": "tracks/3dd5e59ee3a6/trail.gpx",
+  "elevation_path": "tracks/3dd5e59ee3a6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Roux",
+      "kind": "castle",
+      "lat": 43.9189735,
+      "lon": 4.0378615,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sabatier",
+      "kind": "castle",
+      "lat": 43.926368800000006,
+      "lon": 3.9880361,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Castellas",
+      "kind": "castle",
+      "lat": 43.9303566,
+      "lon": 4.0433682,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Levesque",
+      "kind": "castle",
+      "lat": 43.93087515,
+      "lon": 3.9783751499999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Le château des Buissières",
+      "kind": "castle",
+      "lat": 43.93176695,
+      "lon": 4.2944087500000006,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Roquevaire",
+      "kind": "castle",
+      "lat": 43.9367869,
+      "lon": 3.9475163,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Castellas",
+      "kind": "castle",
+      "lat": 43.9387348,
+      "lon": 3.9495189,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Montaigu",
+      "kind": "castle",
+      "lat": 43.94684825,
+      "lon": 4.811813600000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Privat",
+      "kind": "castle",
+      "lat": 43.947626,
+      "lon": 4.516947,
+      "elevation_m": null
+    },
+    {
+      "name": "Palais du Roure",
+      "kind": "castle",
+      "lat": 43.9484271,
+      "lon": 4.8054032499999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour Philippe le Bel",
+      "kind": "castle",
+      "lat": 43.95858145,
+      "lon": 4.7976043,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort Saint-André",
+      "kind": "castle",
+      "lat": 43.9662034,
+      "lon": 4.80111415,
+      "elevation_m": null
+    }
+  ]
+}

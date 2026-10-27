@@ -1,0 +1,118 @@
+{
+  "id": "785ab0c5803b",
+  "slug": "gr-654",
+  "path_ref": "GR 654",
+  "path_name": "Voie de Vézelay",
+  "description": "1 570 km sur la voie de Vézelay, de la basilique Sainte-Marie-Madeleine aux Pyrénées, entre forêts ardennaises, vignobles champenois et bocages périgourdins.",
+  "osm_relation_id": 14900298,
+  "distance_km": 1720.4,
+  "elevation_gain_m": 24624,
+  "elevation_loss_m": 24661,
+  "max_elevation_m": 690,
+  "min_elevation_m": 10,
+  "bbox": [
+    -1.0364036,
+    43.2989766,
+    4.7567279,
+    50.1454859
+  ],
+  "region": "Grand Est",
+  "departement": "08",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 163.43,
+  "geojson_path": "tracks/785ab0c5803b/trail.geojson",
+  "gpx_path": "tracks/785ab0c5803b/trail.gpx",
+  "elevation_path": "tracks/785ab0c5803b/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Pignol",
+      "kind": "castle",
+      "lat": 47.3499615,
+      "lon": 3.582007,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Varzy",
+      "kind": "castle",
+      "lat": 47.356691,
+      "lon": 3.384497,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des évêques d'Auxerre",
+      "kind": "castle",
+      "lat": 47.3569975,
+      "lon": 3.384303,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Beuvron",
+      "kind": "castle",
+      "lat": 47.3583455,
+      "lon": 3.4933525000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Val en Sel",
+      "kind": "castle",
+      "lat": 47.4568658,
+      "lon": 3.7634041,
+      "elevation_m": null
+    },
+    {
+      "name": "Vieux Chateau",
+      "kind": "castle",
+      "lat": 47.5589675,
+      "lon": 3.780391,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Cro",
+      "kind": "castle",
+      "lat": 47.5771615,
+      "lon": 3.7791125,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir du Chastenay",
+      "kind": "castle",
+      "lat": 47.5971961,
+      "lon": 3.7594504,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vieux Champs",
+      "kind": "castle",
+      "lat": 47.599545,
+      "lon": 3.7575005,
+      "elevation_m": null
+    },
+    {
+      "name": "Donjon de Cravant",
+      "kind": "castle",
+      "lat": 47.6812165,
+      "lon": 3.69001615,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vincelles",
+      "kind": "castle",
+      "lat": 47.699892500000004,
+      "lon": 3.637635,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Saulce",
+      "kind": "castle",
+      "lat": 47.7233133,
+      "lon": 3.6188938,
+      "elevation_m": null
+    }
+  ]
+}

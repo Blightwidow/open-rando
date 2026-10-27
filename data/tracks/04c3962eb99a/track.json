@@ -1,0 +1,118 @@
+{
+  "id": "04c3962eb99a",
+  "slug": "gr-41",
+  "path_ref": "GR 41",
+  "path_name": "La Vallée du Cher",
+  "description": "Le long du Cher, entre cités médiévales et de la Renaissance, châteaux, vignobles pittoresques et sites comme le zoo de Beauval.",
+  "osm_relation_id": 15706394,
+  "distance_km": 449.7,
+  "elevation_gain_m": 5429,
+  "elevation_loss_m": 4740,
+  "max_elevation_m": 766,
+  "min_elevation_m": 45,
+  "bbox": [
+    0.6958953,
+    45.8572714,
+    2.6719547,
+    47.3755734
+  ],
+  "region": "Centre-Val de Loire",
+  "departement": "37",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/04c3962eb99a/trail.geojson",
+  "gpx_path": "tracks/04c3962eb99a/trail.gpx",
+  "elevation_path": "tracks/04c3962eb99a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Chard",
+      "kind": "castle",
+      "lat": 45.94497705,
+      "lon": 2.4779988499999996,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Vergnes",
+      "kind": "castle",
+      "lat": 45.9529067,
+      "lon": 2.5049674499999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Châteaubodeau",
+      "kind": "castle",
+      "lat": 46.0635207,
+      "lon": 2.5294185999999996,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Chézeau",
+      "kind": "castle",
+      "lat": 46.1982269,
+      "lon": 2.5369519,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Ours",
+      "kind": "castle",
+      "lat": 46.2606078,
+      "lon": 2.5732459,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Modières",
+      "kind": "castle",
+      "lat": 46.3006411,
+      "lon": 2.6235901999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bisseret",
+      "kind": "castle",
+      "lat": 46.31501885,
+      "lon": 2.6155,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôpital de la Charité",
+      "kind": "castle",
+      "lat": 46.3151575,
+      "lon": 2.5906005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des ducs de Bourbon",
+      "kind": "castle",
+      "lat": 46.3400479,
+      "lon": 2.60357,
+      "elevation_m": null
+    },
+    {
+      "name": "Villa Louvière",
+      "kind": "castle",
+      "lat": 46.34212205,
+      "lon": 2.6169584500000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Cluzeau",
+      "kind": "castle",
+      "lat": 46.430377,
+      "lon": 2.6274545,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chouvigny",
+      "kind": "castle",
+      "lat": 46.4387074,
+      "lon": 2.64441845,
+      "elevation_m": null
+    }
+  ]
+}

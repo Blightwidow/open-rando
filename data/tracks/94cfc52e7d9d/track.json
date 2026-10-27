@@ -1,0 +1,118 @@
+{
+  "id": "94cfc52e7d9d",
+  "slug": "gr-13",
+  "path_ref": "GR 13",
+  "path_name": "Du Gâtinais au Morvan",
+  "description": "Une longue diagonale historique reliant le Gâtinais en Seine-et-Marne au massif granitique du Morvan en Saône-et-Loire.",
+  "osm_relation_id": 12798892,
+  "distance_km": 461.8,
+  "elevation_gain_m": 9232,
+  "elevation_loss_m": 8946,
+  "max_elevation_m": 909,
+  "min_elevation_m": 58,
+  "bbox": [
+    2.5870649,
+    46.6471243,
+    4.1197186,
+    48.4751951
+  ],
+  "region": "Île-de-France",
+  "departement": "77",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/94cfc52e7d9d/trail.geojson",
+  "gpx_path": "tracks/94cfc52e7d9d/trail.gpx",
+  "elevation_path": "tracks/94cfc52e7d9d/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Montperroux",
+      "kind": "castle",
+      "lat": 46.68279595,
+      "lon": 3.93689,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montrifaud",
+      "kind": "castle",
+      "lat": 46.708616500000005,
+      "lon": 3.967745,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de La Roche",
+      "kind": "castle",
+      "lat": 46.878524150000004,
+      "lon": 3.9997208,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pierrefite",
+      "kind": "castle",
+      "lat": 46.894628,
+      "lon": 4.03017,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine du château de Vésigneux",
+      "kind": "castle",
+      "lat": 47.3564017,
+      "lon": 3.8761649,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chastellux",
+      "kind": "castle",
+      "lat": 47.392309,
+      "lon": 3.8904035,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Domecy",
+      "kind": "castle",
+      "lat": 47.411182999999994,
+      "lon": 3.7976989999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Maison forte",
+      "kind": "castle",
+      "lat": 47.43207245,
+      "lon": 3.7845937,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pierre-Perthuis",
+      "kind": "castle",
+      "lat": 47.433094,
+      "lon": 3.7844345,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Val en Sel",
+      "kind": "castle",
+      "lat": 47.4568658,
+      "lon": 3.7634041,
+      "elevation_m": null
+    },
+    {
+      "name": "Vieux Chateau",
+      "kind": "castle",
+      "lat": 47.5589675,
+      "lon": 3.780391,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Cro",
+      "kind": "castle",
+      "lat": 47.5771615,
+      "lon": 3.7791125,
+      "elevation_m": null
+    }
+  ]
+}

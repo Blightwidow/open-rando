@@ -1,0 +1,118 @@
+{
+  "id": "326d4316c19f",
+  "slug": "gr-46",
+  "path_ref": "GR 46",
+  "path_name": "De Tours à Toulouse",
+  "description": "Près de 1 000 km de Tours à Toulouse, traversant vignobles de la Loire, Berry, Creuse et patrimoine médiéval du sud de la France.",
+  "osm_relation_id": 6439515,
+  "distance_km": 1018.3,
+  "elevation_gain_m": 19294,
+  "elevation_loss_m": 19435,
+  "max_elevation_m": 775,
+  "min_elevation_m": 45,
+  "bbox": [
+    0.4600223,
+    43.6048189,
+    2.4401823,
+    47.3906608
+  ],
+  "region": "Occitanie",
+  "departement": "31",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 17.4,
+  "geojson_path": "tracks/326d4316c19f/trail.geojson",
+  "gpx_path": "tracks/326d4316c19f/trail.gpx",
+  "elevation_path": "tracks/326d4316c19f/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Palais Niel",
+      "kind": "castle",
+      "lat": 43.59702555,
+      "lon": 1.4512372999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Castel-Gesta",
+      "kind": "castle",
+      "lat": 43.613471,
+      "lon": 1.4387756,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Clairac",
+      "kind": "castle",
+      "lat": 43.6144373,
+      "lon": 1.5525785,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mondouzil",
+      "kind": "castle",
+      "lat": 43.6218101,
+      "lon": 1.5629122999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Château du Pin",
+      "kind": "castle",
+      "lat": 43.628438700000004,
+      "lon": 1.5322216499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Thegra",
+      "kind": "castle",
+      "lat": 43.6317238,
+      "lon": 1.5006741,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bonrepos",
+      "kind": "castle",
+      "lat": 43.6762149,
+      "lon": 1.6257696,
+      "elevation_m": null
+    },
+    {
+      "name": "La Valade",
+      "kind": "castle",
+      "lat": 43.70826325,
+      "lon": 1.57761425,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montastruc la Conseillère",
+      "kind": "castle",
+      "lat": 43.71612865,
+      "lon": 1.59221335,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Rolland",
+      "kind": "castle",
+      "lat": 43.8203479,
+      "lon": 1.7239349,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Géry",
+      "kind": "castle",
+      "lat": 43.8381967,
+      "lon": 1.7686864,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d’Escabes",
+      "kind": "castle",
+      "lat": 43.88122245,
+      "lon": 1.7853218499999999,
+      "elevation_m": null
+    }
+  ]
+}

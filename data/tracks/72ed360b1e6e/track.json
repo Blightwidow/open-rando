@@ -1,0 +1,118 @@
+{
+  "id": "72ed360b1e6e",
+  "slug": "gr-360",
+  "path_ref": "GR 360",
+  "path_name": "Tour de Saintonge",
+  "description": "465 km en boucle au départ de Saintes, entre vignobles de Cognac, marais, forêts de chênes et églises romanes finement sculptées.",
+  "osm_relation_id": 5414606,
+  "distance_km": 482.9,
+  "elevation_gain_m": 4605,
+  "elevation_loss_m": 4605,
+  "max_elevation_m": 139,
+  "min_elevation_m": -5,
+  "bbox": [
+    -0.9643798,
+    45.2209352,
+    -0.1787611,
+    45.9472007
+  ],
+  "region": "Nouvelle-Aquitaine",
+  "departement": "17",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 30.92,
+  "geojson_path": "tracks/72ed360b1e6e/trail.geojson",
+  "gpx_path": "tracks/72ed360b1e6e/trail.gpx",
+  "elevation_path": "tracks/72ed360b1e6e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Montguyon",
+      "kind": "castle",
+      "lat": 45.216118,
+      "lon": -0.1857854,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Gaillard",
+      "kind": "castle",
+      "lat": 45.2409121,
+      "lon": -0.2751493,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chaux",
+      "kind": "castle",
+      "lat": 45.281513,
+      "lon": -0.212667,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montendre",
+      "kind": "castle",
+      "lat": 45.28458905,
+      "lon": -0.4121279,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Romaneau",
+      "kind": "castle",
+      "lat": 45.427383,
+      "lon": -0.7088755,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Beaulon",
+      "kind": "castle",
+      "lat": 45.433898,
+      "lon": -0.7046574000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Meux",
+      "kind": "castle",
+      "lat": 45.4440092,
+      "lon": -0.3482017,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Jonzac",
+      "kind": "castle",
+      "lat": 45.44564185,
+      "lon": -0.43107695,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lussac",
+      "kind": "castle",
+      "lat": 45.469281550000005,
+      "lon": -0.47861735,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Salles",
+      "kind": "castle",
+      "lat": 45.472263,
+      "lon": -0.7111675,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Clam",
+      "kind": "castle",
+      "lat": 45.4740566,
+      "lon": -0.4798926,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Théon",
+      "kind": "castle",
+      "lat": 45.5658009,
+      "lon": -0.84162055,
+      "elevation_m": null
+    }
+  ]
+}

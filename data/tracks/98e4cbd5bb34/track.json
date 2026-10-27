@@ -1,0 +1,118 @@
+{
+  "id": "98e4cbd5bb34",
+  "slug": "gr-20",
+  "path_ref": "GR 20",
+  "path_name": "Traversée de la Corse",
+  "description": "Traversée mythique de la Corse, mondialement réputée pour sa difficulté et la beauté brute de ses paysages de granite et de pics aiguisés.",
+  "osm_relation_id": 101692,
+  "distance_km": 183.6,
+  "elevation_gain_m": 12989,
+  "elevation_loss_m": 12966,
+  "max_elevation_m": 2590,
+  "min_elevation_m": 250,
+  "bbox": [
+    8.849703,
+    41.7347805,
+    9.3339968,
+    42.5081535
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/98e4cbd5bb34/trail.geojson",
+  "gpx_path": "tracks/98e4cbd5bb34/trail.gpx",
+  "elevation_path": "tracks/98e4cbd5bb34/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Belvédère",
+      "kind": "viewpoint",
+      "lat": 41.7856771,
+      "lon": 9.2295925,
+      "elevation_m": null
+    },
+    {
+      "name": "Col de Bavella",
+      "kind": "viewpoint",
+      "lat": 41.7958172,
+      "lon": 9.2244955,
+      "elevation_m": null
+    },
+    {
+      "name": "Vue sur cascade",
+      "kind": "viewpoint",
+      "lat": 42.1255592,
+      "lon": 9.0878312,
+      "elevation_m": null
+    },
+    {
+      "name": "Vue sur le Lac d‘Oru",
+      "kind": "viewpoint",
+      "lat": 42.1376445,
+      "lon": 9.0985405,
+      "elevation_m": null
+    },
+    {
+      "name": "Bocca Crucetta",
+      "kind": "viewpoint",
+      "lat": 42.3714643,
+      "lon": 8.929613,
+      "elevation_m": null
+    },
+    {
+      "name": "Bocca Piccaia",
+      "kind": "viewpoint",
+      "lat": 42.4456467,
+      "lon": 8.9048474,
+      "elevation_m": null
+    },
+    {
+      "name": "Promontoire d'Arghjova",
+      "kind": "viewpoint",
+      "lat": 42.4818294,
+      "lon": 8.864823,
+      "elevation_m": null
+    },
+    {
+      "name": "Moulin d'Alzitone",
+      "kind": "ruins",
+      "lat": 41.7264932,
+      "lon": 9.3455203,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Vizzavona",
+      "kind": "ruins",
+      "lat": 42.11364865,
+      "lon": 9.1128857,
+      "elevation_m": null
+    },
+    {
+      "name": "Bergerie en ruine",
+      "kind": "ruins",
+      "lat": 42.3469718,
+      "lon": 8.9127783,
+      "elevation_m": null
+    },
+    {
+      "name": "1914–1918",
+      "kind": "monument",
+      "lat": 42.507671,
+      "lon": 8.8559987,
+      "elevation_m": null
+    },
+    {
+      "name": "Monte Cinto",
+      "kind": "peak",
+      "lat": 42.3797066,
+      "lon": 8.94569,
+      "elevation_m": 2706
+    }
+  ]
+}

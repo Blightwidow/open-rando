@@ -1,0 +1,118 @@
+{
+  "id": "f28bbf1e90a6",
+  "slug": "gr-22",
+  "path_ref": "GR 22",
+  "path_name": "De Paris au Mont-Saint-Michel",
+  "description": "567 km de Paris à la Normandie, traversant territoires irrigués, forêts, vallées et bocages à travers six départements jusqu'au Mont-Saint-Michel.",
+  "osm_relation_id": 451519,
+  "distance_km": 559.2,
+  "elevation_gain_m": 8742,
+  "elevation_loss_m": 8768,
+  "max_elevation_m": 408,
+  "min_elevation_m": 4,
+  "bbox": [
+    -1.5117223,
+    48.382372,
+    2.3471139,
+    48.8632136
+  ],
+  "region": "Île-de-France",
+  "departement": "75",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/f28bbf1e90a6/trail.geojson",
+  "gpx_path": "tracks/f28bbf1e90a6/trail.gpx",
+  "elevation_path": "tracks/f28bbf1e90a6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Tertre",
+      "kind": "castle",
+      "lat": 48.3879656,
+      "lon": 0.5794885,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Morthimer",
+      "kind": "castle",
+      "lat": 48.3935607,
+      "lon": 0.4516706,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Soisay",
+      "kind": "castle",
+      "lat": 48.3974283,
+      "lon": 0.4121236,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Aillières",
+      "kind": "castle",
+      "lat": 48.403077499999995,
+      "lon": 0.32437625000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Paterne",
+      "kind": "castle",
+      "lat": 48.414376,
+      "lon": 0.1096945,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des ducs d'Alençon",
+      "kind": "castle",
+      "lat": 48.429593,
+      "lon": 0.08300199999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lonrai",
+      "kind": "castle",
+      "lat": 48.461772499999995,
+      "lon": 0.0467805,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Dormie",
+      "kind": "castle",
+      "lat": 48.469235,
+      "lon": 0.082488,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Poignerie",
+      "kind": "castle",
+      "lat": 48.4756295,
+      "lon": 0.05341,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Glatigny",
+      "kind": "castle",
+      "lat": 48.4827495,
+      "lon": 0.0015617,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Ermitage",
+      "kind": "castle",
+      "lat": 48.5072831,
+      "lon": 0.0654659,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit-Jard",
+      "kind": "castle",
+      "lat": 48.533985,
+      "lon": -0.2781325,
+      "elevation_m": null
+    }
+  ]
+}

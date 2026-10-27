@@ -1,0 +1,118 @@
+{
+  "id": "bfda4eb79663",
+  "slug": "gr-364",
+  "path_ref": "GR 364",
+  "path_name": "Du Poitou à L'Océan",
+  "description": "495 km du Poitou aux Sables-d'Olonne, traversant vallées verdoyantes, Marais poitevin, châteaux et abbayes jusqu'aux dunes atlantiques.",
+  "osm_relation_id": 14924818,
+  "distance_km": 493.5,
+  "elevation_gain_m": 5505,
+  "elevation_loss_m": 5404,
+  "max_elevation_m": 251,
+  "min_elevation_m": -4,
+  "bbox": [
+    -1.8401858,
+    46.4214297,
+    0.8147419,
+    46.7600527
+  ],
+  "region": "Pays de la Loire",
+  "departement": "85",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/bfda4eb79663/trail.geojson",
+  "gpx_path": "tracks/bfda4eb79663/trail.gpx",
+  "elevation_path": "tracks/bfda4eb79663/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Grange",
+      "kind": "castle",
+      "lat": 46.425419,
+      "lon": 0.18063780000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Cour",
+      "kind": "castle",
+      "lat": 46.4624156,
+      "lon": 0.07268279999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Curzay",
+      "kind": "castle",
+      "lat": 46.4822623,
+      "lon": 0.0485853,
+      "elevation_m": null
+    },
+    {
+      "name": "Logis de la Salette",
+      "kind": "castle",
+      "lat": 46.4851836,
+      "lon": -0.2606463,
+      "elevation_m": null
+    },
+    {
+      "name": "Donjon de Bois Pouvreau",
+      "kind": "castle",
+      "lat": 46.489199549999995,
+      "lon": -0.07674254999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Saint-Clair",
+      "kind": "castle",
+      "lat": 46.493786,
+      "lon": -1.79581375,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Barre",
+      "kind": "castle",
+      "lat": 46.49496755,
+      "lon": -0.0770953,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Coincardière",
+      "kind": "castle",
+      "lat": 46.507721200000006,
+      "lon": -0.0079358,
+      "elevation_m": null
+    },
+    {
+      "name": "Logis patronal",
+      "kind": "castle",
+      "lat": 46.515097049999994,
+      "lon": 0.33559269999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Bouchetière",
+      "kind": "castle",
+      "lat": 46.51583575,
+      "lon": -0.22982095,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sérigny",
+      "kind": "castle",
+      "lat": 46.525890399999994,
+      "lon": -0.7080693,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Citardière",
+      "kind": "castle",
+      "lat": 46.5342208,
+      "lon": -0.7398924,
+      "elevation_m": null
+    }
+  ]
+}

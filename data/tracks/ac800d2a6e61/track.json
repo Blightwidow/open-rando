@@ -1,0 +1,118 @@
+{
+  "id": "ac800d2a6e61",
+  "slug": "gr-67",
+  "path_ref": "GR 67",
+  "path_name": "Tour du Pays Cévenol",
+  "description": "",
+  "osm_relation_id": 10752254,
+  "distance_km": 125.5,
+  "elevation_gain_m": 4046,
+  "elevation_loss_m": 4041,
+  "max_elevation_m": 1165,
+  "min_elevation_m": 131,
+  "bbox": [
+    3.6052782,
+    44.0069364,
+    3.9865894,
+    44.2655309
+  ],
+  "region": "Occitanie",
+  "departement": "82",
+  "difficulty": "difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/ac800d2a6e61/trail.geojson",
+  "gpx_path": "tracks/ac800d2a6e61/trail.gpx",
+  "elevation_path": "tracks/ac800d2a6e61/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Mazel",
+      "kind": "castle",
+      "lat": 44.213166099999995,
+      "lon": 3.679691,
+      "elevation_m": null
+    },
+    {
+      "name": "Rocher de l'Aigle",
+      "kind": "viewpoint",
+      "lat": 44.0745217,
+      "lon": 3.767014,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Coulet",
+      "kind": "viewpoint",
+      "lat": 44.118436,
+      "lon": 3.6147095,
+      "elevation_m": null
+    },
+    {
+      "name": "Vue Générale sur la Vallée de Sainte-Croix",
+      "kind": "viewpoint",
+      "lat": 44.2431631,
+      "lon": 3.6205541,
+      "elevation_m": null
+    },
+    {
+      "name": "Extrémité Nord du Castellas",
+      "kind": "viewpoint",
+      "lat": 44.247145,
+      "lon": 3.6533012,
+      "elevation_m": null
+    },
+    {
+      "name": "Bergerie de Panissière",
+      "kind": "ruins",
+      "lat": 44.0457429,
+      "lon": 3.9431358,
+      "elevation_m": null
+    },
+    {
+      "name": "Dolmen",
+      "kind": "ruins",
+      "lat": 44.0517152,
+      "lon": 3.9463222,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour à Signaux des Cévennes",
+      "kind": "ruins",
+      "lat": 44.0773302,
+      "lon": 3.96844645,
+      "elevation_m": null
+    },
+    {
+      "name": "L'Esquinade",
+      "kind": "ruins",
+      "lat": 44.1555936,
+      "lon": 3.8969613,
+      "elevation_m": null
+    },
+    {
+      "name": "Les trines",
+      "kind": "ruins",
+      "lat": 44.1675005,
+      "lon": 3.8895447,
+      "elevation_m": null
+    },
+    {
+      "name": "Vestiges d'habitations",
+      "kind": "ruins",
+      "lat": 44.2406146,
+      "lon": 3.7501007,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancienne église",
+      "kind": "ruins",
+      "lat": 44.246644849999996,
+      "lon": 3.6542740499999997,
+      "elevation_m": null
+    }
+  ]
+}

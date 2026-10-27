@@ -1,0 +1,118 @@
+{
+  "id": "890eb7483d5d",
+  "slug": "gr-39",
+  "path_ref": "GR 39",
+  "path_name": "Du Mont-Saint-Michel à La Grande Brière",
+  "description": "314 km à travers la Haute-Bretagne, du Mont-Saint-Michel à Hoscas, entre châteaux médiévaux, églises romanes et paysages atlantiques.",
+  "osm_relation_id": 1824726,
+  "distance_km": 334.4,
+  "elevation_gain_m": 4111,
+  "elevation_loss_m": 4095,
+  "max_elevation_m": 123,
+  "min_elevation_m": -1,
+  "bbox": [
+    -2.3580317,
+    47.4201357,
+    -1.3641439,
+    48.6349514
+  ],
+  "region": "Pays de la Loire",
+  "departement": "44",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 44.59,
+  "geojson_path": "tracks/890eb7483d5d/trail.geojson",
+  "gpx_path": "tracks/890eb7483d5d/trail.gpx",
+  "elevation_path": "tracks/890eb7483d5d/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Cran",
+      "kind": "castle",
+      "lat": 47.5787067,
+      "lon": -2.1257393,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Léhélec",
+      "kind": "castle",
+      "lat": 47.5887479,
+      "lon": -2.2775536,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Étier",
+      "kind": "castle",
+      "lat": 47.589613,
+      "lon": -2.290782,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Pordor",
+      "kind": "castle",
+      "lat": 47.663261,
+      "lon": -2.0068799999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Haye du Déron",
+      "kind": "castle",
+      "lat": 47.7377165,
+      "lon": -1.993165,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Val",
+      "kind": "castle",
+      "lat": 47.768269000000004,
+      "lon": -1.9988905,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Pommerais",
+      "kind": "castle",
+      "lat": 47.8415575,
+      "lon": -1.7767175000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Gaudinelais",
+      "kind": "castle",
+      "lat": 47.846676,
+      "lon": -1.7832294000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château La Driennays",
+      "kind": "castle",
+      "lat": 47.8748787,
+      "lon": -1.79804535,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Molière",
+      "kind": "castle",
+      "lat": 47.90747735,
+      "lon": -1.7661343999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Boschet",
+      "kind": "castle",
+      "lat": 47.9134819,
+      "lon": -1.7567506499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Réauté",
+      "kind": "castle",
+      "lat": 47.9467569,
+      "lon": -1.7463996,
+      "elevation_m": null
+    }
+  ]
+}

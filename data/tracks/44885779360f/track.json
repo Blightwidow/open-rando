@@ -1,0 +1,118 @@
+{
+  "id": "44885779360f",
+  "slug": "gr-32",
+  "path_ref": "GR 32",
+  "path_name": "De La Seine à La Loire",
+  "description": "136 km entre Seine-et-Marne et Loiret, sillonnant forêts denses, lacs paisibles et sites historiques de St-Fargeau-Ponthierry à Chécy.",
+  "osm_relation_id": 13481848,
+  "distance_km": 135.2,
+  "elevation_gain_m": 947,
+  "elevation_loss_m": 894,
+  "max_elevation_m": 155,
+  "min_elevation_m": 41,
+  "bbox": [
+    2.0271963,
+    47.8906496,
+    2.5558919,
+    48.5357135
+  ],
+  "region": "Île-de-France",
+  "departement": "77",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/44885779360f/trail.geojson",
+  "gpx_path": "tracks/44885779360f/trail.gpx",
+  "elevation_path": "tracks/44885779360f/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Touche",
+      "kind": "castle",
+      "lat": 47.90119575,
+      "lon": 2.1015384,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Claireau",
+      "kind": "castle",
+      "lat": 47.96946545,
+      "lon": 2.17448555,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chamerolles",
+      "kind": "castle",
+      "lat": 48.06027735,
+      "lon": 2.1640329,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Denainvilliers",
+      "kind": "castle",
+      "lat": 48.1502885,
+      "lon": 2.2412894999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Ardoise",
+      "kind": "castle",
+      "lat": 48.17216775,
+      "lon": 2.257753,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Taille",
+      "kind": "castle",
+      "lat": 48.176724,
+      "lon": 2.278989,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bouville",
+      "kind": "castle",
+      "lat": 48.1867276,
+      "lon": 2.3525057,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rocheplatte",
+      "kind": "castle",
+      "lat": 48.1921665,
+      "lon": 2.3738455,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Augerville",
+      "kind": "castle",
+      "lat": 48.25098725,
+      "lon": 2.43891425,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 48.2876312,
+      "lon": 2.4157559,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chambergeot",
+      "kind": "castle",
+      "lat": 48.377320999999995,
+      "lon": 2.4940585,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Milly-la-Forêt",
+      "kind": "castle",
+      "lat": 48.4019584,
+      "lon": 2.4637975,
+      "elevation_m": null
+    }
+  ]
+}

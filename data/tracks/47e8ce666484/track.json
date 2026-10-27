@@ -1,0 +1,118 @@
+{
+  "id": "47e8ce666484",
+  "slug": "gr-76a",
+  "path_ref": "GR 76A",
+  "path_name": "De St-Vallerin (Saône-et-Loire) au Mt Saint-Rigaud",
+  "description": "",
+  "osm_relation_id": 14313152,
+  "distance_km": 78.0,
+  "elevation_gain_m": 1894,
+  "elevation_loss_m": 1599,
+  "max_elevation_m": 626,
+  "min_elevation_m": 176,
+  "bbox": [
+    4.6630624,
+    46.2850611,
+    4.8596796,
+    46.6892203
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "71",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/47e8ce666484/trail.geojson",
+  "gpx_path": "tracks/47e8ce666484/trail.gpx",
+  "elevation_path": "tracks/47e8ce666484/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château des Essertaux",
+      "kind": "castle",
+      "lat": 46.3295713,
+      "lon": 4.7104539,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pierreclos",
+      "kind": "castle",
+      "lat": 46.329876049999996,
+      "lon": 4.68628975,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Moines de Cluny",
+      "kind": "castle",
+      "lat": 46.363714,
+      "lon": 4.700311,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Cochets",
+      "kind": "castle",
+      "lat": 46.3651,
+      "lon": 4.7033815,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 46.3848793,
+      "lon": 4.6886191,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Boutavent",
+      "kind": "castle",
+      "lat": 46.4725019,
+      "lon": 4.7142821,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cruzille",
+      "kind": "castle",
+      "lat": 46.504708199999996,
+      "lon": 4.7928789,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Nobles",
+      "kind": "castle",
+      "lat": 46.541395699999995,
+      "lon": 4.78587845,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Brancion",
+      "kind": "castle",
+      "lat": 46.547045100000005,
+      "lon": 4.79772015,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Balleure",
+      "kind": "castle",
+      "lat": 46.5783474,
+      "lon": 4.8007997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Ruffey",
+      "kind": "castle",
+      "lat": 46.6293315,
+      "lon": 4.8513112,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sennecey-le-Grand",
+      "kind": "castle",
+      "lat": 46.6378752,
+      "lon": 4.8690812,
+      "elevation_m": null
+    }
+  ]
+}

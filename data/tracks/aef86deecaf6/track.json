@@ -1,0 +1,118 @@
+{
+  "id": "aef86deecaf6",
+  "slug": "gr-37",
+  "path_ref": "GR 37",
+  "path_name": "Cœur de Bretagne",
+  "description": "780 km du Mont-Saint-Michel à Camaret-sur-Mer à travers la Bretagne intérieure, passant par la forêt de Brocéliande et le canal de Nantes à Brest.",
+  "osm_relation_id": 8373372,
+  "distance_km": 727.8,
+  "elevation_gain_m": 10028,
+  "elevation_loss_m": 10165,
+  "max_elevation_m": 380,
+  "min_elevation_m": 1,
+  "bbox": [
+    -4.1811605,
+    47.8963345,
+    -1.04499,
+    48.6349514
+  ],
+  "region": "Normandie",
+  "departement": "50",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 42.43,
+  "geojson_path": "tracks/aef86deecaf6/trail.geojson",
+  "gpx_path": "tracks/aef86deecaf6/trail.gpx",
+  "elevation_path": "tracks/aef86deecaf6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château des Forges des Salles",
+      "kind": "castle",
+      "lat": 48.200323499999996,
+      "lon": -3.126224,
+      "elevation_m": 168
+    },
+    {
+      "name": "Château de Castel",
+      "kind": "castle",
+      "lat": 47.897368,
+      "lon": -2.468746,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Kergras",
+      "kind": "castle",
+      "lat": 47.9035885,
+      "lon": -2.484629,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir du Val au Houx",
+      "kind": "castle",
+      "lat": 47.9307033,
+      "lon": -2.539942,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lambilly",
+      "kind": "castle",
+      "lat": 47.950773,
+      "lon": -2.4340289999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Josselin",
+      "kind": "castle",
+      "lat": 47.95222075,
+      "lon": -2.54740725,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Josselin",
+      "kind": "castle",
+      "lat": 47.9523175,
+      "lon": -2.5467917499999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Boyac",
+      "kind": "castle",
+      "lat": 47.9567905,
+      "lon": -2.3822315,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Penhouët",
+      "kind": "castle",
+      "lat": 47.9628885,
+      "lon": -2.5315445,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Trécesson",
+      "kind": "castle",
+      "lat": 47.9757375,
+      "lon": -2.27375285,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Forges de Lanouée",
+      "kind": "castle",
+      "lat": 48.01885179999999,
+      "lon": -2.6498923000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bois de la Roche",
+      "kind": "castle",
+      "lat": 48.0426027,
+      "lon": -2.3319131,
+      "elevation_m": null
+    }
+  ]
+}

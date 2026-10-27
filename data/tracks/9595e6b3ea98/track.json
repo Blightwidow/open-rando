@@ -1,0 +1,118 @@
+{
+  "id": "9595e6b3ea98",
+  "slug": "gr-77",
+  "path_ref": "GR 77",
+  "path_name": "Du Saut de Vézoles (Hérault) au Signal de l'Alaric",
+  "description": "",
+  "osm_relation_id": 3728404,
+  "distance_km": 82.4,
+  "elevation_gain_m": 2219,
+  "elevation_loss_m": 2601,
+  "max_elevation_m": 978,
+  "min_elevation_m": 42,
+  "bbox": [
+    2.6246849,
+    43.1479001,
+    2.8728455,
+    43.5517945
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/9595e6b3ea98/trail.geojson",
+  "gpx_path": "tracks/9595e6b3ea98/trail.gpx",
+  "elevation_path": "tracks/9595e6b3ea98/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Roquecourbe-Minervois",
+      "kind": "castle",
+      "lat": 43.2206233,
+      "lon": 2.6485438,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de La Redorte",
+      "kind": "castle",
+      "lat": 43.2524335,
+      "lon": 2.653451,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pardailhan",
+      "kind": "castle",
+      "lat": 43.451611,
+      "lon": 2.8466047000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "La Candela",
+      "kind": "viewpoint",
+      "lat": 43.3553349,
+      "lon": 2.7449261,
+      "elevation_m": null
+    },
+    {
+      "name": "Gorges du Brian",
+      "kind": "viewpoint",
+      "lat": 43.3564806,
+      "lon": 2.7439554,
+      "elevation_m": null
+    },
+    {
+      "name": "Métairie sans fin",
+      "kind": "ruins",
+      "lat": 43.1535708,
+      "lon": 2.6324606,
+      "elevation_m": null
+    },
+    {
+      "name": "Métairie de Vidal",
+      "kind": "ruins",
+      "lat": 43.1596654,
+      "lon": 2.6298493,
+      "elevation_m": null
+    },
+    {
+      "name": "Castrum d'Alaric",
+      "kind": "ruins",
+      "lat": 43.161458,
+      "lon": 2.6372333,
+      "elevation_m": null
+    },
+    {
+      "name": "Longuet",
+      "kind": "ruins",
+      "lat": 43.3163233,
+      "lon": 2.750887,
+      "elevation_m": null
+    },
+    {
+      "name": "Arguzac",
+      "kind": "ruins",
+      "lat": 43.412223999999995,
+      "lon": 2.7772522,
+      "elevation_m": null
+    },
+    {
+      "name": "Marcory",
+      "kind": "ruins",
+      "lat": 43.4307021,
+      "lon": 2.7847338,
+      "elevation_m": null
+    },
+    {
+      "name": "lou Mort",
+      "kind": "ruins",
+      "lat": 43.4365297,
+      "lon": 2.793231,
+      "elevation_m": null
+    }
+  ]
+}

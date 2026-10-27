@@ -1,0 +1,118 @@
+{
+  "id": "9bab765ad63e",
+  "slug": "gr-224",
+  "path_ref": "GR 224",
+  "path_name": "De Verneuil-sur-Avre à Berville-sur-mer",
+  "description": "Le long du cours sinueux de la Risle en Eure, de l'estuaire de la Seine à Verneuil, entre falaises, zones humides et patrimoine architectural.",
+  "osm_relation_id": 14023215,
+  "distance_km": 153.0,
+  "elevation_gain_m": 1884,
+  "elevation_loss_m": 2056,
+  "max_elevation_m": 211,
+  "min_elevation_m": 1,
+  "bbox": [
+    0.3604969,
+    48.7402279,
+    0.9293276,
+    49.4384935
+  ],
+  "region": "Normandie",
+  "departement": "27",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/9bab765ad63e/trail.geojson",
+  "gpx_path": "tracks/9bab765ad63e/trail.gpx",
+  "elevation_path": "tracks/9bab765ad63e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Guichardire ( Gauche) / Fougères (à droite)",
+      "kind": "castle",
+      "lat": 48.7476061,
+      "lon": 0.8971226,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Hermite",
+      "kind": "castle",
+      "lat": 48.84894275,
+      "lon": 0.73001455,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine de la Chapelle",
+      "kind": "castle",
+      "lat": 48.8961829,
+      "lon": 0.727914,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Chapelle",
+      "kind": "castle",
+      "lat": 48.8967395,
+      "lon": 0.7270069,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fontaine",
+      "kind": "castle",
+      "lat": 49.09105445,
+      "lon": 0.6956264999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Grand Château de Serquigny",
+      "kind": "castle",
+      "lat": 49.10627425,
+      "lon": 0.70951195,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fontaine-la-Soret",
+      "kind": "castle",
+      "lat": 49.1489205,
+      "lon": 0.71990205,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Haule",
+      "kind": "castle",
+      "lat": 49.1709241,
+      "lon": 0.7036574,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Livet-sur-Authou",
+      "kind": "castle",
+      "lat": 49.23279635,
+      "lon": 0.6569455,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir",
+      "kind": "castle",
+      "lat": 49.2678046,
+      "lon": 0.679138,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bonneboscq",
+      "kind": "castle",
+      "lat": 49.35722665,
+      "lon": 0.53976115,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Mards-sur-Risle",
+      "kind": "castle",
+      "lat": 49.3791358,
+      "lon": 0.48653045,
+      "elevation_m": null
+    }
+  ]
+}

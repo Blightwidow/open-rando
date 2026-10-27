@@ -1,0 +1,118 @@
+{
+  "id": "f80a229d6187",
+  "slug": "gr-10",
+  "path_ref": "GR 10",
+  "path_name": "La traversée des Pyrénées",
+  "description": "Près de 900 km d'Hendaye à Banyuls-sur-Mer, traversant les parcs naturels pyrénéens du Pays basque à la Méditerranée.",
+  "osm_relation_id": 7411272,
+  "distance_km": 934.9,
+  "elevation_gain_m": 60588,
+  "elevation_loss_m": 60588,
+  "max_elevation_m": 2734,
+  "min_elevation_m": 1,
+  "bbox": [
+    -1.7740077,
+    42.4215967,
+    3.1291223,
+    43.373127
+  ],
+  "region": "Occitanie",
+  "departement": "66",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/f80a229d6187/trail.geojson",
+  "gpx_path": "tracks/f80a229d6187/trail.gpx",
+  "elevation_path": "tracks/f80a229d6187/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Ruines du Château de Montalba",
+      "kind": "castle",
+      "lat": 42.442452599999996,
+      "lon": 2.68446145,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du Chateau de Margie",
+      "kind": "castle",
+      "lat": 42.8072893,
+      "lon": 1.2655763,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Coste",
+      "kind": "castle",
+      "lat": 42.8075381,
+      "lon": 1.2584348,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Garde",
+      "kind": "castle",
+      "lat": 42.8356828,
+      "lon": 1.2029519,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Sainte-Marie",
+      "kind": "castle",
+      "lat": 42.87564175,
+      "lon": 0.0005953,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort du Portalet",
+      "kind": "castle",
+      "lat": 42.8864317,
+      "lon": -0.56268455,
+      "elevation_m": null
+    },
+    {
+      "name": "Maison Forte",
+      "kind": "castle",
+      "lat": 42.911952299999996,
+      "lon": -0.5702963,
+      "elevation_m": null
+    },
+    {
+      "name": "Citadelle de Saint Jean Pied de Port",
+      "kind": "castle",
+      "lat": 43.162363850000006,
+      "lon": -1.2339483000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Irumberri",
+      "kind": "castle",
+      "lat": 43.16284925,
+      "lon": -1.2125898,
+      "elevation_m": null
+    },
+    {
+      "name": "Leizarratzu",
+      "kind": "castle",
+      "lat": 43.1953994,
+      "lon": -1.3394517499999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Redoute de Santa Barbara",
+      "kind": "castle",
+      "lat": 43.30013665,
+      "lon": -1.5818748500000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Redoute de Bortuste",
+      "kind": "castle",
+      "lat": 43.3375628,
+      "lon": -1.71849,
+      "elevation_m": null
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "id": "b4f818f7cff1",
+  "slug": "gr-3",
+  "path_ref": "GR 3",
+  "path_name": "La Loire sauvage à pied",
+  "description": "1 300 km le long du dernier grand fleuve sauvage d'Europe, du Mont Gerbier de Jonc aux châteaux de la Loire classés à l'UNESCO.",
+  "osm_relation_id": 2704569,
+  "distance_km": 1300.8,
+  "elevation_gain_m": 20064,
+  "elevation_loss_m": 18656,
+  "max_elevation_m": 1609,
+  "min_elevation_m": -5,
+  "bbox": [
+    -2.4295697,
+    44.8142897,
+    4.2189043,
+    47.9040813
+  ],
+  "region": "Pays de la Loire",
+  "departement": "44",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b4f818f7cff1/trail.geojson",
+  "gpx_path": "tracks/b4f818f7cff1/trail.gpx",
+  "elevation_path": "tracks/b4f818f7cff1/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Frau",
+      "kind": "castle",
+      "lat": 47.1632283,
+      "lon": 0.1517851,
+      "elevation_m": null
+    },
+    {
+      "name": "Forteresse Royale de Chinon",
+      "kind": "castle",
+      "lat": 47.1681759,
+      "lon": 0.23597245,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Coulaine",
+      "kind": "castle",
+      "lat": 47.1802345,
+      "lon": 0.189251,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Courtinière",
+      "kind": "castle",
+      "lat": 47.1808878,
+      "lon": 0.184772,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Fontenils",
+      "kind": "castle",
+      "lat": 47.181449650000005,
+      "lon": 0.2344841,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit Thouars",
+      "kind": "castle",
+      "lat": 47.182140000000004,
+      "lon": 0.1089025,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Danzay",
+      "kind": "castle",
+      "lat": 47.186119500000004,
+      "lon": 0.180012,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Montour",
+      "kind": "castle",
+      "lat": 47.187649199999996,
+      "lon": 0.1640024,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Grille",
+      "kind": "castle",
+      "lat": 47.1883399,
+      "lon": 0.25689059999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Razilly",
+      "kind": "castle",
+      "lat": 47.192285,
+      "lon": 0.1689695,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Fuye",
+      "kind": "castle",
+      "lat": 47.1976885,
+      "lon": 0.26387335,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Beugny",
+      "kind": "castle",
+      "lat": 47.206731500000004,
+      "lon": 0.317681,
+      "elevation_m": null
+    }
+  ]
+}

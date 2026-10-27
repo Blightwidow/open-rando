@@ -1,0 +1,118 @@
+{
+  "id": "e3f17f4bd0fe",
+  "slug": "gr-56",
+  "path_ref": "GR 56",
+  "path_name": "Tour de l'Ubaye",
+  "description": "",
+  "osm_relation_id": 1738444,
+  "distance_km": 156.5,
+  "elevation_gain_m": 9617,
+  "elevation_loss_m": 9612,
+  "max_elevation_m": 2668,
+  "min_elevation_m": 1028,
+  "bbox": [
+    6.5007863,
+    44.2742441,
+    6.8856328,
+    44.5265363
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "very_difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/e3f17f4bd0fe/trail.geojson",
+  "gpx_path": "tracks/e3f17f4bd0fe/trail.gpx",
+  "elevation_path": "tracks/e3f17f4bd0fe/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Redoute de Berwick",
+      "kind": "castle",
+      "lat": 44.483221799999995,
+      "lon": 6.7505371499999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Cime de la Bonette",
+      "kind": "viewpoint",
+      "lat": 44.3216186,
+      "lon": 6.8068886,
+      "elevation_m": 2860
+    },
+    {
+      "name": "Col de la Colombière",
+      "kind": "viewpoint",
+      "lat": 44.304733,
+      "lon": 6.8735503,
+      "elevation_m": 2238
+    },
+    {
+      "name": "Cascade du Cimet",
+      "kind": "viewpoint",
+      "lat": 44.287594,
+      "lon": 6.6833322,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère du Châtelard",
+      "kind": "viewpoint",
+      "lat": 44.4526607,
+      "lon": 6.7398839,
+      "elevation_m": null
+    },
+    {
+      "name": "Blockhaus de Pelousette",
+      "kind": "ruins",
+      "lat": 44.3431181,
+      "lon": 6.8555424,
+      "elevation_m": null
+    },
+    {
+      "name": "Baraquement de Viraysse",
+      "kind": "fort",
+      "lat": 44.47645745,
+      "lon": 6.85260305,
+      "elevation_m": 2503
+    },
+    {
+      "name": "Blockhaus de Las Planas",
+      "kind": "fort",
+      "lat": 44.306908050000004,
+      "lon": 6.8807633500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "PO de la Moutière",
+      "kind": "fort",
+      "lat": 44.31480825,
+      "lon": 6.7959532,
+      "elevation_m": null
+    },
+    {
+      "name": "Blockhaus des Fourches",
+      "kind": "fort",
+      "lat": 44.32770155,
+      "lon": 6.870468750000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Ouvrage de Restefond",
+      "kind": "fort",
+      "lat": 44.32984365,
+      "lon": 6.8091032,
+      "elevation_m": null
+    },
+    {
+      "name": "AP des Fourches",
+      "kind": "fort",
+      "lat": 44.333740250000005,
+      "lon": 6.871557149999999,
+      "elevation_m": null
+    }
+  ]
+}

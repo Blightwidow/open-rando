@@ -1,0 +1,118 @@
+{
+  "id": "b533627ac1d6",
+  "slug": "gr-30",
+  "path_ref": "GR 30",
+  "path_name": "Tour des volcans et lacs d'Auvergne",
+  "description": "Boucle autour des monts et lacs volcaniques du Puy-de-Dôme, dominée par les dômes et cratères du Massif du Sancy.",
+  "osm_relation_id": 10699408,
+  "distance_km": 200.4,
+  "elevation_gain_m": 6099,
+  "elevation_loss_m": 6098,
+  "max_elevation_m": 1861,
+  "min_elevation_m": 693,
+  "bbox": [
+    2.6744292,
+    45.3880091,
+    3.0518846,
+    45.7104608
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b533627ac1d6/trail.geojson",
+  "gpx_path": "tracks/b533627ac1d6/trail.gpx",
+  "elevation_path": "tracks/b533627ac1d6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Murol",
+      "kind": "castle",
+      "lat": 45.5783277,
+      "lon": 2.9454694,
+      "elevation_m": 1050
+    },
+    {
+      "name": "Vestiges de Varennes",
+      "kind": "castle",
+      "lat": 45.577892,
+      "lon": 2.9140747,
+      "elevation_m": 935
+    },
+    {
+      "name": "Château du Bailli",
+      "kind": "castle",
+      "lat": 45.51267355,
+      "lon": 2.9336264,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montlosier",
+      "kind": "castle",
+      "lat": 45.694635,
+      "lon": 2.951054,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cordès",
+      "kind": "castle",
+      "lat": 45.7024639,
+      "lon": 2.83942585,
+      "elevation_m": null
+    },
+    {
+      "name": "Puy Ferrand",
+      "kind": "viewpoint",
+      "lat": 45.5247967,
+      "lon": 2.826486,
+      "elevation_m": 1854
+    },
+    {
+      "name": "Puy de Cliergue",
+      "kind": "viewpoint",
+      "lat": 45.5436733,
+      "lon": 2.801766,
+      "elevation_m": 1691
+    },
+    {
+      "name": "La Banne d'Ordanche",
+      "kind": "viewpoint",
+      "lat": 45.6112202,
+      "lon": 2.7725437,
+      "elevation_m": 1513
+    },
+    {
+      "name": "Table d'orientation",
+      "kind": "viewpoint",
+      "lat": 45.4028977,
+      "lon": 2.6665967,
+      "elevation_m": null
+    },
+    {
+      "name": "Cascade du Bois de Chaux",
+      "kind": "viewpoint",
+      "lat": 45.4172358,
+      "lon": 2.8381471,
+      "elevation_m": null
+    },
+    {
+      "name": "Cascade",
+      "kind": "viewpoint",
+      "lat": 45.4177827,
+      "lon": 2.8355058,
+      "elevation_m": null
+    },
+    {
+      "name": "Cascade de la Barthe",
+      "kind": "viewpoint",
+      "lat": 45.477692,
+      "lon": 2.8244714,
+      "elevation_m": null
+    }
+  ]
+}

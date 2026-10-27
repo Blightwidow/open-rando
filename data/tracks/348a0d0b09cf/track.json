@@ -1,0 +1,118 @@
+{
+  "id": "348a0d0b09cf",
+  "slug": "gr-559",
+  "path_ref": "GR 559",
+  "path_name": "De Lons-le-Saunier aux Rousses",
+  "description": "Le Chemin des Grands Lacs, de Lons-le-Saunier aux Rousses, entre vignobles, forêts et lacs glaciaires turquoise du Haut-Jura.",
+  "osm_relation_id": 6265097,
+  "distance_km": 92.1,
+  "elevation_gain_m": 3207,
+  "elevation_loss_m": 2366,
+  "max_elevation_m": 1115,
+  "min_elevation_m": 258,
+  "bbox": [
+    5.5511123,
+    46.4835374,
+    6.0610182,
+    46.6947598
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "39",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/348a0d0b09cf/trail.geojson",
+  "gpx_path": "tracks/348a0d0b09cf/trail.gpx",
+  "elevation_path": "tracks/348a0d0b09cf/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Fort des Rousses",
+      "kind": "castle",
+      "lat": 46.4793395,
+      "lon": 6.0548666,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Verges",
+      "kind": "castle",
+      "lat": 46.652692,
+      "lon": 5.683313,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chalain",
+      "kind": "castle",
+      "lat": 46.66507905,
+      "lon": 5.81356495,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mirebel",
+      "kind": "castle",
+      "lat": 46.7012243,
+      "lon": 5.73502825,
+      "elevation_m": null
+    },
+    {
+      "name": "Bélvédère de la Roche Blanche",
+      "kind": "viewpoint",
+      "lat": 46.4974169,
+      "lon": 6.0516509,
+      "elevation_m": 1206
+    },
+    {
+      "name": "Roche du Béchet",
+      "kind": "viewpoint",
+      "lat": 46.5104326,
+      "lon": 6.0252421,
+      "elevation_m": 920
+    },
+    {
+      "name": "Belvédère de la Dame Blanche",
+      "kind": "viewpoint",
+      "lat": 46.6096323,
+      "lon": 5.8288547,
+      "elevation_m": 735
+    },
+    {
+      "name": "Belvédère des Maquisards",
+      "kind": "viewpoint",
+      "lat": 46.481669,
+      "lon": 6.0295945,
+      "elevation_m": null
+    },
+    {
+      "name": "Bélvédère du Repenty",
+      "kind": "viewpoint",
+      "lat": 46.4869973,
+      "lon": 6.0156043,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère de la Vierge",
+      "kind": "viewpoint",
+      "lat": 46.5044866,
+      "lon": 5.9008277,
+      "elevation_m": null
+    },
+    {
+      "name": "Roche fendue",
+      "kind": "viewpoint",
+      "lat": 46.5139547,
+      "lon": 6.0175416,
+      "elevation_m": null
+    },
+    {
+      "name": "belvédère du Moulin",
+      "kind": "viewpoint",
+      "lat": 46.5208018,
+      "lon": 5.9127939,
+      "elevation_m": null
+    }
+  ]
+}

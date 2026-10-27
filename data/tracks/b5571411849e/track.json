@@ -1,0 +1,118 @@
+{
+  "id": "b5571411849e",
+  "slug": "gr-210",
+  "path_ref": "GR 210",
+  "path_name": "Sur les traces du Chasse-marée",
+  "description": "Sur le parcours historique des mareyeurs, des falaises de la Côte d'Albâtre aux méandres de la Seine à travers le Pays de Caux normand.",
+  "osm_relation_id": 9258722,
+  "distance_km": 87.3,
+  "elevation_gain_m": 1347,
+  "elevation_loss_m": 1336,
+  "max_elevation_m": 175,
+  "min_elevation_m": 11,
+  "bbox": [
+    1.0476237,
+    49.4407565,
+    1.154031,
+    49.9255254
+  ],
+  "region": "Normandie",
+  "departement": "76",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b5571411849e/trail.geojson",
+  "gpx_path": "tracks/b5571411849e/trail.gpx",
+  "elevation_path": "tracks/b5571411849e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Ancien hôtel de ville",
+      "kind": "castle",
+      "lat": 49.4414887,
+      "lon": 1.0915219,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour Jeanne d'Arc",
+      "kind": "castle",
+      "lat": 49.4464677,
+      "lon": 1.09439465,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel particulier",
+      "kind": "castle",
+      "lat": 49.4469913,
+      "lon": 1.0908267,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Clères",
+      "kind": "castle",
+      "lat": 49.597471,
+      "lon": 1.1091715500000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir",
+      "kind": "castle",
+      "lat": 49.59775885,
+      "lon": 1.1086833999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Pierre-Giffard",
+      "kind": "castle",
+      "lat": 49.6853574,
+      "lon": 1.1061125,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Longueville-sur-Scie",
+      "kind": "castle",
+      "lat": 49.7930345,
+      "lon": 1.1127949,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bréauté",
+      "kind": "castle",
+      "lat": 49.8190678,
+      "lon": 1.1398485,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Ecorcheboeuf",
+      "kind": "castle",
+      "lat": 49.8456977,
+      "lon": 1.09174725,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Miromesnil",
+      "kind": "castle",
+      "lat": 49.8612042,
+      "lon": 1.0818644000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Panorama Rouen Est",
+      "kind": "viewpoint",
+      "lat": 49.4336018,
+      "lon": 1.1098726,
+      "elevation_m": null
+    },
+    {
+      "name": "Panorama de Mont-Saint-Aignan",
+      "kind": "viewpoint",
+      "lat": 49.4565155,
+      "lon": 1.0684362,
+      "elevation_m": null
+    }
+  ]
+}

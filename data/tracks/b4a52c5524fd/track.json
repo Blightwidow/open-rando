@@ -1,0 +1,118 @@
+{
+  "id": "b4a52c5524fd",
+  "slug": "gr-703",
+  "path_ref": "GR 703",
+  "path_name": "Sentier Historique de Jeanne d'Arc",
+  "description": "235 km sur les traces de Jeanne d'Arc de Toul à Bagneux-la-Fosse, entre plateaux calcaires lorrains, forêts denses et vignobles champenois.",
+  "osm_relation_id": 10861384,
+  "distance_km": 236.7,
+  "elevation_gain_m": 4189,
+  "elevation_loss_m": 4174,
+  "max_elevation_m": 429,
+  "min_elevation_m": 170,
+  "bbox": [
+    4.2976875,
+    47.9708201,
+    5.8900813,
+    48.6746188
+  ],
+  "region": "Grand Est",
+  "departement": "54",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b4a52c5524fd/trail.geojson",
+  "gpx_path": "tracks/b4a52c5524fd/trail.gpx",
+  "elevation_path": "tracks/b4a52c5524fd/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Mussy",
+      "kind": "castle",
+      "lat": 47.9798155,
+      "lon": 4.4951135,
+      "elevation_m": null
+    },
+    {
+      "name": "Chateau des tertres",
+      "kind": "castle",
+      "lat": 47.9821735,
+      "lon": 4.4986135,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Ricey-Bas",
+      "kind": "castle",
+      "lat": 48.004860699999995,
+      "lon": 4.37030995,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Clos-Saint-Roch",
+      "kind": "castle",
+      "lat": 48.006494599999996,
+      "lon": 4.3654432,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lassus",
+      "kind": "castle",
+      "lat": 48.1595782,
+      "lon": 4.8033263,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cirey",
+      "kind": "castle",
+      "lat": 48.329801,
+      "lon": 4.9396764,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 48.4246489,
+      "lon": 5.2168494,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Échenay",
+      "kind": "castle",
+      "lat": 48.46049515,
+      "lon": 5.3107615,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Goussaincourt",
+      "kind": "castle",
+      "lat": 48.4846456,
+      "lon": 5.691854,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montbras",
+      "kind": "castle",
+      "lat": 48.5275687,
+      "lon": 5.6944706,
+      "elevation_m": null
+    },
+    {
+      "name": "Porte de France",
+      "kind": "castle",
+      "lat": 48.60215515,
+      "lon": 5.6640004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tusey",
+      "kind": "castle",
+      "lat": 48.6164625,
+      "lon": 5.6699936,
+      "elevation_m": null
+    }
+  ]
+}

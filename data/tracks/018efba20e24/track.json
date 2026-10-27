@@ -1,0 +1,118 @@
+{
+  "id": "018efba20e24",
+  "slug": "gr-68",
+  "path_ref": "GR 68",
+  "path_name": "Tour du Mont Lozère",
+  "description": "115 km autour du Mont Lozère, terre de granit où l'histoire et la nature se confondent dans un paysage sauvage de landes et de chaos rocheux.",
+  "osm_relation_id": 5869504,
+  "distance_km": 116.3,
+  "elevation_gain_m": 4525,
+  "elevation_loss_m": 4523,
+  "max_elevation_m": 1454,
+  "min_elevation_m": 540,
+  "bbox": [
+    3.5801501,
+    44.3119079,
+    3.9333103,
+    44.4953517
+  ],
+  "region": "Occitanie",
+  "departement": "48",
+  "difficulty": "difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/018efba20e24/trail.geojson",
+  "gpx_path": "tracks/018efba20e24/trail.gpx",
+  "elevation_path": "tracks/018efba20e24/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Florac",
+      "kind": "castle",
+      "lat": 44.323273,
+      "lon": 3.5934535,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Grizac",
+      "kind": "castle",
+      "lat": 44.3421436,
+      "lon": 3.6976686,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Champ",
+      "kind": "castle",
+      "lat": 44.4707051,
+      "lon": 3.8510796000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Tournel",
+      "kind": "castle",
+      "lat": 44.5011881,
+      "lon": 3.7041487,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère des Bouzèdes",
+      "kind": "viewpoint",
+      "lat": 44.3589068,
+      "lon": 3.9182848,
+      "elevation_m": 1234
+    },
+    {
+      "name": "Clède",
+      "kind": "ruins",
+      "lat": 44.381068049999996,
+      "lon": 3.5667052999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "clède",
+      "kind": "ruins",
+      "lat": 44.3874176,
+      "lon": 3.5697685999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Croix de l'Hermite",
+      "kind": "peak",
+      "lat": 44.3826378,
+      "lon": 3.907243,
+      "elevation_m": 1507
+    },
+    {
+      "name": "Signal du Bougès",
+      "kind": "peak",
+      "lat": 44.3173636,
+      "lon": 3.7260244,
+      "elevation_m": 1421
+    },
+    {
+      "name": "Serre Fageolle",
+      "kind": "peak",
+      "lat": 44.3662953,
+      "lon": 3.9128184,
+      "elevation_m": 1416
+    },
+    {
+      "name": "Signal de Ventalon",
+      "kind": "peak",
+      "lat": 44.3120959,
+      "lon": 3.8144946,
+      "elevation_m": 1350
+    },
+    {
+      "name": "L'Esquino d'Aze",
+      "kind": "peak",
+      "lat": 44.3917974,
+      "lon": 3.5893125,
+      "elevation_m": 1233
+    }
+  ]
+}

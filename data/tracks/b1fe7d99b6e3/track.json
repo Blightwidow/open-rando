@@ -1,0 +1,118 @@
+{
+  "id": "b1fe7d99b6e3",
+  "slug": "gr-60",
+  "path_ref": "GR 60",
+  "path_name": "Chemin du signal de Mailhebiau à Saint-Mathieu-de-Tréviers - Tracé principal",
+  "description": "176 km des hauts plateaux granitiques de l'Aubrac aux plaines méditerranéennes de l'Hérault, entre traditions pastorales et steppes des Causses.",
+  "osm_relation_id": 13880221,
+  "distance_km": 120.6,
+  "elevation_gain_m": 4117,
+  "elevation_loss_m": 4024,
+  "max_elevation_m": 1542,
+  "min_elevation_m": 121,
+  "bbox": [
+    3.4275641,
+    43.7672297,
+    3.8480177,
+    44.3337573
+  ],
+  "region": "Occitanie",
+  "departement": "48",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 31.31,
+  "geojson_path": "tracks/b1fe7d99b6e3/trail.geojson",
+  "gpx_path": "tracks/b1fe7d99b6e3/trail.gpx",
+  "elevation_path": "tracks/b1fe7d99b6e3/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Montferrand",
+      "kind": "castle",
+      "lat": 43.77533185,
+      "lon": 3.8400089,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Roquette ou Viviourès",
+      "kind": "castle",
+      "lat": 43.793081,
+      "lon": 3.8192196000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Notre-Dame de Londres",
+      "kind": "castle",
+      "lat": 43.82558515,
+      "lon": 3.7771982,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Laroque",
+      "kind": "castle",
+      "lat": 43.92241035,
+      "lon": 3.72379985,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Val-Marie",
+      "kind": "castle",
+      "lat": 43.92320125,
+      "lon": 3.7125238,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Isis",
+      "kind": "castle",
+      "lat": 43.9542711,
+      "lon": 3.6820979,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montcalm",
+      "kind": "castle",
+      "lat": 43.9717615,
+      "lon": 3.6006109,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Teissier",
+      "kind": "castle",
+      "lat": 43.972809,
+      "lon": 3.5993275000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Assas",
+      "kind": "castle",
+      "lat": 43.990056300000006,
+      "lon": 3.60520315,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mareilles",
+      "kind": "castle",
+      "lat": 43.993408849999994,
+      "lon": 3.61072075,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Rey",
+      "kind": "castle",
+      "lat": 44.000485350000005,
+      "lon": 3.65999715,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Fesq",
+      "kind": "castle",
+      "lat": 44.010332399999996,
+      "lon": 3.59353925,
+      "elevation_m": null
+    }
+  ]
+}

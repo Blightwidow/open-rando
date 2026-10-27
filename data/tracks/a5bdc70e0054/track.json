@@ -1,0 +1,118 @@
+{
+  "id": "a5bdc70e0054",
+  "slug": "gr-11",
+  "path_ref": "GR 11",
+  "path_name": "Grand Tour de Paris",
+  "description": "Un long ruban bouclant autour de la capitale, dévoilant massifs forestiers, vallées fluviales, cités médiévales et châteaux royaux d'Île-de-France.",
+  "osm_relation_id": 355981,
+  "distance_km": 782.0,
+  "elevation_gain_m": 9918,
+  "elevation_loss_m": 9698,
+  "max_elevation_m": 218,
+  "min_elevation_m": 18,
+  "bbox": [
+    1.6675058,
+    48.3118888,
+    3.3144209,
+    49.2733357
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "89",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 4,
+  "trail_gap_km": 92.71,
+  "geojson_path": "tracks/a5bdc70e0054/trail.geojson",
+  "gpx_path": "tracks/a5bdc70e0054/trail.gpx",
+  "elevation_path": "tracks/a5bdc70e0054/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Challeau",
+      "kind": "castle",
+      "lat": 48.3189894,
+      "lon": 2.8781398,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Challeau",
+      "kind": "castle",
+      "lat": 48.32018545,
+      "lon": 2.8801978000000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Ange",
+      "kind": "castle",
+      "lat": 48.3215716,
+      "lon": 2.8636348,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Belle Fontaine",
+      "kind": "castle",
+      "lat": 48.32307045,
+      "lon": 2.92784845,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Brosse",
+      "kind": "castle",
+      "lat": 48.34305395,
+      "lon": 2.90811695,
+      "elevation_m": null
+    },
+    {
+      "name": "Donjon",
+      "kind": "castle",
+      "lat": 48.370819350000005,
+      "lon": 2.8189161,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine de Motteux",
+      "kind": "castle",
+      "lat": 48.383123,
+      "lon": 2.994291,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Amendes",
+      "kind": "castle",
+      "lat": 48.38518795,
+      "lon": 2.95129485,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien Château",
+      "kind": "castle",
+      "lat": 48.3877681,
+      "lon": 2.960546,
+      "elevation_m": null
+    },
+    {
+      "name": "Pavillon de l'Étang",
+      "kind": "castle",
+      "lat": 48.3998309,
+      "lon": 2.6993196,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fontainebleau",
+      "kind": "castle",
+      "lat": 48.40212095,
+      "lon": 2.69871755,
+      "elevation_m": null
+    },
+    {
+      "name": "Quartier Henri IV",
+      "kind": "castle",
+      "lat": 48.402778,
+      "lon": 2.70222005,
+      "elevation_m": null
+    }
+  ]
+}

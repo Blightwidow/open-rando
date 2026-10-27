@@ -1,0 +1,118 @@
+{
+  "id": "5209eaf684aa",
+  "slug": "gr-58",
+  "path_ref": "GR 58",
+  "path_name": "Tour du Queyras",
+  "description": "",
+  "osm_relation_id": 9711201,
+  "distance_km": 110.7,
+  "elevation_gain_m": 8026,
+  "elevation_loss_m": 8029,
+  "max_elevation_m": 2882,
+  "min_elevation_m": 1191,
+  "bbox": [
+    6.7101641,
+    44.6684498,
+    6.9921702,
+    44.842949
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "very_difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/5209eaf684aa/trail.geojson",
+  "gpx_path": "tracks/5209eaf684aa/trail.gpx",
+  "elevation_path": "tracks/5209eaf684aa/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Pic Ouest de la Côte Belle",
+      "kind": "viewpoint",
+      "lat": 44.8135874,
+      "lon": 6.7485736,
+      "elevation_m": 2856
+    },
+    {
+      "name": "Petit Belvedère du Viso",
+      "kind": "viewpoint",
+      "lat": 44.7319564,
+      "lon": 6.9993693,
+      "elevation_m": null
+    },
+    {
+      "name": "Rochas Frach Belvédère",
+      "kind": "viewpoint",
+      "lat": 44.7326251,
+      "lon": 6.7078293,
+      "elevation_m": null
+    },
+    {
+      "name": "Col de furfande",
+      "kind": "viewpoint",
+      "lat": 44.7351763,
+      "lon": 6.7108052,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère du coin",
+      "kind": "viewpoint",
+      "lat": 44.7751346,
+      "lon": 6.7301548,
+      "elevation_m": null
+    },
+    {
+      "name": "Collette de Gilly",
+      "kind": "viewpoint",
+      "lat": 44.7962254,
+      "lon": 6.9597397,
+      "elevation_m": null
+    },
+    {
+      "name": "Ric. di Saint Veran",
+      "kind": "ruins",
+      "lat": 44.67267835,
+      "lon": 6.9672177,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancienne carrière de marbre",
+      "kind": "ruins",
+      "lat": 44.6770405,
+      "lon": 6.9189074,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancienne mine de cuivre",
+      "kind": "ruins",
+      "lat": 44.6783369,
+      "lon": 6.9148448,
+      "elevation_m": null
+    },
+    {
+      "name": "La Cabane de Cornivier",
+      "kind": "ruins",
+      "lat": 44.68137745,
+      "lon": 6.932365150000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Varenc",
+      "kind": "ruins",
+      "lat": 44.7859962,
+      "lon": 6.9446669,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Petit Varenc",
+      "kind": "ruins",
+      "lat": 44.7879227,
+      "lon": 6.9407274,
+      "elevation_m": null
+    }
+  ]
+}

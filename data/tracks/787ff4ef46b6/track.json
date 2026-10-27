@@ -1,0 +1,118 @@
+{
+  "id": "787ff4ef46b6",
+  "slug": "gr-65",
+  "path_ref": "GR 65",
+  "path_name": "Chemin de Saint-Jacques via Le Puy",
+  "description": "1 139 km sur le chemin de Saint-Jacques-de-Compostelle, de Genève au Puy-en-Velay puis jusqu'à Roncevalles, à travers un riche patrimoine médiéval.",
+  "osm_relation_id": 11959152,
+  "distance_km": 1134.9,
+  "elevation_gain_m": 25801,
+  "elevation_loss_m": 25229,
+  "max_elevation_m": 1427,
+  "min_elevation_m": 55,
+  "bbox": [
+    -1.3197858,
+    43.0067048,
+    6.1438293,
+    46.2055926
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "74",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/787ff4ef46b6/trail.geojson",
+  "gpx_path": "tracks/787ff4ef46b6/trail.gpx",
+  "elevation_path": "tracks/787ff4ef46b6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Durianne",
+      "kind": "castle",
+      "lat": 45.073267,
+      "lon": 3.9054985,
+      "elevation_m": 605
+    },
+    {
+      "name": "Château de la Clauze",
+      "kind": "castle",
+      "lat": 44.90986169999999,
+      "lon": 3.50599815,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Bilherie",
+      "kind": "castle",
+      "lat": 44.9195895,
+      "lon": 3.4869262,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Didier-d'Allier",
+      "kind": "castle",
+      "lat": 44.969868149999996,
+      "lon": 3.69107825,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Christophe-sur-Dolaizon",
+      "kind": "castle",
+      "lat": 44.996789899999996,
+      "lon": 3.8190030999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du bourg",
+      "kind": "castle",
+      "lat": 45.03824,
+      "lon": 3.9696685,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Salcrupt",
+      "kind": "castle",
+      "lat": 45.087321700000004,
+      "lon": 4.232754,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Changeas",
+      "kind": "castle",
+      "lat": 45.0900015,
+      "lon": 4.1954084,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Besset",
+      "kind": "castle",
+      "lat": 45.102081299999995,
+      "lon": 4.28538655,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Brosse",
+      "kind": "castle",
+      "lat": 45.1453014,
+      "lon": 4.28529365,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lupé",
+      "kind": "castle",
+      "lat": 45.373937,
+      "lon": 4.7071629999999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bresson",
+      "kind": "castle",
+      "lat": 45.38286015,
+      "lon": 4.98565975,
+      "elevation_m": null
+    }
+  ]
+}

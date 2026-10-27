@@ -1,0 +1,118 @@
+{
+  "id": "162776ee6af1",
+  "slug": "gr-75",
+  "path_ref": "GR 75",
+  "path_name": "Tour de Paris",
+  "description": "",
+  "osm_relation_id": 13363916,
+  "distance_km": 52.6,
+  "elevation_gain_m": 672,
+  "elevation_loss_m": 677,
+  "max_elevation_m": 125,
+  "min_elevation_m": 27,
+  "bbox": [
+    2.2506368,
+    48.8170881,
+    2.4167306,
+    48.9005121
+  ],
+  "region": "Île-de-France",
+  "departement": "92",
+  "difficulty": "easy",
+  "is_circular_trail": true,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/162776ee6af1/trail.geojson",
+  "gpx_path": "tracks/162776ee6af1/trail.gpx",
+  "elevation_path": "tracks/162776ee6af1/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Mairie de Charenton-le-Pont",
+      "kind": "castle",
+      "lat": 48.819717999999995,
+      "lon": 2.4161270000000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Rothschild",
+      "kind": "castle",
+      "lat": 48.8497605,
+      "lon": 2.23358385,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Muette",
+      "kind": "castle",
+      "lat": 48.86144965,
+      "lon": 2.26935315,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Madrid",
+      "kind": "castle",
+      "lat": 48.8747231,
+      "lon": 2.2548868,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Étang",
+      "kind": "castle",
+      "lat": 48.875759450000004,
+      "lon": 2.423311,
+      "elevation_m": null
+    },
+    {
+      "name": "Folie de Pantin",
+      "kind": "castle",
+      "lat": 48.8876343,
+      "lon": 2.4176532,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Neuilly",
+      "kind": "castle",
+      "lat": 48.8896747,
+      "lon": 2.262974,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Belvédère Trans 305",
+      "kind": "viewpoint",
+      "lat": 48.8118207,
+      "lon": 2.3724833,
+      "elevation_m": null
+    },
+    {
+      "name": "Temple Grec",
+      "kind": "viewpoint",
+      "lat": 48.830021200000004,
+      "lon": 2.41567665,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère",
+      "kind": "viewpoint",
+      "lat": 48.8334937,
+      "lon": 2.3857673,
+      "elevation_m": null
+    },
+    {
+      "name": "Espace de biodiversité",
+      "kind": "viewpoint",
+      "lat": 48.8338027,
+      "lon": 2.3854781,
+      "elevation_m": null
+    },
+    {
+      "name": "Ballon de Paris",
+      "kind": "viewpoint",
+      "lat": 48.8413628,
+      "lon": 2.27400275,
+      "elevation_m": null
+    }
+  ]
+}

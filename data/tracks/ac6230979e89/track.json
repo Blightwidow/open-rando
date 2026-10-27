@@ -1,0 +1,118 @@
+{
+  "id": "ac6230979e89",
+  "slug": "gr-655",
+  "path_ref": "GR 655",
+  "path_name": "Via Turonensis",
+  "description": "1 486 km sur la Via Turonensis, le plus ancien chemin de pèlerinage vers Compostelle, du Nord de la France aux Pyrénées-Atlantiques.",
+  "osm_relation_id": 6026933,
+  "distance_km": 1115.2,
+  "elevation_gain_m": 9787,
+  "elevation_loss_m": 9827,
+  "max_elevation_m": 263,
+  "min_elevation_m": -2,
+  "bbox": [
+    -1.09626,
+    43.2989766,
+    4.0532489,
+    50.3353114
+  ],
+  "region": "Nouvelle-Aquitaine",
+  "departement": "64",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 184.32,
+  "geojson_path": "tracks/ac6230979e89/trail.geojson",
+  "gpx_path": "tracks/ac6230979e89/trail.gpx",
+  "elevation_path": "tracks/ac6230979e89/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Duc de Dino",
+      "kind": "castle",
+      "lat": 48.9816258,
+      "lon": 2.3202902,
+      "elevation_m": 122
+    },
+    {
+      "name": "Château de Salha",
+      "kind": "castle",
+      "lat": 43.3320755,
+      "lon": -1.0220055000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sumberraute, dit Jaureguia",
+      "kind": "castle",
+      "lat": 43.3625912,
+      "lon": -1.0733973,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cauneille",
+      "kind": "castle",
+      "lat": 43.5461744,
+      "lon": -1.0680449,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine du Pourtaou et de la Gloriette (maison de Jean Rameau)",
+      "kind": "castle",
+      "lat": 43.5678331,
+      "lon": -1.0782459,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien château des Evêques",
+      "kind": "castle",
+      "lat": 43.6741725,
+      "lon": -1.0373028,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine du Sarrat",
+      "kind": "castle",
+      "lat": 43.701028,
+      "lon": -1.0492641,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Léognan",
+      "kind": "castle",
+      "lat": 44.7061322,
+      "lon": -0.6386123,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fieuzal",
+      "kind": "castle",
+      "lat": 44.7138397,
+      "lon": -0.6072388,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de France",
+      "kind": "castle",
+      "lat": 44.7158262,
+      "lon": -0.6097126,
+      "elevation_m": null
+    },
+    {
+      "name": "Ponteilh",
+      "kind": "castle",
+      "lat": 44.725693,
+      "lon": -0.6092871,
+      "elevation_m": null
+    },
+    {
+      "name": "Lestonat",
+      "kind": "castle",
+      "lat": 44.7454476,
+      "lon": -0.6315065,
+      "elevation_m": null
+    }
+  ]
+}

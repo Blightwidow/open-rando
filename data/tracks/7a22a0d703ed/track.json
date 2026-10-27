@@ -1,0 +1,119 @@
+{
+  "id": "7a22a0d703ed",
+  "slug": "gr-74",
+  "path_ref": "GR 74",
+  "path_name": "De St Maurice-Navacelles au Jouquet",
+  "description": "",
+  "osm_relation_id": 17637988,
+  "distance_km": 46.1,
+  "elevation_gain_m": 1583,
+  "elevation_loss_m": 1774,
+  "max_elevation_m": 840,
+  "min_elevation_m": 109,
+  "bbox": [
+    3.4422364,
+    43.7325632,
+    3.5782867,
+    43.8465316
+  ],
+  "region": "Occitanie",
+  "departement": "34",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "forest",
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/7a22a0d703ed/trail.geojson",
+  "gpx_path": "tracks/7a22a0d703ed/trail.gpx",
+  "elevation_path": "tracks/7a22a0d703ed/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Géant",
+      "kind": "castle",
+      "lat": 43.73586255,
+      "lon": 3.55023805,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Seigneurs de Montcalm",
+      "kind": "castle",
+      "lat": 43.84714005,
+      "lon": 3.51793345,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Madières",
+      "kind": "castle",
+      "lat": 43.855573899999996,
+      "lon": 3.56320935,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère du Berger",
+      "kind": "viewpoint",
+      "lat": 43.7315368,
+      "lon": 3.5589389,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue Max Nègre",
+      "kind": "viewpoint",
+      "lat": 43.7351339,
+      "lon": 3.5288538,
+      "elevation_m": null
+    },
+    {
+      "name": "Table d'orientation du Mont Saint-Baudille",
+      "kind": "viewpoint",
+      "lat": 43.742222,
+      "lon": 3.4858042,
+      "elevation_m": null
+    },
+    {
+      "name": "Impluvium",
+      "kind": "viewpoint",
+      "lat": 43.8067386,
+      "lon": 3.5614385,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancienne église Saint-Laurent (maison communale)",
+      "kind": "ruins",
+      "lat": 43.73332125,
+      "lon": 3.5537143,
+      "elevation_m": null
+    },
+    {
+      "name": "Bergerie de Cabanou",
+      "kind": "ruins",
+      "lat": 43.736819,
+      "lon": 3.463724,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Mas de l'Arbousier",
+      "kind": "ruins",
+      "lat": 43.756593499999994,
+      "lon": 3.5618137,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Mas de l'Arbousier",
+      "kind": "ruins",
+      "lat": 43.75666925,
+      "lon": 3.561921,
+      "elevation_m": null
+    },
+    {
+      "name": "Capitelle",
+      "kind": "ruins",
+      "lat": 43.7753741,
+      "lon": 3.5526448,
+      "elevation_m": null
+    }
+  ]
+}

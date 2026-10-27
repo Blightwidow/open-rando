@@ -1,0 +1,119 @@
+{
+  "id": "7c220229078a",
+  "slug": "gr-90",
+  "path_ref": "GR 90",
+  "path_name": "Du Lavandou à Notre Dame des Anges",
+  "description": "",
+  "osm_relation_id": 6338835,
+  "distance_km": 39.3,
+  "elevation_gain_m": 2028,
+  "elevation_loss_m": 1264,
+  "max_elevation_m": 774,
+  "min_elevation_m": 10,
+  "bbox": [
+    6.2942612,
+    43.1394014,
+    6.394306,
+    43.2815251
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "83",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "forest",
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/7c220229078a/trail.geojson",
+  "gpx_path": "tracks/7c220229078a/trail.gpx",
+  "elevation_path": "tracks/7c220229078a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château des Seigneurs de Foz",
+      "kind": "castle",
+      "lat": 43.1518815,
+      "lon": 6.34078465,
+      "elevation_m": null
+    },
+    {
+      "name": "Moulin à vent du Collet",
+      "kind": "ruins",
+      "lat": 43.228099,
+      "lon": 6.3151725,
+      "elevation_m": null
+    },
+    {
+      "name": "Église Saint-Pons",
+      "kind": "ruins",
+      "lat": 43.23715665,
+      "lon": 6.311533150000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Notre-Dame des Anges",
+      "kind": "peak",
+      "lat": 43.2812211,
+      "lon": 6.2930606,
+      "elevation_m": 768
+    },
+    {
+      "name": "Le Cros de Panau",
+      "kind": "peak",
+      "lat": 43.2776831,
+      "lon": 6.2822141,
+      "elevation_m": 666
+    },
+    {
+      "name": "Sommet du Bœuf",
+      "kind": "peak",
+      "lat": 43.2166406,
+      "lon": 6.3730232,
+      "elevation_m": 644
+    },
+    {
+      "name": "Boussicaut",
+      "kind": "peak",
+      "lat": 43.2167836,
+      "lon": 6.3749291,
+      "elevation_m": 641
+    },
+    {
+      "name": "Montagne du Faucon",
+      "kind": "peak",
+      "lat": 43.2114355,
+      "lon": 6.3526738,
+      "elevation_m": 624
+    },
+    {
+      "name": "Sommet du Laquina",
+      "kind": "peak",
+      "lat": 43.2007668,
+      "lon": 6.3300711,
+      "elevation_m": 601
+    },
+    {
+      "name": "Sommet de la Maure",
+      "kind": "peak",
+      "lat": 43.2026681,
+      "lon": 6.3457128,
+      "elevation_m": 601
+    },
+    {
+      "name": "Sommet de Fuge Lebrière",
+      "kind": "peak",
+      "lat": 43.2183717,
+      "lon": 6.3812862,
+      "elevation_m": 594
+    },
+    {
+      "name": "Montagne de Marescau",
+      "kind": "peak",
+      "lat": 43.222881,
+      "lon": 6.3703963,
+      "elevation_m": 587
+    }
+  ]
+}

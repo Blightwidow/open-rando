@@ -1,0 +1,118 @@
+{
+  "id": "b2f091a7f75c",
+  "slug": "gr-652",
+  "path_ref": "GR 652",
+  "path_name": "Voie de Rocamadour",
+  "description": "342 km sur une variante jacquaire traversant le Quercy et la Gascogne, passant par le sanctuaire médiéval de Rocamadour.",
+  "osm_relation_id": 15471251,
+  "distance_km": 340.5,
+  "elevation_gain_m": 9310,
+  "elevation_loss_m": 9565,
+  "max_elevation_m": 542,
+  "min_elevation_m": 40,
+  "bbox": [
+    0.4977843,
+    43.9824439,
+    2.1933351,
+    44.9871474
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "15",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b2f091a7f75c/trail.geojson",
+  "gpx_path": "tracks/b2f091a7f75c/trail.gpx",
+  "elevation_path": "tracks/b2f091a7f75c/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château d'Escalup",
+      "kind": "castle",
+      "lat": 44.0605147,
+      "lon": 0.54553495,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montluc",
+      "kind": "castle",
+      "lat": 44.1553075,
+      "lon": 0.562665,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Roquefort",
+      "kind": "castle",
+      "lat": 44.1701733,
+      "lon": 0.5563278,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel des Jacobins",
+      "kind": "castle",
+      "lat": 44.20357145,
+      "lon": 0.6135113999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine de Bagatelle",
+      "kind": "castle",
+      "lat": 44.2127618,
+      "lon": 0.6074545,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Madaillan",
+      "kind": "castle",
+      "lat": 44.25674915,
+      "lon": 0.5747688,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Madaillan",
+      "kind": "castle",
+      "lat": 44.2567738,
+      "lon": 0.5750822,
+      "elevation_m": null
+    },
+    {
+      "name": "Chateaux d'Arasse",
+      "kind": "castle",
+      "lat": 44.2893416,
+      "lon": 0.6518937,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour de Laugnac",
+      "kind": "castle",
+      "lat": 44.3076695,
+      "lon": 0.6045027,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Sylvestrie",
+      "kind": "castle",
+      "lat": 44.38014,
+      "lon": 0.7312575,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sainte-Foy",
+      "kind": "castle",
+      "lat": 44.3822497,
+      "lon": 0.9316835,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Noaillac",
+      "kind": "castle",
+      "lat": 44.3890075,
+      "lon": 0.863471,
+      "elevation_m": null
+    }
+  ]
+}

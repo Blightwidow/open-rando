@@ -1,0 +1,118 @@
+{
+  "id": "fef8a1470b8b",
+  "slug": "gr-43",
+  "path_ref": "GR 43",
+  "path_name": "Sentier du Col des Faïsses à Sainte-Eulalie",
+  "description": "Des sommets granitiques du Mont Lozère aux plateaux mystérieux de la Margeride, une traversée spectaculaire entre Cévennes et terres de légendes.",
+  "osm_relation_id": 6438029,
+  "distance_km": 108.7,
+  "elevation_gain_m": 3068,
+  "elevation_loss_m": 2652,
+  "max_elevation_m": 1530,
+  "min_elevation_m": 538,
+  "bbox": [
+    3.4780499,
+    44.2470128,
+    3.6650117,
+    44.8001844
+  ],
+  "region": "Occitanie",
+  "departement": "48",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/fef8a1470b8b/trail.geojson",
+  "gpx_path": "tracks/fef8a1470b8b/trail.gpx",
+  "elevation_path": "tracks/fef8a1470b8b/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Florac",
+      "kind": "castle",
+      "lat": 44.323273,
+      "lon": 3.5934535,
+      "elevation_m": null
+    },
+    {
+      "name": "Roc de Serre",
+      "kind": "viewpoint",
+      "lat": 44.7400294,
+      "lon": 3.5675692,
+      "elevation_m": 1494
+    },
+    {
+      "name": "Vue Générale sur la Vallée de Sainte-Croix",
+      "kind": "viewpoint",
+      "lat": 44.2431631,
+      "lon": 3.6205541,
+      "elevation_m": null
+    },
+    {
+      "name": "Vue sur le hameau de Croupillac",
+      "kind": "viewpoint",
+      "lat": 44.2959618,
+      "lon": 3.5895313,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Terres rouges",
+      "kind": "ruins",
+      "lat": 44.24769875,
+      "lon": 3.6266149,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Faïsses",
+      "kind": "ruins",
+      "lat": 44.254717,
+      "lon": 3.6180264,
+      "elevation_m": null
+    },
+    {
+      "name": "Clède",
+      "kind": "ruins",
+      "lat": 44.381068049999996,
+      "lon": 3.5667052999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "clède",
+      "kind": "ruins",
+      "lat": 44.3874176,
+      "lon": 3.5697685999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Truc de Fortunio",
+      "kind": "peak",
+      "lat": 44.6424777,
+      "lon": 3.5325866,
+      "elevation_m": 1551
+    },
+    {
+      "name": "Signal de Randon",
+      "kind": "peak",
+      "lat": 44.6560783,
+      "lon": 3.5436272,
+      "elevation_m": 1551
+    },
+    {
+      "name": "Serre de Pierret",
+      "kind": "peak",
+      "lat": 44.7335384,
+      "lon": 3.562942,
+      "elevation_m": 1505
+    },
+    {
+      "name": "Truc de Randon",
+      "kind": "peak",
+      "lat": 44.6521052,
+      "lon": 3.5046781,
+      "elevation_m": 1401
+    }
+  ]
+}

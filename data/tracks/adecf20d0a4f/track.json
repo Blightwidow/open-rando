@@ -1,0 +1,118 @@
+{
+  "id": "adecf20d0a4f",
+  "slug": "gr-222",
+  "path_ref": "GR 222",
+  "path_name": "D'Avre à la Seine",
+  "description": "129 km du confluent de la Seine et de l'Andelle aux portes du Perche, entre falaises de craie, forêts et vallées intimistes.",
+  "osm_relation_id": 14717233,
+  "distance_km": 129.1,
+  "elevation_gain_m": 1485,
+  "elevation_loss_m": 1651,
+  "max_elevation_m": 204,
+  "min_elevation_m": 3,
+  "bbox": [
+    0.8791308,
+    48.7402725,
+    1.2383779,
+    49.3126344
+  ],
+  "region": "Normandie",
+  "departement": "27",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/adecf20d0a4f/trail.geojson",
+  "gpx_path": "tracks/adecf20d0a4f/trail.gpx",
+  "elevation_path": "tracks/adecf20d0a4f/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Charnelles",
+      "kind": "castle",
+      "lat": 48.7715359,
+      "lon": 0.9361802,
+      "elevation_m": null
+    },
+    {
+      "name": "Le donjon de Conches",
+      "kind": "castle",
+      "lat": 48.961399650000004,
+      "lon": 0.94334585,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Quenet",
+      "kind": "castle",
+      "lat": 48.9669353,
+      "lon": 0.95816,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Emalleville",
+      "kind": "castle",
+      "lat": 49.096881350000004,
+      "lon": 1.15508605,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Amfreville",
+      "kind": "castle",
+      "lat": 49.1454653,
+      "lon": 1.153475,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir-ferme",
+      "kind": "castle",
+      "lat": 49.1771868,
+      "lon": 1.1118829,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Saint-Hilaire",
+      "kind": "castle",
+      "lat": 49.2026391,
+      "lon": 1.1709986,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Incarville",
+      "kind": "castle",
+      "lat": 49.2342875,
+      "lon": 1.1757564999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir",
+      "kind": "castle",
+      "lat": 49.3049179,
+      "lon": 1.1575156999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Canteloup",
+      "kind": "castle",
+      "lat": 49.3134929,
+      "lon": 1.2437075499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Deux Amants",
+      "kind": "castle",
+      "lat": 49.31738575,
+      "lon": 1.24516655,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du chateau",
+      "kind": "ruins",
+      "lat": 48.8343706,
+      "lon": 0.910442,
+      "elevation_m": null
+    }
+  ]
+}

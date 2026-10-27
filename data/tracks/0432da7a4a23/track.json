@@ -1,0 +1,118 @@
+{
+  "id": "0432da7a4a23",
+  "slug": "gr-76",
+  "path_ref": "GR 76",
+  "path_name": "De Chagny (Saône-et-Loire) à Affoux",
+  "description": "",
+  "osm_relation_id": 14316345,
+  "distance_km": 187.8,
+  "elevation_gain_m": 6569,
+  "elevation_loss_m": 5865,
+  "max_elevation_m": 919,
+  "min_elevation_m": 200,
+  "bbox": [
+    4.390921,
+    45.8463957,
+    4.7531228,
+    46.9074719
+  ],
+  "region": "Centre-Val de Loire",
+  "departement": "36",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/0432da7a4a23/trail.geojson",
+  "gpx_path": "tracks/0432da7a4a23/trail.gpx",
+  "elevation_path": "tracks/0432da7a4a23/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Bussière",
+      "kind": "castle",
+      "lat": 45.8864015,
+      "lon": 4.40878,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Bascoulard",
+      "kind": "castle",
+      "lat": 45.8985195,
+      "lon": 4.44034,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Sauzay",
+      "kind": "castle",
+      "lat": 46.2089175,
+      "lon": 4.6002976,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de La Carelle",
+      "kind": "castle",
+      "lat": 46.2286537,
+      "lon": 4.555673,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Grosbois",
+      "kind": "castle",
+      "lat": 46.2324621,
+      "lon": 4.5811402,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Verbust",
+      "kind": "castle",
+      "lat": 46.2410165,
+      "lon": 4.565081599999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Vestiges de la Tour des Charmes",
+      "kind": "castle",
+      "lat": 46.2632104,
+      "lon": 4.6092455,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tramayes",
+      "kind": "castle",
+      "lat": 46.306943000000004,
+      "lon": 4.6030522000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Point - Maison de Lamartine",
+      "kind": "castle",
+      "lat": 46.3435324,
+      "lon": 4.6154406,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lourdon",
+      "kind": "castle",
+      "lat": 46.460366,
+      "lon": 4.6467635000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sirot",
+      "kind": "castle",
+      "lat": 46.4872548,
+      "lon": 4.6364665,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pommier",
+      "kind": "castle",
+      "lat": 46.51196765,
+      "lon": 4.6429753,
+      "elevation_m": null
+    }
+  ]
+}

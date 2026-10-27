@@ -1,0 +1,118 @@
+{
+  "id": "dc52df36f600",
+  "slug": "gr-31",
+  "path_ref": "GR 31",
+  "path_name": "Traversée de la Sologne",
+  "description": "283 km à travers la Sologne, de Cosne-Cours-sur-Loire à Blois, entre étangs, forêts de chênes et riche faune sauvage.",
+  "osm_relation_id": 13046192,
+  "distance_km": 284.4,
+  "elevation_gain_m": 3013,
+  "elevation_loss_m": 3080,
+  "max_elevation_m": 397,
+  "min_elevation_m": 67,
+  "bbox": [
+    1.3369122,
+    47.2156611,
+    2.9216774,
+    47.6505758
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "58",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/dc52df36f600/trail.geojson",
+  "gpx_path": "tracks/dc52df36f600/trail.gpx",
+  "elevation_path": "tracks/dc52df36f600/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Loye",
+      "kind": "castle",
+      "lat": 47.2340448,
+      "lon": 2.6032255,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Menetou-Salon",
+      "kind": "castle",
+      "lat": 47.234832499999996,
+      "lon": 2.4912715,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Maupas",
+      "kind": "castle",
+      "lat": 47.24504,
+      "lon": 2.5859489,
+      "elevation_m": null
+    },
+    {
+      "name": "La Tour de Vesvre",
+      "kind": "castle",
+      "lat": 47.287988049999996,
+      "lon": 2.7234185,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour des Fiefs",
+      "kind": "castle",
+      "lat": 47.3309661,
+      "lon": 2.84063075,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sancerre",
+      "kind": "castle",
+      "lat": 47.33145605,
+      "lon": 2.841118,
+      "elevation_m": null
+    },
+    {
+      "name": "Chateau des Comtes de Nevers",
+      "kind": "castle",
+      "lat": 47.4106225,
+      "lon": 2.9237479,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Pezeau",
+      "kind": "castle",
+      "lat": 47.4252155,
+      "lon": 2.8985215,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Coque",
+      "kind": "castle",
+      "lat": 47.51386385,
+      "lon": 1.4001682,
+      "elevation_m": null
+    },
+    {
+      "name": "L'Hydouanière",
+      "kind": "castle",
+      "lat": 47.5150592,
+      "lon": 1.4159864,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Monrepos",
+      "kind": "castle",
+      "lat": 47.51840575,
+      "lon": 1.40263235,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Gagnotterie",
+      "kind": "castle",
+      "lat": 47.52203035,
+      "lon": 1.394911,
+      "elevation_m": null
+    }
+  ]
+}

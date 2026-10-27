@@ -1,0 +1,118 @@
+{
+  "id": "d7bb97709d39",
+  "slug": "gr-86",
+  "path_ref": "GR 86",
+  "path_name": "De Toulouse à Bagnères-de-Luchon",
+  "description": "",
+  "osm_relation_id": 15034692,
+  "distance_km": 281.7,
+  "elevation_gain_m": 7033,
+  "elevation_loss_m": 6547,
+  "max_elevation_m": 1217,
+  "min_elevation_m": 130,
+  "bbox": [
+    0.5598068,
+    42.7845044,
+    1.4428883,
+    43.6208279
+  ],
+  "region": "Occitanie",
+  "departement": "31",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/d7bb97709d39/trail.geojson",
+  "gpx_path": "tracks/d7bb97709d39/trail.gpx",
+  "elevation_path": "tracks/d7bb97709d39/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Guran",
+      "kind": "castle",
+      "lat": 42.8926695,
+      "lon": 0.617552,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Béat",
+      "kind": "castle",
+      "lat": 42.9164032,
+      "lon": 0.6919927,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bezins",
+      "kind": "castle",
+      "lat": 42.9301976,
+      "lon": 0.6897669,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bagen",
+      "kind": "castle",
+      "lat": 43.0312615,
+      "lon": 0.6794530000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Comtal",
+      "kind": "castle",
+      "lat": 43.2197246,
+      "lon": 0.8799907,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Nine",
+      "kind": "castle",
+      "lat": 43.2400452,
+      "lon": 0.8570639,
+      "elevation_m": null
+    },
+    {
+      "name": "Restes de l'ancien château",
+      "kind": "castle",
+      "lat": 43.2404676,
+      "lon": 0.8901612,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 43.334531,
+      "lon": 0.9444330000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lahage",
+      "kind": "castle",
+      "lat": 43.4412422,
+      "lon": 1.0595516,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Vitarelles",
+      "kind": "castle",
+      "lat": 43.56551125,
+      "lon": 1.3205826,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Salvetat-Saint-Gilles",
+      "kind": "castle",
+      "lat": 43.577873999999994,
+      "lon": 1.271373,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bagatelle",
+      "kind": "castle",
+      "lat": 43.5813943,
+      "lon": 1.36577065,
+      "elevation_m": null
+    }
+  ]
+}

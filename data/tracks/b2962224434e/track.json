@@ -1,0 +1,118 @@
+{
+  "id": "b2962224434e",
+  "slug": "gr-71d",
+  "path_ref": "GR 71D",
+  "path_name": "Tour du Larzac",
+  "description": "",
+  "osm_relation_id": 4111357,
+  "distance_km": 107.2,
+  "elevation_gain_m": 2251,
+  "elevation_loss_m": 1902,
+  "max_elevation_m": 869,
+  "min_elevation_m": 377,
+  "bbox": [
+    3.0343912,
+    43.9138468,
+    3.3316697,
+    44.0925361
+  ],
+  "region": "Occitanie",
+  "departement": "12",
+  "difficulty": "moderate",
+  "is_circular_trail": true,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b2962224434e/trail.geojson",
+  "gpx_path": "tracks/b2962224434e/trail.gpx",
+  "elevation_path": "tracks/b2962224434e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Castelnau",
+      "kind": "castle",
+      "lat": 44.01311675,
+      "lon": 3.31990315,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Geniez de Bertrand",
+      "kind": "castle",
+      "lat": 44.042563799999996,
+      "lon": 3.02255725,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Creissels",
+      "kind": "castle",
+      "lat": 44.0859935,
+      "lon": 3.0607914000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Usclades",
+      "kind": "viewpoint",
+      "lat": 43.9821742,
+      "lon": 3.2507843,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Roc Nantais",
+      "kind": "viewpoint",
+      "lat": 44.0307772,
+      "lon": 3.3080039,
+      "elevation_m": null
+    },
+    {
+      "name": "La Blaquière",
+      "kind": "viewpoint",
+      "lat": 44.0545893,
+      "lon": 3.1540945,
+      "elevation_m": null
+    },
+    {
+      "name": "Four des Barthes",
+      "kind": "ruins",
+      "lat": 43.9645181,
+      "lon": 3.2193562,
+      "elevation_m": null
+    },
+    {
+      "name": "Chapelle Saint-Étienne de Larzac",
+      "kind": "ruins",
+      "lat": 43.9724648,
+      "lon": 3.1691919,
+      "elevation_m": null
+    },
+    {
+      "name": "Saint-Alban",
+      "kind": "ruins",
+      "lat": 44.00596865,
+      "lon": 3.29768575,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Boissets1",
+      "kind": "ruins",
+      "lat": 44.06795705,
+      "lon": 3.27958675,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Boissets 2",
+      "kind": "ruins",
+      "lat": 44.0682851,
+      "lon": 3.27971885,
+      "elevation_m": null
+    },
+    {
+      "name": "Habitat troglodytique",
+      "kind": "ruins",
+      "lat": 44.0768108,
+      "lon": 3.1847073,
+      "elevation_m": null
+    }
+  ]
+}

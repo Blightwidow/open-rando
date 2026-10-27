@@ -1,0 +1,118 @@
+{
+  "id": "57af530388e2",
+  "slug": "gr-14",
+  "path_ref": "GR 14",
+  "path_name": "De La Champagne aux Ardennes",
+  "description": "Des Ardennes belges à la Champagne, traversant forêts denses et vallées encaissées avant de s'adoucir vers les plaines champenoises.",
+  "osm_relation_id": 10832894,
+  "distance_km": 249.6,
+  "elevation_gain_m": 4169,
+  "elevation_loss_m": 3967,
+  "max_elevation_m": 427,
+  "min_elevation_m": 113,
+  "bbox": [
+    4.7550857,
+    48.5236185,
+    5.1597597,
+    49.7916326
+  ],
+  "region": "Grand Est",
+  "departement": "52",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/57af530388e2/trail.geojson",
+  "gpx_path": "tracks/57af530388e2/trail.gpx",
+  "elevation_path": "tracks/57af530388e2/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Ancien monastère des Dames de l'Assomption",
+      "kind": "castle",
+      "lat": 48.63233005,
+      "lon": 4.9526863,
+      "elevation_m": null
+    },
+    {
+      "name": "Sous-Préfecture de Saint-Dizier",
+      "kind": "castle",
+      "lat": 48.636232,
+      "lon": 4.9520040000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Rempart Ouest",
+      "kind": "castle",
+      "lat": 48.6382651,
+      "lon": 4.9479712,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Jeand'heurs",
+      "kind": "castle",
+      "lat": 48.72657675,
+      "lon": 5.045825150000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Ducs de Bar",
+      "kind": "castle",
+      "lat": 48.7716401,
+      "lon": 5.15619755,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Marbeaumont",
+      "kind": "castle",
+      "lat": 48.77376665,
+      "lon": 5.1717318500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cornay",
+      "kind": "castle",
+      "lat": 49.3028135,
+      "lon": 4.9490974,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Grandpré",
+      "kind": "castle",
+      "lat": 49.3415971,
+      "lon": 4.87153845,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de La Berlière",
+      "kind": "castle",
+      "lat": 49.5190764,
+      "lon": 4.9203577,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Barbière",
+      "kind": "castle",
+      "lat": 49.5351917,
+      "lon": 4.8779109,
+      "elevation_m": null
+    },
+    {
+      "name": "Château-ferme de Maison à Bar",
+      "kind": "castle",
+      "lat": 49.57390645,
+      "lon": 4.83788775,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rocan",
+      "kind": "castle",
+      "lat": 49.6358968,
+      "lon": 4.867308,
+      "elevation_m": null
+    }
+  ]
+}

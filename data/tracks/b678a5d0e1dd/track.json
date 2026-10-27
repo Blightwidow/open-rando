@@ -1,0 +1,118 @@
+{
+  "id": "b678a5d0e1dd",
+  "slug": "gr-303",
+  "path_ref": "GR 303",
+  "path_name": "À travers le Bourbonnais",
+  "description": "263 km à travers la région historique des Bourbons, de Boussac à Montcombroux-les-Mines, entre histoire dynastique et patrimoine médiéval.",
+  "osm_relation_id": 15665421,
+  "distance_km": 264.5,
+  "elevation_gain_m": 3173,
+  "elevation_loss_m": 3159,
+  "max_elevation_m": 501,
+  "min_elevation_m": 173,
+  "bbox": [
+    2.2135345,
+    46.3454308,
+    3.6878803,
+    46.7137802
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "03",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b678a5d0e1dd/trail.geojson",
+  "gpx_path": "tracks/b678a5d0e1dd/trail.gpx",
+  "elevation_path": "tracks/b678a5d0e1dd/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Bêche",
+      "kind": "castle",
+      "lat": 46.339867,
+      "lon": 3.6797728999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Boussac",
+      "kind": "castle",
+      "lat": 46.3479703,
+      "lon": 2.2109815,
+      "elevation_m": null
+    },
+    {
+      "name": "Château La Creuzette",
+      "kind": "castle",
+      "lat": 46.348583149999996,
+      "lon": 2.2189217,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Lonzat",
+      "kind": "castle",
+      "lat": 46.3676324,
+      "lon": 3.6128128,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Jaligny",
+      "kind": "castle",
+      "lat": 46.37867775,
+      "lon": 3.59160265,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Gouttes",
+      "kind": "castle",
+      "lat": 46.423333,
+      "lon": 3.5881111,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Fougis",
+      "kind": "castle",
+      "lat": 46.42670865,
+      "lon": 3.5645036,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Frêne",
+      "kind": "castle",
+      "lat": 46.4444965,
+      "lon": 3.4641781,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lécluse",
+      "kind": "castle",
+      "lat": 46.478347049999996,
+      "lon": 3.4242974,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Malvaux",
+      "kind": "castle",
+      "lat": 46.506527,
+      "lon": 2.365476,
+      "elevation_m": null
+    },
+    {
+      "name": "Maison forte dite La Matray",
+      "kind": "castle",
+      "lat": 46.5311047,
+      "lon": 3.18017105,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chéry",
+      "kind": "castle",
+      "lat": 46.531749250000004,
+      "lon": 3.21354895,
+      "elevation_m": null
+    }
+  ]
+}

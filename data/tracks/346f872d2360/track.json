@@ -1,0 +1,118 @@
+{
+  "id": "346f872d2360",
+  "slug": "gr-64",
+  "path_ref": "GR 64",
+  "path_name": "Du pont sur l'Ouysse (Lot) aux Eyzies-de-Tayac-Sireuil",
+  "description": "",
+  "osm_relation_id": 13078092,
+  "distance_km": 65.1,
+  "elevation_gain_m": 1601,
+  "elevation_loss_m": 1511,
+  "max_elevation_m": 376,
+  "min_elevation_m": 66,
+  "bbox": [
+    1.0718792,
+    44.7325598,
+    1.5574395,
+    44.8267236
+  ],
+  "region": "Occitanie",
+  "departement": "46",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/346f872d2360/trail.geojson",
+  "gpx_path": "tracks/346f872d2360/trail.gpx",
+  "elevation_path": "tracks/346f872d2360/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Laval",
+      "kind": "castle",
+      "lat": 44.78952255,
+      "lon": 1.5054338,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lacoste",
+      "kind": "castle",
+      "lat": 44.7983352,
+      "lon": 1.1560639,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Castelnaud-la-Chapelle",
+      "kind": "castle",
+      "lat": 44.81601555,
+      "lon": 1.1481627,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Milandes",
+      "kind": "castle",
+      "lat": 44.823534949999996,
+      "lon": 1.1135015,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tarde",
+      "kind": "castle",
+      "lat": 44.8262105,
+      "lon": 1.182597,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Malartrie",
+      "kind": "castle",
+      "lat": 44.8274745,
+      "lon": 1.1780316499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Goudou",
+      "kind": "castle",
+      "lat": 44.8287427,
+      "lon": 1.0862571,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fayrac",
+      "kind": "castle",
+      "lat": 44.8303911,
+      "lon": 1.1446992,
+      "elevation_m": null
+    },
+    {
+      "name": "Table d'orientation",
+      "kind": "viewpoint",
+      "lat": 44.7377882,
+      "lon": 1.3824611,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère de la Barre",
+      "kind": "viewpoint",
+      "lat": 44.8040471,
+      "lon": 1.2145537,
+      "elevation_m": null
+    },
+    {
+      "name": "Croix de la Mission",
+      "kind": "viewpoint",
+      "lat": 44.8186171,
+      "lon": 1.1465783,
+      "elevation_m": null
+    },
+    {
+      "name": "Pech Désert",
+      "kind": "ruins",
+      "lat": 44.7910642,
+      "lon": 1.564867,
+      "elevation_m": null
+    }
+  ]
+}

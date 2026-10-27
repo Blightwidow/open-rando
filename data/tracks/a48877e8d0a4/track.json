@@ -1,0 +1,118 @@
+{
+  "id": "a48877e8d0a4",
+  "slug": "gr-235",
+  "path_ref": "GR 235",
+  "path_name": "De la Sarthe au Loir",
+  "description": "211 km à travers les vallonnements du Maine, entre plaines alluviales, coteaux boisés, manoirs en pierre et moulins anciens.",
+  "osm_relation_id": 14707539,
+  "distance_km": 206.6,
+  "elevation_gain_m": 2793,
+  "elevation_loss_m": 2909,
+  "max_elevation_m": 346,
+  "min_elevation_m": 67,
+  "bbox": [
+    -0.0552129,
+    47.773961,
+    0.7989866,
+    48.4214987
+  ],
+  "region": "Normandie",
+  "departement": "61",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/a48877e8d0a4/trail.geojson",
+  "gpx_path": "tracks/a48877e8d0a4/trail.gpx",
+  "elevation_path": "tracks/a48877e8d0a4/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de La Flotte",
+      "kind": "castle",
+      "lat": 47.7719455,
+      "lon": 0.6770605000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Matval",
+      "kind": "castle",
+      "lat": 47.8137147,
+      "lon": 0.74709205,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Courtanvaux",
+      "kind": "castle",
+      "lat": 47.844167999999996,
+      "lon": 0.735598,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Béchuère",
+      "kind": "castle",
+      "lat": 47.8665922,
+      "lon": 0.7252583,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montmirail",
+      "kind": "castle",
+      "lat": 48.103216,
+      "lon": 0.7902,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mondragon",
+      "kind": "castle",
+      "lat": 48.17683315,
+      "lon": 0.5258058999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien château",
+      "kind": "castle",
+      "lat": 48.2677787,
+      "lon": 0.5469202,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rosay",
+      "kind": "castle",
+      "lat": 48.3273995,
+      "lon": 0.1232585,
+      "elevation_m": null
+    },
+    {
+      "name": "La Cour du Bois",
+      "kind": "castle",
+      "lat": 48.3346092,
+      "lon": 0.37109559999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de cerisay",
+      "kind": "castle",
+      "lat": 48.334661,
+      "lon": 0.013268499999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vaux",
+      "kind": "castle",
+      "lat": 48.3434463,
+      "lon": 0.0370799,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bourg-le-Roi",
+      "kind": "castle",
+      "lat": 48.3436591,
+      "lon": 0.1383156,
+      "elevation_m": null
+    }
+  ]
+}

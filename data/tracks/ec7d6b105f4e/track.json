@@ -1,0 +1,118 @@
+{
+  "id": "ec7d6b105f4e",
+  "slug": "gr-25",
+  "path_ref": "GR 25",
+  "path_name": "De Sotteville-sous-le-Val à Montville",
+  "description": "Une immersion dans les paysages contrastés de la Seine-Maritime, entre plateaux calcaires et vues spectaculaires sur les méandres de la Seine.",
+  "osm_relation_id": 14465600,
+  "distance_km": 79.8,
+  "elevation_gain_m": 1050,
+  "elevation_loss_m": 1078,
+  "max_elevation_m": 172,
+  "min_elevation_m": 8,
+  "bbox": [
+    1.0740738,
+    49.3227568,
+    1.3407273,
+    49.5632406
+  ],
+  "region": "Normandie",
+  "departement": "76",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/ec7d6b105f4e/trail.geojson",
+  "gpx_path": "tracks/ec7d6b105f4e/trail.gpx",
+  "elevation_path": "tracks/ec7d6b105f4e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Belbeuf",
+      "kind": "castle",
+      "lat": 49.3896845,
+      "lon": 1.1368368,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Martainville",
+      "kind": "castle",
+      "lat": 49.4584553,
+      "lon": 1.2937917,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine du château de Mondétour (également sur commune de Blainville-Crevon)",
+      "kind": "castle",
+      "lat": 49.5205079,
+      "lon": 1.2670806,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bout Levet",
+      "kind": "castle",
+      "lat": 49.5525547,
+      "lon": 1.2172610499999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bosc-Théroulde",
+      "kind": "castle",
+      "lat": 49.553498000000005,
+      "lon": 1.1314595,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rombosc",
+      "kind": "castle",
+      "lat": 49.5717426,
+      "lon": 1.1393423999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bainville-Crevon",
+      "kind": "ruins",
+      "lat": 49.50414455000001,
+      "lon": 1.3035611,
+      "elevation_m": null
+    },
+    {
+      "name": "Colombier",
+      "kind": "monument",
+      "lat": 49.3852087,
+      "lon": 1.2017872,
+      "elevation_m": null
+    },
+    {
+      "name": "Pigeonnier",
+      "kind": "monument",
+      "lat": 49.38874515,
+      "lon": 1.1381174,
+      "elevation_m": null
+    },
+    {
+      "name": "Mont Criquet",
+      "kind": "peak",
+      "lat": 49.3569688,
+      "lon": 1.1332574,
+      "elevation_m": null
+    },
+    {
+      "name": "Butte de Martainville",
+      "kind": "peak",
+      "lat": 49.4662954,
+      "lon": 1.3046103,
+      "elevation_m": null
+    },
+    {
+      "name": "Grotte de Gouy",
+      "kind": "cave_entrance",
+      "lat": 49.3602142,
+      "lon": 1.1301428,
+      "elevation_m": null
+    }
+  ]
+}

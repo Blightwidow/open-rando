@@ -1,0 +1,119 @@
+{
+  "id": "d27c7706cf20",
+  "slug": "gr-42",
+  "path_ref": "GR 42",
+  "path_name": "Balcons du Rhône",
+  "description": "De Saint-Étienne au Grau-du-Roi en suivant le Rhône sur 453 km, des forêts de montagne aux vignobles de la vallée du Rhône puis aux marais de Camargue.",
+  "osm_relation_id": 2410123,
+  "distance_km": 25.1,
+  "elevation_gain_m": 631,
+  "elevation_loss_m": 885,
+  "max_elevation_m": 788,
+  "min_elevation_m": 100,
+  "bbox": [
+    4.7087376,
+    44.8261526,
+    4.8025128,
+    44.9822885
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "26",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "forest",
+    "hills"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 4.7,
+  "geojson_path": "tracks/d27c7706cf20/trail.geojson",
+  "gpx_path": "tracks/d27c7706cf20/trail.gpx",
+  "elevation_path": "tracks/d27c7706cf20/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château Souchet",
+      "kind": "castle",
+      "lat": 44.8187545,
+      "lon": 4.7875425,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du Château de Beauchastel",
+      "kind": "castle",
+      "lat": 44.827993199999995,
+      "lon": 4.7960536000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Crozat",
+      "kind": "castle",
+      "lat": 44.9339651,
+      "lon": 4.73472765,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Besset",
+      "kind": "castle",
+      "lat": 44.962284,
+      "lon": 4.778707499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pierre Gourde",
+      "kind": "ruins",
+      "lat": 44.85175315,
+      "lon": 4.7411517,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Ruiné de Pierre Gourde",
+      "kind": "ruins",
+      "lat": 44.8518371,
+      "lon": 4.7413667,
+      "elevation_m": null
+    },
+    {
+      "name": "Pic de St Romain de Lerps",
+      "kind": "peak",
+      "lat": 44.9835389,
+      "lon": 4.7992667,
+      "elevation_m": 649
+    },
+    {
+      "name": "monument commémoratif de Juventin 8 mai 1944",
+      "kind": "memorial",
+      "lat": 44.9165932,
+      "lon": 4.7520348,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour Hertzienne TDF de La Chavas",
+      "kind": "tower",
+      "lat": 44.9647115,
+      "lon": 4.7984152,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.8278559,
+      "lon": 4.7960415,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.8518859,
+      "lon": 4.741447,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 44.9835618,
+      "lon": 4.7993656,
+      "elevation_m": null
+    }
+  ]
+}

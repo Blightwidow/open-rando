@@ -1,0 +1,119 @@
+{
+  "id": "420438ea95d9",
+  "slug": "gr-61",
+  "path_ref": "GR 61",
+  "path_name": "De Anduze au Col de l'Asclier",
+  "description": "",
+  "osm_relation_id": 2399821,
+  "distance_km": 35.3,
+  "elevation_gain_m": 1712,
+  "elevation_loss_m": 946,
+  "max_elevation_m": 1047,
+  "min_elevation_m": 132,
+  "bbox": [
+    3.7443325,
+    44.053627,
+    3.9865894,
+    44.1178139
+  ],
+  "region": "Occitanie",
+  "departement": "82",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain",
+    "forest"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/420438ea95d9/trail.geojson",
+  "gpx_path": "tracks/420438ea95d9/trail.gpx",
+  "elevation_path": "tracks/420438ea95d9/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Péras",
+      "kind": "castle",
+      "lat": 44.1015308,
+      "lon": 3.8916191,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Jean-du-Gard",
+      "kind": "castle",
+      "lat": 44.1050397,
+      "lon": 3.8842991,
+      "elevation_m": null
+    },
+    {
+      "name": "Rocher de l'Aigle",
+      "kind": "viewpoint",
+      "lat": 44.0745217,
+      "lon": 3.767014,
+      "elevation_m": null
+    },
+    {
+      "name": "Mont Brion",
+      "kind": "viewpoint",
+      "lat": 44.0799973,
+      "lon": 3.8416134,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour de peyre",
+      "kind": "ruins",
+      "lat": 44.0629445,
+      "lon": 3.83410295,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour à Signaux des Cévennes",
+      "kind": "ruins",
+      "lat": 44.0773302,
+      "lon": 3.96844645,
+      "elevation_m": null
+    },
+    {
+      "name": "Lascours",
+      "kind": "ruins",
+      "lat": 44.105064600000006,
+      "lon": 3.8481424,
+      "elevation_m": null
+    },
+    {
+      "name": "Mauripe",
+      "kind": "peak",
+      "lat": 44.0734737,
+      "lon": 3.8104386,
+      "elevation_m": 822
+    },
+    {
+      "name": "Mont Brion",
+      "kind": "peak",
+      "lat": 44.0800036,
+      "lon": 3.841592,
+      "elevation_m": 815
+    },
+    {
+      "name": "Sauque Rounde",
+      "kind": "peak",
+      "lat": 44.1171281,
+      "lon": 3.9452301,
+      "elevation_m": 451
+    },
+    {
+      "name": "Pierre Blanche",
+      "kind": "peak",
+      "lat": 44.0933077,
+      "lon": 3.9320666,
+      "elevation_m": 440
+    },
+    {
+      "name": "Mont Luziers",
+      "kind": "peak",
+      "lat": 44.0960251,
+      "lon": 3.9724785,
+      "elevation_m": 425
+    }
+  ]
+}

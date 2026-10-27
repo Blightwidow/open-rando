@@ -1,0 +1,118 @@
+{
+  "id": "5b14d1de6aa2",
+  "slug": "gr-26",
+  "path_ref": "GR 26",
+  "path_name": "De Poissy à Villers-sur-Mer",
+  "description": "Des bords de la Seine à la Manche, de Poissy à Villers-sur-Mer, traversant forêts d'Île-de-France, plaines céréalières et bocage normand.",
+  "osm_relation_id": 1731864,
+  "distance_km": 10.4,
+  "elevation_gain_m": 185,
+  "elevation_loss_m": 235,
+  "max_elevation_m": 97,
+  "min_elevation_m": 3,
+  "bbox": [
+    0.0504134,
+    49.2779742,
+    0.0770346,
+    49.3487046
+  ],
+  "region": "Normandie",
+  "departement": "14",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/5b14d1de6aa2/trail.geojson",
+  "gpx_path": "tracks/5b14d1de6aa2/trail.gpx",
+  "elevation_path": "tracks/5b14d1de6aa2/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Villa Sayer",
+      "kind": "castle",
+      "lat": 49.2758566,
+      "lon": 0.0788301,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de la Pipardière",
+      "kind": "castle",
+      "lat": 49.298647,
+      "lon": 0.0879655,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Gabriel",
+      "kind": "castle",
+      "lat": 49.33989,
+      "lon": 0.0507895,
+      "elevation_m": null
+    },
+    {
+      "name": "Mont Canisy",
+      "kind": "viewpoint",
+      "lat": 49.3406575,
+      "lon": 0.039904,
+      "elevation_m": null
+    },
+    {
+      "name": "Villa Mors",
+      "kind": "monument",
+      "lat": 49.3534848,
+      "lon": 0.0566788,
+      "elevation_m": null
+    },
+    {
+      "name": "Mont Canisy",
+      "kind": "peak",
+      "lat": 49.3391018,
+      "lon": 0.0396056,
+      "elevation_m": 111
+    },
+    {
+      "name": "Mont Canisy",
+      "kind": "peak",
+      "lat": 49.3345262,
+      "lon": 0.0562685,
+      "elevation_m": 99
+    },
+    {
+      "name": "Carré militaire",
+      "kind": "memorial",
+      "lat": 49.344069399999995,
+      "lon": 0.0708695,
+      "elevation_m": null
+    },
+    {
+      "name": "Croix Solier",
+      "kind": "wayside_cross",
+      "lat": 49.3344447,
+      "lon": 0.060959,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 49.3385592,
+      "lon": 0.0386493,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 49.3421638,
+      "lon": 0.0414303,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "ruins",
+      "lat": 49.33935755,
+      "lon": 0.041279449999999995,
+      "elevation_m": null
+    }
+  ]
+}

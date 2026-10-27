@@ -1,0 +1,118 @@
+{
+  "id": "3e8e80086a68",
+  "slug": "gr-78",
+  "path_ref": "GR 78",
+  "path_name": "Chemin du Piémont Pyrénéen",
+  "description": "613 km le long du canal du Midi puis en balcon permanent sur la chaîne des Pyrénées, de Carcassonne au col d'Oihantzarre.",
+  "osm_relation_id": 2785399,
+  "distance_km": 607.8,
+  "elevation_gain_m": 15871,
+  "elevation_loss_m": 16187,
+  "max_elevation_m": 1197,
+  "min_elevation_m": 25,
+  "bbox": [
+    -1.1727651,
+    42.926017,
+    3.046159,
+    43.3554694
+  ],
+  "region": "Nouvelle-Aquitaine",
+  "departement": "64",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 91.28,
+  "geojson_path": "tracks/3e8e80086a68/trail.geojson",
+  "gpx_path": "tracks/3e8e80086a68/trail.gpx",
+  "elevation_path": "tracks/3e8e80086a68/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château fort de Mauléon",
+      "kind": "castle",
+      "lat": 43.219383300000004,
+      "lon": -0.88626905,
+      "elevation_m": 216
+    },
+    {
+      "name": "Château de Montégut",
+      "kind": "castle",
+      "lat": 42.9811959,
+      "lon": 1.09792705,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Vicomtes",
+      "kind": "castle",
+      "lat": 42.982556349999996,
+      "lon": 1.1445702,
+      "elevation_m": null
+    },
+    {
+      "name": "Château-fort",
+      "kind": "castle",
+      "lat": 42.987214050000006,
+      "lon": 0.63608205,
+      "elevation_m": null
+    },
+    {
+      "name": "Château St Michel",
+      "kind": "castle",
+      "lat": 43.00146545,
+      "lon": 1.1165053,
+      "elevation_m": null
+    },
+    {
+      "name": "Château",
+      "kind": "castle",
+      "lat": 43.0217272,
+      "lon": 1.3321019,
+      "elevation_m": null
+    },
+    {
+      "name": "Château vieux",
+      "kind": "castle",
+      "lat": 43.0721455,
+      "lon": 1.5049513,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Hille",
+      "kind": "castle",
+      "lat": 43.0787672,
+      "lon": 1.4716012,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Roques",
+      "kind": "castle",
+      "lat": 43.0855465,
+      "lon": 1.7942814,
+      "elevation_m": null
+    },
+    {
+      "name": "Castella",
+      "kind": "castle",
+      "lat": 43.0886315,
+      "lon": 1.4762048,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Soum",
+      "kind": "castle",
+      "lat": 43.089548199999996,
+      "lon": -0.047027849999999996,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Rouzaud",
+      "kind": "castle",
+      "lat": 43.089695199999994,
+      "lon": 1.5361611,
+      "elevation_m": null
+    }
+  ]
+}

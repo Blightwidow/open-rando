@@ -1,0 +1,118 @@
+{
+  "id": "eb6ff1c94a3b",
+  "slug": "gr-465",
+  "path_ref": "GR 465",
+  "path_name": "Des monts du Cantal à la vallée du Lot",
+  "description": "133 km sur l'ancienne voie de pèlerinage des Clunisiens, des plateaux du Cantal à l'abbatiale romane de Conques.",
+  "osm_relation_id": 8600862,
+  "distance_km": 150.7,
+  "elevation_gain_m": 6123,
+  "elevation_loss_m": 6506,
+  "max_elevation_m": 1044,
+  "min_elevation_m": 205,
+  "bbox": [
+    2.3490961,
+    44.5921087,
+    2.6820674,
+    44.9513184
+  ],
+  "region": "Occitanie",
+  "departement": "34",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 4.7,
+  "geojson_path": "tracks/eb6ff1c94a3b/trail.geojson",
+  "gpx_path": "tracks/eb6ff1c94a3b/trail.gpx",
+  "elevation_path": "tracks/eb6ff1c94a3b/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château d'Humières",
+      "kind": "castle",
+      "lat": 44.599658,
+      "lon": 2.3965855,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Selves",
+      "kind": "castle",
+      "lat": 44.6441095,
+      "lon": 2.3367044999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Entraygues",
+      "kind": "castle",
+      "lat": 44.6442459,
+      "lon": 2.5635161,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vieillevie",
+      "kind": "castle",
+      "lat": 44.6446939,
+      "lon": 2.4194561,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Taussac",
+      "kind": "castle",
+      "lat": 44.830509000000006,
+      "lon": 2.6427104999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Venzac",
+      "kind": "castle",
+      "lat": 44.867290499999996,
+      "lon": 2.66431,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cropières",
+      "kind": "castle",
+      "lat": 44.9229045,
+      "lon": 2.6600754,
+      "elevation_m": null
+    },
+    {
+      "name": "Panorama de la Croix des Scouts",
+      "kind": "viewpoint",
+      "lat": 44.596006,
+      "lon": 2.3980821,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue sur la Vinzelle",
+      "kind": "viewpoint",
+      "lat": 44.6413992,
+      "lon": 2.33942,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Puy de l'Arbre",
+      "kind": "viewpoint",
+      "lat": 44.7141406,
+      "lon": 2.5030706,
+      "elevation_m": null
+    },
+    {
+      "name": "Table d'orientation - Point de Vue des Trois Croix",
+      "kind": "viewpoint",
+      "lat": 44.8767644,
+      "lon": 2.6583305,
+      "elevation_m": null
+    },
+    {
+      "name": "Église Saint-Thomas de Canterbury",
+      "kind": "ruins",
+      "lat": 44.5993768,
+      "lon": 2.3984096,
+      "elevation_m": null
+    }
+  ]
+}

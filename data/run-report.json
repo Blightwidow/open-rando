@@ -1,0 +1,2289 @@
+{
+  "generated_at": "2026-10-27T12:48:22.413937+00:00",
+  "routes_total": 71,
+  "routes_added": [],
+  "routes_removed": [],
+  "routes_unchanged": 3,
+  "routes_changed": [
+    {
+      "path_ref": "GR 1",
+      "route_id": "0fbbaf4616b4",
+      "distance_km": {
+        "before": 580.7,
+        "after": 580.7
+      },
+      "train_stations": {
+        "before": 53,
+        "after": 53
+      },
+      "bus_stops": {
+        "before": 308,
+        "after": 308
+      },
+      "accommodation": {
+        "before": 387,
+        "after": 499
+      },
+      "elevation_gain_m": {
+        "before": 7874,
+        "after": 7874
+      },
+      "stations_with_rail_service": {
+        "before": 48,
+        "after": 48
+      },
+      "trail_gap_km": {
+        "before": 18.05,
+        "after": 18.05
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 10",
+      "route_id": "f80a229d6187",
+      "distance_km": {
+        "before": 934.9,
+        "after": 934.9
+      },
+      "train_stations": {
+        "before": 9,
+        "after": 9
+      },
+      "bus_stops": {
+        "before": 69,
+        "after": 69
+      },
+      "accommodation": {
+        "before": 430,
+        "after": 463
+      },
+      "elevation_gain_m": {
+        "before": 60588,
+        "after": 60588
+      },
+      "stations_with_rail_service": {
+        "before": 9,
+        "after": 9
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 11",
+      "route_id": "a5bdc70e0054",
+      "distance_km": {
+        "before": 782.0,
+        "after": 782.0
+      },
+      "train_stations": {
+        "before": 66,
+        "after": 66
+      },
+      "bus_stops": {
+        "before": 336,
+        "after": 337
+      },
+      "accommodation": {
+        "before": 966,
+        "after": 1167
+      },
+      "elevation_gain_m": {
+        "before": 9918,
+        "after": 9918
+      },
+      "stations_with_rail_service": {
+        "before": 66,
+        "after": 66
+      },
+      "trail_gap_km": {
+        "before": 92.71,
+        "after": 92.71
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 12",
+      "route_id": "9b8f98153848",
+      "distance_km": {
+        "before": 365.3,
+        "after": 365.3
+      },
+      "train_stations": {
+        "before": 21,
+        "after": 21
+      },
+      "bus_stops": {
+        "before": 132,
+        "after": 132
+      },
+      "accommodation": {
+        "before": 1080,
+        "after": 1280
+      },
+      "elevation_gain_m": {
+        "before": 5209,
+        "after": 5209
+      },
+      "stations_with_rail_service": {
+        "before": 19,
+        "after": 19
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 13",
+      "route_id": "94cfc52e7d9d",
+      "distance_km": {
+        "before": 461.8,
+        "after": 461.8
+      },
+      "train_stations": {
+        "before": 15,
+        "after": 15
+      },
+      "bus_stops": {
+        "before": 91,
+        "after": 91
+      },
+      "accommodation": {
+        "before": 127,
+        "after": 137
+      },
+      "elevation_gain_m": {
+        "before": 9232,
+        "after": 9232
+      },
+      "stations_with_rail_service": {
+        "before": 15,
+        "after": 15
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 137",
+      "route_id": "d70c1cca0f34",
+      "distance_km": {
+        "before": 52.8,
+        "after": 52.8
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 26,
+        "after": 26
+      },
+      "accommodation": {
+        "before": 14,
+        "after": 18
+      },
+      "elevation_gain_m": {
+        "before": 1092,
+        "after": 1092
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 14",
+      "route_id": "57af530388e2",
+      "distance_km": {
+        "before": 249.6,
+        "after": 249.6
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 35,
+        "after": 35
+      },
+      "accommodation": {
+        "before": 26,
+        "after": 33
+      },
+      "elevation_gain_m": {
+        "before": 4169,
+        "after": 4169
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 15",
+      "route_id": "c8663cf8fd62",
+      "distance_km": {
+        "before": 374.2,
+        "after": 374.2
+      },
+      "train_stations": {
+        "before": 26,
+        "after": 26
+      },
+      "bus_stops": {
+        "before": 167,
+        "after": 167
+      },
+      "accommodation": {
+        "before": 159,
+        "after": 210
+      },
+      "elevation_gain_m": {
+        "before": 4145,
+        "after": 4145
+      },
+      "stations_with_rail_service": {
+        "before": 24,
+        "after": 24
+      },
+      "trail_gap_km": {
+        "before": 21.11,
+        "after": 21.11
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 169",
+      "route_id": "686e20126732",
+      "distance_km": {
+        "before": 175.1,
+        "after": 175.1
+      },
+      "train_stations": {
+        "before": 17,
+        "after": 17
+      },
+      "bus_stops": {
+        "before": 228,
+        "after": 229
+      },
+      "accommodation": {
+        "before": 100,
+        "after": 110
+      },
+      "elevation_gain_m": {
+        "before": 2632,
+        "after": 2632
+      },
+      "stations_with_rail_service": {
+        "before": 17,
+        "after": 17
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 2",
+      "route_id": "c83fa9c73132",
+      "distance_km": {
+        "before": 873.3,
+        "after": 873.3
+      },
+      "train_stations": {
+        "before": 53,
+        "after": 53
+      },
+      "bus_stops": {
+        "before": 281,
+        "after": 287
+      },
+      "accommodation": {
+        "before": 1965,
+        "after": 2151
+      },
+      "elevation_gain_m": {
+        "before": 15077,
+        "after": 15077
+      },
+      "stations_with_rail_service": {
+        "before": 52,
+        "after": 52
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 21",
+      "route_id": "4d73869a1554",
+      "distance_km": {
+        "before": 191.5,
+        "after": 191.5
+      },
+      "train_stations": {
+        "before": 4,
+        "after": 4
+      },
+      "bus_stops": {
+        "before": 128,
+        "after": 128
+      },
+      "accommodation": {
+        "before": 185,
+        "after": 191
+      },
+      "elevation_gain_m": {
+        "before": 3056,
+        "after": 3056
+      },
+      "stations_with_rail_service": {
+        "before": 4,
+        "after": 4
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 210",
+      "route_id": "b5571411849e",
+      "distance_km": {
+        "before": 87.3,
+        "after": 87.3
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 54,
+        "after": 54
+      },
+      "accommodation": {
+        "before": 75,
+        "after": 79
+      },
+      "elevation_gain_m": {
+        "before": 1347,
+        "after": 1347
+      },
+      "stations_with_rail_service": {
+        "before": 8,
+        "after": 8
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 22",
+      "route_id": "f28bbf1e90a6",
+      "distance_km": {
+        "before": 559.2,
+        "after": 559.2
+      },
+      "train_stations": {
+        "before": 25,
+        "after": 25
+      },
+      "bus_stops": {
+        "before": 155,
+        "after": 155
+      },
+      "accommodation": {
+        "before": 1627,
+        "after": 1804
+      },
+      "elevation_gain_m": {
+        "before": 8742,
+        "after": 8742
+      },
+      "stations_with_rail_service": {
+        "before": 25,
+        "after": 25
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 222",
+      "route_id": "adecf20d0a4f",
+      "distance_km": {
+        "before": 129.1,
+        "after": 129.1
+      },
+      "train_stations": {
+        "before": 5,
+        "after": 5
+      },
+      "bus_stops": {
+        "before": 53,
+        "after": 53
+      },
+      "accommodation": {
+        "before": 21,
+        "after": 25
+      },
+      "elevation_gain_m": {
+        "before": 1485,
+        "after": 1485
+      },
+      "stations_with_rail_service": {
+        "before": 5,
+        "after": 5
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 223",
+      "route_id": "e5367d42aa2a",
+      "distance_km": {
+        "before": 658.2,
+        "after": 658.2
+      },
+      "train_stations": {
+        "before": 6,
+        "after": 6
+      },
+      "bus_stops": {
+        "before": 194,
+        "after": 194
+      },
+      "accommodation": {
+        "before": 497,
+        "after": 519
+      },
+      "elevation_gain_m": {
+        "before": 5625,
+        "after": 5625
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 224",
+      "route_id": "9bab765ad63e",
+      "distance_km": {
+        "before": 153.0,
+        "after": 153.0
+      },
+      "train_stations": {
+        "before": 4,
+        "after": 4
+      },
+      "bus_stops": {
+        "before": 9,
+        "after": 9
+      },
+      "accommodation": {
+        "before": 15,
+        "after": 17
+      },
+      "elevation_gain_m": {
+        "before": 1884,
+        "after": 1884
+      },
+      "stations_with_rail_service": {
+        "before": 4,
+        "after": 4
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 235",
+      "route_id": "a48877e8d0a4",
+      "distance_km": {
+        "before": 206.6,
+        "after": 206.6
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 35,
+        "after": 35
+      },
+      "accommodation": {
+        "before": 17,
+        "after": 18
+      },
+      "elevation_gain_m": {
+        "before": 2793,
+        "after": 2793
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 3",
+      "route_id": "b4f818f7cff1",
+      "distance_km": {
+        "before": 1300.8,
+        "after": 1300.8
+      },
+      "train_stations": {
+        "before": 60,
+        "after": 60
+      },
+      "bus_stops": {
+        "before": 256,
+        "after": 256
+      },
+      "accommodation": {
+        "before": 790,
+        "after": 848
+      },
+      "elevation_gain_m": {
+        "before": 20064,
+        "after": 20064
+      },
+      "stations_with_rail_service": {
+        "before": 58,
+        "after": 58
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 300",
+      "route_id": "4dcc9d2318d9",
+      "distance_km": {
+        "before": 381.7,
+        "after": 381.7
+      },
+      "train_stations": {
+        "before": 18,
+        "after": 18
+      },
+      "bus_stops": {
+        "before": 79,
+        "after": 79
+      },
+      "accommodation": {
+        "before": 116,
+        "after": 139
+      },
+      "elevation_gain_m": {
+        "before": 7012,
+        "after": 7012
+      },
+      "stations_with_rail_service": {
+        "before": 18,
+        "after": 18
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 303",
+      "route_id": "b678a5d0e1dd",
+      "distance_km": {
+        "before": 264.5,
+        "after": 264.5
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 19,
+        "after": 19
+      },
+      "accommodation": {
+        "before": 38,
+        "after": 40
+      },
+      "elevation_gain_m": {
+        "before": 3173,
+        "after": 3173
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 31",
+      "route_id": "dc52df36f600",
+      "distance_km": {
+        "before": 284.4,
+        "after": 284.4
+      },
+      "train_stations": {
+        "before": 5,
+        "after": 5
+      },
+      "bus_stops": {
+        "before": 33,
+        "after": 33
+      },
+      "accommodation": {
+        "before": 78,
+        "after": 93
+      },
+      "elevation_gain_m": {
+        "before": 3013,
+        "after": 3013
+      },
+      "stations_with_rail_service": {
+        "before": 5,
+        "after": 5
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 32",
+      "route_id": "44885779360f",
+      "distance_km": {
+        "before": 135.2,
+        "after": 135.2
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 61,
+        "after": 61
+      },
+      "accommodation": {
+        "before": 21,
+        "after": 24
+      },
+      "elevation_gain_m": {
+        "before": 947,
+        "after": 947
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 34",
+      "route_id": "3ae2996d1da9",
+      "distance_km": {
+        "before": 2118.2,
+        "after": 2118.2
+      },
+      "train_stations": {
+        "before": 19,
+        "after": 19
+      },
+      "bus_stops": {
+        "before": 416,
+        "after": 416
+      },
+      "accommodation": {
+        "before": 1440,
+        "after": 1483
+      },
+      "elevation_gain_m": {
+        "before": 27143,
+        "after": 27143
+      },
+      "stations_with_rail_service": {
+        "before": 15,
+        "after": 15
+      },
+      "trail_gap_km": {
+        "before": 9.53,
+        "after": 9.53
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 35",
+      "route_id": "a5c22ed21b44",
+      "distance_km": {
+        "before": 488.3,
+        "after": 488.3
+      },
+      "train_stations": {
+        "before": 15,
+        "after": 15
+      },
+      "bus_stops": {
+        "before": 94,
+        "after": 94
+      },
+      "accommodation": {
+        "before": 135,
+        "after": 141
+      },
+      "elevation_gain_m": {
+        "before": 4209,
+        "after": 4209
+      },
+      "stations_with_rail_service": {
+        "before": 15,
+        "after": 15
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 36",
+      "route_id": "80e7a1f68b71",
+      "distance_km": {
+        "before": 1994.2,
+        "after": 1994.2
+      },
+      "train_stations": {
+        "before": 32,
+        "after": 32
+      },
+      "bus_stops": {
+        "before": 171,
+        "after": 171
+      },
+      "accommodation": {
+        "before": 610,
+        "after": 672
+      },
+      "elevation_gain_m": {
+        "before": 44682,
+        "after": 44682
+      },
+      "stations_with_rail_service": {
+        "before": 32,
+        "after": 32
+      },
+      "trail_gap_km": {
+        "before": 317.15,
+        "after": 317.15
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 360",
+      "route_id": "72ed360b1e6e",
+      "distance_km": {
+        "before": 482.9,
+        "after": 482.9
+      },
+      "train_stations": {
+        "before": 6,
+        "after": 6
+      },
+      "bus_stops": {
+        "before": 54,
+        "after": 54
+      },
+      "accommodation": {
+        "before": 90,
+        "after": 95
+      },
+      "elevation_gain_m": {
+        "before": 4605,
+        "after": 4605
+      },
+      "stations_with_rail_service": {
+        "before": 6,
+        "after": 6
+      },
+      "trail_gap_km": {
+        "before": 30.92,
+        "after": 30.92
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 364",
+      "route_id": "bfda4eb79663",
+      "distance_km": {
+        "before": 493.5,
+        "after": 493.5
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 88,
+        "after": 88
+      },
+      "accommodation": {
+        "before": 179,
+        "after": 185
+      },
+      "elevation_gain_m": {
+        "before": 5505,
+        "after": 5505
+      },
+      "stations_with_rail_service": {
+        "before": 8,
+        "after": 8
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 37",
+      "route_id": "aef86deecaf6",
+      "distance_km": {
+        "before": 727.8,
+        "after": 727.8
+      },
+      "train_stations": {
+        "before": 7,
+        "after": 7
+      },
+      "bus_stops": {
+        "before": 125,
+        "after": 125
+      },
+      "accommodation": {
+        "before": 195,
+        "after": 207
+      },
+      "elevation_gain_m": {
+        "before": 10028,
+        "after": 10028
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 42.43,
+        "after": 42.43
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 39",
+      "route_id": "890eb7483d5d",
+      "distance_km": {
+        "before": 334.4,
+        "after": 334.4
+      },
+      "train_stations": {
+        "before": 14,
+        "after": 14
+      },
+      "bus_stops": {
+        "before": 99,
+        "after": 100
+      },
+      "accommodation": {
+        "before": 153,
+        "after": 162
+      },
+      "elevation_gain_m": {
+        "before": 4111,
+        "after": 4111
+      },
+      "stations_with_rail_service": {
+        "before": 14,
+        "after": 14
+      },
+      "trail_gap_km": {
+        "before": 44.59,
+        "after": 44.59
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 4",
+      "route_id": "48f5a0a1ac46",
+      "distance_km": {
+        "before": 1502.8,
+        "after": 1502.8
+      },
+      "train_stations": {
+        "before": 18,
+        "after": 18
+      },
+      "bus_stops": {
+        "before": 213,
+        "after": 213
+      },
+      "accommodation": {
+        "before": 721,
+        "after": 773
+      },
+      "elevation_gain_m": {
+        "before": 39179,
+        "after": 39179
+      },
+      "stations_with_rail_service": {
+        "before": 18,
+        "after": 18
+      },
+      "trail_gap_km": {
+        "before": 19.2,
+        "after": 19.2
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 41",
+      "route_id": "04c3962eb99a",
+      "distance_km": {
+        "before": 449.7,
+        "after": 449.7
+      },
+      "train_stations": {
+        "before": 22,
+        "after": 22
+      },
+      "bus_stops": {
+        "before": 86,
+        "after": 86
+      },
+      "accommodation": {
+        "before": 169,
+        "after": 178
+      },
+      "elevation_gain_m": {
+        "before": 5429,
+        "after": 5429
+      },
+      "stations_with_rail_service": {
+        "before": 22,
+        "after": 22
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 43",
+      "route_id": "fef8a1470b8b",
+      "distance_km": {
+        "before": 108.7,
+        "after": 108.7
+      },
+      "train_stations": {
+        "before": 2,
+        "after": 2
+      },
+      "bus_stops": {
+        "before": 2,
+        "after": 2
+      },
+      "accommodation": {
+        "before": 31,
+        "after": 33
+      },
+      "elevation_gain_m": {
+        "before": 3068,
+        "after": 3068
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 46",
+      "route_id": "326d4316c19f",
+      "distance_km": {
+        "before": 1018.3,
+        "after": 1018.3
+      },
+      "train_stations": {
+        "before": 26,
+        "after": 26
+      },
+      "bus_stops": {
+        "before": 146,
+        "after": 146
+      },
+      "accommodation": {
+        "before": 438,
+        "after": 471
+      },
+      "elevation_gain_m": {
+        "before": 19294,
+        "after": 19294
+      },
+      "stations_with_rail_service": {
+        "before": 25,
+        "after": 25
+      },
+      "trail_gap_km": {
+        "before": 17.4,
+        "after": 17.4
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 470",
+      "route_id": "a17c0441f238",
+      "distance_km": {
+        "before": 178.2,
+        "after": 178.2
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 9,
+        "after": 9
+      },
+      "accommodation": {
+        "before": 64,
+        "after": 67
+      },
+      "elevation_gain_m": {
+        "before": 6082,
+        "after": 6082
+      },
+      "stations_with_rail_service": {
+        "before": 8,
+        "after": 8
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 48",
+      "route_id": "a787e3c48bf1",
+      "distance_km": {
+        "before": 322.1,
+        "after": 322.1
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 55,
+        "after": 55
+      },
+      "accommodation": {
+        "before": 81,
+        "after": 84
+      },
+      "elevation_gain_m": {
+        "before": 4034,
+        "after": 4034
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 5",
+      "route_id": "43fade0a3fe4",
+      "distance_km": {
+        "before": 590.3,
+        "after": 590.3
+      },
+      "train_stations": {
+        "before": 7,
+        "after": 7
+      },
+      "bus_stops": {
+        "before": 142,
+        "after": 142
+      },
+      "accommodation": {
+        "before": 662,
+        "after": 722
+      },
+      "elevation_gain_m": {
+        "before": 36063,
+        "after": 36063
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 501",
+      "route_id": "dce816b1395c",
+      "distance_km": {
+        "before": 439.7,
+        "after": 439.7
+      },
+      "train_stations": {
+        "before": 35,
+        "after": 35
+      },
+      "bus_stops": {
+        "before": 164,
+        "after": 164
+      },
+      "accommodation": {
+        "before": 218,
+        "after": 232
+      },
+      "elevation_gain_m": {
+        "before": 8745,
+        "after": 8745
+      },
+      "stations_with_rail_service": {
+        "before": 35,
+        "after": 35
+      },
+      "trail_gap_km": {
+        "before": 84.89,
+        "after": 84.89
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 51",
+      "route_id": "5abf70c0c9e9",
+      "distance_km": {
+        "before": 444.5,
+        "after": 444.5
+      },
+      "train_stations": {
+        "before": 21,
+        "after": 21
+      },
+      "bus_stops": {
+        "before": 207,
+        "after": 207
+      },
+      "accommodation": {
+        "before": 257,
+        "after": 295
+      },
+      "elevation_gain_m": {
+        "before": 15689,
+        "after": 15689
+      },
+      "stations_with_rail_service": {
+        "before": 21,
+        "after": 21
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 52",
+      "route_id": "1b6354eca279",
+      "distance_km": {
+        "before": 236.3,
+        "after": 236.3
+      },
+      "train_stations": {
+        "before": 2,
+        "after": 2
+      },
+      "bus_stops": {
+        "before": 14,
+        "after": 14
+      },
+      "accommodation": {
+        "before": 67,
+        "after": 74
+      },
+      "elevation_gain_m": {
+        "before": 15606,
+        "after": 15606
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 40.28,
+        "after": 40.28
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 53",
+      "route_id": "173085758c2e",
+      "distance_km": {
+        "before": 194.6,
+        "after": 194.6
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 54,
+        "after": 54
+      },
+      "accommodation": {
+        "before": 88,
+        "after": 94
+      },
+      "elevation_gain_m": {
+        "before": 6672,
+        "after": 6672
+      },
+      "stations_with_rail_service": {
+        "before": 8,
+        "after": 8
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 559",
+      "route_id": "348a0d0b09cf",
+      "distance_km": {
+        "before": 92.1,
+        "after": 92.1
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 22,
+        "after": 22
+      },
+      "accommodation": {
+        "before": 45,
+        "after": 49
+      },
+      "elevation_gain_m": {
+        "before": 3207,
+        "after": 3207
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 59",
+      "route_id": "1aa3c8fbf3a5",
+      "distance_km": {
+        "before": 639.3,
+        "after": 639.3
+      },
+      "train_stations": {
+        "before": 27,
+        "after": 27
+      },
+      "bus_stops": {
+        "before": 117,
+        "after": 117
+      },
+      "accommodation": {
+        "before": 182,
+        "after": 205
+      },
+      "elevation_gain_m": {
+        "before": 19281,
+        "after": 19281
+      },
+      "stations_with_rail_service": {
+        "before": 27,
+        "after": 27
+      },
+      "trail_gap_km": {
+        "before": 131.21,
+        "after": 131.21
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 6",
+      "route_id": "21653136d419",
+      "distance_km": {
+        "before": 1295.7,
+        "after": 1295.7
+      },
+      "train_stations": {
+        "before": 32,
+        "after": 32
+      },
+      "bus_stops": {
+        "before": 135,
+        "after": 136
+      },
+      "accommodation": {
+        "before": 595,
+        "after": 655
+      },
+      "elevation_gain_m": {
+        "before": 35478,
+        "after": 35478
+      },
+      "stations_with_rail_service": {
+        "before": 32,
+        "after": 32
+      },
+      "trail_gap_km": {
+        "before": 37.6,
+        "after": 37.6
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 62",
+      "route_id": "bf269b0d2bb8",
+      "distance_km": {
+        "before": 142.1,
+        "after": 142.1
+      },
+      "train_stations": {
+        "before": 5,
+        "after": 5
+      },
+      "bus_stops": {
+        "before": 36,
+        "after": 36
+      },
+      "accommodation": {
+        "before": 50,
+        "after": 59
+      },
+      "elevation_gain_m": {
+        "before": 4358,
+        "after": 4358
+      },
+      "stations_with_rail_service": {
+        "before": 5,
+        "after": 5
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 63",
+      "route_id": "3dd5e59ee3a6",
+      "distance_km": {
+        "before": 148.7,
+        "after": 148.7
+      },
+      "train_stations": {
+        "before": 3,
+        "after": 3
+      },
+      "bus_stops": {
+        "before": 79,
+        "after": 79
+      },
+      "accommodation": {
+        "before": 117,
+        "after": 123
+      },
+      "elevation_gain_m": {
+        "before": 2983,
+        "after": 2983
+      },
+      "stations_with_rail_service": {
+        "before": 3,
+        "after": 3
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 65",
+      "route_id": "787ff4ef46b6",
+      "distance_km": {
+        "before": 1134.9,
+        "after": 1134.9
+      },
+      "train_stations": {
+        "before": 20,
+        "after": 20
+      },
+      "bus_stops": {
+        "before": 165,
+        "after": 166
+      },
+      "accommodation": {
+        "before": 584,
+        "after": 614
+      },
+      "elevation_gain_m": {
+        "before": 25801,
+        "after": 25801
+      },
+      "stations_with_rail_service": {
+        "before": 20,
+        "after": 20
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 652",
+      "route_id": "b2f091a7f75c",
+      "distance_km": {
+        "before": 340.5,
+        "after": 340.5
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 24,
+        "after": 24
+      },
+      "accommodation": {
+        "before": 144,
+        "after": 159
+      },
+      "elevation_gain_m": {
+        "before": 9310,
+        "after": 9310
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 653",
+      "route_id": "b8c6b2f2852a",
+      "distance_km": {
+        "before": 810.3,
+        "after": 810.3
+      },
+      "train_stations": {
+        "before": 31,
+        "after": 31
+      },
+      "bus_stops": {
+        "before": 214,
+        "after": 214
+      },
+      "accommodation": {
+        "before": 555,
+        "after": 599
+      },
+      "elevation_gain_m": {
+        "before": 16681,
+        "after": 16681
+      },
+      "stations_with_rail_service": {
+        "before": 31,
+        "after": 31
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 653A",
+      "route_id": "38c306ea9982",
+      "distance_km": {
+        "before": 398.3,
+        "after": 398.3
+      },
+      "train_stations": {
+        "before": 21,
+        "after": 21
+      },
+      "bus_stops": {
+        "before": 264,
+        "after": 264
+      },
+      "accommodation": {
+        "before": 420,
+        "after": 451
+      },
+      "elevation_gain_m": {
+        "before": 8742,
+        "after": 8742
+      },
+      "stations_with_rail_service": {
+        "before": 21,
+        "after": 21
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 653D",
+      "route_id": "16c221b0415d",
+      "distance_km": {
+        "before": 438.3,
+        "after": 438.3
+      },
+      "train_stations": {
+        "before": 8,
+        "after": 8
+      },
+      "bus_stops": {
+        "before": 244,
+        "after": 244
+      },
+      "accommodation": {
+        "before": 358,
+        "after": 374
+      },
+      "elevation_gain_m": {
+        "before": 12173,
+        "after": 12173
+      },
+      "stations_with_rail_service": {
+        "before": 8,
+        "after": 8
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 654",
+      "route_id": "785ab0c5803b",
+      "distance_km": {
+        "before": 1720.4,
+        "after": 1720.4
+      },
+      "train_stations": {
+        "before": 47,
+        "after": 47
+      },
+      "bus_stops": {
+        "before": 140,
+        "after": 141
+      },
+      "accommodation": {
+        "before": 450,
+        "after": 483
+      },
+      "elevation_gain_m": {
+        "before": 24624,
+        "after": 24624
+      },
+      "stations_with_rail_service": {
+        "before": 47,
+        "after": 47
+      },
+      "trail_gap_km": {
+        "before": 163.43,
+        "after": 163.43
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 655",
+      "route_id": "ac6230979e89",
+      "distance_km": {
+        "before": 1115.2,
+        "after": 1115.2
+      },
+      "train_stations": {
+        "before": 63,
+        "after": 63
+      },
+      "bus_stops": {
+        "before": 242,
+        "after": 241
+      },
+      "accommodation": {
+        "before": 1843,
+        "after": 2065
+      },
+      "elevation_gain_m": {
+        "before": 9787,
+        "after": 9787
+      },
+      "stations_with_rail_service": {
+        "before": 62,
+        "after": 62
+      },
+      "trail_gap_km": {
+        "before": 184.32,
+        "after": 184.32
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 68",
+      "route_id": "018efba20e24",
+      "distance_km": {
+        "before": 116.3,
+        "after": 116.3
+      },
+      "train_stations": {
+        "before": 4,
+        "after": 4
+      },
+      "bus_stops": {
+        "before": 1,
+        "after": 1
+      },
+      "accommodation": {
+        "before": 50,
+        "after": 53
+      },
+      "elevation_gain_m": {
+        "before": 4525,
+        "after": 4525
+      },
+      "stations_with_rail_service": {
+        "before": 4,
+        "after": 4
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 69",
+      "route_id": "d335bacb1c09",
+      "distance_km": {
+        "before": 92.7,
+        "after": 92.7
+      },
+      "train_stations": {
+        "before": 4,
+        "after": 4
+      },
+      "bus_stops": {
+        "before": 112,
+        "after": 112
+      },
+      "accommodation": {
+        "before": 148,
+        "after": 155
+      },
+      "elevation_gain_m": {
+        "before": 822,
+        "after": 822
+      },
+      "stations_with_rail_service": {
+        "before": 4,
+        "after": 4
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 7",
+      "route_id": "65eb6d59959e",
+      "distance_km": {
+        "before": 1482.3,
+        "after": 1482.3
+      },
+      "train_stations": {
+        "before": 16,
+        "after": 16
+      },
+      "bus_stops": {
+        "before": 126,
+        "after": 126
+      },
+      "accommodation": {
+        "before": 332,
+        "after": 373
+      },
+      "elevation_gain_m": {
+        "before": 43951,
+        "after": 43951
+      },
+      "stations_with_rail_service": {
+        "before": 16,
+        "after": 16
+      },
+      "trail_gap_km": {
+        "before": 103.73,
+        "after": 103.73
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 70",
+      "route_id": "378d2b13bcf7",
+      "distance_km": {
+        "before": 208.8,
+        "after": 208.8
+      },
+      "train_stations": {
+        "before": 7,
+        "after": 7
+      },
+      "bus_stops": {
+        "before": 50,
+        "after": 50
+      },
+      "accommodation": {
+        "before": 150,
+        "after": 156
+      },
+      "elevation_gain_m": {
+        "before": 6484,
+        "after": 6484
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 16.92,
+        "after": 16.92
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 700",
+      "route_id": "b671d13ee1ca",
+      "distance_km": {
+        "before": 245.3,
+        "after": 245.3
+      },
+      "train_stations": {
+        "before": 15,
+        "after": 15
+      },
+      "bus_stops": {
+        "before": 115,
+        "after": 115
+      },
+      "accommodation": {
+        "before": 155,
+        "after": 163
+      },
+      "elevation_gain_m": {
+        "before": 4512,
+        "after": 4512
+      },
+      "stations_with_rail_service": {
+        "before": 15,
+        "after": 15
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 703",
+      "route_id": "b4a52c5524fd",
+      "distance_km": {
+        "before": 236.7,
+        "after": 236.7
+      },
+      "train_stations": {
+        "before": 2,
+        "after": 2
+      },
+      "bus_stops": {
+        "before": 7,
+        "after": 7
+      },
+      "accommodation": {
+        "before": 23,
+        "after": 26
+      },
+      "elevation_gain_m": {
+        "before": 4189,
+        "after": 4189
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 71",
+      "route_id": "17cf3c3c7761",
+      "distance_km": {
+        "before": 165.3,
+        "after": 165.3
+      },
+      "train_stations": {
+        "before": 2,
+        "after": 2
+      },
+      "bus_stops": {
+        "before": 29,
+        "after": 29
+      },
+      "accommodation": {
+        "before": 21,
+        "after": 26
+      },
+      "elevation_gain_m": {
+        "before": 4800,
+        "after": 4800
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 738",
+      "route_id": "f0a8f843d7b9",
+      "distance_km": {
+        "before": 132.1,
+        "after": 132.1
+      },
+      "train_stations": {
+        "before": 2,
+        "after": 2
+      },
+      "bus_stops": {
+        "before": 25,
+        "after": 25
+      },
+      "accommodation": {
+        "before": 21,
+        "after": 23
+      },
+      "elevation_gain_m": {
+        "before": 10776,
+        "after": 10776
+      },
+      "stations_with_rail_service": {
+        "before": 2,
+        "after": 2
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 75",
+      "route_id": "162776ee6af1",
+      "distance_km": {
+        "before": 52.6,
+        "after": 52.6
+      },
+      "train_stations": {
+        "before": 20,
+        "after": 20
+      },
+      "bus_stops": {
+        "before": 197,
+        "after": 197
+      },
+      "accommodation": {
+        "before": 1614,
+        "after": 1969
+      },
+      "elevation_gain_m": {
+        "before": 672,
+        "after": 672
+      },
+      "stations_with_rail_service": {
+        "before": 20,
+        "after": 20
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 76",
+      "route_id": "0432da7a4a23",
+      "distance_km": {
+        "before": 187.8,
+        "after": 187.8
+      },
+      "train_stations": {
+        "before": 7,
+        "after": 7
+      },
+      "bus_stops": {
+        "before": 57,
+        "after": 57
+      },
+      "accommodation": {
+        "before": 56,
+        "after": 61
+      },
+      "elevation_gain_m": {
+        "before": 6569,
+        "after": 6569
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 78",
+      "route_id": "3e8e80086a68",
+      "distance_km": {
+        "before": 607.8,
+        "after": 607.8
+      },
+      "train_stations": {
+        "before": 11,
+        "after": 11
+      },
+      "bus_stops": {
+        "before": 129,
+        "after": 131
+      },
+      "accommodation": {
+        "before": 393,
+        "after": 401
+      },
+      "elevation_gain_m": {
+        "before": 15871,
+        "after": 15871
+      },
+      "stations_with_rail_service": {
+        "before": 11,
+        "after": 11
+      },
+      "trail_gap_km": {
+        "before": 91.28,
+        "after": 91.28
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 800",
+      "route_id": "051319dd4c46",
+      "distance_km": {
+        "before": 227.4,
+        "after": 227.4
+      },
+      "train_stations": {
+        "before": 19,
+        "after": 19
+      },
+      "bus_stops": {
+        "before": 82,
+        "after": 82
+      },
+      "accommodation": {
+        "before": 115,
+        "after": 126
+      },
+      "elevation_gain_m": {
+        "before": 1303,
+        "after": 1303
+      },
+      "stations_with_rail_service": {
+        "before": 19,
+        "after": 19
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 81",
+      "route_id": "c31a4f89796a",
+      "distance_km": {
+        "before": 605.0,
+        "after": 605.0
+      },
+      "train_stations": {
+        "before": 16,
+        "after": 16
+      },
+      "bus_stops": {
+        "before": 93,
+        "after": 93
+      },
+      "accommodation": {
+        "before": 367,
+        "after": 388
+      },
+      "elevation_gain_m": {
+        "before": 8684,
+        "after": 8684
+      },
+      "stations_with_rail_service": {
+        "before": 16,
+        "after": 16
+      },
+      "trail_gap_km": {
+        "before": 19.74,
+        "after": 19.74
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 86",
+      "route_id": "d7bb97709d39",
+      "distance_km": {
+        "before": 281.7,
+        "after": 281.7
+      },
+      "train_stations": {
+        "before": 7,
+        "after": 7
+      },
+      "bus_stops": {
+        "before": 98,
+        "after": 98
+      },
+      "accommodation": {
+        "before": 180,
+        "after": 189
+      },
+      "elevation_gain_m": {
+        "before": 7033,
+        "after": 7033
+      },
+      "stations_with_rail_service": {
+        "before": 7,
+        "after": 7
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 89",
+      "route_id": "0c48dbc41aeb",
+      "distance_km": {
+        "before": 416.6,
+        "after": 416.6
+      },
+      "train_stations": {
+        "before": 15,
+        "after": 15
+      },
+      "bus_stops": {
+        "before": 137,
+        "after": 137
+      },
+      "accommodation": {
+        "before": 251,
+        "after": 276
+      },
+      "elevation_gain_m": {
+        "before": 9408,
+        "after": 9408
+      },
+      "stations_with_rail_service": {
+        "before": 15,
+        "after": 15
+      },
+      "trail_gap_km": {
+        "before": 0.0,
+        "after": 0.0
+      },
+      "warnings": []
+    },
+    {
+      "path_ref": "GR 9",
+      "route_id": "7ebb93190abf",
+      "distance_km": {
+        "before": 834.2,
+        "after": 834.2
+      },
+      "train_stations": {
+        "before": 9,
+        "after": 9
+      },
+      "bus_stops": {
+        "before": 143,
+        "after": 143
+      },
+      "accommodation": {
+        "before": 289,
+        "after": 323
+      },
+      "elevation_gain_m": {
+        "before": 36282,
+        "after": 36282
+      },
+      "stations_with_rail_service": {
+        "before": 9,
+        "after": 9
+      },
+      "trail_gap_km": {
+        "before": 63.38,
+        "after": 63.38
+      },
+      "warnings": []
+    }
+  ],
+  "failed_routes": [],
+  "skipped_routes": [
+    "GR 20",
+    "GR 221",
+    "GR 23",
+    "GR 26",
+    "GR 30",
+    "GR 341",
+    "GR 367",
+    "GR 38",
+    "GR 42",
+    "GR 465",
+    "GR 50",
+    "GR 54",
+    "GR 56",
+    "GR 57",
+    "GR 58",
+    "GR 60",
+    "GR 61",
+    "GR 64",
+    "GR 66",
+    "GR 67",
+    "GR 71D",
+    "GR 72",
+    "GR 74",
+    "GR 76A",
+    "GR 76B",
+    "GR 77",
+    "GR 90",
+    "GR 99"
+  ],
+  "rail_service_coverage": {
+    "train_stations": 1099,
+    "with_departures": 1076
+  },
+  "warnings": []
+}

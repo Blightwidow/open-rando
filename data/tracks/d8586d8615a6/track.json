@@ -1,0 +1,118 @@
+{
+  "id": "d8586d8615a6",
+  "slug": "gr-66",
+  "path_ref": "GR 66",
+  "path_name": "Tour du Mont Aigoual",
+  "description": "",
+  "osm_relation_id": 2785117,
+  "distance_km": 83.0,
+  "elevation_gain_m": 2936,
+  "elevation_loss_m": 2934,
+  "max_elevation_m": 1556,
+  "min_elevation_m": 700,
+  "bbox": [
+    3.4232339,
+    44.0223258,
+    3.6303323,
+    44.19033
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/d8586d8615a6/trail.geojson",
+  "gpx_path": "tracks/d8586d8615a6/trail.gpx",
+  "elevation_path": "tracks/d8586d8615a6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Roquedols",
+      "kind": "castle",
+      "lat": 44.1619205,
+      "lon": 3.438715,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Ayres",
+      "kind": "castle",
+      "lat": 44.1827324,
+      "lon": 3.4400006999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Point sublime",
+      "kind": "viewpoint",
+      "lat": 44.1122234,
+      "lon": 3.5727453,
+      "elevation_m": 1371
+    },
+    {
+      "name": "Belvédère de la Serreyrède",
+      "kind": "viewpoint",
+      "lat": 44.1052796,
+      "lon": 3.5464408,
+      "elevation_m": null
+    },
+    {
+      "name": "L’Hort de Dieu",
+      "kind": "viewpoint",
+      "lat": 44.1140777,
+      "lon": 3.5841238,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Coulet",
+      "kind": "viewpoint",
+      "lat": 44.118436,
+      "lon": 3.6147095,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Cayla",
+      "kind": "viewpoint",
+      "lat": 44.2039291,
+      "lon": 3.458578,
+      "elevation_m": null
+    },
+    {
+      "name": "Abbaye Notre-Dame de Bonheur",
+      "kind": "ruins",
+      "lat": 44.1068852,
+      "lon": 3.52801725,
+      "elevation_m": null
+    },
+    {
+      "name": "Pont",
+      "kind": "monument",
+      "lat": 44.1836196,
+      "lon": 3.4364546,
+      "elevation_m": null
+    },
+    {
+      "name": "Mont Aigoual",
+      "kind": "peak",
+      "lat": 44.1216253,
+      "lon": 3.5813643,
+      "elevation_m": 1565
+    },
+    {
+      "name": "Le Portalet",
+      "kind": "peak",
+      "lat": 44.132871,
+      "lon": 3.5688856,
+      "elevation_m": 1565
+    },
+    {
+      "name": "Saint-Guiral",
+      "kind": "peak",
+      "lat": 44.0225541,
+      "lon": 3.454297,
+      "elevation_m": 1366
+    }
+  ]
+}

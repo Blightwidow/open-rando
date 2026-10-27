@@ -1,0 +1,118 @@
+{
+  "id": "a17c0441f238",
+  "slug": "gr-470",
+  "path_ref": "GR 470",
+  "path_name": "Sentier du Haut-Allier",
+  "description": "180 km remontant l'une des dernières rivières sauvages d'Europe, de Brioude aux crêtes de Lozère, entre gorges spectaculaires et châteaux perchés.",
+  "osm_relation_id": 3377491,
+  "distance_km": 178.2,
+  "elevation_gain_m": 6082,
+  "elevation_loss_m": 5037,
+  "max_elevation_m": 1502,
+  "min_elevation_m": 425,
+  "bbox": [
+    3.3664313,
+    44.5888157,
+    3.8836568,
+    45.3001911
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "43",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/a17c0441f238/trail.geojson",
+  "gpx_path": "tracks/a17c0441f238/trail.gpx",
+  "elevation_path": "tracks/a17c0441f238/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Tour de Concoules",
+      "kind": "castle",
+      "lat": 44.711182,
+      "lon": 3.8676705,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien château abbatial",
+      "kind": "castle",
+      "lat": 44.72901145,
+      "lon": 3.83819495,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mazigon",
+      "kind": "castle",
+      "lat": 44.770057550000004,
+      "lon": 3.8682527,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Condres",
+      "kind": "castle",
+      "lat": 44.8212927,
+      "lon": 3.7458669,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Chambon",
+      "kind": "castle",
+      "lat": 45.1423725,
+      "lon": 3.4674742,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Moure de la Gardille",
+      "kind": "viewpoint",
+      "lat": 44.5936997,
+      "lon": 3.7928882,
+      "elevation_m": 1503
+    },
+    {
+      "name": "Point de vue sur le viaduc",
+      "kind": "viewpoint",
+      "lat": 44.8422375,
+      "lon": 3.7344357,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue sur ND D'Estours",
+      "kind": "viewpoint",
+      "lat": 45.0089021,
+      "lon": 3.5890909,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère du Pont du Diable",
+      "kind": "viewpoint",
+      "lat": 45.2608552,
+      "lon": 3.4076398,
+      "elevation_m": null
+    },
+    {
+      "name": "Grand Portail de Pradelles",
+      "kind": "ruins",
+      "lat": 44.7695808,
+      "lon": 3.8830555,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Moure de la Gardille",
+      "kind": "peak",
+      "lat": 44.5913115,
+      "lon": 3.7923817,
+      "elevation_m": 1503
+    },
+    {
+      "name": "Rocher du Lion",
+      "kind": "cliff",
+      "lat": 44.9708585,
+      "lon": 3.6394507,
+      "elevation_m": null
+    }
+  ]
+}

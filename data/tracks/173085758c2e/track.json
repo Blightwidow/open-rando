@@ -1,0 +1,118 @@
+{
+  "id": "173085758c2e",
+  "slug": "gr-53",
+  "path_ref": "GR 53",
+  "path_name": "De Wissembourg (Bas-Rhin) au col de l'Engin",
+  "description": "Le GR53 est une immersion spectaculaire au cœur des Vosges du Nord, reliant Wissembourg au col de l'Engin. Ce sentier historique et pionnier vous fera traverser une forêt dense de hêtres et de pins sylvestres. Le paysage y est dominé par d’impressionnants éperons de grès rose, sculptés par les siècles. Cette géologie unique a servi de fondation à une fascinante ligne de défense médiévale, que l'on observe dans des châteaux forts comme le Fleckenstein. Entre vallons secrets et crêtes panoramiques, la biodiversité est riche : c'est un sanctuaire où évoluent le lynx boréal et le grand tétras, tandis que la flore déploie ses fougères rares et ses orchidées sauvages. Le GR53 vous offre ainsi une double découverte : celle d’un passé tumultueux et celui d’une nature préservée au rythme de l'Alsace.",
+  "osm_relation_id": 2603124,
+  "distance_km": 194.6,
+  "elevation_gain_m": 6672,
+  "elevation_loss_m": 5998,
+  "max_elevation_m": 999,
+  "min_elevation_m": 106,
+  "bbox": [
+    7.1678354,
+    48.5275664,
+    8.2301924,
+    49.0544836
+  ],
+  "region": "Grand Est",
+  "departement": "67",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/173085758c2e/trail.geojson",
+  "gpx_path": "tracks/173085758c2e/trail.gpx",
+  "elevation_path": "tracks/173085758c2e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Wegelnburg",
+      "kind": "castle",
+      "lat": 49.061394500000006,
+      "lon": 7.7870550000000005,
+      "elevation_m": 570
+    },
+    {
+      "name": "Ruine Nouveau Windstein",
+      "kind": "castle",
+      "lat": 48.9934158,
+      "lon": 7.6785283,
+      "elevation_m": 380
+    },
+    {
+      "name": "Château de Wineck",
+      "kind": "castle",
+      "lat": 49.0136146,
+      "lon": 7.6621541,
+      "elevation_m": 380
+    },
+    {
+      "name": "Château de Greifenstein",
+      "kind": "castle",
+      "lat": 48.735799099999994,
+      "lon": 7.3340952,
+      "elevation_m": 360
+    },
+    {
+      "name": "Château de Lutzelhouse",
+      "kind": "castle",
+      "lat": 48.5162412,
+      "lon": 7.2850617,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Ringelsbourg (ou du Grand Ringelstein)",
+      "kind": "castle",
+      "lat": 48.5629611,
+      "lon": 7.3211657,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Hohenstein",
+      "kind": "castle",
+      "lat": 48.5669805,
+      "lon": 7.310713,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit-Ringelstein (ou Petit-Ringelsberg)",
+      "kind": "castle",
+      "lat": 48.5739142,
+      "lon": 7.3137086,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Nideck (Unter-Nideck)",
+      "kind": "castle",
+      "lat": 48.57934845,
+      "lon": 7.28312915,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Wangenbourg",
+      "kind": "castle",
+      "lat": 48.620677099999995,
+      "lon": 7.3141355,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Ochsenstein",
+      "kind": "castle",
+      "lat": 48.682763,
+      "lon": 7.2998119,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit-Geroldseck",
+      "kind": "castle",
+      "lat": 48.714481750000004,
+      "lon": 7.33215515,
+      "elevation_m": null
+    }
+  ]
+}

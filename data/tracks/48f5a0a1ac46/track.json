@@ -1,0 +1,118 @@
+{
+  "id": "48f5a0a1ac46",
+  "slug": "gr-4",
+  "path_ref": "GR 4",
+  "path_name": "De la Méditerranée à l'Océan",
+  "description": "1 578 km de Royan à Grasse, traversant des paysages en constante évolution des plages atlantiques aux plateaux volcaniques et champs de lavande.",
+  "osm_relation_id": 7457566,
+  "distance_km": 1502.8,
+  "elevation_gain_m": 39179,
+  "elevation_loss_m": 38282,
+  "max_elevation_m": 1819,
+  "min_elevation_m": -1,
+  "bbox": [
+    -1.2148499,
+    43.6673183,
+    6.957482,
+    46.0411483
+  ],
+  "region": "Nouvelle-Aquitaine",
+  "departement": "17",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 19.2,
+  "geojson_path": "tracks/48f5a0a1ac46/trail.geojson",
+  "gpx_path": "tracks/48f5a0a1ac46/trail.gpx",
+  "elevation_path": "tracks/48f5a0a1ac46/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Logis de Forge",
+      "kind": "castle",
+      "lat": 45.5508894,
+      "lon": 0.1281877,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Georges",
+      "kind": "castle",
+      "lat": 45.5561268,
+      "lon": 0.0534555,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Rochandry",
+      "kind": "castle",
+      "lat": 45.5600525,
+      "lon": 0.1166632,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Foy",
+      "kind": "castle",
+      "lat": 45.5650835,
+      "lon": 0.1369425,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Leyguras",
+      "kind": "castle",
+      "lat": 45.5705633,
+      "lon": 0.71174665,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Étang",
+      "kind": "castle",
+      "lat": 45.586994,
+      "lon": 0.7891077,
+      "elevation_m": null
+    },
+    {
+      "name": "Mairie de Sireuil",
+      "kind": "castle",
+      "lat": 45.615232500000005,
+      "lon": 0.008967,
+      "elevation_m": null
+    },
+    {
+      "name": "La Barrière",
+      "kind": "castle",
+      "lat": 45.6156197,
+      "lon": -0.0206354,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Tranchade",
+      "kind": "castle",
+      "lat": 45.6186375,
+      "lon": 0.2406982,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Barraud",
+      "kind": "castle",
+      "lat": 45.6225399,
+      "lon": -0.1329932,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mons",
+      "kind": "castle",
+      "lat": 45.62895005,
+      "lon": -1.02757915,
+      "elevation_m": null
+    },
+    {
+      "name": "Logis de Frégeneuil",
+      "kind": "castle",
+      "lat": 45.6320008,
+      "lon": 0.1918718,
+      "elevation_m": null
+    }
+  ]
+}

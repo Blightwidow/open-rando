@@ -1,0 +1,99 @@
+{
+  "id": "76b6c0a76aff",
+  "slug": "gr-38",
+  "path_ref": "GR 38",
+  "path_name": "De Douarnenez à Redon",
+  "description": "De Douarnenez à Redon sur 366 km à travers les paysages bretons, des côtes sauvages aux Monts d'Arrée en passant par la forêt de Brocéliande.",
+  "osm_relation_id": 12035546,
+  "distance_km": 2.3,
+  "elevation_gain_m": 101,
+  "elevation_loss_m": 70,
+  "max_elevation_m": 41,
+  "min_elevation_m": 0,
+  "bbox": [
+    -3.530785,
+    47.7978779,
+    -3.520927,
+    47.8060034
+  ],
+  "region": "Bretagne",
+  "departement": "56",
+  "difficulty": "easy",
+  "is_circular_trail": true,
+  "terrain": [
+    "coastal",
+    "forest",
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/76b6c0a76aff/trail.geojson",
+  "gpx_path": "tracks/76b6c0a76aff/trail.gpx",
+  "elevation_path": "tracks/76b6c0a76aff/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Abbaye Saint-Maurice",
+      "kind": "ruins",
+      "lat": 47.80475,
+      "lon": -3.5281333,
+      "elevation_m": null
+    },
+    {
+      "name": "Front de la Laïta",
+      "kind": "memorial",
+      "lat": 47.7981254,
+      "lon": -3.5236933,
+      "elevation_m": null
+    },
+    {
+      "name": "François Perron",
+      "kind": "memorial",
+      "lat": 47.8005039,
+      "lon": -3.5307068,
+      "elevation_m": null
+    },
+    {
+      "name": "Mémorial de Polignac",
+      "kind": "memorial",
+      "lat": 47.8012584,
+      "lon": -3.5183928,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 47.7911303,
+      "lon": -3.5316373,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "viewpoint",
+      "lat": 47.7963861,
+      "lon": -3.5238718,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "ruins",
+      "lat": 47.8048637,
+      "lon": -3.5291943,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "cliff",
+      "lat": 47.79039495,
+      "lon": -3.53278355,
+      "elevation_m": null
+    },
+    {
+      "name": "",
+      "kind": "wayside_cross",
+      "lat": 47.8051324,
+      "lon": -3.5036048,
+      "elevation_m": null
+    }
+  ]
+}

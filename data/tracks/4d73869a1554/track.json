@@ -1,0 +1,118 @@
+{
+  "id": "4d73869a1554",
+  "slug": "gr-21",
+  "path_ref": "GR 21",
+  "path_name": "Sentier des Falaises",
+  "description": "Le long de la spectaculaire Côte d'Albâtre en Seine-Maritime, avec ses majestueuses falaises de craie blanche dominant la Manche.",
+  "osm_relation_id": 14868379,
+  "distance_km": 191.5,
+  "elevation_gain_m": 3056,
+  "elevation_loss_m": 3052,
+  "max_elevation_m": 131,
+  "min_elevation_m": -2,
+  "bbox": [
+    0.0865341,
+    49.4921532,
+    1.377537,
+    50.0623827
+  ],
+  "region": "Normandie",
+  "departement": "76",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/4d73869a1554/trail.geojson",
+  "gpx_path": "tracks/4d73869a1554/trail.gpx",
+  "elevation_path": "tracks/4d73869a1554/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Bec-Crespin",
+      "kind": "castle",
+      "lat": 49.5974585,
+      "lon": 0.2073754,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bec-Crespin",
+      "kind": "castle",
+      "lat": 49.597571,
+      "lon": 0.20726624999999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bec-Crespin",
+      "kind": "castle",
+      "lat": 49.597689700000004,
+      "lon": 0.20782555,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Fréfossé",
+      "kind": "castle",
+      "lat": 49.69320895,
+      "lon": 0.2067696,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Aygues",
+      "kind": "castle",
+      "lat": 49.70503495,
+      "lon": 0.21366085,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bénouville",
+      "kind": "castle",
+      "lat": 49.7147395,
+      "lon": 0.2439137,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Hogues",
+      "kind": "castle",
+      "lat": 49.7279514,
+      "lon": 0.3297101,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Pas Griand",
+      "kind": "castle",
+      "lat": 49.8050904,
+      "lon": 0.5357014,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Auberville",
+      "kind": "castle",
+      "lat": 49.8282174,
+      "lon": 0.5850514,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Janville",
+      "kind": "castle",
+      "lat": 49.8340693,
+      "lon": 0.6393635,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Anglesqueville-les-Murs",
+      "kind": "castle",
+      "lat": 49.842172,
+      "lon": 0.6615385,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Aubin-sur-Mer",
+      "kind": "castle",
+      "lat": 49.8881485,
+      "lon": 0.880258,
+      "elevation_m": null
+    }
+  ]
+}

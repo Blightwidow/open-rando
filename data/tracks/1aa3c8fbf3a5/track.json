@@ -1,0 +1,118 @@
+{
+  "id": "1aa3c8fbf3a5",
+  "slug": "gr-59",
+  "path_ref": "GR 59",
+  "path_name": "Du Ballon d'Alsace à Culoz",
+  "description": "605 km du Ballon d'Alsace aux contreforts du Jura, traversant montagnes et vallées vosgiennes riches en biodiversité.",
+  "osm_relation_id": 12827833,
+  "distance_km": 639.3,
+  "elevation_gain_m": 19281,
+  "elevation_loss_m": 20223,
+  "max_elevation_m": 1243,
+  "min_elevation_m": 200,
+  "bbox": [
+    5.3259015,
+    45.6532946,
+    6.8458812,
+    47.8295739
+  ],
+  "region": "Grand Est",
+  "departement": "68",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 131.21,
+  "geojson_path": "tracks/1aa3c8fbf3a5/trail.geojson",
+  "gpx_path": "tracks/1aa3c8fbf3a5/trail.gpx",
+  "elevation_path": "tracks/1aa3c8fbf3a5/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Tavolle",
+      "kind": "castle",
+      "lat": 45.664768699999996,
+      "lon": 5.67790295,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Peyrieu",
+      "kind": "castle",
+      "lat": 45.6814532,
+      "lon": 5.6725908,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Varepe",
+      "kind": "castle",
+      "lat": 45.719469000000004,
+      "lon": 5.577223,
+      "elevation_m": null
+    },
+    {
+      "name": "Palais épiscopal",
+      "kind": "castle",
+      "lat": 45.757831,
+      "lon": 5.689677,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montvéran",
+      "kind": "castle",
+      "lat": 45.849888199999995,
+      "lon": 5.77727005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Neuf",
+      "kind": "castle",
+      "lat": 45.8741656,
+      "lon": 5.3694169,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Sorlin",
+      "kind": "castle",
+      "lat": 45.8828879,
+      "lon": 5.37524,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montferrand",
+      "kind": "castle",
+      "lat": 45.903938499999995,
+      "lon": 5.346039,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du Château de Verneaux",
+      "kind": "castle",
+      "lat": 45.9354497,
+      "lon": 5.347457,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du Château de Saint-Germain",
+      "kind": "castle",
+      "lat": 45.9486142,
+      "lon": 5.3762925,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour Saint-Denis",
+      "kind": "castle",
+      "lat": 45.9495741,
+      "lon": 5.33345475,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Varey",
+      "kind": "castle",
+      "lat": 46.026745500000004,
+      "lon": 5.404634,
+      "elevation_m": null
+    }
+  ]
+}

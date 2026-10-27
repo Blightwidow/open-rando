@@ -1,0 +1,118 @@
+{
+  "id": "661216ed84aa",
+  "slug": "gr-213",
+  "path_ref": "GR 213",
+  "path_name": "Fontenay - Vézelay",
+  "description": "De la haute vallée de la Seine aux collines de l'Yonne, passant par l'abbaye de Fontenay et Montbard jusqu'à la basilique de Vézelay.",
+  "osm_relation_id": 12854245,
+  "distance_km": 114.9,
+  "elevation_gain_m": 1754,
+  "elevation_loss_m": 1780,
+  "max_elevation_m": 388,
+  "min_elevation_m": 138,
+  "bbox": [
+    3.7470824,
+    47.4660282,
+    4.532893,
+    47.7821748
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "21",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/661216ed84aa/trail.geojson",
+  "gpx_path": "tracks/661216ed84aa/trail.gpx",
+  "elevation_path": "tracks/661216ed84aa/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Manoir de Val en Sel",
+      "kind": "castle",
+      "lat": 47.4568658,
+      "lon": 3.7634041,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Orbigny",
+      "kind": "castle",
+      "lat": 47.48980975,
+      "lon": 3.8705005999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Vault de Lugny",
+      "kind": "castle",
+      "lat": 47.495879349999996,
+      "lon": 3.8544376,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Époisses",
+      "kind": "castle",
+      "lat": 47.5075029,
+      "lon": 4.1709369,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Époisses",
+      "kind": "castle",
+      "lat": 47.5084473,
+      "lon": 4.1728765,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sauvigny-le-Bois",
+      "kind": "castle",
+      "lat": 47.517356,
+      "lon": 3.941499,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Courterolles",
+      "kind": "castle",
+      "lat": 47.5270934,
+      "lon": 4.0861554,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bard-lès-Époisses",
+      "kind": "castle",
+      "lat": 47.5313547,
+      "lon": 4.212949,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien château de Montréal",
+      "kind": "castle",
+      "lat": 47.5468431,
+      "lon": 4.0365885,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Monthelon",
+      "kind": "castle",
+      "lat": 47.5507756,
+      "lon": 4.0735686,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Buffon",
+      "kind": "castle",
+      "lat": 47.6257987,
+      "lon": 4.3354532,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Rémy",
+      "kind": "castle",
+      "lat": 47.6399725,
+      "lon": 4.301069,
+      "elevation_m": null
+    }
+  ]
+}

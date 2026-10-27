@@ -1,0 +1,118 @@
+{
+  "id": "ffad2b4a5b6e",
+  "slug": "gr-57",
+  "path_ref": "GR 57",
+  "path_name": "Mont Thabor",
+  "description": "",
+  "osm_relation_id": 16101643,
+  "distance_km": 88.3,
+  "elevation_gain_m": 5703,
+  "elevation_loss_m": 5343,
+  "max_elevation_m": 2828,
+  "min_elevation_m": 1483,
+  "bbox": [
+    6.4658994,
+    44.9738297,
+    6.6612366,
+    45.1210764
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "73",
+  "difficulty": "very_difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/ffad2b4a5b6e/trail.geojson",
+  "gpx_path": "tracks/ffad2b4a5b6e/trail.gpx",
+  "elevation_path": "tracks/ffad2b4a5b6e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Le Grand Aréa",
+      "kind": "viewpoint",
+      "lat": 44.9800559,
+      "lon": 6.5729924,
+      "elevation_m": 2869
+    },
+    {
+      "name": "Crête du Chardonnet",
+      "kind": "viewpoint",
+      "lat": 45.0237743,
+      "lon": 6.4951418,
+      "elevation_m": 2713
+    },
+    {
+      "name": "Col de l'Échelle",
+      "kind": "viewpoint",
+      "lat": 45.0264927,
+      "lon": 6.6570079,
+      "elevation_m": null
+    },
+    {
+      "name": "Baraques de mineurs",
+      "kind": "ruins",
+      "lat": 45.032899,
+      "lon": 6.4990577,
+      "elevation_m": 2700
+    },
+    {
+      "name": "B2",
+      "kind": "ruins",
+      "lat": 44.9662138,
+      "lon": 6.6167716,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien camp du col de Buffère",
+      "kind": "ruins",
+      "lat": 44.9860717,
+      "lon": 6.558623600000001,
+      "elevation_m": null
+    },
+    {
+      "name": "P 34 bis",
+      "kind": "ruins",
+      "lat": 45.027424499999995,
+      "lon": 6.67212685,
+      "elevation_m": null
+    },
+    {
+      "name": "Ricovero XIX",
+      "kind": "ruins",
+      "lat": 45.02866235,
+      "lon": 6.6705198,
+      "elevation_m": null
+    },
+    {
+      "name": "Entrée et 75mm",
+      "kind": "ruins",
+      "lat": 45.0298926,
+      "lon": 6.66562115,
+      "elevation_m": null
+    },
+    {
+      "name": "Station intermédiaire transporteur câble",
+      "kind": "ruins",
+      "lat": 45.030468,
+      "lon": 6.4837092,
+      "elevation_m": null
+    },
+    {
+      "name": "Téléphérique",
+      "kind": "ruins",
+      "lat": 45.03304915,
+      "lon": 6.66471355,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien pylone d'arrivée de téléphérique",
+      "kind": "ruins",
+      "lat": 45.0342324,
+      "lon": 6.4961775,
+      "elevation_m": null
+    }
+  ]
+}

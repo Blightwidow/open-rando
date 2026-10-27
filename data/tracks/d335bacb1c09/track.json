@@ -1,0 +1,118 @@
+{
+  "id": "d335bacb1c09",
+  "slug": "gr-69",
+  "path_ref": "GR 69",
+  "path_name": "La Routo",
+  "description": "404 km sur les traces historiques de la transhumance, d'Arles au Col de Ruburent, des plaines de Crau aux champs de lavande du plateau de Valensole.",
+  "osm_relation_id": 14234324,
+  "distance_km": 92.7,
+  "elevation_gain_m": 822,
+  "elevation_loss_m": 998,
+  "max_elevation_m": 305,
+  "min_elevation_m": 2,
+  "bbox": [
+    4.6300678,
+    43.5263418,
+    5.4519613,
+    43.727161
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "13",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/d335bacb1c09/trail.geojson",
+  "gpx_path": "tracks/d335bacb1c09/trail.gpx",
+  "elevation_path": "tracks/d335bacb1c09/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Bastide la Torse",
+      "kind": "castle",
+      "lat": 43.522732950000005,
+      "lon": 5.46582785,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Châteauneuf",
+      "kind": "castle",
+      "lat": 43.52596595,
+      "lon": 5.44845235,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Réauville",
+      "kind": "castle",
+      "lat": 43.5262631,
+      "lon": 5.4487926,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel d'Arlatan-Lauris",
+      "kind": "castle",
+      "lat": 43.5269612,
+      "lon": 5.4538622,
+      "elevation_m": null
+    },
+    {
+      "name": "Bastide du Jas de Bouffan",
+      "kind": "castle",
+      "lat": 43.5270486,
+      "lon": 5.42900365,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel Thomassin de Saint-Paul",
+      "kind": "castle",
+      "lat": 43.5313939,
+      "lon": 5.4469671,
+      "elevation_m": null
+    },
+    {
+      "name": "Musée du Palais de l’Archevêché",
+      "kind": "castle",
+      "lat": 43.5317393,
+      "lon": 5.4481442,
+      "elevation_m": null
+    },
+    {
+      "name": "Campagne Bruguier",
+      "kind": "castle",
+      "lat": 43.5415079,
+      "lon": 5.4640249,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Calade",
+      "kind": "castle",
+      "lat": 43.57278015,
+      "lon": 5.38978975,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit Pommier",
+      "kind": "castle",
+      "lat": 43.593158,
+      "lon": 5.170269,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Barbegal",
+      "kind": "castle",
+      "lat": 43.6974072,
+      "lon": 4.714934599999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Escanin",
+      "kind": "castle",
+      "lat": 43.72497585,
+      "lon": 4.78188295,
+      "elevation_m": null
+    }
+  ]
+}

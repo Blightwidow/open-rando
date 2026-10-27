@@ -1,0 +1,118 @@
+{
+  "id": "66dd3c657c33",
+  "slug": "gr-367",
+  "path_ref": "GR 367",
+  "path_name": "Sentier Cathare",
+  "description": "229 km de Port-la-Nouvelle à Foix, sur les traces du catharisme entre châteaux forts perchés et paysages montagneux de l'Aude et de l'Ariège.",
+  "osm_relation_id": 3394595,
+  "distance_km": 208.0,
+  "elevation_gain_m": 8060,
+  "elevation_loss_m": 7696,
+  "max_elevation_m": 1364,
+  "min_elevation_m": 94,
+  "bbox": [
+    1.6404601,
+    42.8112687,
+    2.8168352,
+    42.9963461
+  ],
+  "region": "Normandie",
+  "departement": "61",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/66dd3c657c33/trail.geojson",
+  "gpx_path": "tracks/66dd3c657c33/trail.gpx",
+  "elevation_path": "tracks/66dd3c657c33/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Quéribus",
+      "kind": "castle",
+      "lat": 42.83679995,
+      "lon": 2.6214842999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Padern",
+      "kind": "castle",
+      "lat": 42.86747495,
+      "lon": 2.6553321,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Peyrepertuse",
+      "kind": "castle",
+      "lat": 42.87080625,
+      "lon": 2.555624,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Quillan",
+      "kind": "castle",
+      "lat": 42.8746035,
+      "lon": 2.1868100000000004,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montségur",
+      "kind": "castle",
+      "lat": 42.87571885,
+      "lon": 1.83257645,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bugarach",
+      "kind": "castle",
+      "lat": 42.87663325,
+      "lon": 2.351484,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Aguilar",
+      "kind": "castle",
+      "lat": 42.89067475,
+      "lon": 2.74704385,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Nouvelles",
+      "kind": "castle",
+      "lat": 42.90745765,
+      "lon": 2.76158715,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Puivert",
+      "kind": "castle",
+      "lat": 42.92112525,
+      "lon": 2.0551614000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Roquefixade",
+      "kind": "castle",
+      "lat": 42.938487300000006,
+      "lon": 1.7532638,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Durban",
+      "kind": "castle",
+      "lat": 42.994271049999995,
+      "lon": 2.8155939500000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère de la Mousquière",
+      "kind": "viewpoint",
+      "lat": 42.8514138,
+      "lon": 2.1552193,
+      "elevation_m": null
+    }
+  ]
+}

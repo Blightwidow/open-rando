@@ -1,0 +1,118 @@
+{
+  "id": "b8c6b2f2852a",
+  "slug": "gr-653",
+  "path_ref": "GR 653",
+  "path_name": "La voie d'Arles",
+  "description": "807 km sur la voie d'Arles vers Saint-Jacques-de-Compostelle, des vignobles du Languedoc aux collines de Gascogne jusqu'au Col du Somport.",
+  "osm_relation_id": 11813130,
+  "distance_km": 810.3,
+  "elevation_gain_m": 16681,
+  "elevation_loss_m": 15055,
+  "max_elevation_m": 1635,
+  "min_elevation_m": -2,
+  "bbox": [
+    -0.6208601,
+    42.7957091,
+    4.6372566,
+    43.7429719
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "13",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b8c6b2f2852a/trail.geojson",
+  "gpx_path": "tracks/b8c6b2f2852a/trail.gpx",
+  "elevation_path": "tracks/b8c6b2f2852a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Roqueperlic",
+      "kind": "castle",
+      "lat": 43.5789747,
+      "lon": 2.356388,
+      "elevation_m": 235
+    },
+    {
+      "name": "Château d'Airoux",
+      "kind": "castle",
+      "lat": 43.3628751,
+      "lon": 1.8662708000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Barrelles",
+      "kind": "castle",
+      "lat": 43.405070949999995,
+      "lon": 1.71448055,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Massaguel",
+      "kind": "castle",
+      "lat": 43.492974000000004,
+      "lon": 2.160485,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Verdalle",
+      "kind": "castle",
+      "lat": 43.512066149999995,
+      "lon": 2.15992685,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Groupiac",
+      "kind": "castle",
+      "lat": 43.531923500000005,
+      "lon": 2.17421,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Viviers-lès-Montagnes",
+      "kind": "castle",
+      "lat": 43.5541562,
+      "lon": 2.1785091,
+      "elevation_m": null
+    },
+    {
+      "name": "Lasfaillades",
+      "kind": "castle",
+      "lat": 43.5677324,
+      "lon": 2.4960881,
+      "elevation_m": null
+    },
+    {
+      "name": "Lycée général et technologique Joffre",
+      "kind": "castle",
+      "lat": 43.6116897,
+      "lon": 3.88673305,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Piscine",
+      "kind": "castle",
+      "lat": 43.6121806,
+      "lon": 3.8413826,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Levat",
+      "kind": "castle",
+      "lat": 43.622941600000004,
+      "lon": 3.88940485,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'O",
+      "kind": "castle",
+      "lat": 43.63320435,
+      "lon": 3.83904185,
+      "elevation_m": null
+    }
+  ]
+}

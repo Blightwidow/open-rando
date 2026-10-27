@@ -1,0 +1,118 @@
+{
+  "id": "8cd612bd3a07",
+  "slug": "gr-99",
+  "path_ref": "GR 99",
+  "path_name": "De Revest-les-Eaux à Trigance",
+  "description": "Des collines toulonnaises aux portes des Préalpes, traversant les parcs naturels de la Sainte-Baume et du Verdon entre forêts, plateaux et falaises.",
+  "osm_relation_id": 9812928,
+  "distance_km": 139.5,
+  "elevation_gain_m": 4729,
+  "elevation_loss_m": 5153,
+  "max_elevation_m": 1568,
+  "min_elevation_m": 187,
+  "bbox": [
+    5.8608055,
+    43.1762076,
+    6.4411538,
+    43.7797141
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 24.31,
+  "geojson_path": "tracks/8cd612bd3a07/trail.geojson",
+  "gpx_path": "tracks/8cd612bd3a07/trail.gpx",
+  "elevation_path": "tracks/8cd612bd3a07/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Valbelle",
+      "kind": "castle",
+      "lat": 43.4075726,
+      "lon": 5.9187174,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Trigance",
+      "kind": "castle",
+      "lat": 43.76193485,
+      "lon": 6.44417145,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Aiguines",
+      "kind": "castle",
+      "lat": 43.773537250000004,
+      "lon": 6.2412747500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Sommet du Chastillon",
+      "kind": "viewpoint",
+      "lat": 43.7340987,
+      "lon": 6.4076558,
+      "elevation_m": 1199
+    },
+    {
+      "name": "Belvédère Marie Sumian",
+      "kind": "viewpoint",
+      "lat": 43.7166569,
+      "lon": 6.1345417,
+      "elevation_m": 630
+    },
+    {
+      "name": "Mont Caume",
+      "kind": "viewpoint",
+      "lat": 43.184508,
+      "lon": 5.9082396,
+      "elevation_m": null
+    },
+    {
+      "name": "Sauts du Cabri",
+      "kind": "viewpoint",
+      "lat": 43.3679221,
+      "lon": 5.9246161,
+      "elevation_m": null
+    },
+    {
+      "name": "Gorges de Caramy",
+      "kind": "viewpoint",
+      "lat": 43.3684709,
+      "lon": 5.9245326,
+      "elevation_m": null
+    },
+    {
+      "name": "Panoramique à 360°",
+      "kind": "viewpoint",
+      "lat": 43.6912583,
+      "lon": 5.9078028,
+      "elevation_m": null
+    },
+    {
+      "name": "Belvédère Trompines",
+      "kind": "viewpoint",
+      "lat": 43.7085416,
+      "lon": 6.0784703,
+      "elevation_m": null
+    },
+    {
+      "name": "Pont de l'Artuby",
+      "kind": "viewpoint",
+      "lat": 43.7309642,
+      "lon": 6.3868444,
+      "elevation_m": null
+    },
+    {
+      "name": "Panorama",
+      "kind": "viewpoint",
+      "lat": 43.7338262,
+      "lon": 6.1758941,
+      "elevation_m": null
+    }
+  ]
+}

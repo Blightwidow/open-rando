@@ -1,0 +1,118 @@
+{
+  "id": "1c204b104e9c",
+  "slug": "gr-221",
+  "path_ref": "GR 221",
+  "path_name": "Le Bocage Normand",
+  "description": "329 km à travers la Normandie, jalonné de cathédrales gothiques, d'architectures médiévales, de prairies fleuries et de zones humides.",
+  "osm_relation_id": 13524440,
+  "distance_km": 179.2,
+  "elevation_gain_m": 3414,
+  "elevation_loss_m": 3419,
+  "max_elevation_m": 291,
+  "min_elevation_m": 10,
+  "bbox": [
+    -1.4506982,
+    48.8532334,
+    -0.4125677,
+    49.1199361
+  ],
+  "region": "Normandie",
+  "departement": "50",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/1c204b104e9c/trail.geojson",
+  "gpx_path": "tracks/1c204b104e9c/trail.gpx",
+  "elevation_path": "tracks/1c204b104e9c/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Pontécoulant",
+      "kind": "castle",
+      "lat": 48.8964468,
+      "lon": -0.5896652,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Orbigny",
+      "kind": "castle",
+      "lat": 48.9051234,
+      "lon": -0.5705769,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sainte-Marie Laumont",
+      "kind": "castle",
+      "lat": 48.9208466,
+      "lon": -0.9012306,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Angotière",
+      "kind": "castle",
+      "lat": 49.00009905,
+      "lon": -1.05690245,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Marcambye",
+      "kind": "castle",
+      "lat": 49.0115798,
+      "lon": -1.2232046,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Soulles",
+      "kind": "castle",
+      "lat": 49.016697300000004,
+      "lon": -1.1840685999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cerisy - Centre Culturel International",
+      "kind": "castle",
+      "lat": 49.022087400000004,
+      "lon": -1.2885008500000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Salle",
+      "kind": "castle",
+      "lat": 49.0327464,
+      "lon": -1.3312794,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Matignon",
+      "kind": "castle",
+      "lat": 49.034045500000005,
+      "lon": -0.9787745,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Bonfossé",
+      "kind": "castle",
+      "lat": 49.0468404,
+      "lon": -1.1847156,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Canisy",
+      "kind": "castle",
+      "lat": 49.079594,
+      "lon": -1.1711049999999998,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Canisy",
+      "kind": "castle",
+      "lat": 49.0797008,
+      "lon": -1.1710271,
+      "elevation_m": null
+    }
+  ]
+}

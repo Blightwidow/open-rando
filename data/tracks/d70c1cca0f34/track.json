@@ -1,0 +1,118 @@
+{
+  "id": "d70c1cca0f34",
+  "slug": "gr-137",
+  "path_ref": "GR 137",
+  "path_name": "De Nolay à Autun",
+  "description": "51 km en Bourgogne entre Autun et Nolay, alternant forêts denses, plateaux calcaires et escarpements rocheux annonçant les vignobles bourguignons.",
+  "osm_relation_id": 14075709,
+  "distance_km": 52.8,
+  "elevation_gain_m": 1092,
+  "elevation_loss_m": 1084,
+  "max_elevation_m": 580,
+  "min_elevation_m": 312,
+  "bbox": [
+    4.2979225,
+    46.8333197,
+    4.6344768,
+    46.9517136
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "21",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/d70c1cca0f34/trail.geojson",
+  "gpx_path": "tracks/d70c1cca0f34/trail.gpx",
+  "elevation_path": "tracks/d70c1cca0f34/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Brandon",
+      "kind": "castle",
+      "lat": 46.8502817,
+      "lon": 4.481389,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Épiry",
+      "kind": "castle",
+      "lat": 46.88124115,
+      "lon": 4.497044150000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Épiry",
+      "kind": "castle",
+      "lat": 46.88149475,
+      "lon": 4.4967651,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Petit Montjeu",
+      "kind": "castle",
+      "lat": 46.938176999999996,
+      "lon": 4.299784,
+      "elevation_m": null
+    },
+    {
+      "name": "Pierres des saints",
+      "kind": "ruins",
+      "lat": 46.8776826,
+      "lon": 4.3376164,
+      "elevation_m": null
+    },
+    {
+      "name": "La Maison du Chinois",
+      "kind": "ruins",
+      "lat": 46.8931092,
+      "lon": 4.3042863,
+      "elevation_m": null
+    },
+    {
+      "name": "Voie romaine",
+      "kind": "ruins",
+      "lat": 46.9496664,
+      "lon": 4.3046773,
+      "elevation_m": null
+    },
+    {
+      "name": "Temple de Janus",
+      "kind": "ruins",
+      "lat": 46.9612213,
+      "lon": 4.2885109,
+      "elevation_m": null
+    },
+    {
+      "name": "Chapelle Saint-Martin",
+      "kind": "ruins",
+      "lat": 46.96450275,
+      "lon": 4.30960635,
+      "elevation_m": null
+    },
+    {
+      "name": "Carnot",
+      "kind": "monument",
+      "lat": 46.9514343,
+      "lon": 4.63449455,
+      "elevation_m": null
+    },
+    {
+      "name": "La Coiffe du Diable",
+      "kind": "peak",
+      "lat": 46.9320804,
+      "lon": 4.3378233,
+      "elevation_m": 604
+    },
+    {
+      "name": "Mont de Rème",
+      "kind": "peak",
+      "lat": 46.9305282,
+      "lon": 4.6105402,
+      "elevation_m": 513
+    }
+  ]
+}

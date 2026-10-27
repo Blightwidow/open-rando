@@ -1,0 +1,118 @@
+{
+  "id": "3ae2996d1da9",
+  "slug": "gr-34",
+  "path_ref": "GR 34",
+  "path_name": "Chemin des Douaniers",
+  "description": "Plus de 2 000 km le long de la côte bretonne, des plages de sable fin aux falaises avec vues plongeantes sur l'océan et villages chargés d'histoire.",
+  "osm_relation_id": 7790332,
+  "distance_km": 2118.2,
+  "elevation_gain_m": 27143,
+  "elevation_loss_m": 27137,
+  "max_elevation_m": 128,
+  "min_elevation_m": -10,
+  "bbox": [
+    -4.7949766,
+    47.2334655,
+    -1.5062334,
+    48.8683045
+  ],
+  "region": "Pays de la Loire",
+  "departement": "44",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 9.53,
+  "geojson_path": "tracks/3ae2996d1da9/trail.geojson",
+  "gpx_path": "tracks/3ae2996d1da9/trail.gpx",
+  "elevation_path": "tracks/3ae2996d1da9/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Saint-Marc",
+      "kind": "castle",
+      "lat": 47.238409000000004,
+      "lon": -2.2830120000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Castel Marie-Louise",
+      "kind": "castle",
+      "lat": 47.28098249999999,
+      "lon": -2.4079319999999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Careil",
+      "kind": "castle",
+      "lat": 47.29875145,
+      "lon": -2.3989007,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel Saint-Clair",
+      "kind": "castle",
+      "lat": 47.325215549999996,
+      "lon": -2.4292118499999997,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Kerhué",
+      "kind": "castle",
+      "lat": 47.326071999999996,
+      "lon": -2.4516144,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Tesson",
+      "kind": "castle",
+      "lat": 47.33399525,
+      "lon": -2.4481102000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Bréhet",
+      "kind": "castle",
+      "lat": 47.34486325,
+      "lon": -2.4758473,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de l'Auvergnac",
+      "kind": "castle",
+      "lat": 47.36283145,
+      "lon": -2.5041114,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bois de la Cour",
+      "kind": "castle",
+      "lat": 47.37359,
+      "lon": -2.447088,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Turpault",
+      "kind": "castle",
+      "lat": 47.473564800000005,
+      "lon": -3.130324,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour des Anglais",
+      "kind": "castle",
+      "lat": 47.50341655,
+      "lon": -2.63240275,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Kérampoul",
+      "kind": "castle",
+      "lat": 47.505112499999996,
+      "lon": -2.6830335,
+      "elevation_m": null
+    }
+  ]
+}

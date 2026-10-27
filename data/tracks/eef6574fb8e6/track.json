@@ -1,0 +1,118 @@
+{
+  "id": "eef6574fb8e6",
+  "slug": "gr-76b",
+  "path_ref": "GR 76B",
+  "path_name": "Du Martrat (Le Rousset) à Tournus",
+  "description": "",
+  "osm_relation_id": 14313151,
+  "distance_km": 39.8,
+  "elevation_gain_m": 681,
+  "elevation_loss_m": 633,
+  "max_elevation_m": 409,
+  "min_elevation_m": 193,
+  "bbox": [
+    4.4865054,
+    46.5443234,
+    4.8016335,
+    46.5824465
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "71",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/eef6574fb8e6/trail.geojson",
+  "gpx_path": "tracks/eef6574fb8e6/trail.gpx",
+  "elevation_path": "tracks/eef6574fb8e6/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Nobles",
+      "kind": "castle",
+      "lat": 46.541395699999995,
+      "lon": 4.78587845,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cormatin",
+      "kind": "castle",
+      "lat": 46.5432061,
+      "lon": 4.6847553,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Besanceuil",
+      "kind": "castle",
+      "lat": 46.5463778,
+      "lon": 4.6059937,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Brancion",
+      "kind": "castle",
+      "lat": 46.547045100000005,
+      "lon": 4.79772015,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chassignolles",
+      "kind": "castle",
+      "lat": 46.555380400000004,
+      "lon": 4.654984300000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Ruines du Château de Sigy",
+      "kind": "ruins",
+      "lat": 46.5563464,
+      "lon": 4.5732723,
+      "elevation_m": null
+    },
+    {
+      "name": "Four de la Baume",
+      "kind": "cave_entrance",
+      "lat": 46.5473118,
+      "lon": 4.8008738,
+      "elevation_m": null
+    },
+    {
+      "name": "Monument aux morts",
+      "kind": "memorial",
+      "lat": 46.5796464,
+      "lon": 4.5678164,
+      "elevation_m": null
+    },
+    {
+      "name": "Menhir dit Pierre-Levée du Champ de la Fa",
+      "kind": "archaeological_site",
+      "lat": 46.5429296,
+      "lon": 4.7820259,
+      "elevation_m": null
+    },
+    {
+      "name": "Église Saint-Hippolyte",
+      "kind": "attraction",
+      "lat": 46.5528992,
+      "lon": 4.6441546,
+      "elevation_m": null
+    },
+    {
+      "name": "Église Saint-Martin",
+      "kind": "attraction",
+      "lat": 46.5567995,
+      "lon": 4.7372555,
+      "elevation_m": null
+    },
+    {
+      "name": "Tuilerie",
+      "kind": "attraction",
+      "lat": 46.5638261,
+      "lon": 4.75758715,
+      "elevation_m": null
+    }
+  ]
+}

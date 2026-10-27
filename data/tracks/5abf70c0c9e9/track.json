@@ -1,0 +1,118 @@
+{
+  "id": "5abf70c0c9e9",
+  "slug": "gr-51",
+  "path_ref": "GR 51",
+  "path_name": "Balcons de la Méditerranée",
+  "description": "436 km entre Menton et La Madrague, reliant le parc national des Calanques, le massif de l'Esterel et les villages perchés de la Côte d'Azur.",
+  "osm_relation_id": 11087038,
+  "distance_km": 444.5,
+  "elevation_gain_m": 15689,
+  "elevation_loss_m": 15680,
+  "max_elevation_m": 1073,
+  "min_elevation_m": 0,
+  "bbox": [
+    5.3494023,
+    43.140524,
+    7.5225301,
+    43.8142772
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "06",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/5abf70c0c9e9/trail.geojson",
+  "gpx_path": "tracks/5abf70c0c9e9/trail.gpx",
+  "elevation_path": "tracks/5abf70c0c9e9/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château Féodal d'Ollioules",
+      "kind": "castle",
+      "lat": 43.1416633,
+      "lon": 5.8456148,
+      "elevation_m": null
+    },
+    {
+      "name": "Ouvrage du Gros Cerveau",
+      "kind": "castle",
+      "lat": 43.1568968,
+      "lon": 5.81506705,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine Ray-Jane",
+      "kind": "castle",
+      "lat": 43.1752483,
+      "lon": 5.7726619,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cassis",
+      "kind": "castle",
+      "lat": 43.2126852,
+      "lon": 5.5394295,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Valbelle",
+      "kind": "castle",
+      "lat": 43.4075726,
+      "lon": 5.9187174,
+      "elevation_m": null
+    },
+    {
+      "name": "Villa Aurélienne",
+      "kind": "castle",
+      "lat": 43.444759000000005,
+      "lon": 6.74247765,
+      "elevation_m": null
+    },
+    {
+      "name": "Castelet du Muy",
+      "kind": "castle",
+      "lat": 43.47185695,
+      "lon": 6.5697543,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Sainte-Roseline",
+      "kind": "castle",
+      "lat": 43.47467005,
+      "lon": 6.5135023,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Malbosc",
+      "kind": "castle",
+      "lat": 43.6715182,
+      "lon": 6.947457,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des comtes de Grasse",
+      "kind": "castle",
+      "lat": 43.701137700000004,
+      "lon": 6.9897252000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Gaude",
+      "kind": "castle",
+      "lat": 43.74341785,
+      "lon": 7.1680746,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Grimaldi",
+      "kind": "castle",
+      "lat": 43.765265,
+      "lon": 7.45959,
+      "elevation_m": null
+    }
+  ]
+}

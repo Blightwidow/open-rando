@@ -1,0 +1,118 @@
+{
+  "id": "378d2b13bcf7",
+  "slug": "gr-70",
+  "path_ref": "GR 70",
+  "path_name": "Chemin de Stevenson",
+  "description": "268 km sur les traces de Robert Louis Stevenson et de son ânesse Modestine, du Puy-en-Velay à Alès à travers l'Auvergne et les Cévennes.",
+  "osm_relation_id": 223039,
+  "distance_km": 208.8,
+  "elevation_gain_m": 6484,
+  "elevation_loss_m": 6618,
+  "max_elevation_m": 1699,
+  "min_elevation_m": 132,
+  "bbox": [
+    3.728771,
+    44.1056196,
+    4.0716245,
+    45.0436075
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "43",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 16.92,
+  "geojson_path": "tracks/378d2b13bcf7/trail.geojson",
+  "gpx_path": "tracks/378d2b13bcf7/trail.gpx",
+  "elevation_path": "tracks/378d2b13bcf7/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Péras",
+      "kind": "castle",
+      "lat": 44.1015308,
+      "lon": 3.8916191,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Jean-du-Gard",
+      "kind": "castle",
+      "lat": 44.1050397,
+      "lon": 3.8842991,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Fare",
+      "kind": "castle",
+      "lat": 44.1513408,
+      "lon": 4.04525445,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Cambiaire",
+      "kind": "castle",
+      "lat": 44.16800285,
+      "lon": 3.8399284,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Saint-Pierre",
+      "kind": "castle",
+      "lat": 44.2264679,
+      "lon": 3.8168289,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Luc",
+      "kind": "castle",
+      "lat": 44.6521291,
+      "lon": 3.8889959,
+      "elevation_m": null
+    },
+    {
+      "name": "Tour de Concoules",
+      "kind": "castle",
+      "lat": 44.711182,
+      "lon": 3.8676705,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien château abbatial",
+      "kind": "castle",
+      "lat": 44.72901145,
+      "lon": 3.83819495,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mazigon",
+      "kind": "castle",
+      "lat": 44.770057550000004,
+      "lon": 3.8682527,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Beaufort",
+      "kind": "castle",
+      "lat": 44.8893797,
+      "lon": 3.9181555,
+      "elevation_m": null
+    },
+    {
+      "name": "Château abbatial",
+      "kind": "castle",
+      "lat": 44.93987945000001,
+      "lon": 3.9957123,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Valette",
+      "kind": "castle",
+      "lat": 44.9702118,
+      "lon": 3.9201745499999996,
+      "elevation_m": null
+    }
+  ]
+}

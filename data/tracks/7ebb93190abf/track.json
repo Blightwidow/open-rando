@@ -1,0 +1,118 @@
+{
+  "id": "7ebb93190abf",
+  "slug": "gr-9",
+  "path_ref": "GR 9",
+  "path_name": "Du Jura à la Méditerranée",
+  "description": "970 km des forêts du Jura aux collines provençales, en passant par la Chartreuse, le Lubéron et la Sainte-Victoire.",
+  "osm_relation_id": 10670467,
+  "distance_km": 834.2,
+  "elevation_gain_m": 36282,
+  "elevation_loss_m": 36108,
+  "max_elevation_m": 1735,
+  "min_elevation_m": 2,
+  "bbox": [
+    5.0405658,
+    43.2404607,
+    6.5795621,
+    46.4770006
+  ],
+  "region": "Bourgogne-Franche-Comté",
+  "departement": "39",
+  "difficulty": "difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 63.38,
+  "geojson_path": "tracks/7ebb93190abf/trail.geojson",
+  "gpx_path": "tracks/7ebb93190abf/trail.gpx",
+  "elevation_path": "tracks/7ebb93190abf/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Le Château",
+      "kind": "castle",
+      "lat": 44.552362450000004,
+      "lon": 5.1077893,
+      "elevation_m": null
+    },
+    {
+      "name": "Château ruiné des Comtes de Poitiers",
+      "kind": "castle",
+      "lat": 44.5829722,
+      "lon": 5.132447,
+      "elevation_m": null
+    },
+    {
+      "name": "Château ruiné des Evêques de Die",
+      "kind": "castle",
+      "lat": 44.5845994,
+      "lon": 5.132076,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montrond",
+      "kind": "castle",
+      "lat": 44.8107911,
+      "lon": 5.17226795,
+      "elevation_m": null
+    },
+    {
+      "name": "Domaine Mayoussier",
+      "kind": "castle",
+      "lat": 45.0631023,
+      "lon": 5.3269474,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Borel",
+      "kind": "castle",
+      "lat": 45.184627649999996,
+      "lon": 5.68813615,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bouquéron",
+      "kind": "castle",
+      "lat": 45.21482625,
+      "lon": 5.7573776500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Arvilliers",
+      "kind": "castle",
+      "lat": 45.2235862,
+      "lon": 5.753969,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rochebelle",
+      "kind": "castle",
+      "lat": 45.226873499999996,
+      "lon": 5.7846554999999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Rochasson",
+      "kind": "castle",
+      "lat": 45.228217,
+      "lon": 5.778401000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montbel",
+      "kind": "castle",
+      "lat": 45.4151298,
+      "lon": 5.83815005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mandrin",
+      "kind": "castle",
+      "lat": 45.5848194,
+      "lon": 5.7181491,
+      "elevation_m": null
+    }
+  ]
+}

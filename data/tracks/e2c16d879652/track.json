@@ -1,0 +1,118 @@
+{
+  "id": "e2c16d879652",
+  "slug": "gr-54",
+  "path_ref": "GR 54",
+  "path_name": "Tour des massifs de l'Oisans et des Ecrins",
+  "description": "",
+  "osm_relation_id": 2909096,
+  "distance_km": 97.1,
+  "elevation_gain_m": 9630,
+  "elevation_loss_m": 6512,
+  "max_elevation_m": 2729,
+  "min_elevation_m": 941,
+  "bbox": [
+    6.0262107,
+    44.7661845,
+    6.517129,
+    45.0656242
+  ],
+  "region": "",
+  "departement": "",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 3,
+  "trail_gap_km": 22.32,
+  "geojson_path": "tracks/e2c16d879652/trail.geojson",
+  "gpx_path": "tracks/e2c16d879652/trail.gpx",
+  "elevation_path": "tracks/e2c16d879652/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Les Oules du Diable",
+      "kind": "viewpoint",
+      "lat": 44.8089634,
+      "lon": 6.1960004,
+      "elevation_m": null
+    },
+    {
+      "name": "Bâtiment Panoramic et activités de loisirs",
+      "kind": "viewpoint",
+      "lat": 44.8197373,
+      "lon": 6.4862791,
+      "elevation_m": null
+    },
+    {
+      "name": "Cascade de la Muzelle",
+      "kind": "viewpoint",
+      "lat": 44.9797189,
+      "lon": 6.1209425,
+      "elevation_m": null
+    },
+    {
+      "name": "Décollage parapente Air2alpes Été",
+      "kind": "viewpoint",
+      "lat": 45.0101099,
+      "lon": 6.1085363,
+      "elevation_m": null
+    },
+    {
+      "name": "Point de vue",
+      "kind": "viewpoint",
+      "lat": 45.0380882,
+      "lon": 6.1112219,
+      "elevation_m": null
+    },
+    {
+      "name": "Pointe du Jour",
+      "kind": "viewpoint",
+      "lat": 45.049488,
+      "lon": 6.151519,
+      "elevation_m": null
+    },
+    {
+      "name": "Décollage parapente Air2alpes",
+      "kind": "viewpoint",
+      "lat": 45.0697628,
+      "lon": 6.2022433,
+      "elevation_m": null
+    },
+    {
+      "name": "Le Cerisier",
+      "kind": "ruins",
+      "lat": 44.9739238,
+      "lon": 6.1192552,
+      "elevation_m": null
+    },
+    {
+      "name": "L'Argentière",
+      "kind": "ruins",
+      "lat": 44.9885773,
+      "lon": 6.0937487,
+      "elevation_m": null
+    },
+    {
+      "name": "Ardoisières de la Ponsonniere",
+      "kind": "ruins",
+      "lat": 44.9955675,
+      "lon": 6.1185101,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Rivoirettes",
+      "kind": "ruins",
+      "lat": 45.034129,
+      "lon": 6.0858772,
+      "elevation_m": null
+    },
+    {
+      "name": "Les Rivoirettes",
+      "kind": "ruins",
+      "lat": 45.034171549999996,
+      "lon": 6.0857721,
+      "elevation_m": null
+    }
+  ]
+}

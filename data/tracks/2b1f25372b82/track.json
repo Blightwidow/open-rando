@@ -1,0 +1,118 @@
+{
+  "id": "2b1f25372b82",
+  "slug": "gr-341",
+  "path_ref": "GR 341",
+  "path_name": "De Lanester au Lac de Guerlédan",
+  "description": "",
+  "osm_relation_id": 12923652,
+  "distance_km": 170.1,
+  "elevation_gain_m": 2741,
+  "elevation_loss_m": 2514,
+  "max_elevation_m": 249,
+  "min_elevation_m": 1,
+  "bbox": [
+    -3.3042712,
+    47.7649295,
+    -2.8399265,
+    48.2319311
+  ],
+  "region": "Bretagne",
+  "departement": "56",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "plains"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/2b1f25372b82/trail.geojson",
+  "gpx_path": "tracks/2b1f25372b82/trail.gpx",
+  "elevation_path": "tracks/2b1f25372b82/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château des Forges des Salles",
+      "kind": "castle",
+      "lat": 48.200323499999996,
+      "lon": -3.126224,
+      "elevation_m": 168
+    },
+    {
+      "name": "Château de Locguénolé",
+      "kind": "castle",
+      "lat": 47.7697308,
+      "lon": -3.2824688,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Kerscamp",
+      "kind": "castle",
+      "lat": 47.80611105,
+      "lon": -3.30982775,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bois-Joly",
+      "kind": "castle",
+      "lat": 47.80899565,
+      "lon": -3.30772815,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Bot",
+      "kind": "castle",
+      "lat": 47.8114827,
+      "lon": -3.2977002,
+      "elevation_m": null
+    },
+    {
+      "name": "Abbaye Notre-Dame de la Joie",
+      "kind": "castle",
+      "lat": 47.814045050000004,
+      "lon": -3.28178065,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Villeneuve-Jacquelot",
+      "kind": "castle",
+      "lat": 47.9361345,
+      "lon": -3.113583,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Menorval",
+      "kind": "castle",
+      "lat": 48.0284687,
+      "lon": -3.1267919,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Rohan",
+      "kind": "castle",
+      "lat": 48.0703525,
+      "lon": -2.9633184,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Quellennec",
+      "kind": "castle",
+      "lat": 48.2264535,
+      "lon": -2.9643375,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Correc",
+      "kind": "castle",
+      "lat": 48.23294115,
+      "lon": -3.1072836500000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Pont du Bonhomme",
+      "kind": "viewpoint",
+      "lat": 47.7643677,
+      "lon": -3.300764,
+      "elevation_m": null
+    }
+  ]
+}

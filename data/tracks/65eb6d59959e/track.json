@@ -1,0 +1,118 @@
+{
+  "id": "65eb6d59959e",
+  "slug": "gr-7",
+  "path_ref": "GR 7",
+  "path_name": "Des Vosges aux Pyrénées",
+  "description": "1 467 km longeant la ligne de partage des eaux entre Atlantique et Méditerranée, du Ballon d'Alsace à Andorre.",
+  "osm_relation_id": 11193072,
+  "distance_km": 1482.3,
+  "elevation_gain_m": 43951,
+  "elevation_loss_m": 43078,
+  "max_elevation_m": 2511,
+  "min_elevation_m": 131,
+  "bbox": [
+    1.7256339,
+    42.5032029,
+    6.8458812,
+    48.149835
+  ],
+  "region": "Grand Est",
+  "departement": "68",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 103.73,
+  "geojson_path": "tracks/65eb6d59959e/trail.geojson",
+  "gpx_path": "tracks/65eb6d59959e/trail.gpx",
+  "elevation_path": "tracks/65eb6d59959e/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Bâtie",
+      "kind": "castle",
+      "lat": 45.6554978,
+      "lon": 4.58193805,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Charfetain",
+      "kind": "castle",
+      "lat": 45.759397500000006,
+      "lon": 4.521445,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Ronno",
+      "kind": "castle",
+      "lat": 45.985568,
+      "lon": 4.385467,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir d'Avray",
+      "kind": "castle",
+      "lat": 46.0014685,
+      "lon": 4.433807,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de La Farge",
+      "kind": "castle",
+      "lat": 46.2017536,
+      "lon": 4.4584248,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Micaud",
+      "kind": "castle",
+      "lat": 46.6876208,
+      "lon": 4.5481574,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Sassangy",
+      "kind": "castle",
+      "lat": 46.7192618,
+      "lon": 4.64040745,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Charnailles",
+      "kind": "castle",
+      "lat": 46.773793,
+      "lon": 4.7076225,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Blaisy",
+      "kind": "castle",
+      "lat": 46.8210802,
+      "lon": 4.69110855,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montaigu",
+      "kind": "castle",
+      "lat": 46.82452285,
+      "lon": 4.7125292000000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chamilly",
+      "kind": "castle",
+      "lat": 46.8696111,
+      "lon": 4.687405500000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Santenay - Philippe le Hardi",
+      "kind": "castle",
+      "lat": 46.914646,
+      "lon": 4.694615000000001,
+      "elevation_m": null
+    }
+  ]
+}

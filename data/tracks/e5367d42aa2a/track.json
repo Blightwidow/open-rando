@@ -1,0 +1,118 @@
+{
+  "id": "e5367d42aa2a",
+  "slug": "gr-223",
+  "path_ref": "GR 223",
+  "path_name": "Littoral de la Normandie",
+  "description": "619 km sur l'ancien sentier des douaniers, des falaises normandes aux plages du Débarquement jusqu'au Mont-Saint-Michel.",
+  "osm_relation_id": 1731774,
+  "distance_km": 658.2,
+  "elevation_gain_m": 5625,
+  "elevation_loss_m": 5624,
+  "max_elevation_m": 149,
+  "min_elevation_m": -5,
+  "bbox": [
+    -1.9468566,
+    48.617644,
+    0.3607397,
+    49.7268523
+  ],
+  "region": "Normandie",
+  "departement": "76",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "coastal"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/e5367d42aa2a/trail.geojson",
+  "gpx_path": "tracks/e5367d42aa2a/trail.gpx",
+  "elevation_path": "tracks/e5367d42aa2a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Manoir",
+      "kind": "castle",
+      "lat": 48.681177500000004,
+      "lon": -1.4013365,
+      "elevation_m": null
+    },
+    {
+      "name": "Courtine",
+      "kind": "castle",
+      "lat": 48.6874655,
+      "lon": -1.3612328,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Crête",
+      "kind": "castle",
+      "lat": 48.826924,
+      "lon": -1.581337,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Grainville",
+      "kind": "castle",
+      "lat": 48.8298272,
+      "lon": -1.5658303,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir Saint-Nicolas",
+      "kind": "castle",
+      "lat": 48.8303712,
+      "lon": -1.5740422,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Regnéville -sur-mer",
+      "kind": "castle",
+      "lat": 49.00741,
+      "lon": -1.55346115,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Regneville sur mer",
+      "kind": "castle",
+      "lat": 49.0074286,
+      "lon": -1.5533263,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Coutainville",
+      "kind": "castle",
+      "lat": 49.053452,
+      "lon": -1.588014,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Gonneville",
+      "kind": "castle",
+      "lat": 49.0813055,
+      "lon": -1.5873182,
+      "elevation_m": null
+    },
+    {
+      "name": "Château des Forges",
+      "kind": "castle",
+      "lat": 49.086587,
+      "lon": -1.5855225000000002,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pirou",
+      "kind": "castle",
+      "lat": 49.161582550000006,
+      "lon": -1.5735206499999999,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Mariquet",
+      "kind": "castle",
+      "lat": 49.228301,
+      "lon": -0.253519,
+      "elevation_m": null
+    }
+  ]
+}

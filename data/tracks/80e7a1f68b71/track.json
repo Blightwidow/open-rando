@@ -1,0 +1,118 @@
+{
+  "id": "80e7a1f68b71",
+  "slug": "gr-36",
+  "path_ref": "GR 36",
+  "path_name": "De la Manche aux Pyrénées",
+  "description": "1 928 km d'Ouistreham à Bourg-Madame, des plages normandes aux montagnes pyrénéennes.",
+  "osm_relation_id": 10805122,
+  "distance_km": 1994.2,
+  "elevation_gain_m": 44682,
+  "elevation_loss_m": 43465,
+  "max_elevation_m": 2384,
+  "min_elevation_m": -3,
+  "bbox": [
+    -0.5350077,
+    42.4187486,
+    2.6347487,
+    49.2827125
+  ],
+  "region": "Normandie",
+  "departement": "14",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 2,
+  "trail_gap_km": 317.15,
+  "geojson_path": "tracks/80e7a1f68b71/trail.geojson",
+  "gpx_path": "tracks/80e7a1f68b71/trail.gpx",
+  "elevation_path": "tracks/80e7a1f68b71/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Logis de Pierre Levée",
+      "kind": "castle",
+      "lat": 46.29245845,
+      "lon": -0.5332716,
+      "elevation_m": null
+    },
+    {
+      "name": "Donjon de Niort",
+      "kind": "castle",
+      "lat": 46.32530625,
+      "lon": -0.4650733,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort Foucault",
+      "kind": "castle",
+      "lat": 46.32617115,
+      "lon": -0.4662211,
+      "elevation_m": null
+    },
+    {
+      "name": "Chantemerle",
+      "kind": "castle",
+      "lat": 46.36066485,
+      "lon": -0.4738695,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Mursay",
+      "kind": "castle",
+      "lat": 46.37675215,
+      "lon": -0.4701357,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Taillée",
+      "kind": "castle",
+      "lat": 46.39503795,
+      "lon": -0.41173845,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Coudray-Salbart",
+      "kind": "castle",
+      "lat": 46.407137399999996,
+      "lon": -0.42621985,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir du Repéroux",
+      "kind": "castle",
+      "lat": 46.45535945,
+      "lon": -0.40845335,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Pimpelière",
+      "kind": "castle",
+      "lat": 46.460391099999995,
+      "lon": -0.43740409999999996,
+      "elevation_m": null
+    },
+    {
+      "name": "Logis de la Moussière",
+      "kind": "castle",
+      "lat": 46.4637947,
+      "lon": -0.4397297,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Luc",
+      "kind": "castle",
+      "lat": 46.472595,
+      "lon": -0.41208975000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Salinière",
+      "kind": "castle",
+      "lat": 46.5879071,
+      "lon": -0.3192677,
+      "elevation_m": null
+    }
+  ]
+}

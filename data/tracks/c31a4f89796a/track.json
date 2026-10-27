@@ -1,0 +1,118 @@
+{
+  "id": "c31a4f89796a",
+  "slug": "gr-81",
+  "path_ref": "GR 81",
+  "path_name": "Chemin d'Amadour",
+  "description": "",
+  "osm_relation_id": 15676218,
+  "distance_km": 605.0,
+  "elevation_gain_m": 8684,
+  "elevation_loss_m": 8504,
+  "max_elevation_m": 314,
+  "min_elevation_m": -5,
+  "bbox": [
+    -1.1345799,
+    44.626243,
+    1.6181958,
+    45.514388
+  ],
+  "region": "Nouvelle-Aquitaine",
+  "departement": "33",
+  "difficulty": "easy",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 3,
+  "trail_gap_km": 19.74,
+  "geojson_path": "tracks/c31a4f89796a/trail.geojson",
+  "gpx_path": "tracks/c31a4f89796a/trail.gpx",
+  "elevation_path": "tracks/c31a4f89796a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Guilleragues",
+      "kind": "castle",
+      "lat": 44.625791,
+      "lon": 0.049744,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Caze",
+      "kind": "castle",
+      "lat": 44.63359255,
+      "lon": 0.039628949999999996,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la bastide",
+      "kind": "castle",
+      "lat": 44.6684112,
+      "lon": 0.396763,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Pouthet",
+      "kind": "castle",
+      "lat": 44.6804596,
+      "lon": 0.4128553,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Grave Béchade",
+      "kind": "castle",
+      "lat": 44.6811259,
+      "lon": 0.1479211,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancien Palais des Evêques",
+      "kind": "castle",
+      "lat": 44.730719,
+      "lon": 0.6070103,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de l'Aubespin",
+      "kind": "castle",
+      "lat": 44.7359072,
+      "lon": 0.5618423,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bardou",
+      "kind": "castle",
+      "lat": 44.7371636,
+      "lon": 0.689125,
+      "elevation_m": null
+    },
+    {
+      "name": "Laubesc",
+      "kind": "castle",
+      "lat": 44.7469774,
+      "lon": -0.1827114,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bouniagues",
+      "kind": "castle",
+      "lat": 44.758984,
+      "lon": 0.52736295,
+      "elevation_m": null
+    },
+    {
+      "name": "Maison Noble Dutasta",
+      "kind": "castle",
+      "lat": 44.765226,
+      "lon": -0.4657595,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Bridoire",
+      "kind": "castle",
+      "lat": 44.76785305,
+      "lon": 0.45873450000000005,
+      "elevation_m": null
+    }
+  ]
+}

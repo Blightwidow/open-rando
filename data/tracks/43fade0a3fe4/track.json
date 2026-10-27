@@ -1,0 +1,118 @@
+{
+  "id": "43fade0a3fe4",
+  "slug": "gr-5",
+  "path_ref": "GR 5",
+  "path_name": "Grande Traversée des Alpes",
+  "description": "1 526 km du Luxembourg à Nice, des collines verdoyantes aux montagnes escarpées des Alpes, en passant par les vignobles de la Moselle.",
+  "osm_relation_id": 2704286,
+  "distance_km": 590.3,
+  "elevation_gain_m": 36063,
+  "elevation_loss_m": 35694,
+  "max_elevation_m": 2762,
+  "min_elevation_m": 7,
+  "bbox": [
+    6.6057578,
+    43.6939679,
+    7.2637224,
+    46.3942194
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "06",
+  "difficulty": "very_difficult",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/43fade0a3fe4/trail.geojson",
+  "gpx_path": "tracks/43fade0a3fe4/trail.gpx",
+  "elevation_path": "tracks/43fade0a3fe4/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de la Tour",
+      "kind": "castle",
+      "lat": 43.696296000000004,
+      "lon": 7.249693000000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Palais de la Préfecture, ancien palais des rois de Sardaigne",
+      "kind": "castle",
+      "lat": 43.696336450000004,
+      "lon": 7.275156,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Azur",
+      "kind": "castle",
+      "lat": 43.7349335,
+      "lon": 7.2665095,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort de Château-Queyras",
+      "kind": "castle",
+      "lat": 44.7556705,
+      "lon": 6.7896703,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort du Randouillet",
+      "kind": "castle",
+      "lat": 44.88891205,
+      "lon": 6.6523309,
+      "elevation_m": null
+    },
+    {
+      "name": "Communication Y",
+      "kind": "castle",
+      "lat": 44.892194849999996,
+      "lon": 6.6503236999999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort des Têtes",
+      "kind": "castle",
+      "lat": 44.89618875,
+      "lon": 6.6502631,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort Dauphin",
+      "kind": "castle",
+      "lat": 44.8980903,
+      "lon": 6.658000550000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Ancienne école d'infirmières",
+      "kind": "castle",
+      "lat": 44.8989557,
+      "lon": 6.6456909500000005,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort des Salettes",
+      "kind": "castle",
+      "lat": 44.90482485,
+      "lon": 6.65153675,
+      "elevation_m": null
+    },
+    {
+      "name": "Fort du Janus",
+      "kind": "castle",
+      "lat": 44.9116176,
+      "lon": 6.71137285,
+      "elevation_m": null
+    },
+    {
+      "name": "Blockhaus d'Amodon",
+      "kind": "castle",
+      "lat": 45.2127173,
+      "lon": 6.67635645,
+      "elevation_m": null
+    }
+  ]
+}

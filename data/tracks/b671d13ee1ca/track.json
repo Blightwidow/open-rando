@@ -1,0 +1,118 @@
+{
+  "id": "b671d13ee1ca",
+  "slug": "gr-700",
+  "path_ref": "GR 700",
+  "path_name": "Chemin de Régordane",
+  "description": "244 km sur cette voie historique de pèlerinage reliant le Velay au sud de la France, entre hauts plateaux et patrimoine religieux médiéval.",
+  "osm_relation_id": 8289243,
+  "distance_km": 245.3,
+  "elevation_gain_m": 4512,
+  "elevation_loss_m": 5142,
+  "max_elevation_m": 1237,
+  "min_elevation_m": 8,
+  "bbox": [
+    3.8310856,
+    43.6771259,
+    4.4297068,
+    45.0431616
+  ],
+  "region": "Auvergne-Rhône-Alpes",
+  "departement": "43",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/b671d13ee1ca/trail.geojson",
+  "gpx_path": "tracks/b671d13ee1ca/trail.gpx",
+  "elevation_path": "tracks/b671d13ee1ca/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Générac",
+      "kind": "castle",
+      "lat": 43.725708499999996,
+      "lon": 4.34843775,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Tuilerie",
+      "kind": "castle",
+      "lat": 43.7642023,
+      "lon": 4.3813139,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Fadaise",
+      "kind": "castle",
+      "lat": 43.83588985,
+      "lon": 4.3556460999999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Le château des Buissières",
+      "kind": "castle",
+      "lat": 43.93176695,
+      "lon": 4.2944087500000006,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de la Tour",
+      "kind": "castle",
+      "lat": 43.9566605,
+      "lon": 4.287077,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Chaptes",
+      "kind": "castle",
+      "lat": 43.970369000000005,
+      "lon": 4.27943,
+      "elevation_m": null
+    },
+    {
+      "name": "Palais Épiscopal",
+      "kind": "castle",
+      "lat": 43.9811615,
+      "lon": 4.223628,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Boucoiran",
+      "kind": "castle",
+      "lat": 43.9957581,
+      "lon": 4.1849985499999995,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Calvières",
+      "kind": "castle",
+      "lat": 44.0522705,
+      "lon": 4.143965,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montmoirac",
+      "kind": "castle",
+      "lat": 44.08799449999999,
+      "lon": 4.0882892,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Portes",
+      "kind": "castle",
+      "lat": 44.26805665,
+      "lon": 4.027453100000001,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Montjoie",
+      "kind": "castle",
+      "lat": 44.3085769,
+      "lon": 3.9648757,
+      "elevation_m": null
+    }
+  ]
+}

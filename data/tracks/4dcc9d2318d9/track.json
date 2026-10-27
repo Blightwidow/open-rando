@@ -1,0 +1,118 @@
+{
+  "id": "4dcc9d2318d9",
+  "slug": "gr-300",
+  "path_ref": "GR 300",
+  "path_name": "Chemin de Saint-Michel",
+  "description": "378 km sur cet ancien chemin de pèlerinage de Sancoins au Puy-en-Velay, entre églises romanes et paysages du Berry et du Velay.",
+  "osm_relation_id": 16195169,
+  "distance_km": 381.7,
+  "elevation_gain_m": 7012,
+  "elevation_loss_m": 6601,
+  "max_elevation_m": 1119,
+  "min_elevation_m": 186,
+  "bbox": [
+    2.9132996,
+    45.0503826,
+    3.8835653,
+    46.8337591
+  ],
+  "region": "Centre-Val de Loire",
+  "departement": "18",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/4dcc9d2318d9/trail.geojson",
+  "gpx_path": "tracks/4dcc9d2318d9/trail.gpx",
+  "elevation_path": "tracks/4dcc9d2318d9/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château du Cheylon",
+      "kind": "castle",
+      "lat": 45.063922000000005,
+      "lon": 3.8195975,
+      "elevation_m": null
+    },
+    {
+      "name": "Forteresse de Polignac",
+      "kind": "castle",
+      "lat": 45.06889255,
+      "lon": 3.860139,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Vidal",
+      "kind": "castle",
+      "lat": 45.0738765,
+      "lon": 3.799785,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Siaugues-Saint-Romain",
+      "kind": "castle",
+      "lat": 45.087550199999995,
+      "lon": 3.63351245,
+      "elevation_m": null
+    },
+    {
+      "name": "Château du Cluzel",
+      "kind": "castle",
+      "lat": 45.121588,
+      "lon": 3.567846,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Chavaniac",
+      "kind": "castle",
+      "lat": 45.157382,
+      "lon": 3.578021,
+      "elevation_m": null
+    },
+    {
+      "name": "Maison forte d'Azinières",
+      "kind": "castle",
+      "lat": 45.1691383,
+      "lon": 3.5453878,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Flaghac",
+      "kind": "castle",
+      "lat": 45.177029000000005,
+      "lon": 3.531264,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Domeyrat",
+      "kind": "castle",
+      "lat": 45.251157500000005,
+      "lon": 3.501503,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Lamothe",
+      "kind": "castle",
+      "lat": 45.3134233,
+      "lon": 3.4246931,
+      "elevation_m": null
+    },
+    {
+      "name": "Château d'Auzon",
+      "kind": "castle",
+      "lat": 45.3917915,
+      "lon": 3.3720695000000003,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Cocu",
+      "kind": "castle",
+      "lat": 45.4511533,
+      "lon": 3.3129489,
+      "elevation_m": null
+    }
+  ]
+}

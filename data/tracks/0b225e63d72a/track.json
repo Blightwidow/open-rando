@@ -1,0 +1,118 @@
+{
+  "id": "0b225e63d72a",
+  "slug": "gr-50",
+  "path_ref": "GR 50",
+  "path_name": "Tour du Parc National des Ecrins",
+  "description": "Le Tour des Écrins est une boucle épique de 370 km au cœur du massif le plus sauvage d’Europe. En passant par les Hautes-Alpes et l'Isère, ce sentier en balcon offre un panorama glaciaire spectaculaire (Meije, Barre des Écrins). Vous y découvrirez un patrimoine alpin unique – hameaux de pierre séculaires – tout en traversant forêts de mélèzes et pelouses alpines. C'est le terrain de jeu privilégié pour observer la faune emblématique : chamois, bouquetin et aigle royal.",
+  "osm_relation_id": 11097196,
+  "distance_km": 373.7,
+  "elevation_gain_m": 20919,
+  "elevation_loss_m": 20885,
+  "max_elevation_m": 2364,
+  "min_elevation_m": 723,
+  "bbox": [
+    5.8557326,
+    44.5599756,
+    6.6195731,
+    45.0656242
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "05",
+  "difficulty": "very_difficult",
+  "is_circular_trail": true,
+  "terrain": [
+    "mountain"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/0b225e63d72a/trail.geojson",
+  "gpx_path": "tracks/0b225e63d72a/trail.gpx",
+  "elevation_path": "tracks/0b225e63d72a/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Château de Saint-Léger",
+      "kind": "castle",
+      "lat": 44.6447105,
+      "lon": 6.2015808,
+      "elevation_m": null
+    },
+    {
+      "name": "Manoir de Prégentil",
+      "kind": "castle",
+      "lat": 44.6719805,
+      "lon": 6.2317224,
+      "elevation_m": null
+    },
+    {
+      "name": "Rocher Culasson",
+      "kind": "viewpoint",
+      "lat": 45.0423867,
+      "lon": 5.9200178,
+      "elevation_m": 2792
+    },
+    {
+      "name": "Crête du Chardonnet",
+      "kind": "viewpoint",
+      "lat": 45.0237743,
+      "lon": 6.4951418,
+      "elevation_m": 2713
+    },
+    {
+      "name": "Le Petit Taillefer",
+      "kind": "viewpoint",
+      "lat": 45.0394374,
+      "lon": 5.9142963,
+      "elevation_m": 2696
+    },
+    {
+      "name": "Col de Laurichard",
+      "kind": "viewpoint",
+      "lat": 45.0152529,
+      "lon": 6.3903121,
+      "elevation_m": 2654
+    },
+    {
+      "name": "Petite Autane",
+      "kind": "viewpoint",
+      "lat": 44.6408822,
+      "lon": 6.2470002,
+      "elevation_m": 2518
+    },
+    {
+      "name": "Le Gros Ane",
+      "kind": "viewpoint",
+      "lat": 45.0244556,
+      "lon": 6.4166967,
+      "elevation_m": 2505
+    },
+    {
+      "name": "Le Piolit",
+      "kind": "viewpoint",
+      "lat": 44.6033931,
+      "lon": 6.2671827,
+      "elevation_m": 2464
+    },
+    {
+      "name": "L'Âne",
+      "kind": "viewpoint",
+      "lat": 45.0284526,
+      "lon": 6.3430158,
+      "elevation_m": 2375
+    },
+    {
+      "name": "L'Aiguille",
+      "kind": "viewpoint",
+      "lat": 44.6097626,
+      "lon": 6.2477949,
+      "elevation_m": 2367
+    },
+    {
+      "name": "L'Arche",
+      "kind": "viewpoint",
+      "lat": 44.607044,
+      "lon": 6.2408527,
+      "elevation_m": 2256
+    }
+  ]
+}

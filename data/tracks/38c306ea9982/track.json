@@ -1,0 +1,118 @@
+{
+  "id": "38c306ea9982",
+  "slug": "gr-653a",
+  "path_ref": "GR 653A",
+  "path_name": "Via Aurelia",
+  "description": "",
+  "osm_relation_id": 12748333,
+  "distance_km": 398.3,
+  "elevation_gain_m": 8742,
+  "elevation_loss_m": 8720,
+  "max_elevation_m": 794,
+  "min_elevation_m": 0,
+  "bbox": [
+    4.6300678,
+    43.40318,
+    7.5298954,
+    43.7864764
+  ],
+  "region": "Provence-Alpes-Côte d'Azur",
+  "departement": "06",
+  "difficulty": "moderate",
+  "is_circular_trail": false,
+  "terrain": [
+    "hills"
+  ],
+  "trail_segment_count": 1,
+  "trail_gap_km": 0.0,
+  "geojson_path": "tracks/38c306ea9982/trail.geojson",
+  "gpx_path": "tracks/38c306ea9982/trail.gpx",
+  "elevation_path": "tracks/38c306ea9982/elevation.json",
+  "last_updated": "2026-10-27",
+  "landmarks": [
+    {
+      "name": "Villa Aurélienne",
+      "kind": "castle",
+      "lat": 43.444759000000005,
+      "lon": 6.74247765,
+      "elevation_m": null
+    },
+    {
+      "name": "Castelet du Muy",
+      "kind": "castle",
+      "lat": 43.47185695,
+      "lon": 6.5697543,
+      "elevation_m": null
+    },
+    {
+      "name": "Château Sainte-Roseline",
+      "kind": "castle",
+      "lat": 43.47467005,
+      "lon": 6.5135023,
+      "elevation_m": null
+    },
+    {
+      "name": "Saint-Pons",
+      "kind": "castle",
+      "lat": 43.5096826,
+      "lon": 5.7019892,
+      "elevation_m": null
+    },
+    {
+      "name": "Château de Saint-Antonin",
+      "kind": "castle",
+      "lat": 43.5191289,
+      "lon": 5.58201255,
+      "elevation_m": null
+    },
+    {
+      "name": "Bastide la Torse",
+      "kind": "castle",
+      "lat": 43.522732950000005,
+      "lon": 5.46582785,
+      "elevation_m": null
+    },
+    {
+      "name": "Oppidum de Roque Vaoutade",
+      "kind": "castle",
+      "lat": 43.5231966,
+      "lon": 5.6175234,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Châteauneuf",
+      "kind": "castle",
+      "lat": 43.52596595,
+      "lon": 5.44845235,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel de Réauville",
+      "kind": "castle",
+      "lat": 43.5262631,
+      "lon": 5.4487926,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel d'Arlatan-Lauris",
+      "kind": "castle",
+      "lat": 43.5269612,
+      "lon": 5.4538622,
+      "elevation_m": null
+    },
+    {
+      "name": "Bastide du Jas de Bouffan",
+      "kind": "castle",
+      "lat": 43.5270486,
+      "lon": 5.42900365,
+      "elevation_m": null
+    },
+    {
+      "name": "Hôtel Thomassin de Saint-Paul",
+      "kind": "castle",
+      "lat": 43.5313939,
+      "lon": 5.4469671,
+      "elevation_m": null
+    }
+  ]
+}
