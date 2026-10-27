@@ -19,6 +19,9 @@ MAX_STATION_BBOX_DEGREES = 3.0
 OUTPUT_DIRECTORY = "~/.local/share/open-rando/data"
 GPX_DIRECTORY = "~/.local/share/open-rando/data/gpx"
 GEOJSON_DIRECTORY = "~/.local/share/open-rando/data/geojson"
+TRACKS_DIRECTORY = "~/.local/share/open-rando/data/tracks"
+LINKS_DIRECTORY = "~/.local/share/open-rando/data/links"
+POIS_DIRECTORY = "~/.local/share/open-rando/data/pois"
 CATALOG_PATH = "~/.local/share/open-rando/data/catalog.json"
 RUN_REPORT_PATH = "~/.local/share/open-rando/data/run-report.json"
 # Routes whose last run raised (timeouts, rate limits), so --retry-failed
@@ -36,10 +39,10 @@ ACCOMMODATION_SEARCH_RADIUS_METERS = 2000
 
 MAX_BUS_STOP_DISTANCE_METERS = 2000
 
-GTFS_STOPS_API_URL = "https://transport.data.gouv.fr/api/gtfs-stops"
 GTFS_DATASETS_API_URL = "https://transport.data.gouv.fr/api/datasets"
 GTFS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs"
 GTFS_FEEDS_CACHE_DIRECTORY = "~/.cache/open-rando/gtfs/feeds"
+GTFS_STOPS_INDEX_PATH = "~/.cache/open-rando/gtfs/stops-index.sqlite"
 GTFS_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
 GTFS_MATCH_RADIUS_METERS = 150
 # Train stations sprawl (several platforms, several operators), so their GTFS

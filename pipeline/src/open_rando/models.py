@@ -95,6 +95,8 @@ class Station:
     transport_type: str = "train"
     connected_route_ids: set[str] = field(default_factory=set)
     rail_service: RailService | None = None
+    # Stable OSM identity, "<type>/<id>" (for example "node/123").
+    osm_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -147,7 +149,7 @@ class Landmark:
 
 @dataclass
 class PointOfInterest:
-    """A point of interest near a trail — displayed on the map only."""
+    """A point of interest (station, stop, lodging), independent of any track."""
 
     name: str
     lat: float
@@ -155,25 +157,79 @@ class PointOfInterest:
     poi_type: str  # "hotel", "camping", "train_station", "bus_stop"
     url: str | None = None
     transit_lines: list[str] = field(default_factory=list)
-    distance_km: float | None = None
     rail_service: RailService | None = None
+    # Stable OSM identity, "<type>/<id>" (for example "node/123").
+    osm_id: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_grid_dict(self) -> dict[str, Any]:
+        """Shape stored in a POI grid square, independent of any track."""
         return {
+            "id": self.osm_id,
+            "kind": self.poi_type,
             "name": self.name,
             "lat": self.lat,
             "lon": self.lon,
-            "poi_type": self.poi_type,
-            "url": self.url or "",
+            "url": self.url,
             "transit_lines": self.transit_lines,
-            "distance_km": self.distance_km if self.distance_km is not None else 0.0,
             "rail_service": self.rail_service.to_dict() if self.rail_service else None,
         }
 
+    @classmethod
+    def from_grid_dict(cls, data: dict[str, Any]) -> PointOfInterest:
+        raw_service = data.get("rail_service")
+        return cls(
+            name=str(data["name"]),
+            lat=float(data["lat"]),
+            lon=float(data["lon"]),
+            poi_type=str(data["kind"]),
+            url=data.get("url"),
+            transit_lines=list(data.get("transit_lines", [])),
+            rail_service=RailService.from_dict(raw_service) if raw_service else None,
+            osm_id=str(data["id"]),
+        )
+
 
 @dataclass
-class Route:
-    """A GR route with its trail geometry and nearby points of interest."""
+class PoiLink:
+    """How one POI relates to one track: how far off it is, and where along it."""
+
+    poi_id: str
+    kind: str
+    distance_to_trail_meters: float
+    # Position along the trail, from its start. Train stations only.
+    distance_km: float | None = None
+    # Where the walk from the POI meets the trail, as (lon, lat).
+    junction: tuple[float, float] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "poi_id": self.poi_id,
+            "kind": self.kind,
+            "distance_to_trail_m": self.distance_to_trail_meters,
+            "distance_km": self.distance_km,
+            "junction": list(self.junction) if self.junction else None,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PoiLink:
+        junction = data.get("junction")
+        return cls(
+            poi_id=str(data["poi_id"]),
+            kind=str(data["kind"]),
+            distance_to_trail_meters=float(data["distance_to_trail_m"]),
+            distance_km=data.get("distance_km"),
+            junction=(float(junction[0]), float(junction[1])) if junction else None,
+        )
+
+
+@dataclass
+class Track:
+    """A GR trail with its own metadata, independent of any POI.
+
+    Everything here derives from the trail geometry alone (plus SRTM and OSM
+    forest cover), so a track can be computed, cached and shipped without
+    knowing which POIs sit near it.
+    """
 
     identifier: str
     slug: str
@@ -181,7 +237,6 @@ class Route:
     path_name: str
     description: str
     osm_relation_id: int
-    pois: list[PointOfInterest]
     distance_km: float
     elevation_gain_meters: int
     elevation_loss_meters: int
@@ -195,11 +250,9 @@ class Route:
     terrain: list[str]
     geojson_path: str
     gpx_path: str
+    elevation_path: str
     last_updated: str
     landmarks: list[Landmark] = field(default_factory=list)
-    image_path: str | None = None
-    # A trail mapped in several pieces has gaps between them. The gaps are not
-    # walked, so they are excluded from distance_km and reported separately.
     trail_segment_count: int = 1
     trail_gap_km: float = 0.0
 
@@ -211,7 +264,6 @@ class Route:
             "path_name": self.path_name,
             "description": self.description,
             "osm_relation_id": self.osm_relation_id,
-            "pois": [poi.to_dict() for poi in self.pois],
             "distance_km": self.distance_km,
             "elevation_gain_m": self.elevation_gain_meters,
             "elevation_loss_m": self.elevation_loss_meters,
@@ -227,10 +279,44 @@ class Route:
             "trail_gap_km": self.trail_gap_km,
             "geojson_path": self.geojson_path,
             "gpx_path": self.gpx_path,
+            "elevation_path": self.elevation_path,
             "last_updated": self.last_updated,
-            "image_path": self.image_path,
             "landmarks": [landmark.to_dict() for landmark in self.landmarks],
         }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Track:
+        return cls(
+            identifier=str(data["id"]),
+            slug=str(data["slug"]),
+            path_ref=str(data["path_ref"]),
+            path_name=str(data["path_name"]),
+            description=str(data["description"]),
+            osm_relation_id=int(data["osm_relation_id"]),
+            distance_km=float(data["distance_km"]),
+            elevation_gain_meters=int(data["elevation_gain_m"]),
+            elevation_loss_meters=int(data["elevation_loss_m"]),
+            max_elevation_meters=int(data["max_elevation_m"]),
+            min_elevation_meters=int(data["min_elevation_m"]),
+            bounding_box=(
+                float(data["bbox"][0]),
+                float(data["bbox"][1]),
+                float(data["bbox"][2]),
+                float(data["bbox"][3]),
+            ),
+            region=str(data["region"]),
+            departement=str(data["departement"]),
+            difficulty=str(data["difficulty"]),
+            is_circular_trail=bool(data["is_circular_trail"]),
+            terrain=[str(item) for item in data["terrain"]],
+            geojson_path=str(data["geojson_path"]),
+            gpx_path=str(data["gpx_path"]),
+            elevation_path=str(data["elevation_path"]),
+            last_updated=str(data["last_updated"]),
+            landmarks=[Landmark.from_dict(item) for item in data.get("landmarks", [])],
+            trail_segment_count=int(data.get("trail_segment_count", 1)),
+            trail_gap_km=float(data.get("trail_gap_km", 0.0)),
+        )
 
 
 def generate_route_id(path_ref: str, osm_relation_id: int) -> str:

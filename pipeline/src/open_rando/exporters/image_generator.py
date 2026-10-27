@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING, Any
 
 from open_rando.config import OUTPUT_DIRECTORY
 from open_rando.fetchers.discovery import ROUTES_YAML_PATH
-from open_rando.models import Landmark, Route
+from open_rando.models import Landmark, Track
 
 if TYPE_CHECKING:
     from PIL.Image import Image
@@ -76,7 +76,7 @@ IMAGE_STYLE_SUFFIX = (
 )
 
 
-def build_image_content(route: Route) -> str:
+def build_image_content(route: Track) -> str:
     """Build the per-route content portion of the prompt (no style, English only).
 
     Lead with proper-noun anchor (landmark name or destination from path_name),
@@ -117,7 +117,7 @@ def _extract_destination(path_name: str) -> str | None:
     return match.group(1).strip() or None
 
 
-def build_image_prompt(route: Route) -> str:
+def build_image_prompt(route: Track) -> str:
     """Full FLUX prompt = stored-or-built content + shared style suffix.
 
     Hand-edits in ``routes.yaml`` win: if stored content exists, use it as-is.
@@ -167,7 +167,7 @@ def find_image_on_disk(route_identifier: str) -> str | None:
 
 
 def generate_image(
-    route: Route,
+    route: Track,
     output_directory: Path,
     *,
     force: bool = False,

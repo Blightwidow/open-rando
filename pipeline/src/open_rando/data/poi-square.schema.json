@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rando.dammaretz.fr/schemas/poi-square.schema.json",
+  "title": "open-rando POI grid square",
+  "description": "Contract for data/pois/<col>_<row>.json: every POI inside one square of the fixed grid, independent of any track.",
+  "type": "object",
+  "required": [
+    "square",
+    "pois"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "square": {
+      "type": "object",
+      "required": [
+        "col",
+        "row"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "col": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "row": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "pois": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/poi"
+      }
+    }
+  },
+  "$defs": {
+    "poi": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "lat",
+        "lon"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(node|way|relation)/[0-9]+$",
+          "description": "Stable OSM identity."
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "train_station",
+            "bus_stop",
+            "hotel",
+            "camping"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transit_lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rail_service": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rail_service"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "rail_service": {
+      "description": "Departures read from the GTFS feeds serving this station, per kind of day. A null window means the feeds report no departure on that kind of day.",
+      "type": "object",
+      "required": [
+        "weekday",
+        "saturday",
+        "sunday"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "weekday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "saturday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sunday": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service_window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "service_window": {
+      "type": "object",
+      "required": [
+        "first_departure_minutes",
+        "last_departure_minutes",
+        "departure_count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "first_departure_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_departure_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "departure_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sample_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Calendar date the departures were counted on."
+        }
+      }
+    }
+  }
+}

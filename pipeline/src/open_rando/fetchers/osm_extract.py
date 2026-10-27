@@ -307,6 +307,33 @@ class OsmExtractIndex:
             and float(bbox["east"]) >= east
         )
 
+    def clip_to_coverage(
+        self, layer: str, south: float, west: float, north: float, east: float
+    ) -> tuple[float, float, float, float] | None:
+        """The part of a bounding box the layer's extract covers, None if no part.
+
+        Lets a caller sweep a fixed grid that reaches past the extract (the
+        France extract stops at 41.24 N, the grid starts at 41.0): the clipped
+        part is lossless because the extract holds nothing outside its box.
+        """
+        row = self.connection.execute(
+            "SELECT value FROM meta WHERE key = ?", (_layer_meta_key(layer),)
+        ).fetchone()
+        if row is None:
+            return None
+        bbox = json.loads(row[0]).get("bbox")
+        if not bbox:
+            return (south, west, north, east)
+        clipped = (
+            max(south, float(bbox["south"])),
+            max(west, float(bbox["west"])),
+            min(north, float(bbox["north"])),
+            min(east, float(bbox["east"])),
+        )
+        if clipped[0] > clipped[2] or clipped[1] > clipped[3]:
+            return None
+        return clipped
+
     def layer_summary(self) -> dict[str, dict[str, Any]]:
         summary: dict[str, dict[str, Any]] = {}
         for layer in ALL_LAYERS:

@@ -27,7 +27,7 @@ def degrees_to_meters(distance_degrees: float, latitude: float) -> float:
     return distance_degrees * average_scale
 
 
-def _haversine_meters(
+def haversine_meters(
     latitude_a: float,
     longitude_a: float,
     latitude_b: float,
@@ -317,7 +317,7 @@ def _sample_trail(
                 vertices.append((longitude, latitude, cumulative_meters))
                 continue
             previous_longitude, previous_latitude, previous_cumulative = vertices[-1]
-            step_distance = _haversine_meters(
+            step_distance = haversine_meters(
                 previous_latitude, previous_longitude, latitude, longitude
             )
             cumulative_meters = previous_cumulative + step_distance
@@ -382,7 +382,7 @@ def refine_junctions_by_walking_distance(
         candidate_indices: list[int] = []
         for sample_index, (_sample_fraction, sample_point) in enumerate(samples):
             sample_longitude, sample_latitude = sample_point
-            crow_fly_meters = _haversine_meters(
+            crow_fly_meters = haversine_meters(
                 station.lat, station.lon, sample_latitude, sample_longitude
             )
             if crow_fly_meters <= radius_meters:

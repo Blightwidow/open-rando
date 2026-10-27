@@ -82,10 +82,16 @@ class RouteDelta:
 
 
 def _count_pois(route: dict[str, Any], poi_type: str) -> int:
+    # Catalogs written before the POI split embed the POIs in each route; reading
+    # them keeps the first run after the split comparable with the old catalog.
+    if "poi_counts" in route:
+        return int(route["poi_counts"].get(poi_type, 0))
     return sum(1 for poi in route.get("pois", []) if poi.get("poi_type") == poi_type)
 
 
 def _count_rail_service(route: dict[str, Any]) -> int:
+    if "poi_counts" in route:
+        return int(route["poi_counts"].get("train_station_with_rail_service", 0))
     return sum(
         1
         for poi in route.get("pois", [])

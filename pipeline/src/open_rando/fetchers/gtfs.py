@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import io
 import json
 import logging
@@ -20,7 +19,6 @@ from open_rando.config import (
     GTFS_DATASETS_API_URL,
     GTFS_FEEDS_CACHE_DIRECTORY,
     GTFS_MATCH_RADIUS_METERS,
-    GTFS_STOPS_API_URL,
 )
 from open_rando.models import RailService, ServiceWindow, Station
 
@@ -83,114 +81,6 @@ class GtfsStop:
 # ---------------------------------------------------------------------------
 # 1. Fetch GTFS stops (enhanced with stop_id and resource_id)
 # ---------------------------------------------------------------------------
-
-
-# Max bbox dimension in degrees before chunking (~0.25° ≈ 28km).
-# Dense urban areas (Paris) cause 422 errors at larger sizes.
-GTFS_MAX_BBOX_DEGREES = 0.25
-
-
-def fetch_gtfs_stops(
-    south: float,
-    west: float,
-    north: float,
-    east: float,
-) -> tuple[list[GtfsStop], bool]:
-    """Fetch GTFS-indexed stops from transport.data.gouv.fr.
-
-    Splits into chunks and deduplicates by stop_id.
-    Returns (list of GtfsStop, all_cached).
-    """
-    seen_stop_ids: set[str] = set()
-    all_stops: list[GtfsStop] = []
-    all_cached = True
-
-    for chunk in _split_bbox(south, west, north, east, GTFS_MAX_BBOX_DEGREES):
-        chunk_stops, cached = _fetch_gtfs_stops_single(*chunk)
-        all_cached = all_cached and cached
-        for stop in chunk_stops:
-            if stop.stop_id not in seen_stop_ids:
-                seen_stop_ids.add(stop.stop_id)
-                all_stops.append(stop)
-
-    logger.info("Found %d unique GTFS stops", len(all_stops))
-    return all_stops, all_cached
-
-
-def _split_bbox(
-    south: float,
-    west: float,
-    north: float,
-    east: float,
-    max_degrees: float,
-) -> list[tuple[float, float, float, float]]:
-    """Split a bbox into chunks no larger than max_degrees on each side."""
-    width = east - west
-    height = north - south
-    lat_steps = max(1, math.ceil(height / max_degrees))
-    lon_steps = max(1, math.ceil(width / max_degrees))
-    lat_size = height / lat_steps
-    lon_size = width / lon_steps
-
-    chunks: list[tuple[float, float, float, float]] = []
-    for lat_index in range(lat_steps):
-        for lon_index in range(lon_steps):
-            chunks.append(
-                (
-                    south + lat_index * lat_size,
-                    west + lon_index * lon_size,
-                    south + (lat_index + 1) * lat_size,
-                    west + (lon_index + 1) * lon_size,
-                )
-            )
-    return chunks
-
-
-def _fetch_gtfs_stops_single(
-    south: float,
-    west: float,
-    north: float,
-    east: float,
-) -> tuple[list[GtfsStop], bool]:
-    """Fetch GTFS stops for a single bbox (no chunking)."""
-    cache_key = _bbox_cache_key(south, west, north, east)
-    cached = _read_stops_cache(cache_key)
-    if cached is not None:
-        return cached, True
-
-    url = f"{GTFS_STOPS_API_URL}?south={south}&north={north}&west={west}&east={east}"
-
-    logger.info("Fetching GTFS stops for bbox (%.2f,%.2f)-(%.2f,%.2f)", south, west, north, east)
-
-    response = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
-    response.raise_for_status()
-    data = response.json()
-
-    stops: list[GtfsStop] = []
-    for feature in data.get("features", []):
-        geometry = feature.get("geometry", {})
-        properties = feature.get("properties", {})
-        if geometry.get("type") != "Point":
-            continue
-        coords = geometry.get("coordinates", [])
-        if len(coords) < 2:
-            continue
-        stop_id = properties.get("stop_id", "")
-        resource_id = properties.get("resource_id")
-        if not stop_id or resource_id is None:
-            continue
-        stops.append(
-            GtfsStop(
-                latitude=coords[1],
-                longitude=coords[0],
-                stop_id=stop_id,
-                resource_id=int(resource_id),
-            )
-        )
-
-    logger.info("Found %d GTFS stops in bbox", len(stops))
-    _write_stops_cache(cache_key, stops)
-    return stops, False
 
 
 # ---------------------------------------------------------------------------
@@ -256,10 +146,32 @@ def match_stations_to_gtfs_stops(
     gtfs_stops: list[GtfsStop],
     radius_meters: float = GTFS_MATCH_RADIUS_METERS,
 ) -> dict[str, list[GtfsStop]]:
-    """Map station codes to the GTFS stops sitting within radius_meters."""
+    """Map station codes to the GTFS stops sitting within radius_meters.
+
+    GTFS stops are bucketed in a grid of cells at least radius_meters wide, so
+    each station only scans its own cell and the eight around it. That keeps a
+    France-wide run (tens of thousands of stations per grid square) tractable.
+    """
+    cell_degrees = max(radius_meters / METERS_PER_DEGREE_LON_AT_46, 1e-4)
+    buckets: dict[tuple[int, int], list[GtfsStop]] = {}
+    for gtfs_stop in gtfs_stops:
+        cell = (
+            math.floor(gtfs_stop.latitude / cell_degrees),
+            math.floor(gtfs_stop.longitude / cell_degrees),
+        )
+        buckets.setdefault(cell, []).append(gtfs_stop)
+
     matches: dict[str, list[GtfsStop]] = {}
     for station in stations:
-        nearby = _find_nearby_gtfs_stops(station.lat, station.lon, gtfs_stops, radius_meters)
+        row = math.floor(station.lat / cell_degrees)
+        column = math.floor(station.lon / cell_degrees)
+        candidates = [
+            gtfs_stop
+            for row_offset in (-1, 0, 1)
+            for column_offset in (-1, 0, 1)
+            for gtfs_stop in buckets.get((row + row_offset, column + column_offset), [])
+        ]
+        nearby = _find_nearby_gtfs_stops(station.lat, station.lon, candidates, radius_meters)
         if nearby:
             matches[station.code] = nearby
     return matches
@@ -416,6 +328,96 @@ def _merge_service_windows(
     )
 
 
+def _feed_cache_path(resource_id: int, reference_date: date) -> Path:
+    week_start = reference_date - timedelta(days=reference_date.weekday())
+    return _generic_cache_path(f"feed_data_v4_{resource_id}_{week_start:%Y-%m-%d}")
+
+
+def _download_feed(resource_id: int, url: str) -> bytes | None:
+    """Download one GTFS zip, None when the download fails (usually transient)."""
+    logger.info("Downloading GTFS feed for resource %d", resource_id)
+    try:
+        response = requests.get(url, timeout=FEED_DOWNLOAD_TIMEOUT_SECONDS, allow_redirects=True)
+        response.raise_for_status()
+    except (requests.RequestException, requests.Timeout) as error:
+        logger.warning("Failed to download GTFS feed %d: %s", resource_id, error)
+        return None
+    return response.content
+
+
+FEED_STATUS_INDEXED = "indexed"
+FEED_STATUS_UNPARSEABLE = "unparseable"
+FEED_STATUS_DOWNLOAD_FAILED = "download_failed"
+
+
+@dataclass
+class FeedIndexResult:
+    status: str
+    stops: list[GtfsStop] = field(default_factory=list)
+
+
+def index_feed(resource_id: int, url: str, reference_date: date) -> FeedIndexResult:
+    """Download a feed once; cache its departures and return its stops.
+
+    One download feeds both the stop index (`gtfs` stage) and the per-feed
+    data cache `fetch_gtfs_feed_data` reads later, so the `pois` stage never
+    downloads a feed that this stage already handled this week.
+    """
+    content = _download_feed(resource_id, url)
+    if content is None:
+        return FeedIndexResult(FEED_STATUS_DOWNLOAD_FAILED)
+
+    try:
+        stops = parse_gtfs_stops(content, resource_id)
+    except (zipfile.BadZipFile, KeyError, csv.Error) as error:
+        logger.warning("Failed to read stops of GTFS feed %d: %s", resource_id, error)
+        _write_generic_cache(
+            _feed_cache_path(resource_id, reference_date), _feed_data_to_cache(FeedData())
+        )
+        return FeedIndexResult(FEED_STATUS_UNPARSEABLE)
+
+    try:
+        feed = parse_gtfs_zip(content, reference_date)
+    except (zipfile.BadZipFile, KeyError, csv.Error) as error:
+        logger.warning(
+            "Failed to parse GTFS feed %d: %s (caching empty result)", resource_id, error
+        )
+        feed = FeedData()
+    _write_generic_cache(_feed_cache_path(resource_id, reference_date), _feed_data_to_cache(feed))
+    return FeedIndexResult(FEED_STATUS_INDEXED, stops)
+
+
+def parse_gtfs_stops(content: bytes, resource_id: int) -> list[GtfsStop]:
+    """Read the boarding stops of a GTFS zip (stops.txt, location_type 0).
+
+    Stations (location_type 1) and entrances are skipped: stop_times.txt only
+    references boarding stops, so only those carry departures and routes.
+    """
+    stops: list[GtfsStop] = []
+    with zipfile.ZipFile(io.BytesIO(content)) as zip_file, zip_file.open("stops.txt") as stops_file:
+        reader = csv.DictReader(io.TextIOWrapper(stops_file, encoding="utf-8-sig"))
+        for row in reader:
+            if (row.get("location_type") or "0").strip() != "0":
+                continue
+            stop_id = row.get("stop_id", "")
+            try:
+                latitude = float(row.get("stop_lat", ""))
+                longitude = float(row.get("stop_lon", ""))
+            except ValueError:
+                continue
+            if not stop_id or (latitude == 0.0 and longitude == 0.0):
+                continue
+            stops.append(
+                GtfsStop(
+                    latitude=latitude,
+                    longitude=longitude,
+                    stop_id=stop_id,
+                    resource_id=resource_id,
+                )
+            )
+    return stops
+
+
 def _fetch_feed_data(resource_id: int, url: str, reference_date: date) -> FeedData:
     """Download a single GTFS feed and extract stop→routes, names, departures.
 
@@ -424,23 +426,17 @@ def _fetch_feed_data(resource_id: int, url: str, reference_date: date) -> FeedDa
     feed that cannot be parsed caches an empty result; a feed that cannot be
     downloaded does not, since that failure is usually transient.
     """
-    week_start = reference_date - timedelta(days=reference_date.weekday())
-    cache_path = _generic_cache_path(f"feed_data_v4_{resource_id}_{week_start:%Y-%m-%d}")
+    cache_path = _feed_cache_path(resource_id, reference_date)
     cached = _read_generic_cache(cache_path)
     if cached is not None:
         return _feed_data_from_cache(cached)
 
-    logger.info("Downloading GTFS feed for resource %d", resource_id)
-
-    try:
-        response = requests.get(url, timeout=FEED_DOWNLOAD_TIMEOUT_SECONDS, allow_redirects=True)
-        response.raise_for_status()
-    except (requests.RequestException, requests.Timeout) as error:
-        logger.warning("Failed to download GTFS feed %d: %s", resource_id, error)
+    content = _download_feed(resource_id, url)
+    if content is None:
         return FeedData()
 
     try:
-        feed = parse_gtfs_zip(response.content, reference_date)
+        feed = parse_gtfs_zip(content, reference_date)
     except (zipfile.BadZipFile, KeyError, csv.Error) as error:
         # A feed that is not GTFS (NeTEx behind a GTFS label, nested archive,
         # missing table) fails the same way on every run, so the empty result
@@ -817,49 +813,6 @@ def are_stations_transport_connected(station_a: Station, station_b: Station) -> 
 # ---------------------------------------------------------------------------
 # Caching helpers
 # ---------------------------------------------------------------------------
-
-
-def _bbox_cache_key(south: float, west: float, north: float, east: float) -> str:
-    raw = f"gtfs-stops:{south:.4f},{west:.4f},{north:.4f},{east:.4f}"
-    return hashlib.sha256(raw.encode()).hexdigest()[:16]
-
-
-def _read_stops_cache(cache_key: str) -> list[GtfsStop] | None:
-    path = _stops_cache_path(cache_key)
-    if not path.exists():
-        return None
-
-    age_seconds = time.time() - path.stat().st_mtime
-    if age_seconds > GTFS_CACHE_TTL_SECONDS:
-        logger.info("GTFS cache expired for %s (%.0fs old)", path.name, age_seconds)
-        return None
-
-    logger.info("Using cached GTFS response %s (%.0fs old)", path.name, age_seconds)
-    data = json.loads(path.read_text(encoding="utf-8"))
-    return [
-        GtfsStop(
-            latitude=entry["lat"],
-            longitude=entry["lon"],
-            stop_id=entry["stop_id"],
-            resource_id=entry["resource_id"],
-        )
-        for entry in data
-    ]
-
-
-def _write_stops_cache(cache_key: str, stops: list[GtfsStop]) -> None:
-    path = _stops_cache_path(cache_key)
-    data = [
-        {
-            "lat": stop.latitude,
-            "lon": stop.longitude,
-            "stop_id": stop.stop_id,
-            "resource_id": stop.resource_id,
-        }
-        for stop in stops
-    ]
-    path.write_text(json.dumps(data), encoding="utf-8")
-    logger.info("Cached GTFS stops to %s", path.name)
 
 
 def _stops_cache_path(cache_key: str) -> Path:

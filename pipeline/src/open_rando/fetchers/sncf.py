@@ -13,6 +13,7 @@ from open_rando.config import (
     SNCF_CACHE_TTL_SECONDS,
     SNCF_STATIONS_URL,
 )
+from open_rando.models import slugify_sncf
 
 logger = logging.getLogger("open_rando")
 
@@ -47,6 +48,12 @@ def fetch_sncf_stations() -> list[dict[str, Any]]:
             return stale
         logger.warning("No SNCF cache available, station filtering will be skipped")
         return []
+
+
+def build_sncf_url(station_name: str) -> str:
+    """Build a garesetconnexions.sncf URL from a station name."""
+    slug = slugify_sncf(station_name)
+    return f"https://www.garesetconnexions.sncf/fr/gares-services/{slug}/horaires"
 
 
 def build_sncf_code_set(records: list[dict[str, Any]]) -> set[str]:

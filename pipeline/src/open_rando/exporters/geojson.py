@@ -5,17 +5,14 @@ from pathlib import Path
 
 from shapely.geometry import LineString, MultiLineString, mapping
 
-from open_rando.models import PointOfInterest
-
 
 def export_route_geojson(
     trail: LineString | MultiLineString,
     route_id: str,
     name: str,
-    pois: list[PointOfInterest],
     output_path: str,
 ) -> None:
-    """Export a full route trail and its POIs as a GeoJSON FeatureCollection."""
+    """Export a full route trail as a GeoJSON FeatureCollection."""
     features: list[dict[str, object]] = [
         {
             "type": "Feature",
@@ -23,25 +20,6 @@ def export_route_geojson(
             "geometry": mapping(trail),
         }
     ]
-
-    for poi in pois:
-        properties: dict[str, str] = {
-            "feature_type": "poi",
-            "poi_type": poi.poi_type,
-            "name": poi.name,
-        }
-        if poi.url is not None:
-            properties["url"] = poi.url
-        features.append(
-            {
-                "type": "Feature",
-                "properties": properties,
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [poi.lon, poi.lat],
-                },
-            }
-        )
 
     feature_collection = {"type": "FeatureCollection", "features": features}
 

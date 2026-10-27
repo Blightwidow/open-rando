@@ -6,32 +6,19 @@ import gpxpy
 import gpxpy.gpx
 from shapely.geometry import LineString, MultiLineString
 
-from open_rando.models import PointOfInterest
-
 
 def export_route_gpx(
     trail: LineString | MultiLineString,
     name: str,
     description: str,
-    pois: list[PointOfInterest],
     output_path: str,
     elevations: list[float | None] | None = None,
 ) -> None:
-    """Export a full route trail as a GPX file with POI waypoints."""
+    """Export a full route trail as a GPX file."""
     gpx = gpxpy.gpx.GPX()
     gpx.name = name
     gpx.description = description
     gpx.creator = "open-rando"
-
-    # Add POI waypoints (train stations only — keeps GPX useful for navigation)
-    for poi in pois:
-        if poi.poi_type == "train_station":
-            waypoint = gpxpy.gpx.GPXWaypoint(
-                latitude=poi.lat,
-                longitude=poi.lon,
-                name=poi.name,
-            )
-            gpx.waypoints.append(waypoint)
 
     # Add trail as track
     track = gpxpy.gpx.GPXTrack(name=name)

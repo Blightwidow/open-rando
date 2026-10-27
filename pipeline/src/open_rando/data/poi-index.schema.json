@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rando.dammaretz.fr/schemas/poi-index.schema.json",
+  "title": "open-rando POI grid index",
+  "description": "Contract for data/pois/index.json. `squares` lists every square built, empty ones included: a square absent from it was never built.",
+  "type": "object",
+  "required": [
+    "generated_at",
+    "source",
+    "license",
+    "grid",
+    "squares"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "generated_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "license": {
+      "type": "string"
+    },
+    "grid": {
+      "type": "object",
+      "required": [
+        "bbox",
+        "cols",
+        "rows"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "cols": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "squares": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "col",
+          "row",
+          "count"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "col": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "row": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

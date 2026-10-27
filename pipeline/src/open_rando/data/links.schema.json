@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rando.dammaretz.fr/schemas/links.schema.json",
+  "title": "open-rando track links",
+  "description": "Contract for data/links/<route id>.json: which POIs belong to a track, and where.",
+  "type": "object",
+  "required": [
+    "route_id",
+    "counts",
+    "links"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "route_id": {
+      "type": "string"
+    },
+    "counts": {
+      "description": "How many linked POIs of each kind the track has. The POIs themselves live in the POI grid; links/<id>.json says which ones belong to this track.",
+      "type": "object",
+      "required": [
+        "train_station",
+        "bus_stop",
+        "hotel",
+        "camping",
+        "train_station_with_rail_service"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "train_station": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bus_stop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hotel": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "camping": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "train_station_with_rail_service": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "poi_id",
+          "kind",
+          "distance_to_trail_m"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "pattern": "^(node|way|relation)/[0-9]+$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "train_station",
+              "bus_stop",
+              "hotel",
+              "camping"
+            ]
+          },
+          "distance_to_trail_m": {
+            "type": "number",
+            "minimum": 0
+          },
+          "distance_km": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Position along the trail from its start. Train stations only."
+          },
+          "junction": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "[lon, lat] where the walk from the POI meets the trail."
+          }
+        }
+      }
+    }
+  }
+}

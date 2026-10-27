@@ -1,6 +1,6 @@
 """`images` subcommand — generate hero illustrations from the route catalog.
 
-Reads `catalog.json`, rebuilds the minimal `Route` shape needed by
+Reads `catalog.json`, rebuilds the `Track` shape needed by
 `build_image_prompt`, and delegates to `generate_image`. Writes the resulting
 `image_path` back into the catalog so the website picks it up.
 """
@@ -25,7 +25,7 @@ from open_rando.exporters.image_generator import (
 from open_rando.exporters.image_generator import (
     _write_stored_prompt as write_stored_prompt,
 )
-from open_rando.models import Landmark, PointOfInterest, Route
+from open_rando.models import Track
 
 logger = logging.getLogger("open_rando")
 
@@ -92,7 +92,7 @@ def run_images(arguments: argparse.Namespace) -> None:
 
     updates: dict[str, str | None] = {}
     for route_dict in targets:
-        route = _route_from_catalog_entry(route_dict)
+        route = Track.from_dict(route_dict)
         relative_path = f"{IMAGES_SUBDIRECTORY}/{route.identifier}.webp"
         output_path = output_directory / relative_path
 
@@ -132,7 +132,7 @@ def run_images(arguments: argparse.Namespace) -> None:
 
 def _report_cache_status(targets: list[dict[str, Any]], output_directory: Path) -> None:
     for route_dict in targets:
-        route = _route_from_catalog_entry(route_dict)
+        route = Track.from_dict(route_dict)
         stored_content = read_stored_prompt(route.path_ref)
         relative_path = f"{IMAGES_SUBDIRECTORY}/{route.identifier}.webp"
         file_exists = (output_directory / relative_path).exists()
@@ -149,59 +149,8 @@ def _report_cache_status(targets: list[dict[str, Any]], output_directory: Path) 
 def _populate_prompts(targets: list[dict[str, Any]]) -> None:
     written = 0
     for route_dict in targets:
-        route = _route_from_catalog_entry(route_dict)
+        route = Track.from_dict(route_dict)
         content = build_image_content(route)
         write_stored_prompt(route.path_ref, content)
         written += 1
     logger.info("Wrote image_prompt content for %d routes to routes.yaml", written)
-
-
-def _route_from_catalog_entry(entry: dict[str, Any]) -> Route:
-    bbox_values = entry.get("bbox", [0.0, 0.0, 0.0, 0.0])
-    bounding_box = (
-        float(bbox_values[0]),
-        float(bbox_values[1]),
-        float(bbox_values[2]),
-        float(bbox_values[3]),
-    )
-    landmarks = [Landmark.from_dict(item) for item in entry.get("landmarks", [])]
-    pois = [
-        PointOfInterest(
-            name=str(poi.get("name", "")),
-            lat=float(poi.get("lat", 0.0)),
-            lon=float(poi.get("lon", 0.0)),
-            poi_type=str(poi.get("poi_type", "")),
-            url=poi.get("url") or None,
-            transit_lines=list(poi.get("transit_lines", []) or []),
-            distance_km=poi.get("distance_km"),
-        )
-        for poi in entry.get("pois", [])
-    ]
-
-    return Route(
-        identifier=str(entry["id"]),
-        slug=str(entry.get("slug", "")),
-        path_ref=str(entry.get("path_ref", "")),
-        path_name=str(entry.get("path_name", "")),
-        description=str(entry.get("description", "")),
-        osm_relation_id=int(entry.get("osm_relation_id", 0)),
-        pois=pois,
-        distance_km=float(entry.get("distance_km", 0.0)),
-        elevation_gain_meters=int(entry.get("elevation_gain_m", 0)),
-        elevation_loss_meters=int(entry.get("elevation_loss_m", 0)),
-        max_elevation_meters=int(entry.get("max_elevation_m", 0)),
-        min_elevation_meters=int(entry.get("min_elevation_m", 0)),
-        bounding_box=bounding_box,
-        region=str(entry.get("region", "")),
-        departement=str(entry.get("departement", "")),
-        difficulty=str(entry.get("difficulty", "")),
-        is_circular_trail=bool(entry.get("is_circular_trail", False)),
-        terrain=list(entry.get("terrain", []) or []),
-        trail_segment_count=int(entry.get("trail_segment_count", 1)),
-        trail_gap_km=float(entry.get("trail_gap_km", 0.0)),
-        geojson_path=str(entry.get("geojson_path", "")),
-        gpx_path=str(entry.get("gpx_path", "")),
-        last_updated=str(entry.get("last_updated", "")),
-        landmarks=landmarks,
-        image_path=entry.get("image_path"),
-    )

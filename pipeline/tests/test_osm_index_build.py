@@ -170,7 +170,7 @@ def forbid_overpass(monkeypatch: pytest.MonkeyPatch) -> None:
     def fail(*_args: object, **_kwargs: object) -> None:
         raise AssertionError("Overpass was called although the local extract has the layer")
 
-    for module in (stations_module, pois_module, landmarks_module, geography_module):
+    for module in (stations_module, landmarks_module, geography_module):
         monkeypatch.setattr(module, "query_overpass", fail)
 
 
@@ -230,28 +230,29 @@ class TestBuiltLayers:
 
 
 class TestFetchersUseTheIndex:
-    def test_fetch_stations_reads_the_index(
+    def test_fetch_stations_in_bounds_reads_the_index(
         self, built_index: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         forbid_overpass(monkeypatch)
-        trail = LineString([(2.50, 48.50), (2.60, 48.60)])
 
-        stations, all_cached = stations_module.fetch_stations(trail)
+        stations, all_cached = stations_module.fetch_stations_in_bounds(48.5, 2.5, 48.6, 2.6)
 
         assert all_cached is True
         assert sorted(station.name for station in stations) == ["Broye", "Mairie", "Melun"]
 
-    def test_fetch_accommodation_reads_the_index(
-        self, built_index: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        forbid_overpass(monkeypatch)
-        trail = LineString([(2.40, 48.40), (2.60, 48.60)])
+    def test_accommodation_layer_parses_into_pois(self, built_index: Path) -> None:
+        index = OsmExtractIndex.open_for_reading(built_index)
+        assert index is not None
+        try:
+            elements = index.point_elements(LAYER_ACCOMMODATION, 48.4, 2.4, 48.6, 2.6)
+        finally:
+            index.close()
 
-        pois, all_cached = pois_module.fetch_accommodation_pois(trail)
+        pois = pois_module._parse_accommodation_elements(elements)
 
-        assert all_cached is True
         assert sorted(poi.name for poi in pois) == ["Camping du Lac", "Hotel"]
         assert sorted(poi.poi_type for poi in pois) == ["camping", "hotel"]
+        assert sorted(poi.osm_id for poi in pois) == ["node/11", "way/20"]
 
     def test_fetch_landmarks_reads_the_index(
         self, built_index: Path, monkeypatch: pytest.MonkeyPatch

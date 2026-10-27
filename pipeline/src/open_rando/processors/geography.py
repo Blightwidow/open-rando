@@ -12,6 +12,8 @@ from shapely.prepared import prep
 
 from open_rando.fetchers.osm_extract import LAYER_FOREST, open_layer
 from open_rando.fetchers.overpass import query_overpass
+from open_rando.models import Station
+from open_rando.processors.match import haversine_meters
 
 logger = logging.getLogger("open_rando")
 
@@ -337,3 +339,30 @@ def compute_forest_ratio(
     ratio = in_forest / FOREST_SAMPLE_POINTS
     logger.info("Forest ratio: %.0f%% (%d/%d points)", ratio * 100, in_forest, FOREST_SAMPLE_POINTS)
     return ratio
+
+
+def resolve_departement_near_point(
+    latitude: float,
+    longitude: float,
+    stations: list[Station],
+    sncf_codes: set[str],
+    sncf_insee: dict[str, str],
+) -> str:
+    """Département of the SNCF train station nearest to a point, "" if none is known.
+
+    Lets a track get its geography without being linked to POIs first.
+    """
+    candidates = [
+        station
+        for station in stations
+        if station.transport_type == "train"
+        and station.code in sncf_codes
+        and station.code in sncf_insee
+    ]
+    if not candidates:
+        return ""
+    nearest = min(
+        candidates,
+        key=lambda station: haversine_meters(latitude, longitude, station.lat, station.lon),
+    )
+    return resolve_departement(nearest.code, sncf_insee)

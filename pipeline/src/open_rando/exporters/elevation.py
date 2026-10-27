@@ -64,12 +64,13 @@ def export_route_elevation(
     route_id: str,
     output_directory: str,
     station_positions_km: list[float] | None = None,
+    file_name: str | None = None,
 ) -> None:
     """Export elevation profile for a full route."""
     if not profile.distances_km:
         return
 
-    output_path = Path(output_directory) / f"{route_id}.json"
+    output_path = Path(output_directory) / (file_name or f"{route_id}.json")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     data = {
