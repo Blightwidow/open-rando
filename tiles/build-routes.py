@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
-# dependencies = []
+# dependencies = ["jsonschema>=4.21"]
 # ///
 """Write per-route grid-square manifests for mobile offline downloads.
 
@@ -18,6 +18,8 @@ import os
 import pathlib
 import re
 import sys
+
+import tile_manifests
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 DATA_DIR = pathlib.Path(
@@ -90,6 +92,29 @@ def route_squares(
     ]
 
 
+def build_route_manifest(
+    route_id: str,
+    snapshot: str,
+    route_bbox: list[float],
+    squares: list[list[int]],
+) -> dict:
+    """Assemble one routes/{id}/pmtiles.json. Pure: no I/O, no validation."""
+    return {
+        "route_id": route_id,
+        "source_snapshot": snapshot,
+        "bbox": route_bbox,
+        "squares": squares,
+    }
+
+
+def load_grid_manifest(data_dir: pathlib.Path) -> dict | None:
+    """Return the built grid.json for cross-checks, or None when it is not built yet."""
+    grid_path = data_dir / "grid.json"
+    if not grid_path.exists():
+        return None
+    return json.loads(grid_path.read_text())
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -137,6 +162,13 @@ def main() -> int:
         f"snapshot={snapshot}, out={routes_dir}"
     )
 
+    grid_manifest = load_grid_manifest(args.out)
+    if grid_manifest is None:
+        print(
+            "  WARN     grid.json not found: checking manifest shape only, "
+            "not that squares exist (run build-grid first)"
+        )
+
     empty = 0
     for route in routes:
         route_id = route["id"]
@@ -144,12 +176,12 @@ def main() -> int:
         if not squares:
             empty += 1
             print(f"  WARN     {route_id}: bbox does not intersect grid")
-        manifest = {
-            "route_id": route_id,
-            "source_snapshot": snapshot,
-            "bbox": route["bbox"],
-            "squares": squares,
-        }
+        manifest = build_route_manifest(route_id, snapshot, route["bbox"], squares)
+        try:
+            tile_manifests.validate_route_manifest(manifest, grid_manifest)
+        except tile_manifests.ManifestError as exc:
+            print(f"ERROR: {route_id} manifest not written. {exc}", file=sys.stderr)
+            return 1
         route_dir = routes_dir / route_id
         route_dir.mkdir(parents=True, exist_ok=True)
         (route_dir / "pmtiles.json").write_text(json.dumps(manifest, indent=2) + "\n")

@@ -55,6 +55,8 @@ All files are served with `Cache-Control: public, max-age=604800, immutable`. Sa
 
 ### `grid.json` shape (version 2)
 
+Contract: `pipeline/src/open_rando/data/tile-grid.schema.json`. `build-grid.py` validates the final file (URLs stamped in, partial `--square` builds merged) and refuses to write it on a mismatch, so the shape below is enforced. `layers`, `base` and `files` are open maps keyed by layer name; every square must carry every layer and every file's zoom range must match its `layers` entry.
+
 ```json
 {
   "version": 2,
@@ -91,6 +93,8 @@ All files are served with `Cache-Control: public, max-age=604800, immutable`. Sa
 **Layer kinds**: `france` (vector basemap, Protomaps Flat v4 schema), `contours` (vector line geometry), `hillshade` (raster-dem, Mapbox RGB encoding).
 
 ### Per-route manifest shape
+
+Contract: `pipeline/src/open_rando/data/route-tiles.schema.json`. `build-routes.py` also checks that every listed square exists in `grid.json` and that the snapshots match, when `grid.json` is built.
 
 ```json
 {

@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
-# dependencies = []
+# dependencies = ["jsonschema>=4.21"]
 # ///
 """Slice master PMTiles archives into shared low-zoom base + grid squares.
 
@@ -22,6 +22,7 @@ snapshot state changes (tracked in .build-state.json).
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -31,6 +32,8 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+
+import tile_manifests
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 DATA_DIR = pathlib.Path(
@@ -302,22 +305,64 @@ def build_square(
     return square_key, ("built" if built_any else "skipped"), entry
 
 
+def build_manifest(
+    snapshot: str,
+    grid_bbox: tuple[float, float, float, float],
+    cols: int,
+    rows: int,
+    base_entries: dict[str, dict],
+    squares: dict[str, dict],
+) -> dict:
+    """Assemble grid.json (without URLs yet). Pure: no I/O, no validation."""
+    return {
+        "version": 2,
+        "source_snapshot": snapshot,
+        "grid": {
+            "bbox": list(grid_bbox),
+            "cols": cols,
+            "rows": rows,
+            "pad_deg": PAD_DEG,
+        },
+        "layers": {
+            layer.name: {
+                "base_minzoom": layer.base_minzoom,
+                "base_maxzoom": layer.base_maxzoom,
+                "grid_minzoom": layer.grid_minzoom,
+                "grid_maxzoom": layer.grid_maxzoom,
+            }
+            for layer in layer_specs()
+        },
+        "base": base_entries,
+        "squares": squares,
+    }
+
+
+def with_urls(manifest: dict, r2_public_url: str) -> dict:
+    """Return a copy of the manifest with every file entry's R2 URL stamped in."""
+    stamped = copy.deepcopy(manifest)
+    for layer_name, layer_entry in stamped["base"].items():
+        layer_entry["url"] = f"{r2_public_url}/base/{layer_name}.pmtiles"
+    for square_key, entry in stamped["squares"].items():
+        for layer_name, layer_entry in entry["files"].items():
+            layer_entry["url"] = f"{r2_public_url}/grid/{square_key}/{layer_name}.pmtiles"
+    return stamped
+
+
 def write_grid_manifest(
     manifest: dict,
     data_dir: pathlib.Path,
     r2_public_url: str,
 ) -> pathlib.Path:
-    """Inject URLs + write grid.json into the pipeline data dir."""
-    for layer_name, layer_entry in manifest["base"].items():
-        layer_entry["url"] = f"{r2_public_url}/base/{layer_name}.pmtiles"
-    for square_key, entry in manifest["squares"].items():
-        for layer_name, layer_entry in entry["files"].items():
-            layer_entry["url"] = (
-                f"{r2_public_url}/grid/{square_key}/{layer_name}.pmtiles"
-            )
+    """Stamp URLs, validate the final document, write grid.json into the data dir.
+
+    Raises tile_manifests.ManifestError when the document breaks its contract;
+    nothing is written in that case.
+    """
+    stamped = with_urls(manifest, r2_public_url)
+    tile_manifests.validate_grid_manifest(stamped)
     data_dir.mkdir(parents=True, exist_ok=True)
     path = data_dir / "grid.json"
-    path.write_text(json.dumps(manifest, indent=2) + "\n")
+    path.write_text(json.dumps(stamped, indent=2) + "\n")
     return path
 
 
@@ -456,28 +501,14 @@ def main() -> int:
     for key, (_, entry) in results.items():
         squares_out[key] = entry
 
-    manifest = {
-        "version": 2,
-        "source_snapshot": snapshot,
-        "grid": {
-            "bbox": list(grid_bbox),
-            "cols": args.cols,
-            "rows": args.rows,
-            "pad_deg": PAD_DEG,
-        },
-        "layers": {
-            l.name: {
-                "base_minzoom": l.base_minzoom,
-                "base_maxzoom": l.base_maxzoom,
-                "grid_minzoom": l.grid_minzoom,
-                "grid_maxzoom": l.grid_maxzoom,
-            }
-            for l in layer_specs()
-        },
-        "base": base_entries,
-        "squares": squares_out,
-    }
-    manifest_path = write_grid_manifest(manifest, args.data_dir, args.r2_public_url)
+    manifest = build_manifest(
+        snapshot, grid_bbox, args.cols, args.rows, base_entries, squares_out
+    )
+    try:
+        manifest_path = write_grid_manifest(manifest, args.data_dir, args.r2_public_url)
+    except tile_manifests.ManifestError as exc:
+        print(f"ERROR: grid.json not written. {exc}", file=sys.stderr)
+        return 1
     print(f"Wrote {manifest_path}")
     print(
         f"Done: built={counts['built']} skipped={counts['skipped']} errors={counts['error']}"
