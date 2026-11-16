@@ -70,7 +70,7 @@ cd website && bun install && bun run dev
 - `make -f Makefile.hillshade upload` (in tiles/) -- upload hillshade.pmtiles to R2
 - `make -f Makefile.osm overlay` (in pipeline/) -- filter the hiking overlay extracts (water, shelters, huts, guideposts, peaks, viewpoints, power, waterways) from the France PBF
 - `make -f Makefile.overlay` (in tiles/) -- build overlay.pmtiles from those extracts (`WITH_STREAMS=1` adds streams; `stats` reports counts and sizes; needs tippecanoe)
-- `make -f Makefile.overlay upload` (in tiles/) -- upload overlay.pmtiles to R2
+- `make -f Makefile.overlay upload` (in tiles/) -- upload overlay.pmtiles to R2 (via wrangler; `npx wrangler@4 login` once)
 - `make -f Makefile.routes download-masters` (in tiles/) -- pull france/contours/hillshade master archives from R2 via rclone
 - `make -f Makefile.routes` (in tiles/) -- build hybrid base + 12x8 grid PMTiles + per-route manifests for mobile offline (incremental; writes to data/grid.json + data/routes/)
 - `make -f Makefile.routes build-grid SQUARE=<col>_<row>` (in tiles/) -- build a single grid square (skips base rebuild)

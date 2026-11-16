@@ -4,7 +4,7 @@
 # peaks, viewpoints, power lines and towers, rivers (and streams, opt-in). They
 # are drawn on the map, not clicked: no popups, no POI grid.
 #
-# Prerequisites: osmium-tool, tippecanoe, uv
+# Prerequisites: osmium-tool, tippecanoe, uv (upload also needs npx and `wrangler login`)
 # Input: overlay-*.osm.pbf in OSM_DIR (`make -f Makefile.osm overlay` in pipeline/)
 # Output: overlay.pmtiles in OUTPUT_DIR
 #
@@ -37,7 +37,6 @@ SPLIT := uv run --script overlay_features.py
 EXPORT := osmium export -f geojsonseq --geometry-types=point,linestring,polygon
 
 R2_BUCKET := open-rando-tiles
-R2_REMOTE := r2
 
 # Each layer's first zoom is set per feature in overlay_features.py (MIN_ZOOMS).
 MAXZOOM := 14
@@ -97,11 +96,13 @@ stats: $(STAMPS)
 	@ls -lh $(BUILD_DIR)/*.geojsonl | awk '{print $$5, $$9}'
 	@test ! -f $(PMTILES) || ls -lh $(PMTILES)
 
+# wrangler, not rclone: the file is far below wrangler's 300 MiB object limit.
+# Run `npx wrangler@4 login` once. --remote writes to the real bucket, not a local simulation.
 upload: $(PMTILES)
-	rclone copyto --s3-chunk-size=64M --s3-no-check-bucket --progress \
-		--header-upload "Cache-Control: public, max-age=604800, immutable" \
-		--header-upload "Content-Type: application/octet-stream" \
-		$(PMTILES) $(R2_REMOTE):$(R2_BUCKET)/overlay.pmtiles
+	npx --yes wrangler@4 r2 object put $(R2_BUCKET)/overlay.pmtiles \
+		--file $(PMTILES) --remote \
+		--content-type application/octet-stream \
+		--cache-control "public, max-age=604800, immutable"
 	@echo "Uploaded overlay.pmtiles to R2 bucket $(R2_BUCKET)"
 
 install:

@@ -10,7 +10,7 @@ The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, 
 
 Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend.
 
-Status: tiles built (61 MB without streams) and styled: `website/src/lib/overlay.ts` draws rivers (with flow chevrons), water and springs, shelters and huts, peaks (name + elevation), viewpoints, guideposts and power lines on the route detail map, with per-group toggles (guideposts and power start hidden) in FR/EN. Verified in dev against a local copy of `overlay.pmtiles`, dark and light. Next: upload `overlay.pmtiles` to R2 (`make -f Makefile.overlay upload`; until then production 404s on it), document it in `docs/VECTOR_TILES.md`, decide whether the explore map (low-res) gets it. Streams stay off (157 MB with them).
+Status: tiles built (61 MB without streams) and styled: `website/src/lib/overlay.ts` draws rivers (with flow chevrons), water and springs, shelters and huts, peaks (name + elevation), viewpoints, guideposts and power lines on the route detail map, with per-group toggles (guideposts and power start hidden) in FR/EN. Verified in dev against a local copy of `overlay.pmtiles`, dark and light. Uploaded to R2 and documented in `docs/VECTOR_TILES.md`. Open: decide whether the explore map (low-res) gets it. Streams stay off (157 MB with them).
 
 ### 2. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 
