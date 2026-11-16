@@ -1,5 +1,13 @@
 import { describe, expect, test } from 'bun:test';
-import { t, getLocaleFromUrl, getAlternateUrl, formatHikeCount, getClientTranslations } from './i18n';
+import {
+  t,
+  getLocaleFromUrl,
+  getAlternateUrl,
+  formatHikeCount,
+  getClientTranslations,
+  getLocaleStaticPaths,
+  localePath,
+} from './i18n';
 
 describe('t', () => {
   test('returns French translation', () => {
@@ -115,5 +123,49 @@ describe('getClientTranslations', () => {
     const frTranslations = getClientTranslations('fr');
     const enTranslations = getClientTranslations('en');
     expect(frTranslations['filters.noResults']).not.toBe(enTranslations['filters.noResults']);
+  });
+});
+
+describe('localePath', () => {
+  test('French pages live at the root', () => {
+    expect(localePath('fr', '/app')).toBe('/app');
+  });
+
+  test('English pages live under /en', () => {
+    expect(localePath('en', '/app')).toBe('/en/app');
+  });
+
+  test('the English home is /en without a trailing slash', () => {
+    expect(localePath('en', '/')).toBe('/en');
+  });
+
+  test('the French home stays /', () => {
+    expect(localePath('fr', '/')).toBe('/');
+  });
+});
+
+describe('getLocaleStaticPaths', () => {
+  test('French has no locale segment', () => {
+    expect(getLocaleStaticPaths()[0]).toEqual({ params: { locale: undefined }, props: { locale: 'fr' } });
+  });
+
+  test('English uses the en segment', () => {
+    expect(getLocaleStaticPaths()[1]).toEqual({ params: { locale: 'en' }, props: { locale: 'en' } });
+  });
+});
+
+describe('detail page copy', () => {
+  test('page description fills name, distance and station count', () => {
+    expect(t('en', 'detail.pageDescription', { name: 'GR 13', distance: 120, count: 4 })).toBe(
+      'GR 13 — 120 km, 4 stations',
+    );
+  });
+
+  test('every locale labels each POI layer', () => {
+    for (const locale of ['fr', 'en'] as const) {
+      for (const type of ['train_station', 'bus_stop', 'hotel', 'camping']) {
+        expect(t(locale, `poi.layer.${type}`)).not.toBe(`poi.layer.${type}`);
+      }
+    }
   });
 });

@@ -1,11 +1,13 @@
 ---
-import Base from '../../layouts/Base.astro';
-import RouteList from '../../components/RouteList.astro';
-import RouteFilters from '../../components/RouteFilters.astro';
-import { getAllRoutes } from '../../lib/catalog';
-import { t } from '../../lib/i18n';
+import Base from '../../../layouts/Base.astro';
+import RouteList from '../../../components/RouteList.astro';
+import RouteFilters from '../../../components/RouteFilters.astro';
+import { getAllRoutes } from '../../../lib/catalog';
+import { getLocaleStaticPaths, t } from '../../../lib/i18n';
 
-const locale = 'fr';
+export const getStaticPaths = getLocaleStaticPaths;
+
+const { locale } = Astro.props;
 const routes = getAllRoutes();
 const routesMeta = routes.map((route) => ({
   id: route.id,
@@ -35,7 +37,7 @@ const routesMeta = routes.map((route) => ({
         <!-- Header with count + tab switcher -->
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold">
-            <span id="route-count">{routes.length}</span> {locale === 'fr' ? 'sentiers' : 'trails'}
+            <span id="route-count">{routes.length}</span> {t(locale, 'explore.trails')}
           </h2>
           <div class="flex border border-stone-300 dark:border-neutral-600 rounded-md overflow-hidden text-sm">
             <button id="tab-list" class="px-3 py-1.5 bg-forest-700 text-white font-medium" data-view="list">
@@ -60,6 +62,7 @@ const routesMeta = routes.map((route) => ({
             style="height: calc(100vh - 12rem);"
             data-routes-meta={JSON.stringify(routesMeta)}
             data-locale={locale}
+            data-loading-label={t(locale, 'map.loading')}
           ></div>
         </div>
       </div>
@@ -112,7 +115,7 @@ const routesMeta = routes.map((route) => ({
 <script>
   import 'maplibre-gl/dist/maplibre-gl.css';
   import maplibregl from 'maplibre-gl';
-  import { createMap, switchTheme, TRAIL_COLOR } from '../../lib/map';
+  import { createMap, switchTheme, TRAIL_COLOR } from '../../../lib/map';
 
   interface RouteMeta {
     id: string;
@@ -144,7 +147,10 @@ const routesMeta = routes.map((route) => ({
     // Loading overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'absolute inset-0 z-[1000] flex items-center justify-center bg-white/70 dark:bg-neutral-900/70';
-    loadingOverlay.innerHTML = '<span class="text-sm text-stone-500 dark:text-stone-400">Chargement des sentiers…</span>';
+    const loadingLabel = document.createElement('span');
+    loadingLabel.className = 'text-sm text-stone-500 dark:text-stone-400';
+    loadingLabel.textContent = container.dataset.loadingLabel ?? '';
+    loadingOverlay.appendChild(loadingLabel);
     container.appendChild(loadingOverlay);
 
     await new Promise<void>((resolve) => {

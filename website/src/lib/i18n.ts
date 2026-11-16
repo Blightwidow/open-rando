@@ -69,6 +69,19 @@ const translations: Record<Locale, Record<string, string>> = {
     'tabs.list': 'Liste',
     'tabs.map': 'Carte',
     'map.loading': 'Chargement des sentiers…',
+    'explore.trails': 'sentiers',
+    'detail.pageDescription': '{name} — {distance} km, {count} gares',
+    'detail.imageAlt': 'Illustration aquarelle de {name}',
+    'detail.stationCount': '{count} gares',
+    'detail.busStopCount': '{count} arrêts bus',
+    'detail.hotelCount': '{count} hôtels',
+    'detail.campingCount': '{count} campings',
+    'poi.website': 'Site web',
+    'poi.timetable': 'Horaires',
+    'poi.layer.train_station': 'Gares',
+    'poi.layer.bus_stop': 'Bus',
+    'poi.layer.hotel': 'Hôtels',
+    'poi.layer.camping': 'Campings',
 
     // Hike count
     'hikes.count.zero': '0 randonnée',
@@ -215,6 +228,19 @@ const translations: Record<Locale, Record<string, string>> = {
     'tabs.list': 'List',
     'tabs.map': 'Map',
     'map.loading': 'Loading trails…',
+    'explore.trails': 'trails',
+    'detail.pageDescription': '{name} — {distance} km, {count} stations',
+    'detail.imageAlt': 'Watercolor illustration of {name}',
+    'detail.stationCount': '{count} stations',
+    'detail.busStopCount': '{count} bus stops',
+    'detail.hotelCount': '{count} hotels',
+    'detail.campingCount': '{count} campsites',
+    'poi.website': 'Website',
+    'poi.timetable': 'Timetable',
+    'poi.layer.train_station': 'Stations',
+    'poi.layer.bus_stop': 'Bus stops',
+    'poi.layer.hotel': 'Hotels',
+    'poi.layer.camping': 'Campsites',
 
     // Hike count
     'hikes.count.zero': '0 hikes',
@@ -317,6 +343,20 @@ export function getAlternateUrl(url: URL, targetLocale: Locale): string {
   }
   // Remove /en prefix for French
   return pathname.replace(/^\/en/, '') || '/';
+}
+
+/** URL path for a page in a locale: French lives at the root, English under /en. */
+export function localePath(locale: Locale, path: string): string {
+  if (locale === 'fr') return path;
+  return path === '/' ? '/en' : `/en${path}`;
+}
+
+/** `getStaticPaths` entries for a page that exists once per locale (`pages/[...locale]/`). */
+export function getLocaleStaticPaths(): { params: { locale: string | undefined }; props: { locale: Locale } }[] {
+  return [
+    { params: { locale: undefined }, props: { locale: 'fr' } },
+    { params: { locale: 'en' }, props: { locale: 'en' } },
+  ];
 }
 
 export function formatHikeCount(locale: Locale, count: number): string {
