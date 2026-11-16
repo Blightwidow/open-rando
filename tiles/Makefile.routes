@@ -28,6 +28,7 @@
 #   make -f Makefile.routes build-grid SQUARE=6_5  # one grid square (no base rebuild)
 #   make -f Makefile.routes build-routes ROUTE=xxx # one route manifest
 #   make -f Makefile.routes force                # rebuild base + all squares
+#   make -f Makefile.routes grid-manifest-from-r2  # rebuild grid.json from the bundles on R2 (no masters needed)
 #   make -f Makefile.routes upload               # upload base/ + grid/ to R2
 #   make -f Makefile.routes show SQUARE=6_5      # inspect one square
 #   make -f Makefile.routes clean                # remove build-grid/
@@ -53,7 +54,7 @@ ifdef ROUTE
 ROUTES_ARGS += --route $(ROUTE)
 endif
 
-.PHONY: all build build-grid build-routes force upload show clean install download-masters
+.PHONY: all build build-grid build-routes grid-manifest-from-r2 force upload show clean install download-masters
 
 all: build
 
@@ -73,6 +74,11 @@ build-grid:
 
 build-routes:
 	uv run ./build-routes.py $(ROUTES_ARGS)
+
+# grid.json normally comes from build-grid; this rebuilds it from what is live on R2
+# when the local data dir has none. Follow with build-routes.
+grid-manifest-from-r2:
+	uv run ./grid-manifest-from-r2.py --data-dir $(DATA_DIR)
 
 force:
 	@[ -x $(PMTILES) ] || { echo "ERROR: $(PMTILES) missing. Run ./download.sh."; exit 1; }
