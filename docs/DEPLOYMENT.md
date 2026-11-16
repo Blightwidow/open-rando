@@ -53,6 +53,8 @@ make -f Makefile.routes build-routes            # per-route manifests, checked a
 
 Rerun `build-routes` whenever `catalog.json` changes (route bboxes decide the squares).
 
+`website/deploy.sh` runs `scripts/check-tile-manifests.mjs` on the built `dist/data/` and refuses to publish when `grid.json` is missing, a catalog route has no manifest, or a manifest lists a square that is not in `grid.json`. `ALLOW_MISSING_TILE_MANIFESTS=1 bun run deploy` skips it on purpose; `bun run check:manifests` runs it by hand.
+
 ## Vector tiles
 
 The map uses four PMTiles sources hosted on Cloudflare R2 (`open-rando-tiles`):
