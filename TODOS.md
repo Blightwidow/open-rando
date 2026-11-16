@@ -4,19 +4,13 @@ Known work not yet done. Each entry says what is wrong, why it matters, and what
 
 ## Debt
 
-### 1. Dead step-planner code in `slice.py`
-
-`find_hikes`, `find_round_trip_hikes`, `_build_step_graph`, `_build_constrained_step_graph`, `_find_constrained_paths`, `_find_connected_components` and `_compute_cumulative_distances` (lines 95-488, about 390 of the file's 545) are called by no pipeline code. Live callers only use `extract_substring_segments`, `compute_segments_distance_km`, `compute_trail_gaps_km` and `haversine_distance` (from `processors/link.py`, `processors/elevation.py`, `commands/tracks.py`). The dead block is exercised only by `tests/test_constrained_paths.py`, `tests/test_round_trip.py` and one case in `tests/test_trail_gaps.py` that tests `_compute_cumulative_distances`.
-
-Done when the dead functions and their tests are deleted (and the `_compute_cumulative_distances` case in `test_trail_gaps.py` with them), or the planner is wired back into a feature.
-
-### 2. Stop maintaining the site twice (FR/EN page forks)
+### 1. Stop maintaining the site twice (FR/EN page forks)
 
 Every page exists twice, with only hardcoded strings differing: `app/route/[slug].astro` vs `en/app/route/[slug].astro` (835/834 lines, 51 differing lines), `app/index.astro` vs `en/app/index.astro` (342/340, 26), `index.astro` vs `en/index.astro` (161/155, 16), plus `about`, `legal` and `privacy`. Every feature has to be written twice and the copies drift.
 
 Done when Astro i18n routing (already declared in `astro.config.mjs`, `prefixDefaultLocale: false`) serves both locales from one template per page, with all copy from `src/lib/i18n.ts`, and the 835-line detail page's inline scripts are split into modules (map setup, section selector, QR code, elevation sync). Blocks TODOs 7, 10 and 11 in practice, since each adds UI.
 
-### 3. README and ARCHITECTURE project tree are out of date
+### 2. README and ARCHITECTURE project tree are out of date
 
 `README.md` was partly fixed (prerequisites, `pipeline` subcommand and flags are current) but still says:
 
@@ -28,23 +22,29 @@ Done when Astro i18n routing (already declared in `astro.config.mjs`, `prefixDef
 
 Done when the README matches current commands, stack and layout and stops duplicating `docs/`, and the ARCHITECTURE tree matches `find pipeline/src tiles website/src`.
 
-### 4. Dead i18n keys from the removed step planner
+### 3. Dead i18n keys from the removed step planner
 
 `website/src/lib/i18n.ts` carries keys no page or script reads: `filters.maxStep`, `filters.steps`, `filters.difficulty`, `filters.accommodation`, `filters.hotel`, `filters.camping`, `steps.label`, `detail.stepCount`, `detail.steps`, `detail.stations`, `detail.difficulty`, `hike.loop`, `hike.loopFrom`, `map.steps`. `getClientTranslations()` is used only by its own test, and its key list still includes three of the dead keys.
 
-Done when every key is referenced by a page, component or script, and `getClientTranslations` is either used or removed. A test that fails on an unreferenced key would keep it that way. Best done together with TODO 2, which rewrites the call sites.
+Done when every key is referenced by a page, component or script, and `getClientTranslations` is either used or removed. A test that fails on an unreferenced key would keep it that way. Best done together with TODO 1, which rewrites the call sites.
 
-### 5. Unused packaged data file
+### 4. Unused packaged data file
 
 `pipeline/src/open_rando/data/gr-descriptions.yaml` (13.7KB) is read by no Python or website file; route descriptions come from `routes.yaml`. Only `docs/ARCHITECTURE.md` mentions it.
 
 Done when the file is either wired in or deleted, and its line removed from the ARCHITECTURE tree.
 
-### 6. Trail gaps are recorded but never shown
+### 5. Trail gaps are recorded but never shown
 
 `trail_gap_km`, `trail_segment_count` and the profile's `segment_boundaries_km` ship in the catalog (typed in `website/src/lib/catalog.ts`) and nothing renders them. A hiker planning GR 4 cannot see that it has a 19 km unmapped stretch until they are standing in it.
 
 Done when the elevation chart marks the breaks and the route page states the gap, in both locales.
+
+### 6. Constants duplicated across the tile scripts
+
+`PAD_DEG`, `DEFAULT_COLS`, `DEFAULT_ROWS`, `read_makefile_var` and `read_grid_bbox` are copied in `tiles/build-grid.py` and `tiles/build-routes.py`. `grid.json` already carries `grid.bbox`, `cols`, `rows` and `pad_deg`. If the copies drift, route manifests list the wrong squares; the route-vs-grid check catches squares that do not exist, not squares that are wrong.
+
+Done when both scripts take these values from one place: either `tiles/tile_manifests.py` (shared module) or `build-routes.py` reading them from `grid.json` (which then has to be built first).
 
 ## Features
 
@@ -52,7 +52,7 @@ Done when the elevation chart marks the breaks and the route page states the gap
 
 The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, `shelter`, `alpine_hut`, `viewpoint`, `peak` with elevation, `guidepost`, power lines and towers, `leaf_type` (evergreen vs deciduous), river flow direction. None are drawn today.
 
-Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend. First check which of these tags the existing extract layers (`Makefile.osm`: trail, stations, accommodation, landmarks, forest) already cover; the rest needs new osmium filters. Depends on TODO 2 (toggles written once). The manifest schemas already accept extra layers.
+Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend. First check which of these tags the existing extract layers (`Makefile.osm`: trail, stations, accommodation, landmarks, forest) already cover; the rest needs new osmium filters. Depends on TODO 1 (toggles written once). The manifest schemas already accept extra layers.
 
 ### 8. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 
@@ -76,4 +76,4 @@ Done when a route page can export its corridor as `.mbtiles` (built client-side 
 
 The mobile app ships from `https://github.com/Blightwidow/open-rando-mobile/releases/latest`, but `index.astro` and `en/index.astro` never mention it. The mobile README will soon carry product screenshots.
 
-Done when the landing page has a download section in both locales: screenshots from the mobile README copied into `website/public/` (not hotlinked, so the page stays self-hosted) and a button to the latest release. Copy from `src/lib/i18n.ts`. Depends on TODO 2 and on the screenshots landing in the mobile README first.
+Done when the landing page has a download section in both locales: screenshots from the mobile README copied into `website/public/` (not hotlinked, so the page stays self-hosted) and a button to the latest release. Copy from `src/lib/i18n.ts`. Depends on TODO 1 and on the screenshots landing in the mobile README first.
