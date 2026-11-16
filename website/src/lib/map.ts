@@ -41,6 +41,11 @@ function rewritePmtilesUrls(style: maplibregl.StyleSpecification): maplibregl.St
   return style;
 }
 
+/** URL of a PMTiles file the page loads: R2 in production, the site's own `data/` in dev. */
+export function resolvePmtilesUrl(fileName: string): string {
+  return PMTILES_BASE ? `pmtiles://${PMTILES_BASE}/${fileName}` : `pmtiles:///data/${fileName}`;
+}
+
 const WORLD_SOURCE = 'protomaps_world';
 
 function stripToWorldOnly(style: maplibregl.StyleSpecification): maplibregl.StyleSpecification {
@@ -95,7 +100,8 @@ export function createMap(
 export function switchTheme(map: maplibregl.Map) {
   const isDark = document.documentElement.classList.contains('dark');
   const lowRes = (map as MapWithLowRes).__lowRes ?? false;
-  map.setStyle(getStyle(isDark, lowRes));
+  // A diffed update keeps the page's own layers out and never fires `style.load`, so callers could not re-add them.
+  map.setStyle(getStyle(isDark, lowRes), { diff: false });
 }
 
 export function fitBoundsFromBbox(

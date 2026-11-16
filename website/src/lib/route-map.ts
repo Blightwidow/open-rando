@@ -1,5 +1,12 @@
 import maplibregl from 'maplibre-gl';
-import { createMap, switchTheme, TRAIL_COLOR, POI_COLORS, POI_RADII } from './map';
+import { createMap, resolvePmtilesUrl, switchTheme, TRAIL_COLOR, POI_COLORS, POI_RADII } from './map';
+import {
+  OVERLAY_PMTILES_PATH,
+  addOverlay,
+  defaultVisibleGroups,
+  getOverlayGroups,
+  setOverlayGroupVisibility,
+} from './overlay';
 import { buildPoiPopupHtml, escapeHtml } from './poi-popup';
 import { buildRailServiceRows, type RailServiceLabels } from './rail';
 import {
@@ -16,6 +23,8 @@ export interface RouteMapLabels {
   popup: { website: string; timetable: string };
   rail: RailServiceLabels;
   poiLayers: Record<string, string>;
+  /** Overlay legend: `title` plus one label per overlay group key. */
+  overlay: Record<string, string>;
 }
 
 const POI_TYPES = ['train_station', 'bus_stop', 'hotel', 'camping'] as const;
@@ -27,6 +36,7 @@ export function initRouteMap(mapElement: HTMLElement): void {
   const labels: RouteMapLabels = JSON.parse(mapElement.dataset.labels!);
   const map = createMap(mapElement);
 
+  const visibleOverlayGroups = defaultVisibleGroups();
   let trailCoordinates: LatLon[] = [];
   let cumulativeDistances: number[] = [0];
 
@@ -109,11 +119,23 @@ export function initRouteMap(mapElement: HTMLElement): void {
     });
   }
 
-  async function loadRoute(): Promise<void> {
-    await new Promise<void>((resolve) => {
-      if (map.isStyleLoaded()) resolve();
-      else map.on('load', () => resolve());
-    });
+  async function loadRoute(waitForLoad = true): Promise<void> {
+    // The first call waits for the map's one-time `load`. After a theme switch (setStyle) the caller
+    // is already inside `style.load` and `load` never fires again, so it skips the wait.
+    if (waitForLoad) {
+      await new Promise<void>((resolve) => {
+        if (map.isStyleLoaded()) resolve();
+        else map.on('load', () => resolve());
+      });
+    }
+
+    // First, so the trail and POIs draw above it.
+    addOverlay(
+      map,
+      resolvePmtilesUrl(OVERLAY_PMTILES_PATH),
+      document.documentElement.classList.contains('dark'),
+      visibleOverlayGroups,
+    );
 
     try {
       const response = await fetch(`/data/${routeData.geojson_path}`);
@@ -207,7 +229,7 @@ export function initRouteMap(mapElement: HTMLElement): void {
   // MapLibre has no built-in layer control.
   const layerControl = document.createElement('div');
   layerControl.className =
-    'absolute top-2 right-2 z-10 bg-white dark:bg-neutral-800 rounded-md shadow-md p-2 text-sm space-y-1';
+    'absolute top-2 right-2 z-10 max-h-[calc(100%-1rem)] overflow-y-auto bg-white dark:bg-neutral-800 rounded-md shadow-md p-2 text-sm space-y-1';
   for (const poiType of POI_TYPES) {
     const row = document.createElement('label');
     row.className = 'flex items-center gap-2 cursor-pointer';
@@ -224,13 +246,40 @@ export function initRouteMap(mapElement: HTMLElement): void {
     });
     layerControl.appendChild(row);
   }
+
+  const overlayTitle = document.createElement('div');
+  overlayTitle.className = 'pt-1 mt-1 border-t border-stone-200 dark:border-neutral-700 text-xs text-stone-500 dark:text-stone-400';
+  overlayTitle.textContent = labels.overlay.title;
+  layerControl.appendChild(overlayTitle);
+
+  for (const group of getOverlayGroups(false)) {
+    const row = document.createElement('label');
+    row.className = 'flex items-center gap-2 cursor-pointer';
+    const swatch =
+      group.swatch === 'dot'
+        ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${group.color};"></span>`
+        : `<span style="display:inline-block;width:10px;height:0;border-top:2px solid ${group.color};"></span>`;
+    row.innerHTML = `<input type="checkbox" class="rounded" data-overlay-group="${group.key}" /> ${swatch} ${escapeHtml(labels.overlay[group.key])}`;
+    const checkbox = row.querySelector('input')!;
+    checkbox.checked = visibleOverlayGroups.has(group.key);
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) visibleOverlayGroups.add(group.key);
+      else visibleOverlayGroups.delete(group.key);
+      const currentGroup = getOverlayGroups(document.documentElement.classList.contains('dark')).find(
+        (candidate) => candidate.key === group.key,
+      )!;
+      setOverlayGroupVisibility(map, currentGroup, checkbox.checked);
+    });
+    layerControl.appendChild(row);
+  }
+
   mapElement.style.position = 'relative';
   mapElement.appendChild(layerControl);
 
   document.addEventListener('theme-change', () => {
     switchTheme(map);
     map.once('style.load', () => {
-      loadRoute();
+      loadRoute(false);
     });
   });
 

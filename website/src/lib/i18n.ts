@@ -74,6 +74,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'poi.layer.bus_stop': 'Bus',
     'poi.layer.hotel': 'Hôtels',
     'poi.layer.camping': 'Campings',
+    'overlay.title': 'Sur la carte',
+    'overlay.river': "Cours d'eau (sens du courant)",
+    'overlay.water': "Eau potable et sources",
+    'overlay.shelter': 'Abris et refuges',
+    'overlay.peak': 'Sommets',
+    'overlay.viewpoint': 'Points de vue',
+    'overlay.guidepost': 'Poteaux de balisage',
+    'overlay.power': 'Lignes électriques',
 
     // Difficulty
     'difficulty.easy': 'Facile',
@@ -195,6 +203,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'poi.layer.bus_stop': 'Bus stops',
     'poi.layer.hotel': 'Hotels',
     'poi.layer.camping': 'Campsites',
+    'overlay.title': 'On the map',
+    'overlay.river': 'Rivers (flow direction)',
+    'overlay.water': 'Drinking water and springs',
+    'overlay.shelter': 'Shelters and huts',
+    'overlay.peak': 'Peaks',
+    'overlay.viewpoint': 'Viewpoints',
+    'overlay.guidepost': 'Guideposts',
+    'overlay.power': 'Power lines',
 
     // Difficulty
     'difficulty.easy': 'Easy',
