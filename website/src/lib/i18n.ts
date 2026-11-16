@@ -3,7 +3,6 @@ export type Locale = 'fr' | 'en';
 const translations: Record<Locale, Record<string, string>> = {
   fr: {
     // Header & navigation
-    'site.title': 'TrainRando',
     'site.subtitle': 'Randonnées entre gares sur les sentiers GR & PR',
     'site.description': 'Découvrez des itinéraires de randonnée sur les sentiers GR et PR, accessibles en train. TrainRando est un projet open-source qui répertorie des randonnées entre gares en France.',
     'nav.back': 'Toutes les randonnées',
@@ -36,8 +35,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.privacy.description': 'TrainRando est un site statique. Aucune donnée utilisateur n\'est collectée, stockée ou partagée. Pas de cookies, pas d\'analytics, pas de compte.',
 
     // Landing - Mobile
-    'landing.mobile.title': 'Bientôt : application mobile',
-    'landing.mobile.description': 'Une application compagnon pour consulter les itinéraires hors-ligne, avec navigation GPS et alertes météo.',
+    'landing.mobile.title': 'Application mobile',
+    'landing.mobile.description': "L'application compagnon pour randonner sans réseau : enregistrez un itinéraire ou une section (depuis le QR code du site), importez un fichier GPX et suivez votre position GPS sur la carte.",
+    'landing.mobile.cta': 'Télécharger pour Android',
+    'landing.mobile.note': 'APK à installer à la main, F-Droid et AltStore sont prévus. Ni compte, ni analytics.',
 
     // Footer
     'footer.about': 'À propos',
@@ -46,15 +47,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Filters
     'filters.title': 'Filtres',
-    'filters.show': 'Afficher les filtres',
-    'filters.hide': 'Masquer les filtres',
     'filters.reset': 'Réinitialiser',
-    'filters.maxStep': 'Étape max',
-    'filters.steps': "Nombre d'étapes",
-    'filters.difficulty': 'Difficulté',
-    'filters.accommodation': 'Hébergement à chaque étape',
-    'filters.hotel': 'Hôtel',
-    'filters.camping': 'Camping',
     'filters.region': 'Région',
     'filters.terrain': 'Terrain',
     'terrain.coastal': 'Littoral',
@@ -63,48 +56,40 @@ const translations: Record<Locale, Record<string, string>> = {
     'terrain.forest': 'Forêt',
     'terrain.plains': 'Plaines',
     'filters.noResults': 'Aucune randonnée ne correspond à vos filtres.',
-    'filters.resetFilters': 'Réinitialiser les filtres',
 
     // Tabs
     'tabs.list': 'Liste',
     'tabs.map': 'Carte',
     'map.loading': 'Chargement des sentiers…',
-
-    // Hike count
-    'hikes.count.zero': '0 randonnée',
-    'hikes.count.one': '1 randonnée',
-    'hikes.count.many': '{count} randonnées',
+    'explore.trails': 'sentiers',
+    'detail.pageDescription': '{name} — {distance} km, {count} gares',
+    'detail.imageAlt': 'Illustration aquarelle de {name}',
+    'detail.stationCount': '{count} gares',
+    'detail.busStopCount': '{count} arrêts bus',
+    'detail.hotelCount': '{count} hôtels',
+    'detail.campingCount': '{count} campings',
+    'poi.website': 'Site web',
+    'poi.timetable': 'Horaires',
+    'poi.layer.train_station': 'Gares',
+    'poi.layer.bus_stop': 'Bus',
+    'poi.layer.hotel': 'Hôtels',
+    'poi.layer.camping': 'Campings',
 
     // Difficulty
     'difficulty.easy': 'Facile',
     'difficulty.moderate': 'Modéré',
     'difficulty.difficult': 'Difficile',
     'difficulty.very_difficult': 'Très difficile',
-    'difficulty.tooltip.easy': 'Moins de 15m de dénivelé positif par km (ou moins de 300m au total)',
-    'difficulty.tooltip.moderate': 'De 15 à 30m de dénivelé positif par km',
-    'difficulty.tooltip.difficult': 'De 30 à 50m de dénivelé positif par km',
-    'difficulty.tooltip.very_difficult': '50m ou plus de dénivelé positif par km',
-
-    // Hike types
-    'hike.loop': 'Boucle',
-    'hike.loopFrom': 'Boucle depuis {station}',
-
-    // Steps
-    'steps.label': '{count} étapes',
 
     // Detail page
     'detail.summary': 'Résumé',
     'detail.distance': 'Distance',
     'detail.estimatedDuration': 'Durée estimée',
-    'detail.stepCount': "Nombre d'étapes",
     'detail.trail': 'Sentier',
     'detail.elevationGain': 'Dénivelé positif',
     'detail.elevationLoss': 'Dénivelé négatif',
     'detail.maxAltitude': 'Altitude max',
-    'detail.difficulty': 'Difficulté',
     'detail.downloadGpx': 'Télécharger GPX',
-    'detail.steps': 'Étapes',
-    'detail.stations': 'Arrêts',
     'detail.elevationProfile': 'Profil altimétrique',
     'detail.timeDisclaimer': 'Temps estimés : 4 km/h sur le plat, +300 m/h en montée et -450 m/h en descente (pentes \u2265 10 %).',
     'detail.loading': 'Chargement...',
@@ -125,21 +110,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'rail.departures': '{count} départs',
     'rail.sourceNote': 'Horaires indicatifs : premier et dernier départ et nombre de trains par type de jour, calculés depuis les flux GTFS de transport.data.gouv.fr. Vérifiez les horaires du jour avant de partir.',
 
-    // Accommodation
-    'accommodation.hotel': 'Hôtel',
-    'accommodation.camping': 'Camping',
-    'accommodation.hotelAndCamping': 'Hôtel & Camping',
-    'accommodation.none': "Pas d'hébergement répertorié",
-
-    // Map popup
-    'map.downloadGpx': 'Télécharger GPX',
-    'map.steps': 'étapes',
-
     // Footer
     'footer.data': 'Données',
-
-
-    // Section filter
 
     // Disclaimer
     'detail.disclaimer': 'Les informations présentées (tracés, hébergements, gares) sont issues de données ouvertes et peuvent être incomplètes ou obsolètes. Vérifiez la disponibilité des hébergements, campings et horaires de train avant de partir.',
@@ -149,7 +121,6 @@ const translations: Record<Locale, Record<string, string>> = {
   },
   en: {
     // Header & navigation
-    'site.title': 'TrainRando',
     'site.subtitle': 'Train station-to-station hikes on GR & PR trails',
     'site.description': 'Discover hiking routes on GR and PR trails in France, accessible by train. TrainRando is an open-source project cataloging station-to-station hikes.',
     'nav.back': 'All hikes',
@@ -182,8 +153,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.privacy.description': 'TrainRando is a static site. No user data is collected, stored or shared. No cookies, no analytics, no accounts.',
 
     // Landing - Mobile
-    'landing.mobile.title': 'Coming soon: mobile app',
-    'landing.mobile.description': 'A companion app to browse routes offline, with GPS navigation and weather alerts.',
+    'landing.mobile.title': 'Mobile app',
+    'landing.mobile.description': "The companion app for hiking without a signal: save a route or a section (from the website's QR code), import a GPX file and follow your GPS position on the map.",
+    'landing.mobile.cta': 'Download for Android',
+    'landing.mobile.note': 'APK to install by hand; F-Droid and AltStore are planned. No account, no analytics.',
 
     // Footer
     'footer.about': 'About',
@@ -192,15 +165,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Filters
     'filters.title': 'Filters',
-    'filters.show': 'Show filters',
-    'filters.hide': 'Hide filters',
     'filters.reset': 'Reset',
-    'filters.maxStep': 'Max step',
-    'filters.steps': 'Number of steps',
-    'filters.difficulty': 'Difficulty',
-    'filters.accommodation': 'Accommodation at every stop',
-    'filters.hotel': 'Hotel',
-    'filters.camping': 'Campsite',
     'filters.region': 'Region',
     'filters.terrain': 'Terrain',
     'terrain.coastal': 'Coastal',
@@ -209,48 +174,40 @@ const translations: Record<Locale, Record<string, string>> = {
     'terrain.forest': 'Forest',
     'terrain.plains': 'Plains',
     'filters.noResults': 'No hikes match your filters.',
-    'filters.resetFilters': 'Reset filters',
 
     // Tabs
     'tabs.list': 'List',
     'tabs.map': 'Map',
     'map.loading': 'Loading trails…',
-
-    // Hike count
-    'hikes.count.zero': '0 hikes',
-    'hikes.count.one': '1 hike',
-    'hikes.count.many': '{count} hikes',
+    'explore.trails': 'trails',
+    'detail.pageDescription': '{name} — {distance} km, {count} stations',
+    'detail.imageAlt': 'Watercolor illustration of {name}',
+    'detail.stationCount': '{count} stations',
+    'detail.busStopCount': '{count} bus stops',
+    'detail.hotelCount': '{count} hotels',
+    'detail.campingCount': '{count} campsites',
+    'poi.website': 'Website',
+    'poi.timetable': 'Timetable',
+    'poi.layer.train_station': 'Stations',
+    'poi.layer.bus_stop': 'Bus stops',
+    'poi.layer.hotel': 'Hotels',
+    'poi.layer.camping': 'Campsites',
 
     // Difficulty
     'difficulty.easy': 'Easy',
     'difficulty.moderate': 'Moderate',
     'difficulty.difficult': 'Difficult',
     'difficulty.very_difficult': 'Very difficult',
-    'difficulty.tooltip.easy': 'Under 15m of ascent per km (or under 300m in total)',
-    'difficulty.tooltip.moderate': '15 to 30m of ascent per km',
-    'difficulty.tooltip.difficult': '30 to 50m of ascent per km',
-    'difficulty.tooltip.very_difficult': '50m or more of ascent per km',
-
-    // Hike types
-    'hike.loop': 'Loop',
-    'hike.loopFrom': 'Loop from {station}',
-
-    // Steps
-    'steps.label': '{count} steps',
 
     // Detail page
     'detail.summary': 'Summary',
     'detail.distance': 'Distance',
     'detail.estimatedDuration': 'Estimated duration',
-    'detail.stepCount': 'Number of steps',
     'detail.trail': 'Trail',
     'detail.elevationGain': 'Elevation gain',
     'detail.elevationLoss': 'Elevation loss',
     'detail.maxAltitude': 'Max altitude',
-    'detail.difficulty': 'Difficulty',
     'detail.downloadGpx': 'Download GPX',
-    'detail.steps': 'Steps',
-    'detail.stations': 'Stops',
     'detail.elevationProfile': 'Elevation profile',
     'detail.timeDisclaimer': 'Estimated times: 4 km/h on flat terrain, +300 m/h uphill, -450 m/h downhill (slopes \u2265 10%).',
     'detail.loading': 'Loading...',
@@ -271,21 +228,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'rail.departures': '{count} departures',
     'rail.sourceNote': 'Indicative timetable: first and last departure and the number of trains per kind of day, computed from the transport.data.gouv.fr GTFS feeds. Check the timetable of the day before you leave.',
 
-    // Accommodation
-    'accommodation.hotel': 'Hotel',
-    'accommodation.camping': 'Campsite',
-    'accommodation.hotelAndCamping': 'Hotel & Campsite',
-    'accommodation.none': 'No accommodation listed',
-
-    // Map popup
-    'map.downloadGpx': 'Download GPX',
-    'map.steps': 'steps',
-
     // Footer
     'footer.data': 'Data',
-
-
-    // Section filter
 
     // Disclaimer
     'detail.disclaimer': 'The information shown (trails, accommodation, stations) is based on open data and may be incomplete or outdated. Please verify accommodation, campsite and train schedule availability before setting out.',
@@ -319,27 +263,21 @@ export function getAlternateUrl(url: URL, targetLocale: Locale): string {
   return pathname.replace(/^\/en/, '') || '/';
 }
 
-export function formatHikeCount(locale: Locale, count: number): string {
-  if (count === 0) return t(locale, 'hikes.count.zero');
-  if (count === 1) return t(locale, 'hikes.count.one');
-  return t(locale, 'hikes.count.many', { count });
+/** URL path for a page in a locale: French lives at the root, English under /en. */
+export function localePath(locale: Locale, path: string): string {
+  if (locale === 'fr') return path;
+  return path === '/' ? '/en' : `/en${path}`;
 }
 
-/** Subset of translations needed in client-side scripts */
-export function getClientTranslations(locale: Locale): Record<string, string> {
-  const keys = [
-    'hikes.count.zero', 'hikes.count.one', 'hikes.count.many',
-    'map.downloadGpx', 'map.steps',
-    'hike.loop', 'hike.loopFrom',
-    'filters.noResults', 'filters.resetFilters',
-    'detail.loading',
-    'detail.sectionTitle', 'detail.sectionFrom', 'detail.sectionTo',
-    'detail.sectionReset', 'detail.sectionDownloadGpx',
-    'detail.sectionQrCode', 'detail.sectionQrDownload',
+/** `getStaticPaths` entries for a page that exists once per locale (`pages/[...locale]/`). */
+export function getLocaleStaticPaths(): { params: { locale: string | undefined }; props: { locale: Locale } }[] {
+  return [
+    { params: { locale: undefined }, props: { locale: 'fr' } },
+    { params: { locale: 'en' }, props: { locale: 'en' } },
   ];
-  const result: Record<string, string> = {};
-  for (const key of keys) {
-    result[key] = t(locale, key);
-  }
-  return result;
+}
+
+/** Every key of a locale, for tests that guard the dictionary. */
+export function getTranslationKeys(locale: Locale): string[] {
+  return Object.keys(translations[locale]);
 }

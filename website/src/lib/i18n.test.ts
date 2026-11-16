@@ -1,9 +1,15 @@
 import { describe, expect, test } from 'bun:test';
-import { t, getLocaleFromUrl, getAlternateUrl, formatHikeCount, getClientTranslations } from './i18n';
+import {
+  t,
+  getLocaleFromUrl,
+  getAlternateUrl,
+  getLocaleStaticPaths,
+  localePath,
+} from './i18n';
 
 describe('t', () => {
   test('returns French translation', () => {
-    expect(t('fr', 'site.title')).toBe('TrainRando');
+    expect(t('fr', 'nav.explore')).toBe('Parcourir');
   });
 
   test('returns English translation', () => {
@@ -21,7 +27,7 @@ describe('t', () => {
   });
 
   test('replaces single placeholder', () => {
-    expect(t('en', 'hikes.count.many', { count: 42 })).toBe('42 hikes');
+    expect(t('en', 'detail.stationCount', { count: 42 })).toBe('42 stations');
   });
 
   test('replaces multiple placeholders', () => {
@@ -29,7 +35,7 @@ describe('t', () => {
   });
 
   test('returns value without replacements when none provided', () => {
-    expect(t('fr', 'hikes.count.one')).toBe('1 randonnée');
+    expect(t('fr', 'tabs.list')).toBe('Liste');
   });
 });
 
@@ -69,51 +75,58 @@ describe('getAlternateUrl', () => {
   });
 });
 
-describe('formatHikeCount', () => {
-  test('zero in French', () => {
-    expect(formatHikeCount('fr', 0)).toBe('0 randonnée');
+describe('localePath', () => {
+  test('French pages live at the root', () => {
+    expect(localePath('fr', '/app')).toBe('/app');
   });
 
-  test('one in French', () => {
-    expect(formatHikeCount('fr', 1)).toBe('1 randonnée');
+  test('English pages live under /en', () => {
+    expect(localePath('en', '/app')).toBe('/en/app');
   });
 
-  test('many in French', () => {
-    expect(formatHikeCount('fr', 42)).toBe('42 randonnées');
+  test('the English home is /en without a trailing slash', () => {
+    expect(localePath('en', '/')).toBe('/en');
   });
 
-  test('zero in English', () => {
-    expect(formatHikeCount('en', 0)).toBe('0 hikes');
-  });
-
-  test('one in English', () => {
-    expect(formatHikeCount('en', 1)).toBe('1 hike');
-  });
-
-  test('many in English', () => {
-    expect(formatHikeCount('en', 5)).toBe('5 hikes');
+  test('the French home stays /', () => {
+    expect(localePath('fr', '/')).toBe('/');
   });
 });
 
-describe('getClientTranslations', () => {
-  test('returns all expected client keys', () => {
-    const translations = getClientTranslations('fr');
-    const expectedKeys = [
-      'hikes.count.zero', 'hikes.count.one', 'hikes.count.many',
-      'map.downloadGpx', 'map.steps',
-      'hike.loop', 'hike.loopFrom',
-      'filters.noResults', 'filters.resetFilters',
-      'detail.loading',
-    ];
-    for (const key of expectedKeys) {
-      expect(key in translations).toBe(true);
-      expect(typeof translations[key]).toBe('string');
+describe('getLocaleStaticPaths', () => {
+  test('French has no locale segment', () => {
+    expect(getLocaleStaticPaths()[0]).toEqual({ params: { locale: undefined }, props: { locale: 'fr' } });
+  });
+
+  test('English uses the en segment', () => {
+    expect(getLocaleStaticPaths()[1]).toEqual({ params: { locale: 'en' }, props: { locale: 'en' } });
+  });
+});
+
+describe('detail page copy', () => {
+  test('page description fills name, distance and station count', () => {
+    expect(t('en', 'detail.pageDescription', { name: 'GR 13', distance: 120, count: 4 })).toBe(
+      'GR 13 — 120 km, 4 stations',
+    );
+  });
+
+  test('every locale labels each POI layer', () => {
+    for (const locale of ['fr', 'en'] as const) {
+      for (const type of ['train_station', 'bus_stop', 'hotel', 'camping']) {
+        expect(t(locale, `poi.layer.${type}`)).not.toBe(`poi.layer.${type}`);
+      }
+    }
+  });
+});
+
+describe('landing mobile app copy', () => {
+  test('every locale has a download button label', () => {
+    for (const locale of ['fr', 'en'] as const) {
+      expect(t(locale, 'landing.mobile.cta')).not.toBe('landing.mobile.cta');
     }
   });
 
-  test('English translations differ from French', () => {
-    const frTranslations = getClientTranslations('fr');
-    const enTranslations = getClientTranslations('en');
-    expect(frTranslations['filters.noResults']).not.toBe(enTranslations['filters.noResults']);
+  test('English no longer announces the app as coming soon', () => {
+    expect(t('en', 'landing.mobile.title')).toBe('Mobile app');
   });
 });

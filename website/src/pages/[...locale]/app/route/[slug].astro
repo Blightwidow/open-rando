@@ -1,0 +1,211 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import ElevationChart from '../../../../components/ElevationChart.astro';
+import SearchableSelect from '../../../../components/SearchableSelect.astro';
+import { getAllRoutes, getRoutePois, getRouteBySlug, getTrainStations } from '../../../../lib/catalog';
+import type { Route } from '../../../../lib/catalog';
+import { getLocaleStaticPaths, localePath, t } from '../../../../lib/i18n';
+
+export function getStaticPaths() {
+  const routes = getAllRoutes();
+  return getLocaleStaticPaths().flatMap((localeEntry) =>
+    routes.map((route) => ({
+      params: { ...localeEntry.params, slug: route.slug },
+      props: localeEntry.props,
+    })),
+  );
+}
+
+const { locale } = Astro.props;
+const { slug } = Astro.params;
+const route = getRouteBySlug(slug!) as Route;
+const pois = getRoutePois(route);
+const trainStations = getTrainStations(pois);
+const hotelCount = pois.filter((poi) => poi.poi_type === 'hotel').length;
+const campingCount = pois.filter((poi) => poi.poi_type === 'camping').length;
+const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
+---
+
+<Base
+  title={`${route.path_ref} – TrainRando`}
+  description={t(locale, 'detail.pageDescription', { name: route.path_name, distance: route.distance_km, count: trainStations.length })}
+  ogType="article"
+  locale={locale}
+>
+  <header class="max-w-4xl mx-auto px-4 py-6">
+    <a href={localePath(locale, '/app')} class="text-sm text-forest-700 hover:text-forest-900 dark:text-forest-400 dark:hover:text-forest-300">&larr; {t(locale, 'nav.back')}</a>
+    <div class="mt-4">
+      <span class="text-xs font-semibold text-forest-700 dark:text-forest-400 uppercase tracking-wide">{route.path_ref}</span>
+      <h1 class="text-2xl font-bold mt-1">{route.path_name}</h1>
+      {route.description && (
+        <p class="mt-2 text-sm text-stone-600 dark:text-stone-400 leading-relaxed">{route.description}</p>
+      )}
+      {route.image_path && (
+        <img
+          src={`/data/${route.image_path}`}
+          alt={t(locale, 'detail.imageAlt', { name: route.path_name })}
+          class="mt-4 w-full aspect-[8/3] object-cover rounded-lg border border-stone-200 dark:border-neutral-700"
+          loading="eager"
+          width="1024"
+          height="384"
+        />
+      )}
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pb-12 space-y-6 sm:space-y-8">
+    <div class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5 space-y-3">
+      <h2 class="text-lg font-semibold">{t(locale, 'detail.summary')}</h2>
+      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-y-2 text-sm">
+        <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.distance')}</dt>
+        <dd class="font-medium">{route.distance_km} km</dd>
+        <div></div>
+        <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.trail')}</dt>
+        <dd class="font-medium">{route.path_ref}</dd>
+        <div></div>
+        {route.elevation_gain_m > 0 && (
+          <>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}</dt>
+            <dd class="font-medium">+{route.elevation_gain_m}m</dd>
+            <div></div>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationLoss')}</dt>
+            <dd class="font-medium">-{route.elevation_loss_m}m</dd>
+            <div></div>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.maxAltitude')}</dt>
+            <dd class="font-medium">{route.max_elevation_m}m</dd>
+            <div></div>
+          </>
+        )}
+      </dl>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.stationCount', { count: trainStations.length })}</span>
+        {busStopCount > 0 && <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.busStopCount', { count: busStopCount })}</span>}
+        {hotelCount > 0 && <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.hotelCount', { count: hotelCount })}</span>}
+        {campingCount > 0 && <span class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.campingCount', { count: campingCount })}</span>}
+      </div>
+      <a
+        href={`/data/${route.gpx_path}`}
+        download
+        class="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-sm font-medium"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
+        {t(locale, 'detail.downloadGpx')}
+      </a>
+    </div>
+
+    {trainStations.filter((station) => station.distance_km != null).length >= 3 && (
+      <div
+        id="section-selector"
+        class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5 space-y-4"
+        data-stations={JSON.stringify(
+          trainStations
+            .filter((station) => station.distance_km != null)
+            .sort((stationA, stationB) => stationA.distance_km! - stationB.distance_km!)
+            .map((station) => ({ name: station.name, distance_km: station.distance_km }))
+        )}
+        data-elevation-path={route.elevation_path}
+        data-geojson-path={route.geojson_path}
+        data-route-ref={route.path_ref}
+      >
+        <h2 class="text-lg font-semibold">{t(locale, 'detail.sectionTitle')}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionFrom')}</label>
+            <SearchableSelect id="section-from" placeholder="—" />
+          </div>
+          <div>
+            <label class="block text-sm text-stone-500 dark:text-stone-400 mb-1">{t(locale, 'detail.sectionTo')}</label>
+            <SearchableSelect id="section-to" placeholder="—" />
+          </div>
+        </div>
+        <div id="section-stats" class="hidden">
+          <dl class="grid grid-cols-2 sm:grid-cols-4 gap-y-2 text-sm">
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.distance')}</dt>
+            <dd id="section-distance" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationGain')}</dt>
+            <dd id="section-gain" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.estimatedDuration')}</dt>
+            <dd id="section-duration" class="font-medium"></dd>
+            <dt class="text-stone-500 dark:text-stone-400">{t(locale, 'detail.elevationLoss')}</dt>
+            <dd id="section-loss" class="font-medium"></dd>
+          </dl>
+          <div class="flex flex-wrap gap-3 mt-3">
+            <button id="section-download-gpx" class="inline-flex items-center gap-2 px-4 py-2 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-sm font-medium">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
+              {t(locale, 'detail.sectionDownloadGpx')}
+            </button>
+            <button id="section-qr-toggle" class="text-sm text-forest-700 dark:text-forest-400 hover:underline">
+              {t(locale, 'detail.sectionQrCode')}
+            </button>
+            <button id="section-reset" class="text-sm text-forest-700 dark:text-forest-400 hover:underline">
+              {t(locale, 'detail.sectionReset')}
+            </button>
+          </div>
+          <div id="section-qr" class="hidden mt-6 bg-black/[0.03] dark:bg-white/[0.05] rounded-lg border border-black/[0.06] dark:border-white/[0.08] p-4 relative">
+            <button id="section-qr-close" class="absolute top-2 right-2 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="flex items-center gap-4 justify-center">
+              <div id="qr-container" class="bg-white p-3 rounded-md shrink-0"></div>
+              <div class="flex flex-col gap-2">
+                <p class="text-xs text-stone-500 dark:text-stone-400">{t(locale, 'detail.sectionQrDescription')}</p>
+                <button id="section-qr-download" class="inline-flex items-center gap-2 px-3 py-1.5 bg-forest-700 text-white rounded-md hover:bg-forest-800 transition-colors text-xs font-medium self-start">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3"/></svg>
+                  {t(locale, 'detail.sectionQrDownload')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <ElevationChart elevationPath={route.elevation_path} locale={locale} />
+
+    <div
+      id="detail-map"
+      class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 overflow-hidden"
+      style="height: 450px;"
+      data-route={JSON.stringify({ ...route, pois })}
+      data-labels={JSON.stringify({
+        popup: { website: t(locale, 'poi.website'), timetable: t(locale, 'poi.timetable') },
+        rail: {
+          weekday: t(locale, 'rail.weekday'),
+          saturday: t(locale, 'rail.saturday'),
+          sunday: t(locale, 'rail.sunday'),
+          noService: t(locale, 'rail.noService'),
+          departures: t(locale, 'rail.departures'),
+        },
+        poiLayers: {
+          train_station: t(locale, 'poi.layer.train_station'),
+          bus_stop: t(locale, 'poi.layer.bus_stop'),
+          hotel: t(locale, 'poi.layer.hotel'),
+          camping: t(locale, 'poi.layer.camping'),
+        },
+      })}
+    >
+    </div>
+
+    <p class="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
+      {t(locale, 'rail.sourceNote')}
+    </p>
+
+    <p class="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
+      {t(locale, 'detail.disclaimer')}
+    </p>
+  </main>
+</Base>
+
+<script>
+  import 'maplibre-gl/dist/maplibre-gl.css';
+  import { initRouteMap } from '../../../../lib/route-map';
+
+  initRouteMap(document.getElementById('detail-map')!);
+</script>
+
+<script>
+  import { initSectionSelector } from '../../../../lib/section-selector';
+
+  const selectorElement = document.getElementById('section-selector');
+  if (selectorElement) initSectionSelector(selectorElement);
+</script>

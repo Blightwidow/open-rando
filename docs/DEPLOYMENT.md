@@ -39,6 +39,22 @@ The website needs pipeline output (`catalog.json`, GPX files, GeoJSON, elevation
 
 The CI workflow downloads `data.tar.gz` from the `latest` release before building. If no release exists, the build proceeds with empty data (the site will render but show no hikes).
 
+## Tile manifests (`grid.json`, `routes/{id}/pmtiles.json`)
+
+The mobile app reads these two manifests from the site (`/data/grid.json`, `/data/routes/{id}/pmtiles.json`). The data pipeline does not write them: `tiles/build-grid.py` and `tiles/build-routes.py` do, into the same data dir, and the website build copies them like any other data file. A data dir without them publishes a site where both answer 404.
+
+Without the master archives (the bundles are already on R2), rebuild them from R2 and the catalog:
+
+```bash
+cd tiles
+make -f Makefile.routes grid-manifest-from-r2   # sizes from HEAD requests on R2
+make -f Makefile.routes build-routes            # per-route manifests, checked against grid.json
+```
+
+Rerun `build-routes` whenever `catalog.json` changes (route bboxes decide the squares).
+
+`website/deploy.sh` runs `scripts/check-tile-manifests.mjs` on the built `dist/data/` and refuses to publish when `grid.json` is missing, a catalog route has no manifest, or a manifest lists a square that is not in `grid.json`. `ALLOW_MISSING_TILE_MANIFESTS=1 bun run deploy` skips it on purpose; `bun run check:manifests` runs it by hand.
+
 ## Vector tiles
 
 The map uses four PMTiles sources hosted on Cloudflare R2 (`open-rando-tiles`):

@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "deploy": "bash deploy.sh",
     "test": "bun test",
+    "check:manifests": "bun scripts/check-tile-manifests.mjs dist/data",
     "check:env": "test \"$ALLOW_MISSING_PMTILES_BASE\" = \"1\" || bun scripts/check-pmtiles-base.mjs"
   },
   "dependencies": {
