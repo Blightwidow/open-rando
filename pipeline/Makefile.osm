@@ -4,6 +4,7 @@
 #   make -f Makefile.osm check      verify osmium + curl are installed
 #   make -f Makefile.osm            download france.osm.pbf, filter, index
 #   make -f Makefile.osm extracts   only re-filter the per-layer extracts
+#   make -f Makefile.osm overlay    filter the hiking overlay extracts (for tiles/, not indexed)
 #   make -f Makefile.osm index      only rebuild the SQLite index
 #   make -f Makefile.osm status     report what the index holds
 #   make -f Makefile.osm clean      drop extracts and index (keeps the planet file)
@@ -25,7 +26,15 @@ TRAILS := $(OSM_DIR)/trails.osm.pbf
 
 EXTRACTS := $(STATIONS) $(ACCOMMODATION) $(LANDMARKS) $(FOREST) $(TRAILS)
 
-.PHONY: all check download extracts index status clean distclean
+# Hiking overlay map layers, read by tiles/Makefile.overlay. Not part of EXTRACTS:
+# they are drawn from the tiles, never queried through the SQLite index.
+OVERLAY_POINTS := $(OSM_DIR)/overlay-points.osm.pbf
+OVERLAY_POWER := $(OSM_DIR)/overlay-power.osm.pbf
+OVERLAY_WATERWAYS := $(OSM_DIR)/overlay-waterways.osm.pbf
+
+OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS)
+
+.PHONY: all check download extracts overlay index status clean distclean
 
 all: index
 
@@ -78,6 +87,33 @@ $(TRAILS): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		r/route=hiking,foot
 
+overlay: $(OVERLAYS)
+
+# Water, shelters, huts, guideposts, peaks and viewpoints. Shelters, huts and
+# viewpoints are sometimes mapped as areas, hence nodes and ways. Keep the tags
+# (drinking_water, ele, name, ...): the tiles decide what to draw.
+$(OVERLAY_POINTS): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		n/amenity=drinking_water \
+		n/natural=spring \
+		nw/amenity=shelter \
+		nw/tourism=alpine_hut \
+		n/information=guidepost \
+		n/natural=peak \
+		nw/tourism=viewpoint
+
+# Power lines and their towers. Pylons are poles for lower-voltage lines, which
+# hikers do not need, so only `line` and `tower`.
+$(OVERLAY_POWER): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		w/power=line \
+		n/power=tower
+
+# Rivers and streams. Flow direction is the order of the way's nodes.
+$(OVERLAY_WATERWAYS): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		w/waterway=river,stream
+
 index: $(EXTRACTS)
 	cd $(CURDIR) && uv run python -m open_rando osm-index --extracts-dir $(OSM_DIR)
 
@@ -85,7 +121,7 @@ status:
 	cd $(CURDIR) && uv run python -m open_rando osm-index --status
 
 clean:
-	rm -f $(EXTRACTS) $(INDEX)
+	rm -f $(EXTRACTS) $(OVERLAYS) $(INDEX)
 
 distclean: clean
 	rm -f $(PBF)

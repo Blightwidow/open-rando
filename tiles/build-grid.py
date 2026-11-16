@@ -27,7 +27,6 @@ import hashlib
 import json
 import os
 import pathlib
-import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -40,10 +39,7 @@ DATA_DIR = pathlib.Path(
     os.environ.get("OPEN_RANDO_DATA_DIR")
     or pathlib.Path.home() / ".local/share/open-rando/data"
 )
-PAD_DEG = 0.02  # ~2 km; MapLibre has edge tiles when viewport straddles squares
 DEFAULT_R2_PUBLIC_URL = "https://pub-8869314668be498091e185b1a6fe798d.r2.dev"
-DEFAULT_COLS = 12
-DEFAULT_ROWS = 8
 
 
 @dataclass(frozen=True)
@@ -89,28 +85,6 @@ def layer_specs() -> list[LayerSpec]:
     ]
 
 
-def read_makefile_var(name: str) -> str:
-    makefile = SCRIPT_DIR / "Makefile.protomaps"
-    match = re.search(
-        rf"^{re.escape(name)}\s*:=\s*(.+?)\s*$",
-        makefile.read_text(),
-        re.MULTILINE,
-    )
-    if not match:
-        raise RuntimeError(f"cannot find {name} in {makefile}")
-    return match.group(1)
-
-
-def read_grid_bbox() -> tuple[float, float, float, float]:
-    """Parse BBOX from Makefile.protomaps so grid bbox tracks the master."""
-    raw = read_makefile_var("BBOX")
-    parts = [float(x) for x in raw.split(",")]
-    if len(parts) != 4:
-        raise RuntimeError(f"unexpected BBOX in Makefile.protomaps: {raw!r}")
-    lon_min, lat_min, lon_max, lat_max = parts
-    return lon_min, lat_min, lon_max, lat_max
-
-
 def square_bbox(
     col: int,
     row: int,
@@ -131,7 +105,13 @@ def square_bbox(
 
 def pad(bbox: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
     lon_min, lat_min, lon_max, lat_max = bbox
-    return (lon_min - PAD_DEG, lat_min - PAD_DEG, lon_max + PAD_DEG, lat_max + PAD_DEG)
+    pad_degrees = tile_manifests.PAD_DEG
+    return (
+        lon_min - pad_degrees,
+        lat_min - pad_degrees,
+        lon_max + pad_degrees,
+        lat_max + pad_degrees,
+    )
 
 
 def zoom_state_hash(
@@ -321,7 +301,7 @@ def build_manifest(
             "bbox": list(grid_bbox),
             "cols": cols,
             "rows": rows,
-            "pad_deg": PAD_DEG,
+            "pad_deg": tile_manifests.PAD_DEG,
         },
         "layers": {
             layer.name: {
@@ -374,8 +354,8 @@ def main() -> int:
         default=SCRIPT_DIR / "build-grid",
         help="Output directory for base/ + per-square PMTiles (default: %(default)s)",
     )
-    parser.add_argument("--cols", type=int, default=DEFAULT_COLS)
-    parser.add_argument("--rows", type=int, default=DEFAULT_ROWS)
+    parser.add_argument("--cols", type=int, default=tile_manifests.DEFAULT_COLS)
+    parser.add_argument("--rows", type=int, default=tile_manifests.DEFAULT_ROWS)
     parser.add_argument(
         "--square",
         help="Build only this square (format: col_row). Also skips base rebuild.",
@@ -416,8 +396,8 @@ def main() -> int:
         )
         return 1
 
-    grid_bbox = read_grid_bbox()
-    snapshot = read_makefile_var("SNAPSHOT")
+    grid_bbox = tile_manifests.read_grid_bbox()
+    snapshot = tile_manifests.read_makefile_var("SNAPSHOT")
     args.out.mkdir(parents=True, exist_ok=True)
 
     coords = [(c, r) for c in range(args.cols) for r in range(args.rows)]

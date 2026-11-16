@@ -25,6 +25,7 @@ tiles/build/
 tiles/pmtiles
 tiles/build-hillshade/
 tiles/build-grid/
+tiles/build-overlay/
 *.pmtiles
 
 # IDE

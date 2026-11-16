@@ -16,43 +16,25 @@ import argparse
 import json
 import os
 import pathlib
-import re
 import sys
 
 import tile_manifests
 
-SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 DATA_DIR = pathlib.Path(
     os.environ.get("OPEN_RANDO_DATA_DIR")
     or pathlib.Path.home() / ".local/share/open-rando/data"
 )
-PAD_DEG = 0.02
-DEFAULT_COLS = 12
-DEFAULT_ROWS = 8
-
-
-def read_makefile_var(name: str) -> str:
-    makefile = SCRIPT_DIR / "Makefile.protomaps"
-    match = re.search(
-        rf"^{re.escape(name)}\s*:=\s*(.+?)\s*$",
-        makefile.read_text(),
-        re.MULTILINE,
-    )
-    if not match:
-        raise RuntimeError(f"cannot find {name} in {makefile}")
-    return match.group(1)
-
-
-def read_grid_bbox() -> tuple[float, float, float, float]:
-    raw = read_makefile_var("BBOX")
-    parts = [float(x) for x in raw.split(",")]
-    lon_min, lat_min, lon_max, lat_max = parts
-    return lon_min, lat_min, lon_max, lat_max
 
 
 def pad_bbox(bbox: list[float]) -> tuple[float, float, float, float]:
     lon_min, lat_min, lon_max, lat_max = bbox
-    return (lon_min - PAD_DEG, lat_min - PAD_DEG, lon_max + PAD_DEG, lat_max + PAD_DEG)
+    pad_degrees = tile_manifests.PAD_DEG
+    return (
+        lon_min - pad_degrees,
+        lat_min - pad_degrees,
+        lon_max + pad_degrees,
+        lat_max + pad_degrees,
+    )
 
 
 def route_squares(
@@ -122,8 +104,8 @@ def main() -> int:
         type=pathlib.Path,
         default=DATA_DIR / "catalog.json",
     )
-    parser.add_argument("--cols", type=int, default=DEFAULT_COLS)
-    parser.add_argument("--rows", type=int, default=DEFAULT_ROWS)
+    parser.add_argument("--cols", type=int, default=tile_manifests.DEFAULT_COLS)
+    parser.add_argument("--rows", type=int, default=tile_manifests.DEFAULT_ROWS)
     parser.add_argument(
         "--out",
         type=pathlib.Path,
@@ -152,8 +134,8 @@ def main() -> int:
             print(f"ERROR: route {args.route!r} not in catalog", file=sys.stderr)
             return 1
 
-    grid_bbox = read_grid_bbox()
-    snapshot = read_makefile_var("SNAPSHOT")
+    grid_bbox = tile_manifests.read_grid_bbox()
+    snapshot = tile_manifests.read_makefile_var("SNAPSHOT")
 
     routes_dir = args.out / "routes"
     routes_dir.mkdir(parents=True, exist_ok=True)

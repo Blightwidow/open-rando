@@ -350,6 +350,37 @@ Paths are contract: `grid/{col}_{row}/{layer}.pmtiles`. Bump `grid.json` `versio
 
 ---
 
+## Stage G: Hiking overlay
+
+Water points, springs, shelters, huts, guideposts, peaks, viewpoints, power lines and rivers, drawn on the route detail map. Plain layers: no popups, no clicks. Streams are left out (157 MB with them against 61 MB without; `WITH_STREAMS=1` opts in).
+
+### Files
+
+- `pipeline/Makefile.osm` target `overlay` — `osmium tags-filter` extracts from the France PBF (`overlay-points`, `overlay-power`, `overlay-waterways`)
+- `tiles/overlay_features.py` — PEP 723 script; sorts `osmium export` GeoJSONSeq into one file per layer, keeps only `name` and `ele`, turns areas into centroids, drops bus shelters and non-drinkable water, writes `tippecanoe.minzoom` on every feature
+- `tiles/Makefile.overlay` — extracts → layer files → tippecanoe → `overlay.pmtiles`
+- `website/src/lib/overlay.ts` — layers, groups, palette (light + dark), toggles
+
+### Usage
+
+```bash
+cd pipeline && make -f Makefile.osm overlay      # filter the extracts
+cd ../tiles
+make -f Makefile.overlay                          # build overlay.pmtiles (z8-14)
+make -f Makefile.overlay stats                    # features and size per layer
+make -f Makefile.overlay upload                   # upload to R2 (wrangler)
+```
+
+### Notes
+
+- tippecanoe ignores a `minzoom` set per layer in `-L`; the first zoom of each layer lives in `MIN_ZOOMS` (`overlay_features.py`) and is written per feature.
+- First zooms: rivers 8, peaks and huts 9, power lines 10, water, springs, shelters, viewpoints 11, guideposts 12, towers 13.
+- `--drop-densest-as-needed` thins crowded tiles instead of failing on the tile size limit.
+- Upload uses `wrangler r2 object put --remote` (login once with `npx wrangler@4 login`), because the file is under wrangler's 300 MiB limit. No rclone remote needed.
+- Not on the explore map: the overlay is added by `route-map.ts` only.
+
+---
+
 ## V2 Deferred
 
 ### 3D terrain

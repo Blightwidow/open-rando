@@ -32,3 +32,10 @@ export function formatTime(minutes: number): string {
   if (hours > 0) return `${hours}h`;
   return `${mins}min`;
 }
+
+/** Trail breaks that fall strictly inside a section, as distances from the section start. */
+export function sliceSegmentBoundaries(boundariesKm: number[] | undefined, startKm: number, endKm: number): number[] {
+  return (boundariesKm ?? [])
+    .filter((boundaryKm) => boundaryKm > startKm && boundaryKm < endKm)
+    .map((boundaryKm) => boundaryKm - startKm);
+}

@@ -1,0 +1,115 @@
+# Hiking overlay tiles: OSM extracts -> osmium export -> overlay_features.py -> tippecanoe
+#
+# Builds overlay.pmtiles: drinking water, springs, shelters, huts, guideposts,
+# peaks, viewpoints, power lines and towers, rivers (and streams, opt-in). They
+# are drawn on the map, not clicked: no popups, no POI grid.
+#
+# Prerequisites: osmium-tool, tippecanoe, uv (upload also needs npx and `wrangler login`)
+# Input: overlay-*.osm.pbf in OSM_DIR (`make -f Makefile.osm overlay` in pipeline/)
+# Output: overlay.pmtiles in OUTPUT_DIR
+#
+# Usage:
+#   make -f Makefile.overlay install               # verify dependencies
+#   make -f Makefile.overlay                       # build overlay.pmtiles (no streams)
+#   make -f Makefile.overlay WITH_STREAMS=1        # also draw streams (~700k ways, large)
+#   make -f Makefile.overlay stats                 # feature count and size per layer
+#   make -f Makefile.overlay upload                # upload to R2
+#   make -f Makefile.overlay clean                 # remove intermediates
+
+OSM_DIR ?= $(HOME)/.cache/open-rando/osm
+OUTPUT_DIR ?= $(HOME)/.local/share/open-rando/data
+BUILD_DIR := build-overlay
+WITH_STREAMS ?= 0
+
+POINTS_PBF := $(OSM_DIR)/overlay-points.osm.pbf
+POWER_PBF := $(OSM_DIR)/overlay-power.osm.pbf
+WATERWAYS_PBF := $(OSM_DIR)/overlay-waterways.osm.pbf
+
+POINTS_LAYERS := hut,shelter,water,spring,guidepost,peak,viewpoint
+POWER_LAYERS := power_line,power_tower
+WATERWAYS_LAYERS := river
+ifeq ($(WITH_STREAMS),1)
+WATERWAYS_LAYERS := river,stream
+endif
+
+PMTILES := $(OUTPUT_DIR)/overlay.pmtiles
+SPLIT := uv run --script overlay_features.py
+EXPORT := osmium export -f geojsonseq --geometry-types=point,linestring,polygon
+
+R2_BUCKET := open-rando-tiles
+
+# Each layer's first zoom is set per feature in overlay_features.py (MIN_ZOOMS).
+MAXZOOM := 14
+
+LAYER_ARGS := \
+	-L'{"file": "$(BUILD_DIR)/river.geojsonl", "layer": "river"}' \
+	-L'{"file": "$(BUILD_DIR)/peak.geojsonl", "layer": "peak"}' \
+	-L'{"file": "$(BUILD_DIR)/hut.geojsonl", "layer": "hut"}' \
+	-L'{"file": "$(BUILD_DIR)/power_line.geojsonl", "layer": "power_line"}' \
+	-L'{"file": "$(BUILD_DIR)/water.geojsonl", "layer": "water"}' \
+	-L'{"file": "$(BUILD_DIR)/spring.geojsonl", "layer": "spring"}' \
+	-L'{"file": "$(BUILD_DIR)/shelter.geojsonl", "layer": "shelter"}' \
+	-L'{"file": "$(BUILD_DIR)/viewpoint.geojsonl", "layer": "viewpoint"}' \
+	-L'{"file": "$(BUILD_DIR)/guidepost.geojsonl", "layer": "guidepost"}' \
+	-L'{"file": "$(BUILD_DIR)/power_tower.geojsonl", "layer": "power_tower"}'
+
+ifeq ($(WITH_STREAMS),1)
+LAYER_ARGS += -L'{"file": "$(BUILD_DIR)/stream.geojsonl", "layer": "stream"}'
+endif
+
+STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp
+
+.PHONY: all install stats upload clean
+
+all: $(PMTILES)
+
+$(BUILD_DIR):
+	mkdir -p $@
+
+# One pass per source extract; each owns its layer files.
+$(BUILD_DIR)/points.stamp: $(POINTS_PBF) overlay_features.py | $(BUILD_DIR)
+	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(POINTS_LAYERS)
+	touch $@
+
+$(BUILD_DIR)/power.stamp: $(POWER_PBF) overlay_features.py | $(BUILD_DIR)
+	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(POWER_LAYERS)
+	touch $@
+
+$(BUILD_DIR)/waterways.stamp: $(WATERWAYS_PBF) overlay_features.py | $(BUILD_DIR)
+	$(EXPORT) --index-type=sparse_mem_array $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(WATERWAYS_LAYERS)
+	touch $@
+
+# --drop-densest-as-needed thins crowded tiles instead of failing on the size limit.
+$(PMTILES): $(STAMPS)
+	mkdir -p $(OUTPUT_DIR)
+	tippecanoe \
+		-o $@ \
+		--force \
+		--name "overlay" \
+		--attribution "OpenStreetMap contributors" \
+		--maximum-zoom=$(MAXZOOM) \
+		--drop-densest-as-needed \
+		$(LAYER_ARGS)
+
+stats: $(STAMPS)
+	@wc -l $(BUILD_DIR)/*.geojsonl
+	@ls -lh $(BUILD_DIR)/*.geojsonl | awk '{print $$5, $$9}'
+	@test ! -f $(PMTILES) || ls -lh $(PMTILES)
+
+# wrangler, not rclone: the file is far below wrangler's 300 MiB object limit.
+# Run `npx wrangler@4 login` once. --remote writes to the real bucket, not a local simulation.
+upload: $(PMTILES)
+	npx --yes wrangler@4 r2 object put $(R2_BUCKET)/overlay.pmtiles \
+		--file $(PMTILES) --remote \
+		--content-type application/octet-stream \
+		--cache-control "public, max-age=604800, immutable"
+	@echo "Uploaded overlay.pmtiles to R2 bucket $(R2_BUCKET)"
+
+install:
+	@command -v osmium >/dev/null 2>&1 || { echo "ERROR: osmium not found. brew install osmium-tool"; exit 1; }
+	@command -v tippecanoe >/dev/null 2>&1 || { echo "ERROR: tippecanoe not found. brew install tippecanoe"; exit 1; }
+	@command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found. brew install uv"; exit 1; }
+	@echo "All dependencies found."
+
+clean:
+	rm -rf $(BUILD_DIR)

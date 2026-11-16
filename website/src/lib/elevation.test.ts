@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { getSlopeColor, computeSlopePercent, formatTime, DEFAULT_SLOPE_THRESHOLDS } from './elevation';
+import { getSlopeColor, computeSlopePercent, formatTime, sliceSegmentBoundaries, DEFAULT_SLOPE_THRESHOLDS } from './elevation';
 
 describe('getSlopeColor', () => {
   test('flat slope returns green', () => {
@@ -87,5 +87,23 @@ describe('formatTime', () => {
 
   test('single digit minutes padded', () => {
     expect(formatTime(121)).toBe('2h01');
+  });
+});
+
+describe('sliceSegmentBoundaries', () => {
+  test('keeps breaks inside the section, relative to its start', () => {
+    expect(sliceSegmentBoundaries([5, 20, 40], 10, 30)).toEqual([10]);
+  });
+
+  test('drops breaks outside the section', () => {
+    expect(sliceSegmentBoundaries([5, 40], 10, 30)).toEqual([]);
+  });
+
+  test('drops a break sitting exactly on a section edge', () => {
+    expect(sliceSegmentBoundaries([10, 30], 10, 30)).toEqual([]);
+  });
+
+  test('treats a missing list as no breaks', () => {
+    expect(sliceSegmentBoundaries(undefined, 0, 10)).toEqual([]);
   });
 });
