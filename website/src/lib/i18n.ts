@@ -36,8 +36,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.privacy.description': 'TrainRando est un site statique. Aucune donnée utilisateur n\'est collectée, stockée ou partagée. Pas de cookies, pas d\'analytics, pas de compte.',
 
     // Landing - Mobile
-    'landing.mobile.title': 'Bientôt : application mobile',
-    'landing.mobile.description': 'Une application compagnon pour consulter les itinéraires hors-ligne, avec navigation GPS et alertes météo.',
+    'landing.mobile.title': 'Application mobile',
+    'landing.mobile.description': "L'application compagnon pour randonner sans réseau : enregistrez un itinéraire ou une section (depuis le QR code du site), importez un fichier GPX et suivez votre position GPS sur la carte.",
+    'landing.mobile.cta': 'Télécharger pour Android',
+    'landing.mobile.note': 'APK à installer à la main, F-Droid et AltStore sont prévus. Ni compte, ni analytics.',
 
     // Footer
     'footer.about': 'À propos',
@@ -195,8 +197,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.privacy.description': 'TrainRando is a static site. No user data is collected, stored or shared. No cookies, no analytics, no accounts.',
 
     // Landing - Mobile
-    'landing.mobile.title': 'Coming soon: mobile app',
-    'landing.mobile.description': 'A companion app to browse routes offline, with GPS navigation and weather alerts.',
+    'landing.mobile.title': 'Mobile app',
+    'landing.mobile.description': "The companion app for hiking without a signal: save a route or a section (from the website's QR code), import a GPX file and follow your GPS position on the map.",
+    'landing.mobile.cta': 'Download for Android',
+    'landing.mobile.note': 'APK to install by hand; F-Droid and AltStore are planned. No account, no analytics.',
 
     // Footer
     'footer.about': 'About',

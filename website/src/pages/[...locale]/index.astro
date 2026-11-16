@@ -4,6 +4,8 @@ import { getLocaleStaticPaths, localePath, t } from '../../lib/i18n';
 
 export const getStaticPaths = getLocaleStaticPaths;
 
+const MOBILE_APP_RELEASES_URL = 'https://github.com/Blightwidow/open-rando-mobile/releases/latest';
+
 const { locale } = Astro.props;
 ---
 
@@ -135,11 +137,11 @@ const { locale } = Astro.props;
     </div>
   </section>
 
-  <!-- Mobile app teaser -->
+  <!-- Mobile app -->
   <section class="max-w-4xl mx-auto px-4 py-14 sm:py-16">
-    <div class="border-2 border-dashed border-stone-300 dark:border-neutral-600 rounded-xl p-8 sm:p-10 text-center">
-      <div class="w-14 h-14 rounded-full bg-stone-100 dark:bg-neutral-800 flex items-center justify-center mx-auto mb-6">
-        <svg class="w-7 h-7 text-stone-500 dark:text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <div class="bg-white dark:bg-neutral-800 rounded-xl border border-stone-200 dark:border-neutral-700 p-8 sm:p-10 text-center">
+      <div class="w-14 h-14 rounded-full bg-forest-100 dark:bg-forest-900 flex items-center justify-center mx-auto mb-6">
+        <svg class="w-7 h-7 text-forest-700 dark:text-forest-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <rect x="7" y="2" width="10" height="20" rx="2" />
           <path d="M12 18h.01" />
         </svg>
@@ -148,6 +150,15 @@ const { locale } = Astro.props;
       <p class="text-stone-600 dark:text-stone-400 max-w-lg mx-auto leading-relaxed">
         {t(locale, 'landing.mobile.description')}
       </p>
+      <a
+        href={MOBILE_APP_RELEASES_URL}
+        rel="noopener"
+        class="inline-flex items-center gap-2 mt-6 px-6 py-2.5 bg-forest-700 hover:bg-forest-800 text-white font-semibold rounded-lg transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3" /></svg>
+        {t(locale, 'landing.mobile.cta')}
+      </a>
+      <p class="mt-3 text-xs text-stone-500 dark:text-stone-400">{t(locale, 'landing.mobile.note')}</p>
     </div>
   </section>
 

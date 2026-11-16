@@ -169,3 +169,15 @@ describe('detail page copy', () => {
     }
   });
 });
+
+describe('landing mobile app copy', () => {
+  test('every locale has a download button label', () => {
+    for (const locale of ['fr', 'en'] as const) {
+      expect(t(locale, 'landing.mobile.cta')).not.toBe('landing.mobile.cta');
+    }
+  });
+
+  test('English no longer announces the app as coming soon', () => {
+    expect(t('en', 'landing.mobile.title')).toBe('Mobile app');
+  });
+});
