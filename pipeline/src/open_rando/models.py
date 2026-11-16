@@ -154,8 +154,13 @@ class PointOfInterest:
     name: str
     lat: float
     lon: float
-    poi_type: str  # "hotel", "camping", "train_station", "bus_stop"
+    poi_type: str  # "hotel", "camping", "shop", "eatery", "train_station", "bus_stop"
     url: str | None = None
+    # Shops and eateries: the OSM kind ("bakery", "cafe", ...), the raw `opening_hours`
+    # string and a phone number, each only when mapped.
+    category: str | None = None
+    opening_hours: str | None = None
+    phone: str | None = None
     transit_lines: list[str] = field(default_factory=list)
     rail_service: RailService | None = None
     # Stable OSM identity, "<type>/<id>" (for example "node/123").
@@ -170,6 +175,9 @@ class PointOfInterest:
             "lat": self.lat,
             "lon": self.lon,
             "url": self.url,
+            "category": self.category,
+            "opening_hours": self.opening_hours,
+            "phone": self.phone,
             "transit_lines": self.transit_lines,
             "rail_service": self.rail_service.to_dict() if self.rail_service else None,
         }
@@ -183,6 +191,9 @@ class PointOfInterest:
             lon=float(data["lon"]),
             poi_type=str(data["kind"]),
             url=data.get("url"),
+            category=data.get("category"),
+            opening_hours=data.get("opening_hours"),
+            phone=data.get("phone"),
             transit_lines=list(data.get("transit_lines", [])),
             rail_service=RailService.from_dict(raw_service) if raw_service else None,
             osm_id=str(data["id"]),

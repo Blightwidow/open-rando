@@ -62,6 +62,15 @@ class TestLinkPoisToTrail:
     def test_camping_beyond_three_kilometres_is_not_linked(self):
         assert _link([_poi("camping", "node/4", 45.04, 5.1)]) == {}
 
+    def test_shop_within_a_kilometre_and_a_half_is_linked(self):
+        assert "node/6" in _link([_poi("shop", "node/6", 45.01, 5.1)])
+
+    def test_eatery_beyond_a_kilometre_and_a_half_is_not_linked(self):
+        assert _link([_poi("eatery", "node/7", 45.02, 5.1)]) == {}
+
+    def test_shop_link_has_no_position_along_the_trail(self):
+        assert _link([_poi("shop", "node/8", 45.01, 5.1)])["node/8"].distance_km is None
+
     def test_poi_far_from_trail_is_ignored(self):
         assert _link([_poi("hotel", "node/5", 48.0, 2.0)]) == {}
 
@@ -107,6 +116,8 @@ class TestSummarizeLinks:
             "bus_stop": 0,
             "hotel": 1,
             "camping": 0,
+            "shop": 0,
+            "eatery": 0,
             "train_station_with_rail_service": 1,
         }
 
@@ -123,6 +134,8 @@ class TestLinkFiles:
             "bus_stop": 0,
             "hotel": 1,
             "camping": 0,
+            "shop": 0,
+            "eatery": 0,
             "train_station_with_rail_service": 0,
         }
 

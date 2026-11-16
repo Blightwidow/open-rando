@@ -18,11 +18,13 @@ from open_rando.fetchers.osm_extract import (
     LAYER_ACCOMMODATION,
     LAYER_FOREST,
     LAYER_LANDMARKS,
+    LAYER_RESUPPLY,
     LAYER_STATIONS,
     LAYER_TRAILS,
     OsmExtractIndex,
     is_accommodation_tagged,
     is_forest_tagged,
+    is_resupply_tagged,
     is_station_tagged,
     is_trail_relation_tagged,
     landmark_kind_for_tags,
@@ -35,6 +37,7 @@ BATCH_SIZE = 20_000
 EXTRACT_FILENAMES = {
     LAYER_STATIONS: "stations.osm.pbf",
     LAYER_ACCOMMODATION: "accommodation.osm.pbf",
+    LAYER_RESUPPLY: "resupply.osm.pbf",
     LAYER_LANDMARKS: "landmarks.osm.pbf",
     LAYER_FOREST: "forest.osm.pbf",
     LAYER_TRAILS: "trails.osm.pbf",
@@ -151,6 +154,8 @@ def build_layer(index: OsmExtractIndex, layer: str, extract_path: Path) -> int:
         return _build_point_layer(index, layer, extract_path, is_station_tagged)
     if layer == LAYER_ACCOMMODATION:
         return _build_point_layer(index, layer, extract_path, is_accommodation_tagged)
+    if layer == LAYER_RESUPPLY:
+        return _build_point_layer(index, layer, extract_path, is_resupply_tagged)
     if layer == LAYER_LANDMARKS:
         return _build_point_layer(
             index,

@@ -7,7 +7,7 @@ from open_rando.commands.pois import build_square_pois, keep_in_square, parse_sq
 from open_rando.exporters.pois import export_poi_index, export_poi_square, read_poi_index_counts
 from open_rando.fetchers.gtfs import FeedData, GtfsStop
 from open_rando.fetchers.osm_extract import OsmExtractIndex
-from open_rando.fetchers.pois import _parse_accommodation_elements
+from open_rando.fetchers.pois import _parse_accommodation_elements, _parse_resupply_elements
 from open_rando.fetchers.stations import _parse_station_elements
 from open_rando.models import PointOfInterest, ServiceWindow, Station
 from open_rando.poi_grid import PoiGrid
@@ -73,13 +73,13 @@ class TestStableIds:
 
 class TestBuildSquarePois:
     def test_train_station_keeps_osm_id_and_gets_sncf_url(self):
-        pois = build_square_pois([_train_station()], [], {"ABC"}, [], _no_feeds)
+        pois = build_square_pois([_train_station()], [], [], {"ABC"}, [], _no_feeds)
 
         assert [(poi.osm_id, poi.poi_type) for poi in pois] == [("node/1", "train_station")]
         assert pois[0].url is not None and pois[0].url.endswith("/gare-de-test/horaires")
 
     def test_train_station_outside_sncf_dataset_is_dropped(self):
-        pois = build_square_pois([_train_station()], [], {"OTHER"}, [], _no_feeds)
+        pois = build_square_pois([_train_station()], [], [], {"OTHER"}, [], _no_feeds)
 
         assert pois == []
 
@@ -87,7 +87,7 @@ class TestBuildSquarePois:
         stop = _bus_stop()
         stop.transit_lines = ["12"]
 
-        pois = build_square_pois([stop], [], set(), [], _no_feeds)
+        pois = build_square_pois([stop], [], [], set(), [], _no_feeds)
 
         assert [(poi.osm_id, poi.transit_lines) for poi in pois] == [("node/2", ["12"])]
 
@@ -104,7 +104,7 @@ class TestBuildSquarePois:
                 route_names={"r1": "Ligne A", "r2": "Ligne B"},
             )
 
-        pois = build_square_pois([first, second], [], set(), [near_first, near_second], feeds)
+        pois = build_square_pois([first, second], [], [], set(), [near_first, near_second], feeds)
 
         assert {poi.osm_id: poi.transit_lines for poi in pois} == {
             "node/10": ["Ligne A"],
@@ -118,7 +118,7 @@ class TestBuildSquarePois:
             assert resource_ids == {9}
             return FeedData(connectivity={"g1": {"r1"}}, route_names={"r1": "Ligne 12"})
 
-        pois = build_square_pois([_bus_stop()], [], set(), [gtfs_stop], feeds)
+        pois = build_square_pois([_bus_stop()], [], [], set(), [gtfs_stop], feeds)
 
         assert pois[0].transit_lines == ["Ligne 12"]
 
@@ -131,7 +131,7 @@ class TestBuildSquarePois:
         def feeds(_resource_ids: set[int]) -> FeedData:
             return FeedData(departures={"g2": {"weekday": window}})
 
-        pois = build_square_pois([_train_station()], [], {"ABC"}, [gtfs_stop], feeds)
+        pois = build_square_pois([_train_station()], [], [], {"ABC"}, [gtfs_stop], feeds)
 
         assert pois[0].rail_service is not None
         assert pois[0].rail_service.weekday == window
@@ -139,7 +139,7 @@ class TestBuildSquarePois:
     def test_accommodation_is_passed_through(self):
         hotel = PointOfInterest(name="Hotel", lat=45.0, lon=5.0, poi_type="hotel", osm_id="node/9")
 
-        pois = build_square_pois([], [hotel], set(), [], _no_feeds)
+        pois = build_square_pois([], [hotel], [], set(), [], _no_feeds)
 
         assert [poi.osm_id for poi in pois] == ["node/9"]
 
@@ -237,3 +237,89 @@ class TestExtractCoverageClipping:
         index = self._index(tmp_path, None)
 
         assert index.clip_to_coverage("accommodation", 41.0, -5.5, 42.3, -4.2) is None
+
+
+def _resupply_element(**tags: str) -> dict:
+    return {"elements": [{"type": "node", "id": 5, "lat": 45.0, "lon": 5.0, "tags": tags}]}
+
+
+class TestParseResupply:
+    def test_bakery_becomes_a_shop_with_its_category_and_hours(self):
+        pois = _parse_resupply_elements(
+            _resupply_element(shop="bakery", name="Chez Paul", opening_hours="Mo-Sa 07:00-19:00")
+        )
+
+        assert [(poi.poi_type, poi.category, poi.opening_hours) for poi in pois] == [
+            ("shop", "bakery", "Mo-Sa 07:00-19:00")
+        ]
+
+    def test_cafe_becomes_an_eatery(self):
+        pois = _parse_resupply_elements(_resupply_element(amenity="cafe", name="Le Central"))
+
+        assert [(poi.poi_type, poi.category) for poi in pois] == [("eatery", "cafe")]
+
+    def test_hotel_with_a_restaurant_is_left_to_accommodation(self):
+        data = _resupply_element(amenity="restaurant", tourism="hotel", name="Hotel du Lac")
+
+        assert _parse_resupply_elements(data) == []
+
+    def test_unnamed_place_is_dropped(self):
+        assert _parse_resupply_elements(_resupply_element(shop="bakery")) == []
+
+    def test_other_shop_is_dropped(self):
+        assert _parse_resupply_elements(_resupply_element(shop="clothes", name="Boutique")) == []
+
+    def test_contact_tags_fall_back_to_the_contact_namespace(self):
+        pois = _parse_resupply_elements(
+            _resupply_element(
+                shop="supermarket",
+                name="Marche",
+                **{"contact:website": "www.marche.fr", "contact:phone": "+33 4 00 00 00 00"},
+            )
+        )
+
+        assert (pois[0].url, pois[0].phone) == ("www.marche.fr", "+33 4 00 00 00 00")
+
+    def test_area_uses_its_center(self):
+        data = {
+            "elements": [
+                {
+                    "type": "way",
+                    "id": 9,
+                    "center": {"lat": 44.5, "lon": 4.5},
+                    "tags": {"shop": "convenience", "name": "Spar"},
+                }
+            ]
+        }
+
+        assert [(poi.lat, poi.lon, poi.osm_id) for poi in _parse_resupply_elements(data)] == [
+            (44.5, 4.5, "way/9")
+        ]
+
+    def test_square_pois_include_resupply(self):
+        shop = PointOfInterest(
+            name="Boulangerie",
+            lat=45.0,
+            lon=5.0,
+            poi_type="shop",
+            category="bakery",
+            osm_id="node/5",
+        )
+
+        pois = build_square_pois([], [], [shop], set(), [], _no_feeds)
+
+        assert [poi.osm_id for poi in pois] == ["node/5"]
+
+    def test_grid_record_round_trips_opening_hours(self):
+        shop = PointOfInterest(
+            name="Boulangerie",
+            lat=45.0,
+            lon=5.0,
+            poi_type="shop",
+            category="bakery",
+            opening_hours="Mo-Sa 07:00-19:00",
+            phone="+33 4 00 00 00 00",
+            osm_id="node/5",
+        )
+
+        assert PointOfInterest.from_grid_dict(shop.to_grid_dict()) == shop

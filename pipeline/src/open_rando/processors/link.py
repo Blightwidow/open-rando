@@ -14,7 +14,7 @@ from shapely.ops import nearest_points
 from shapely.prepared import prep
 
 from open_rando.config import MAX_BUS_STOP_DISTANCE_METERS, MAX_STATION_DISTANCE_METERS
-from open_rando.fetchers.pois import POI_ACCOMMODATION_RADIUS_METERS
+from open_rando.fetchers.pois import POI_ACCOMMODATION_RADIUS_METERS, POI_RESUPPLY_RADIUS_METERS
 from open_rando.models import PoiLink, PointOfInterest, Station
 from open_rando.processors.match import (
     MatchedStation,
@@ -46,8 +46,8 @@ def link_pois_to_trail(
 
     Train stations and bus stops go through station matching (nearest point,
     duplicate and never-closest filtering). Train junctions are then refined
-    by walking distance (OSRM) unless refine_junctions is off. Accommodation
-    only needs to lie within its radius.
+    by walking distance (OSRM) unless refine_junctions is off. Accommodation,
+    shops and eateries only need to lie within their radius.
     """
     zone = prep(candidate_zone(trail))
     nearby = [poi for poi in pois if zone.contains(Point(poi.lon, poi.lat))]
@@ -63,7 +63,7 @@ def link_pois_to_trail(
 
     links = [_train_link(matched, trail) for matched in matched_trains]
     links.extend(_bus_link(matched) for matched in matched_buses)
-    links.extend(_accommodation_links(nearby, trail))
+    links.extend(_radius_links(nearby, trail))
     return sorted(links, key=_link_order)
 
 
@@ -106,18 +106,28 @@ def _bus_link(matched: MatchedStation) -> PoiLink:
     )
 
 
-def _accommodation_links(
+# POIs linked by plain distance to the trail rather than by station matching.
+LINK_RADIUS_METERS_BY_KIND = {
+    "hotel": POI_ACCOMMODATION_RADIUS_METERS,
+    "camping": POI_ACCOMMODATION_RADIUS_METERS,
+    "shop": POI_RESUPPLY_RADIUS_METERS,
+    "eatery": POI_RESUPPLY_RADIUS_METERS,
+}
+
+
+def _radius_links(
     pois: list[PointOfInterest],
     trail: LineString | MultiLineString,
 ) -> list[PoiLink]:
     links: list[PoiLink] = []
     for poi in pois:
-        if poi.poi_type not in ("hotel", "camping"):
+        radius_meters = LINK_RADIUS_METERS_BY_KIND.get(poi.poi_type)
+        if radius_meters is None:
             continue
         point = Point(poi.lon, poi.lat)
         nearest_on_trail = nearest_points(trail, point)[0]
         distance_meters = degrees_to_meters(point.distance(nearest_on_trail), poi.lat)
-        if distance_meters <= POI_ACCOMMODATION_RADIUS_METERS:
+        if distance_meters <= radius_meters:
             links.append(
                 PoiLink(
                     poi_id=poi.osm_id,
@@ -144,7 +154,7 @@ def summarize_links(links: list[PoiLink], pois: list[PointOfInterest]) -> dict[s
     served_station_ids = {
         poi.osm_id for poi in pois if poi.poi_type == "train_station" and poi.rail_service
     }
-    counts = {"train_station": 0, "bus_stop": 0, "hotel": 0, "camping": 0}
+    counts = {"train_station": 0, "bus_stop": 0, "hotel": 0, "camping": 0, "shop": 0, "eatery": 0}
     for link in links:
         counts[link.kind] += 1
     counts["train_station_with_rail_service"] = sum(

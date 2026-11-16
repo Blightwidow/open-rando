@@ -1,4 +1,11 @@
 import type maplibregl from 'maplibre-gl';
+import {
+  overlayIconDataUrl,
+  overlayIconImageId,
+  registerOverlayImages,
+  type OverlayIconColors,
+  type OverlayIconName,
+} from './overlay-icons';
 
 /**
  * Hiking overlay: water, shelters, peaks, power lines and rivers read from `overlay.pmtiles`
@@ -50,8 +57,10 @@ export interface OverlayGroup {
   key: OverlayGroupKey;
   /** Translation key of the toggle and legend label. */
   labelKey: string;
-  /** Legend swatch: a dot for point features, a stroke for lines, a cross for churches. */
-  swatch: 'dot' | 'line' | 'cross';
+  /** Legend swatch: a stroke for lines, an icon for point features, a dot for the rest. */
+  swatch: 'dot' | 'line' | 'icon';
+  /** The icon the legend shows when `swatch` is `icon`. */
+  icon?: OverlayIconName;
   color: string;
   /** Guideposts and power lines are dense, so they start hidden. */
   defaultVisible: boolean;
@@ -185,76 +194,60 @@ function label(
   };
 }
 
-export const CHURCH_ICON_ID = 'overlay-church-cross';
-export const CEMETERY_ICON_ID = 'overlay-cemetery-cross';
+/** Zoom range an icon grows over: the first size at z9, the second at z15 (1 is 24 px). */
+type IconSize = [number, number];
 
-/** Symbol layer drawing one of the icons registered by `registerOverlayImages`. */
-function icon(id: string, sourceLayer: string, iconId: string, size: [number, number]): maplibregl.LayerSpecification {
+interface IconOptions {
+  /** Draw only features that carry a name. */
+  named?: boolean;
+  /** Rare features overlap freely; dense ones thin out where they would collide. */
+  allowOverlap?: boolean;
+}
+
+/** Symbol layer drawing an icon registered by `registerOverlayImages`. */
+function icon(
+  id: string,
+  sourceLayer: string,
+  name: OverlayIconName,
+  size: IconSize,
+  options: IconOptions = {},
+): maplibregl.LayerSpecification {
   return {
     id,
     type: 'symbol',
     source: OVERLAY_SOURCE_ID,
     'source-layer': sourceLayer,
+    ...(options.named ? { filter: ['has', 'name'] as maplibregl.FilterSpecification } : {}),
     layout: {
-      'icon-image': iconId,
-      'icon-size': ['interpolate', ['linear'], ['zoom'], 12, size[0], 16, size[1]],
-      'icon-allow-overlap': true,
+      'icon-image': overlayIconImageId(name),
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 9, size[0], 15, size[1]],
+      'icon-allow-overlap': options.allowOverlap ?? false,
     },
   };
 }
 
-const ICON_PIXELS = 48;
-
-/**
- * Cross for a church and cross in a square for a cemetery, in the manner of the IGN Scan 25 map.
- * Drawn on a canvas (a halo under a solid stroke keeps them readable on any ground) because the
- * Protomaps sprite has no such icons. Works with `setStyle`, which drops images: call it each time.
- */
-export function registerOverlayImages(map: maplibregl.Map, isDark: boolean): void {
-  const palette = isDark ? DARK : LIGHT;
-  const images: Array<[string, (context: CanvasRenderingContext2D, color: string, halo: string) => void, string]> = [
-    [CHURCH_ICON_ID, drawChurchCross, palette.church],
-    [CEMETERY_ICON_ID, drawCemeteryCross, palette.cemetery],
-  ];
-  for (const [iconId, draw, color] of images) {
-    const canvas = document.createElement('canvas');
-    canvas.width = ICON_PIXELS;
-    canvas.height = ICON_PIXELS;
-    const context = canvas.getContext('2d');
-    if (!context) continue;
-    draw(context, color, palette.halo);
-    if (map.hasImage(iconId)) map.removeImage(iconId);
-    map.addImage(iconId, context.getImageData(0, 0, ICON_PIXELS, ICON_PIXELS), { pixelRatio: 2 });
-  }
+function iconColors(palette: Palette): OverlayIconColors {
+  return {
+    peak: palette.peak,
+    pass: palette.peak,
+    hut: palette.shelter,
+    shelter: palette.shelter,
+    water: palette.water,
+    spring: palette.water,
+    viewpoint: palette.viewpoint,
+    waterfall: palette.waterfall,
+    cave: palette.cave,
+    ford: palette.water,
+    toilets: palette.toilets,
+    church: palette.church,
+    cemetery: palette.cemetery,
+    guidepost: palette.guidepost,
+  };
 }
 
-function fillCross(context: CanvasRenderingContext2D, centerX: number, top: number, height: number, thickness: number, grow: number): void {
-  const armY = top + height * 0.3;
-  const armWidth = height * 0.62;
-  context.fillRect(centerX - thickness / 2 - grow, top - grow, thickness + 2 * grow, height + 2 * grow);
-  context.fillRect(centerX - armWidth / 2 - grow, armY - thickness / 2 - grow, armWidth + 2 * grow, thickness + 2 * grow);
-}
-
-function drawChurchCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
-  context.fillStyle = halo;
-  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 2.5);
-  context.fillStyle = color;
-  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 0);
-}
-
-function drawCemeteryCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
-  const inset = 7;
-  const side = ICON_PIXELS - 2 * inset;
-  context.lineWidth = 6;
-  context.strokeStyle = halo;
-  context.strokeRect(inset, inset, side, side);
-  context.lineWidth = 3;
-  context.strokeStyle = color;
-  context.strokeRect(inset, inset, side, side);
-  context.fillStyle = halo;
-  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 1.5);
-  context.fillStyle = color;
-  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 0);
+/** Legend swatch for an icon group: the icon on a white halo, readable on a light or a dark panel. */
+export function legendIconUrl(name: OverlayIconName): string {
+  return overlayIconDataUrl(name, iconColors(LIGHT)[name], LIGHT.halo);
 }
 
 export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
@@ -310,56 +303,61 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
     {
       key: 'water',
       labelKey: 'overlay.water',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'water',
       color: palette.water,
       defaultVisible: true,
       layers: [
-        dot('overlay-spring', 'spring', palette.water, outline, [2.5, 4.5], { hollow: true }),
-        dot('overlay-water', 'water', palette.water, outline, [3, 5.5]),
+        icon('overlay-spring', 'spring', 'spring', [0.4, 0.7], { allowOverlap: true }),
+        icon('overlay-water', 'water', 'water', [0.45, 0.8], { allowOverlap: true }),
       ],
     },
     {
       key: 'shelter',
       labelKey: 'overlay.shelter',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'hut',
       color: palette.shelter,
       defaultVisible: true,
       layers: [
-        dot('overlay-shelter', 'shelter', palette.shelter, outline, [3, 5]),
-        dot('overlay-hut', 'hut', palette.shelter, outline, [4.5, 7.5]),
+        icon('overlay-hut', 'hut', 'hut', [0.55, 0.95], { allowOverlap: true }),
+        icon('overlay-shelter', 'shelter', 'shelter', [0.45, 0.8], { allowOverlap: true }),
         label('overlay-hut-label', 'hut', ['get', 'name'], palette, 12),
       ],
     },
     {
       key: 'peak',
       labelKey: 'overlay.peak',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'peak',
       color: palette.peak,
       defaultVisible: true,
       layers: [
-        dot('overlay-peak', 'peak', palette.peak, outline, [2.5, 5], { named: true }),
+        icon('overlay-peak', 'peak', 'peak', [0.4, 0.8], { named: true }),
         label('overlay-peak-label', 'peak', ELEVATION_LABEL, palette, 11),
-        dot('overlay-pass', 'pass', palette.peak, outline, [2.5, 5], { hollow: true }),
+        icon('overlay-pass', 'pass', 'pass', [0.4, 0.75]),
         label('overlay-pass-label', 'pass', ELEVATION_LABEL, palette, 12),
       ],
     },
     {
       key: 'viewpoint',
       labelKey: 'overlay.viewpoint',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'viewpoint',
       color: palette.viewpoint,
       defaultVisible: true,
-      layers: [dot('overlay-viewpoint', 'viewpoint', palette.viewpoint, outline, [3, 5.5])],
+      layers: [icon('overlay-viewpoint', 'viewpoint', 'viewpoint', [0.5, 0.85], { allowOverlap: true })],
     },
     {
       key: 'nature',
       labelKey: 'overlay.nature',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'waterfall',
       color: palette.waterfall,
       defaultVisible: true,
       layers: [
-        dot('overlay-waterfall', 'waterfall', palette.waterfall, outline, [3, 5.5]),
-        dot('overlay-cave', 'cave', palette.cave, outline, [3, 5.5]),
+        icon('overlay-waterfall', 'waterfall', 'waterfall', [0.45, 0.8], { allowOverlap: true }),
+        icon('overlay-cave', 'cave', 'cave', [0.45, 0.8], { allowOverlap: true }),
         label('overlay-waterfall-label', 'waterfall', ['get', 'name'], palette, 13),
         label('overlay-cave-label', 'cave', ['get', 'name'], palette, 13),
       ],
@@ -394,28 +392,30 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
             'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1.4, 17, 5.5],
           },
         },
-        dot('overlay-ford', 'ford', palette.water, outline, [3, 5.5], { hollow: true }),
+        icon('overlay-ford', 'ford', 'ford', [0.4, 0.7]),
       ],
     },
     {
       key: 'landmark',
       labelKey: 'overlay.landmark',
-      swatch: 'cross',
+      swatch: 'icon',
+      icon: 'church',
       color: '#78716c', // mid-tone: the legend reads on both a light and a dark panel
       defaultVisible: true,
       layers: [
-        icon('overlay-cemetery', 'cemetery', CEMETERY_ICON_ID, [0.65, 1]),
-        icon('overlay-church', 'church', CHURCH_ICON_ID, [0.75, 1.1]),
+        icon('overlay-cemetery', 'cemetery', 'cemetery', [0.4, 0.75]),
+        icon('overlay-church', 'church', 'church', [0.5, 0.95]),
         label('overlay-church-label', 'church', ['get', 'name'], palette, 14),
       ],
     },
     {
       key: 'toilets',
       labelKey: 'overlay.toilets',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'toilets',
       color: palette.toilets,
       defaultVisible: true,
-      layers: [dot('overlay-toilets', 'toilets', palette.toilets, outline, [3, 5])],
+      layers: [icon('overlay-toilets', 'toilets', 'toilets', [0.4, 0.75])],
     },
     {
       key: 'aerialway',
@@ -440,10 +440,11 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
     {
       key: 'guidepost',
       labelKey: 'overlay.guidepost',
-      swatch: 'dot',
+      swatch: 'icon',
+      icon: 'guidepost',
       color: palette.guidepost,
       defaultVisible: false,
-      layers: [dot('overlay-guidepost', 'guidepost', palette.guidepost, outline, [2, 3.5])],
+      layers: [icon('overlay-guidepost', 'guidepost', 'guidepost', [0.35, 0.65])],
     },
     {
       key: 'power',
@@ -484,7 +485,7 @@ export function addOverlay(
   isDark: boolean,
   visibleGroups: Set<OverlayGroupKey>,
 ): void {
-  registerOverlayImages(map, isDark);
+  registerOverlayImages(map, iconColors(isDark ? DARK : LIGHT), (isDark ? DARK : LIGHT).halo);
   map.addSource(OVERLAY_SOURCE_ID, {
     type: 'vector',
     url: pmtilesUrl,

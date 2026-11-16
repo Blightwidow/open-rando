@@ -25,6 +25,8 @@ POI_COUNTS = {
     "bus_stop": 5,
     "hotel": 3,
     "camping": 1,
+    "shop": 2,
+    "eatery": 1,
     "train_station_with_rail_service": 1,
 }
 

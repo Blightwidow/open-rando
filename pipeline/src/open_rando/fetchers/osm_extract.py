@@ -24,6 +24,8 @@ from open_rando.osm_tags import (
     ACCOMMODATION_KINDS,
     FOREST_TAGS,
     LANDMARK_KINDS_BY_KEY,
+    RESUPPLY_EATERY_KINDS,
+    RESUPPLY_SHOP_KINDS,
     TRAIL_ROUTE_VALUES,
 )
 
@@ -31,11 +33,12 @@ logger = logging.getLogger("open_rando")
 
 LAYER_STATIONS = "stations"
 LAYER_ACCOMMODATION = "accommodation"
+LAYER_RESUPPLY = "resupply"
 LAYER_LANDMARKS = "landmarks"
 LAYER_FOREST = "forest"
 LAYER_TRAILS = "trails"
 
-POINT_LAYERS = (LAYER_STATIONS, LAYER_ACCOMMODATION, LAYER_LANDMARKS)
+POINT_LAYERS = (LAYER_STATIONS, LAYER_ACCOMMODATION, LAYER_RESUPPLY, LAYER_LANDMARKS)
 ALL_LAYERS = (*POINT_LAYERS, LAYER_FOREST, LAYER_TRAILS)
 
 SCHEMA_STATEMENTS = (
@@ -95,6 +98,14 @@ def is_station_tagged(tags: dict[str, str]) -> bool:
 def is_accommodation_tagged(tags: dict[str, str]) -> bool:
     """Match the accommodation selectors of `fetchers.pois`."""
     return tags.get("tourism", "") in ACCOMMODATION_KINDS
+
+
+def is_resupply_tagged(tags: dict[str, str]) -> bool:
+    """Food shops, cafes, restaurants and bars."""
+    return (
+        tags.get("shop", "") in RESUPPLY_SHOP_KINDS
+        or tags.get("amenity", "") in RESUPPLY_EATERY_KINDS
+    )
 
 
 def landmark_kind_for_tags(tags: dict[str, str]) -> str | None:

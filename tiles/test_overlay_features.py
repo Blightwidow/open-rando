@@ -67,7 +67,7 @@ class TestClassify:
         assert layer_of(line(waterway="stream")) == "stream"
 
     def test_unrelated_feature_is_dropped(self):
-        assert layer_of(point(amenity="cafe")) is None
+        assert layer_of(point(amenity="bench")) is None
 
     def test_peak_keeps_name_and_elevation_only(self):
         _, feature = classify(point(natural="peak", name="Mont Blanc", ele="4806", source="x"))

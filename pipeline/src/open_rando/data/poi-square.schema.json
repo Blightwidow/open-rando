@@ -58,7 +58,9 @@
             "train_station",
             "bus_stop",
             "hotel",
-            "camping"
+            "camping",
+            "shop",
+            "eatery"
           ]
         },
         "name": {
@@ -94,6 +96,26 @@
             {
               "type": "null"
             }
+          ]
+        },
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Shops and eateries: the OSM kind, for example bakery or cafe."
+        },
+        "opening_hours": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Raw OSM opening_hours value, shops and eateries only."
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
           ]
         }
       }

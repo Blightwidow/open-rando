@@ -209,6 +209,8 @@
         "bus_stop",
         "hotel",
         "camping",
+        "shop",
+        "eatery",
         "train_station_with_rail_service"
       ],
       "additionalProperties": false,
@@ -226,6 +228,14 @@
           "minimum": 0
         },
         "camping": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "eatery": {
           "type": "integer",
           "minimum": 0
         },
