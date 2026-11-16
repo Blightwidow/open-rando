@@ -3,15 +3,13 @@ import {
   t,
   getLocaleFromUrl,
   getAlternateUrl,
-  formatHikeCount,
-  getClientTranslations,
   getLocaleStaticPaths,
   localePath,
 } from './i18n';
 
 describe('t', () => {
   test('returns French translation', () => {
-    expect(t('fr', 'site.title')).toBe('TrainRando');
+    expect(t('fr', 'nav.explore')).toBe('Parcourir');
   });
 
   test('returns English translation', () => {
@@ -29,7 +27,7 @@ describe('t', () => {
   });
 
   test('replaces single placeholder', () => {
-    expect(t('en', 'hikes.count.many', { count: 42 })).toBe('42 hikes');
+    expect(t('en', 'detail.stationCount', { count: 42 })).toBe('42 stations');
   });
 
   test('replaces multiple placeholders', () => {
@@ -37,7 +35,7 @@ describe('t', () => {
   });
 
   test('returns value without replacements when none provided', () => {
-    expect(t('fr', 'hikes.count.one')).toBe('1 randonnée');
+    expect(t('fr', 'tabs.list')).toBe('Liste');
   });
 });
 
@@ -74,55 +72,6 @@ describe('getAlternateUrl', () => {
 
   test('root to English adds /en', () => {
     expect(getAlternateUrl(new URL('https://rando.dammaretz.fr/'), 'en')).toBe('/en/');
-  });
-});
-
-describe('formatHikeCount', () => {
-  test('zero in French', () => {
-    expect(formatHikeCount('fr', 0)).toBe('0 randonnée');
-  });
-
-  test('one in French', () => {
-    expect(formatHikeCount('fr', 1)).toBe('1 randonnée');
-  });
-
-  test('many in French', () => {
-    expect(formatHikeCount('fr', 42)).toBe('42 randonnées');
-  });
-
-  test('zero in English', () => {
-    expect(formatHikeCount('en', 0)).toBe('0 hikes');
-  });
-
-  test('one in English', () => {
-    expect(formatHikeCount('en', 1)).toBe('1 hike');
-  });
-
-  test('many in English', () => {
-    expect(formatHikeCount('en', 5)).toBe('5 hikes');
-  });
-});
-
-describe('getClientTranslations', () => {
-  test('returns all expected client keys', () => {
-    const translations = getClientTranslations('fr');
-    const expectedKeys = [
-      'hikes.count.zero', 'hikes.count.one', 'hikes.count.many',
-      'map.downloadGpx', 'map.steps',
-      'hike.loop', 'hike.loopFrom',
-      'filters.noResults', 'filters.resetFilters',
-      'detail.loading',
-    ];
-    for (const key of expectedKeys) {
-      expect(key in translations).toBe(true);
-      expect(typeof translations[key]).toBe('string');
-    }
-  });
-
-  test('English translations differ from French', () => {
-    const frTranslations = getClientTranslations('fr');
-    const enTranslations = getClientTranslations('en');
-    expect(frTranslations['filters.noResults']).not.toBe(enTranslations['filters.noResults']);
   });
 });
 

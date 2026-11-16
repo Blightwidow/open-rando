@@ -1,7 +1,7 @@
 ---
 import type { Route } from '../lib/catalog';
 import type { Locale } from '../lib/i18n';
-import { t } from '../lib/i18n';
+import { localePath, t } from '../lib/i18n';
 
 interface Props {
   route: Route;
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { route, locale = 'fr' } = Astro.props;
-const routeUrl = locale === 'en' ? `/en/app/route/${route.slug}` : `/app/route/${route.slug}`;
+const routeUrl = localePath(locale, `/app/route/${route.slug}`);
 
 const terrainLabel: Record<string, string> = {
   coastal: t(locale, 'terrain.coastal'),
@@ -27,9 +27,11 @@ const terrainColor: Record<string, string> = {
   plains: 'bg-lime-100 text-lime-700 dark:bg-lime-900 dark:text-lime-300',
 };
 
-const difficultyLabel: Record<string, Record<string, string>> = {
-  fr: { easy: 'Facile', moderate: 'Modéré', difficult: 'Difficile', very_difficult: 'Très difficile' },
-  en: { easy: 'Easy', moderate: 'Moderate', difficult: 'Difficult', very_difficult: 'Very difficult' },
+const difficultyLabel: Record<string, string> = {
+  easy: t(locale, 'difficulty.easy'),
+  moderate: t(locale, 'difficulty.moderate'),
+  difficult: t(locale, 'difficulty.difficult'),
+  very_difficult: t(locale, 'difficulty.very_difficult'),
 };
 
 const difficultyColor: Record<string, string> = {
@@ -59,7 +61,7 @@ const difficulty = route.difficulty ?? 'unknown';
     </div>
     {difficulty !== 'unknown' && (
       <span class:list={["text-xs px-2 py-0.5 rounded-full whitespace-nowrap font-medium", difficultyColor[difficulty] || 'bg-stone-100 text-stone-600']}>
-        {difficultyLabel[locale]?.[difficulty] ?? difficulty}
+        {difficultyLabel[difficulty] ?? difficulty}
       </span>
     )}
   </div>
@@ -67,7 +69,7 @@ const difficulty = route.difficulty ?? 'unknown';
     <span>{route.distance_km} km</span>
     {route.elevation_gain_m > 0 && <span>+{route.elevation_gain_m}m</span>}
     <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full">
-      {route.poi_counts.train_station} {locale === 'fr' ? 'gares' : 'stations'}
+      {t(locale, 'detail.stationCount', { count: route.poi_counts.train_station })}
     </span>
     {(route.terrain || []).map((tag) => (
       <span class:list={["text-xs px-2 py-0.5 rounded-full", terrainColor[tag] || 'bg-stone-100 text-stone-600']}>
