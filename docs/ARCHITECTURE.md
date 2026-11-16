@@ -172,7 +172,7 @@ open-rando/
 |   |   |   +-- images.py        # `images`: AI hero illustrations per route
 |   |   |   +-- osm_index.py     # `osm-index`: build/inspect the local OSM extract index
 |   |   +-- data/                # JSON Schemas: catalog, poi-square, poi-index, links,
-|   |   |                        #   tile-grid, route-tiles (+ gr-descriptions.yaml, unused)
+|   |   |                        #   tile-grid, route-tiles
 |   |   +-- fetchers/
 |   |   |   +-- discovery.py     # load routes from routes.yaml
 |   |   |   +-- osm_extract.py   # query the local OSM extract index (replaces Overpass)
