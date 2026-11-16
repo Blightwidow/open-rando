@@ -23,8 +23,9 @@ ACCOMMODATION := $(OSM_DIR)/accommodation.osm.pbf
 LANDMARKS := $(OSM_DIR)/landmarks.osm.pbf
 FOREST := $(OSM_DIR)/forest.osm.pbf
 TRAILS := $(OSM_DIR)/trails.osm.pbf
+RESUPPLY := $(OSM_DIR)/resupply.osm.pbf
 
-EXTRACTS := $(STATIONS) $(ACCOMMODATION) $(LANDMARKS) $(FOREST) $(TRAILS)
+EXTRACTS := $(STATIONS) $(ACCOMMODATION) $(RESUPPLY) $(LANDMARKS) $(FOREST) $(TRAILS)
 
 # Hiking overlay map layers, read by tiles/Makefile.overlay. Not part of EXTRACTS:
 # they are drawn from the tiles, never queried through the SQLite index.
@@ -32,9 +33,8 @@ OVERLAY_POINTS := $(OSM_DIR)/overlay-points.osm.pbf
 OVERLAY_POWER := $(OSM_DIR)/overlay-power.osm.pbf
 OVERLAY_WATERWAYS := $(OSM_DIR)/overlay-waterways.osm.pbf
 OVERLAY_STRUCTURES := $(OSM_DIR)/overlay-structures.osm.pbf
-OVERLAY_RESUPPLY := $(OSM_DIR)/overlay-resupply.osm.pbf
 
-OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS) $(OVERLAY_STRUCTURES) $(OVERLAY_RESUPPLY)
+OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS) $(OVERLAY_STRUCTURES)
 
 .PHONY: all check download extracts overlay index status clean distclean
 
@@ -67,6 +67,12 @@ $(STATIONS): $(PBF)
 $(ACCOMMODATION): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		nw/tourism=hotel,guest_house,hostel,camp_site
+
+# Food shops, cafes, restaurants and bars: where a hiker resupplies. Nodes and ways.
+$(RESUPPLY): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		nw/shop=supermarket,convenience,bakery,butcher,greengrocer,general,farm,deli,cheese \
+		nw/amenity=restaurant,cafe,bar
 
 # Scenic and historical features used to enrich image prompts.
 $(LANDMARKS): $(PBF)
@@ -130,13 +136,6 @@ $(OVERLAY_STRUCTURES): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		w/aerialway \
 		w/bridge
-
-# Where a hiker buys food or sits down for a meal: food shops, cafes, restaurants and bars,
-# mapped as nodes or as building areas.
-$(OVERLAY_RESUPPLY): $(PBF)
-	osmium tags-filter --overwrite -o $@ $< \
-		nw/shop=supermarket,convenience,bakery,butcher,greengrocer,general,farm,deli,cheese \
-		nw/amenity=restaurant,cafe,bar
 
 index: $(EXTRACTS)
 	cd $(CURDIR) && uv run python -m open_rando osm-index --extracts-dir $(OSM_DIR)

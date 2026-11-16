@@ -12,6 +12,8 @@ COUNTS = {
     "bus_stop": 4,
     "hotel": 2,
     "camping": 1,
+    "shop": 2,
+    "eatery": 1,
     "train_station_with_rail_service": 2,
 }
 

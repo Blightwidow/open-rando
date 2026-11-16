@@ -56,7 +56,7 @@ A POI on the outer edge goes into the last square. POIs outside the bbox are dro
   "pois": [
     {
       "id": "node/123",
-      "kind": "train_station" | "bus_stop" | "hotel" | "camping",
+      "kind": "train_station" | "bus_stop" | "hotel" | "camping" | "shop" | "eatery",
       "name": "...",
       "lat": 0.0,
       "lon": 0.0,
@@ -74,7 +74,7 @@ A POI on the outer edge goes into the last square. POIs outside the bbox are dro
 {
   "route_id": "...",
   "counts": {"train_station": 15, "bus_stop": 91, "hotel": 110, "camping": 27,
-             "train_station_with_rail_service": 12},
+             "shop": 34, "eatery": 58, "train_station_with_rail_service": 12},
   "links": [
     {
       "poi_id": "node/123",
@@ -89,7 +89,7 @@ A POI on the outer edge goes into the last square. POIs outside the bbox are dro
 
 `distance_km` is the position along the trail (train stations only; null for other kinds). `junction` is `[lon, lat]`, where the walk from the POI meets the trail: for train stations it is the point chosen by the OSRM walking-distance refinement. Links are sorted by `distance_km` (null last), then by distance to the trail.
 
-Link thresholds: train stations 5 km, bus stops 2 km, hotels and campings 3 km. Bus stops without a GTFS match stay in the POI grid (OSM-only lines).
+Link thresholds: train stations 5 km, bus stops 2 km, hotels and campings 3 km, food shops and eateries 1.5 km. Bus stops without a GTFS match stay in the POI grid (OSM-only lines).
 
 ## Stages and commands
 

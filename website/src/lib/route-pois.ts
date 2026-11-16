@@ -3,7 +3,7 @@
 
 import type { RailService } from './rail';
 
-export type PoiKind = 'hotel' | 'camping' | 'train_station' | 'bus_stop';
+export type PoiKind = 'hotel' | 'camping' | 'shop' | 'eatery' | 'train_station' | 'bus_stop';
 
 /** A POI as stored in the grid, independent of any track. */
 export interface PoiRecord {
@@ -13,6 +13,9 @@ export interface PoiRecord {
   lat: number;
   lon: number;
   url?: string | null;
+  category?: string | null;
+  opening_hours?: string | null;
+  phone?: string | null;
   transit_lines?: string[];
   rail_service?: RailService | null;
 }
@@ -36,6 +39,10 @@ export interface RoutePoi {
   lon: number;
   poi_type: PoiKind;
   url?: string;
+  /** Shops and eateries: OSM kind, raw opening hours and phone, each only when mapped. */
+  category?: string;
+  opening_hours?: string;
+  phone?: string;
   transit_lines?: string[];
   /** Position along the trail (train stations only). */
   distance_km?: number;
@@ -63,6 +70,9 @@ export function joinRoutePois(links: PoiLink[], poisById: Map<string, PoiRecord>
       lon: poi.lon,
       poi_type: poi.kind,
       url: poi.url ?? undefined,
+      category: poi.category ?? undefined,
+      opening_hours: poi.opening_hours ?? undefined,
+      phone: poi.phone ?? undefined,
       transit_lines: poi.transit_lines,
       distance_km: link.distance_km ?? undefined,
       distance_to_trail_m: link.distance_to_trail_m,

@@ -17,6 +17,8 @@ export const POI_COLORS: Record<string, string> = {
   bus_stop: '#3b82f6',
   hotel: '#a855f7',
   camping: '#f59e0b',
+  shop: '#84cc16',
+  eatery: '#ec4899',
 };
 
 export const POI_RADII: Record<string, number> = {
@@ -24,6 +26,8 @@ export const POI_RADII: Record<string, number> = {
   bus_stop: 5,
   hotel: 5,
   camping: 5,
+  shop: 4,
+  eatery: 4,
 };
 
 export const TRAIL_COLOR = '#E72323';

@@ -352,11 +352,11 @@ Paths are contract: `grid/{col}_{row}/{layer}.pmtiles`. Bump `grid.json` `versio
 
 ## Stage G: Hiking overlay
 
-Water points (taps and fountains included), springs, shelters, huts, guideposts, peaks and passes, waterfalls, caves, fords, bridges, viewpoints, toilets, churches, cemeteries, food shops, cafes and restaurants, aerialways, power lines and rivers, drawn on the route detail map. Plain layers: no popups, no clicks. Streams are left out (157 MB with them against 61 MB without; `WITH_STREAMS=1` opts in).
+Water points (taps and fountains included), springs, shelters, huts, guideposts, peaks and passes, waterfalls, caves, fords, bridges, viewpoints, toilets, churches, cemeteries, aerialways, power lines and rivers, drawn on the route detail map. Plain layers: no popups, no clicks. Streams are left out (157 MB with them against 61 MB without; `WITH_STREAMS=1` opts in).
 
 ### Files
 
-- `pipeline/Makefile.osm` target `overlay` — `osmium tags-filter` extracts from the France PBF (`overlay-points`, `overlay-power`, `overlay-waterways`, `overlay-structures`, `overlay-resupply`). The recipes depend on the PBF only: after editing a filter, delete that extract to rebuild it
+- `pipeline/Makefile.osm` target `overlay` — `osmium tags-filter` extracts from the France PBF (`overlay-points`, `overlay-power`, `overlay-waterways`, `overlay-structures`). The recipes depend on the PBF only: after editing a filter, delete that extract to rebuild it
 - `tiles/overlay_features.py` — PEP 723 script; sorts `osmium export` GeoJSONSeq into one file per layer, keeps only `name` and `ele`, turns areas into centroids, drops bus shelters, non-drinkable water, non-Christian places of worship, private toilets and bridges that carry a road, writes `tippecanoe.minzoom` on every feature
 - `tiles/Makefile.overlay` — extracts → layer files → tippecanoe → `overlay.pmtiles`
 - `website/src/lib/overlay.ts` — layers, groups, palette (light + dark), toggles
@@ -374,12 +374,11 @@ make -f Makefile.overlay upload                   # upload to R2 (wrangler)
 ### Notes
 
 - tippecanoe ignores a `minzoom` set per layer in `-L`; the first zoom of each layer lives in `MIN_ZOOMS` (`overlay_features.py`) and is written per feature.
-- First zooms: rivers 8, peaks and huts 9, power lines, aerialways and passes 10, water, springs, shelters, viewpoints 11, guideposts, waterfalls, caves and churches 12, toilets, cemeteries, fords, bridges, food shops and towers 13, cafes and restaurants 14 (names from 15).
-- Size: 87 MB with every layer (61 MB before passes, waterfalls, caves, fords, bridges, toilets, churches, cemeteries and aerialways, then 80 MB; resupply adds 7 MB for 92k food shops and 129k eateries). Bridges (100k) and power towers (249k) are the biggest point and line layers.
+- First zooms: rivers 8, peaks and huts 9, power lines, aerialways and passes 10, water, springs, shelters, viewpoints 11, guideposts, waterfalls, caves and churches 12, toilets, cemeteries, fords, bridges and towers 13.
+- Size: 80 MB with every layer (61 MB before passes, waterfalls, caves, fords, bridges, toilets, churches, cemeteries and aerialways). Bridges (100k) and power towers (249k) are the biggest point and line layers.
 - Bridges: only those carrying a path, footway, steps, bridleway, cycleway, track or pedestrian way. They are drawn as a pale deck between two dark edges (reversed in dark theme).
-- Icons, not dots: a triangle for a summit (hollow for a pass), a house for a hut (hollow for a shelter), a drop for water (hollow for a spring), an eye for a viewpoint, a cross for a church (in a square for a cemetery), "WC" for toilets, a basket for a food shop, fork and knife for an eatery, a signpost for a guidepost. The Protomaps sprite has none of them, so `overlay-icons.ts` draws each on a canvas (shape under a halo of the background colour) and `addOverlay` registers them on every style load. Dense layers (peaks, shops, eateries) thin out where icons collide; rare ones (huts, water, viewpoints) always show. Power towers stay dots.
-- Resupply: food shops (supermarket, convenience, bakery, butcher, greengrocer, general, farm, deli, cheese) and cafes, restaurants and bars. Plain dots with a name from z15, no opening hours or contact data (not clickable).
-- Not included on purpose: difficulty (`sac_scale`), protected areas, other hiking route relations.
+- Icons, not dots: a triangle for a summit (hollow for a pass), a house for a hut (hollow for a shelter), a drop for water (hollow for a spring), an eye for a viewpoint, a cross for a church (in a square for a cemetery), "WC" for toilets, a signpost for a guidepost. The Protomaps sprite has none of them, so `overlay-icons.ts` draws each on a canvas (shape under a halo of the background colour) and `addOverlay` registers them on every style load. Dense layers (peaks, guideposts, toilets) thin out where icons collide; rare ones (huts, water, viewpoints) always show. Power towers stay dots.
+- Not included on purpose: difficulty (`sac_scale`), protected areas, other hiking route relations. Food shops and eateries are clickable POIs (name, opening hours, phone, website), not overlay layers: see `docs/SPLIT_PIPELINE.md`.
 - `--drop-densest-as-needed` thins crowded tiles instead of failing on the tile size limit.
 - Upload uses `wrangler r2 object put --remote` (login once with `npx wrangler@4 login`), because the file is under wrangler's 300 MiB limit. No rclone remote needed.
 - Not on the explore map: the overlay is added by `route-map.ts` only.

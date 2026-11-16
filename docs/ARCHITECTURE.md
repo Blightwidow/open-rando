@@ -54,8 +54,8 @@ The pipeline is five stages. Each one reads files the previous stage wrote and c
    4. **Landmarks** near the trail, for the AI hero image prompt
    5. **Export** `tracks/<id>/{track.json, trail.geojson, trail.gpx, elevation.json}`. A track knows nothing about POIs.
 2. **`gtfs`**: download every national GTFS feed once (feed list from one transport.data.gouv.fr catalog call). One pass per feed fills the local stop index (`~/.cache/open-rando/gtfs/stops-index.sqlite`) and the per-feed departures cache (cached per ISO week).
-3. **`pois`**: build the France-wide POI grid, 12x8 squares (same grid as the mobile tiles), from the local OSM extract index. Train stations are filtered against SNCF reference data (UIC codes) and get departures per kind of day (weekday / Saturday / Sunday); bus stops get GTFS line names (OSM-tagged lines when no GTFS stop is within 150 m); hotels and campings are kept as is. POIs carry stable OSM ids (`node/123`).
-4. **`link`**: join the POI grid to each track, writing `links/<id>.json`. Train stations within 5 km (duplicate and never-closest filtering, then OSRM walking-distance junction refinement), bus stops within 2 km, hotels and campings within 3 km. Train stations get their position along the trail.
+3. **`pois`**: build the France-wide POI grid, 12x8 squares (same grid as the mobile tiles), from the local OSM extract index. Train stations are filtered against SNCF reference data (UIC codes) and get departures per kind of day (weekday / Saturday / Sunday); bus stops get GTFS line names (OSM-tagged lines when no GTFS stop is within 150 m); hotels and campings are kept as is; food shops (supermarket, convenience, bakery, butcher, greengrocer, general, farm, deli, cheese) and eateries (restaurant, cafe, bar) are kept when named, with their kind, raw `opening_hours` and phone when mapped. A place also tagged as lodging stays lodging. POIs carry stable OSM ids (`node/123`).
+4. **`link`**: join the POI grid to each track, writing `links/<id>.json`. Train stations within 5 km (duplicate and never-closest filtering, then OSRM walking-distance junction refinement), bus stops within 2 km, hotels and campings within 3 km, shops and eateries within 1.5 km. Train stations get their position along the trail.
 5. **`catalog`**: merge every `track.json` with its link counts into `catalog.json`, keeping tracks with at least 2 linked train stations. The catalog is rebuilt from the tracks on disk, so partial runs never drop other tracks. It is validated against `src/open_rando/data/catalog.schema.json` (nothing is written when validation fails), then `data/run-report.json` records what changed: routes added / changed / removed, per-route deltas (distance, stations, POIs, elevation gain), rail service coverage, failed and skipped routes, and regression warnings (route shrunk by more than 10%, train stations lost, stations that lost their train departures, elevation gain down by more than 20%).
 
 A companion app importing a custom GPX loads the POI squares that intersect it and applies the same link rules (see `processors/link.py`).
@@ -102,7 +102,7 @@ class PointOfInterest:
     name: str
     lat: float
     lon: float
-    poi_type: str             # "hotel", "camping", "train_station", "bus_stop"
+    poi_type: str             # "hotel", "camping", "shop", "eatery", "train_station", "bus_stop"
     url: str | None           # website URL (accommodation) or SNCF timetable link (train)
     transit_lines: list[str]  # GTFS route names for bus stops
     rail_service: RailService | None  # departures (train stations only)
@@ -181,7 +181,7 @@ open-rando/
 |   |   |   +-- sncf.py          # SNCF reference station data (UIC codes, filtering)
 |   |   |   +-- gtfs.py          # GTFS feed download, departures, bus line names
 |   |   |   +-- gtfs_stops_index.py  # local SQLite index of every boarding stop
-|   |   |   +-- pois.py          # accommodation POIs (hotels, campings)
+|   |   |   +-- pois.py          # accommodation and resupply POIs (hotels, campings, shops, eateries)
 |   |   |   +-- landmarks.py     # landmarks near a trail (AI image prompts)
 |   |   |   +-- routing.py       # OSRM pedestrian routing for station-trail connectors
 |   |   |   +-- srtm.py          # SRTM .hgt tile downloader + bilinear interpolation

@@ -23,6 +23,8 @@ const pois = getRoutePois(route);
 const trainStations = getTrainStations(pois);
 const hotelCount = pois.filter((poi) => poi.poi_type === 'hotel').length;
 const campingCount = pois.filter((poi) => poi.poi_type === 'camping').length;
+const shopCount = pois.filter((poi) => poi.poi_type === 'shop').length;
+const eateryCount = pois.filter((poi) => poi.poi_type === 'eatery').length;
 const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
 const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count ?? 1) > 1;
 ---
@@ -88,6 +90,8 @@ const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count 
         {busStopCount > 0 && <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.busStopCount', { count: busStopCount })}</span>}
         {hotelCount > 0 && <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.hotelCount', { count: hotelCount })}</span>}
         {campingCount > 0 && <span class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.campingCount', { count: campingCount })}</span>}
+        {shopCount > 0 && <span class="text-xs bg-lime-100 text-lime-800 dark:bg-lime-800 dark:text-lime-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.shopCount', { count: shopCount })}</span>}
+        {eateryCount > 0 && <span class="text-xs bg-pink-100 text-pink-800 dark:bg-pink-800 dark:text-pink-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.eateryCount', { count: eateryCount })}</span>}
       </div>
       <a
         href={`/data/${route.gpx_path}`}
@@ -174,7 +178,25 @@ const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count 
       style="height: 450px;"
       data-route={JSON.stringify({ ...route, pois })}
       data-labels={JSON.stringify({
-        popup: { website: t(locale, 'poi.website'), timetable: t(locale, 'poi.timetable') },
+        popup: {
+          website: t(locale, 'poi.website'),
+          timetable: t(locale, 'poi.timetable'),
+          openingHours: t(locale, 'poi.openingHours'),
+          categories: {
+            supermarket: t(locale, 'poi.category.supermarket'),
+            convenience: t(locale, 'poi.category.convenience'),
+            bakery: t(locale, 'poi.category.bakery'),
+            butcher: t(locale, 'poi.category.butcher'),
+            greengrocer: t(locale, 'poi.category.greengrocer'),
+            general: t(locale, 'poi.category.general'),
+            farm: t(locale, 'poi.category.farm'),
+            deli: t(locale, 'poi.category.deli'),
+            cheese: t(locale, 'poi.category.cheese'),
+            restaurant: t(locale, 'poi.category.restaurant'),
+            cafe: t(locale, 'poi.category.cafe'),
+            bar: t(locale, 'poi.category.bar'),
+          },
+        },
         rail: {
           weekday: t(locale, 'rail.weekday'),
           saturday: t(locale, 'rail.saturday'),
@@ -187,6 +209,8 @@ const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count 
           bus_stop: t(locale, 'poi.layer.bus_stop'),
           hotel: t(locale, 'poi.layer.hotel'),
           camping: t(locale, 'poi.layer.camping'),
+          shop: t(locale, 'poi.layer.shop'),
+          eatery: t(locale, 'poi.layer.eatery'),
         },
         overlay: {
           title: t(locale, 'overlay.title'),
@@ -199,8 +223,6 @@ const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count 
           crossing: t(locale, 'overlay.crossing'),
           landmark: t(locale, 'overlay.landmark'),
           toilets: t(locale, 'overlay.toilets'),
-          shop: t(locale, 'overlay.shop'),
-          eatery: t(locale, 'overlay.eatery'),
           aerialway: t(locale, 'overlay.aerialway'),
           guidepost: t(locale, 'overlay.guidepost'),
           power: t(locale, 'overlay.power'),

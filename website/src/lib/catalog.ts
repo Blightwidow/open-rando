@@ -14,6 +14,8 @@ export interface PoiCounts {
   bus_stop: number;
   hotel: number;
   camping: number;
+  shop: number;
+  eatery: number;
   train_station_with_rail_service: number;
 }
 

@@ -21,8 +21,6 @@ export type OverlayIconName =
   | 'toilets'
   | 'church'
   | 'cemetery'
-  | 'shop'
-  | 'eatery'
   | 'guidepost';
 
 /** Colour of each icon, one per theme. */
@@ -79,19 +77,6 @@ const ICONS: Record<OverlayIconName, IconSpec> = {
     shapes: [
       { path: 'M8 8H40V40H8Z', stroke: 4 },
       { path: 'M22 15H26V35H22Z M16.5 20H31.5V24H16.5Z', fill: true },
-    ],
-  },
-  shop: {
-    shapes: [
-      { path: 'M5 20H43L37 40H11Z', fill: true },
-      { path: 'M14 20Q24 2 34 20', stroke: 4 },
-    ],
-  },
-  eatery: {
-    shapes: [
-      { path: 'M11 7V20Q11 25 17 25Q23 25 23 20V7M17 7V42', stroke: 4 },
-      { path: 'M34 7C42 13 42 23 34 28Z', fill: true },
-      { path: 'M34 28V42', stroke: 4 },
     ],
   },
   guidepost: {

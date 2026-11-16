@@ -28,5 +28,18 @@ LANDMARK_KINDS_BY_KEY = (
 )
 
 ACCOMMODATION_KINDS = ("hotel", "guest_house", "hostel", "camp_site")
+# Where a hiker buys food or sits down for a meal.
+RESUPPLY_SHOP_KINDS = (
+    "supermarket",
+    "convenience",
+    "bakery",
+    "butcher",
+    "greengrocer",
+    "general",
+    "farm",
+    "deli",
+    "cheese",
+)
+RESUPPLY_EATERY_KINDS = ("restaurant", "cafe", "bar")
 FOREST_TAGS = (("landuse", "forest"), ("natural", "wood"))
 TRAIL_ROUTE_VALUES = ("hiking", "foot")

@@ -20,6 +20,7 @@ from open_rando.fetchers.osm_extract import (
     LAYER_ACCOMMODATION,
     LAYER_FOREST,
     LAYER_LANDMARKS,
+    LAYER_RESUPPLY,
     LAYER_STATIONS,
     LAYER_TRAILS,
     OsmExtractIndex,
@@ -83,6 +84,29 @@ def extracts_directory(tmp_path: Path) -> Path:
                 "tags": {"tourism": "camp_site", "name": "Camping du Lac"},
             }
         ],
+        relations=[],
+    )
+
+    write_pbf(
+        directory / EXTRACT_FILENAMES[LAYER_RESUPPLY],
+        nodes=[
+            {
+                "id": 31,
+                "location": (2.53, 48.53),
+                "tags": {
+                    "shop": "bakery",
+                    "name": "Boulangerie",
+                    "opening_hours": "Mo-Sa 07:00-19:00",
+                },
+            },
+            {
+                "id": 32,
+                "location": (2.54, 48.54),
+                "tags": {"amenity": "cafe", "name": "Le Central"},
+            },
+            {"id": 33, "location": (2.55, 48.55), "tags": {"shop": "clothes", "name": "Boutique"}},
+        ],
+        ways=[],
         relations=[],
     )
 
@@ -253,6 +277,21 @@ class TestFetchersUseTheIndex:
         assert sorted(poi.name for poi in pois) == ["Camping du Lac", "Hotel"]
         assert sorted(poi.poi_type for poi in pois) == ["camping", "hotel"]
         assert sorted(poi.osm_id for poi in pois) == ["node/11", "way/20"]
+
+    def test_resupply_layer_keeps_only_food_shops_and_eateries(self, built_index: Path) -> None:
+        index = OsmExtractIndex.open_for_reading(built_index)
+        assert index is not None
+        try:
+            elements = index.point_elements(LAYER_RESUPPLY, 48.4, 2.4, 48.6, 2.6)
+        finally:
+            index.close()
+
+        pois = pois_module._parse_resupply_elements(elements)
+
+        assert sorted((poi.name, poi.poi_type) for poi in pois) == [
+            ("Boulangerie", "shop"),
+            ("Le Central", "eatery"),
+        ]
 
     def test_fetch_landmarks_reads_the_index(
         self, built_index: Path, monkeypatch: pytest.MonkeyPatch

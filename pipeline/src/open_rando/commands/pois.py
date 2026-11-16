@@ -1,6 +1,6 @@
 """`pois` subcommand — build the France-wide POI grid.
 
-POIs (train stations, bus stops, hotels, campings) are computed per grid
+POIs (train stations, bus stops, hotels, campings, food shops, eateries) are computed per grid
 square, independent of any track, so the same files serve curated routes and
 custom GPX imports. Linking POIs to a track happens in a later stage.
 """
@@ -28,11 +28,12 @@ from open_rando.fetchers.gtfs import (
 from open_rando.fetchers.gtfs_stops_index import GtfsStopsIndex
 from open_rando.fetchers.osm_extract import (
     LAYER_ACCOMMODATION,
+    LAYER_RESUPPLY,
     LAYER_STATIONS,
     OsmExtractIndex,
     open_layer,
 )
-from open_rando.fetchers.pois import _parse_accommodation_elements
+from open_rando.fetchers.pois import _parse_accommodation_elements, _parse_resupply_elements
 from open_rando.fetchers.sncf import build_sncf_code_set, build_sncf_url, fetch_sncf_stations
 from open_rando.fetchers.stations import _parse_station_elements, filter_stations_by_sncf
 from open_rando.models import PointOfInterest, Station
@@ -49,7 +50,7 @@ FeedLoader = Callable[[set[int]], FeedData]
 def add_pois_subparser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = subparsers.add_parser(
         "pois",
-        help="Build the France-wide POI grid (stations, bus stops, hotels, campings).",
+        help="Build the France-wide POI grid (stations, stops, lodging, food shops, eateries).",
     )
     parser.add_argument(
         "--square",
@@ -74,6 +75,7 @@ def parse_square(raw: str) -> Square:
 def build_square_pois(
     stations: list[Station],
     accommodation: list[PointOfInterest],
+    resupply: list[PointOfInterest],
     sncf_codes: set[str],
     gtfs_stops: list[GtfsStop],
     load_feed_data: FeedLoader,
@@ -138,6 +140,7 @@ def build_square_pois(
         )
 
     pois.extend(accommodation)
+    pois.extend(resupply)
     return pois
 
 
@@ -177,12 +180,13 @@ def run_pois(arguments: argparse.Namespace) -> None:
 
     stations_index = open_layer(LAYER_STATIONS)
     accommodation_index = open_layer(LAYER_ACCOMMODATION)
-    if stations_index is None or accommodation_index is None:
-        for opened in (stations_index, accommodation_index):
+    resupply_index = open_layer(LAYER_RESUPPLY)
+    if stations_index is None or accommodation_index is None or resupply_index is None:
+        for opened in (stations_index, accommodation_index, resupply_index):
             if opened is not None:
                 opened.close()
         raise SystemExit(
-            "Local OSM extract index is missing the stations or accommodation layer. "
+            "Local OSM extract index is missing the stations, accommodation or resupply layer. "
             "Run `python -m open_rando osm-index --status` to see what it holds, "
             "or `python -m open_rando osm-index` to build it: the POI grid is read from it."
         )
@@ -204,6 +208,13 @@ def run_pois(arguments: argparse.Namespace) -> None:
             accommodation = keep_in_square(
                 _parse_accommodation_elements(accommodation_elements), grid, square
             )
+            resupply = keep_in_square(
+                _parse_resupply_elements(
+                    _elements_in_square(resupply_index, LAYER_RESUPPLY, bounds)
+                ),
+                grid,
+                square,
+            )
 
             gtfs_stops: list[GtfsStop] = []
             if stops_index is not None and stations:
@@ -215,7 +226,7 @@ def run_pois(arguments: argparse.Namespace) -> None:
                 )
 
             pois = build_square_pois(
-                stations, accommodation, sncf_codes, gtfs_stops, load_feed_data
+                stations, accommodation, resupply, sncf_codes, gtfs_stops, load_feed_data
             )
             counts_by_square[square] = len(pois)
             if pois:
@@ -226,6 +237,7 @@ def run_pois(arguments: argparse.Namespace) -> None:
     finally:
         stations_index.close()
         accommodation_index.close()
+        resupply_index.close()
         if stops_index is not None:
             stops_index.close()
 

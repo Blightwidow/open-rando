@@ -8,7 +8,7 @@ import {
   legendIconUrl,
   setOverlayGroupVisibility,
 } from './overlay';
-import { buildPoiPopupHtml, escapeHtml } from './poi-popup';
+import { buildPoiPopupHtml, escapeHtml, type PopupLabels } from './poi-popup';
 import { buildRailServiceRows, type RailServiceLabels } from './rail';
 import {
   buildCumulativeDistancesKm,
@@ -21,14 +21,14 @@ import {
 
 /** Copy the page renders into `data-labels`, so one script serves every locale. */
 export interface RouteMapLabels {
-  popup: { website: string; timetable: string };
+  popup: PopupLabels;
   rail: RailServiceLabels;
   poiLayers: Record<string, string>;
   /** Overlay legend: `title` plus one label per overlay group key. */
   overlay: Record<string, string>;
 }
 
-const POI_TYPES = ['train_station', 'bus_stop', 'hotel', 'camping'] as const;
+const POI_TYPES = ['train_station', 'bus_stop', 'hotel', 'camping', 'shop', 'eatery'] as const;
 const EMPTY_COLLECTION = { type: 'FeatureCollection', features: [] } as const;
 
 /** Detail-page map: trail, POI layers, elevation-chart hover marker, section highlight, layer toggles. */
