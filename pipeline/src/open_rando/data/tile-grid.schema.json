@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rando.dammaretz.fr/schemas/tile-grid.schema.json",
+  "title": "open-rando tile grid manifest",
+  "description": "Contract for data/grid.json (version 2), written by tiles/build-grid.py and read by the mobile client. `layers`, `base` and `files` are open maps keyed by layer name; the cross-checks JSON Schema cannot express (matching layer keys, matching zoom ranges, square keys inside the grid) live in tiles/tile_manifests.py.",
+  "type": "object",
+  "required": [
+    "version",
+    "source_snapshot",
+    "grid",
+    "layers",
+    "base",
+    "squares"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 2
+    },
+    "source_snapshot": {
+      "type": "string",
+      "pattern": "^[0-9]{8}$"
+    },
+    "grid": {
+      "type": "object",
+      "required": [
+        "bbox",
+        "cols",
+        "rows",
+        "pad_deg"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "cols": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pad_deg": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "layers": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "base_minzoom",
+          "base_maxzoom",
+          "grid_minzoom",
+          "grid_maxzoom"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "base_minzoom": {
+            "$ref": "#/$defs/zoom"
+          },
+          "base_maxzoom": {
+            "$ref": "#/$defs/zoom"
+          },
+          "grid_minzoom": {
+            "$ref": "#/$defs/zoom"
+          },
+          "grid_maxzoom": {
+            "$ref": "#/$defs/zoom"
+          }
+        }
+      }
+    },
+    "base": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/tileFile"
+      }
+    },
+    "squares": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[0-9]+_[0-9]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "bbox",
+          "files"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "bbox": {
+            "$ref": "#/$defs/bbox"
+          },
+          "files": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "$ref": "#/$defs/tileFile"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "bbox": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "zoom": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 22
+    },
+    "tileFile": {
+      "type": "object",
+      "required": [
+        "url",
+        "size",
+        "minzoom",
+        "maxzoom"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https?://.+\\.pmtiles$"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minzoom": {
+          "$ref": "#/$defs/zoom"
+        },
+        "maxzoom": {
+          "$ref": "#/$defs/zoom"
+        }
+      }
+    }
+  }
+}
