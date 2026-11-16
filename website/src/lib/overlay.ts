@@ -30,6 +30,8 @@ export const OVERLAY_SOURCE_LAYERS = [
   'cemetery',
   'aerialway',
   'bridge',
+  'shop',
+  'eatery',
 ] as const;
 
 export type OverlayGroupKey =
@@ -42,6 +44,8 @@ export type OverlayGroupKey =
   | 'crossing'
   | 'landmark'
   | 'toilets'
+  | 'shop'
+  | 'eatery'
   | 'aerialway'
   | 'guidepost'
   | 'power';
@@ -71,6 +75,8 @@ interface Palette {
   church: string;
   cemetery: string;
   toilets: string;
+  shop: string;
+  eatery: string;
   aerialway: string;
   bridgeDeck: string;
   bridgeCasing: string;
@@ -92,6 +98,8 @@ const LIGHT: Palette = {
   church: '#1c1917',
   cemetery: '#44403c',
   toilets: '#0d9488',
+  shop: '#15803d',
+  eatery: '#ca8a04',
   aerialway: '#1c1917',
   bridgeDeck: '#fafaf9',
   bridgeCasing: '#44403c',
@@ -113,6 +121,8 @@ const DARK: Palette = {
   church: '#fafaf9',
   cemetery: '#d6d3d1',
   toilets: '#2dd4bf',
+  shop: '#4ade80',
+  eatery: '#fde047',
   aerialway: '#f5f5f4',
   bridgeDeck: '#292524',
   bridgeCasing: '#e7e5e4',
@@ -416,6 +426,28 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
       color: palette.toilets,
       defaultVisible: true,
       layers: [dot('overlay-toilets', 'toilets', palette.toilets, outline, [3, 5])],
+    },
+    {
+      key: 'shop',
+      labelKey: 'overlay.shop',
+      swatch: 'dot',
+      color: palette.shop,
+      defaultVisible: true,
+      layers: [
+        dot('overlay-shop', 'shop', palette.shop, outline, [3, 5.5]),
+        label('overlay-shop-label', 'shop', ['get', 'name'], palette, 15),
+      ],
+    },
+    {
+      key: 'eatery',
+      labelKey: 'overlay.eatery',
+      swatch: 'dot',
+      color: palette.eatery,
+      defaultVisible: true,
+      layers: [
+        dot('overlay-eatery', 'eatery', palette.eatery, outline, [3, 5.5]),
+        label('overlay-eatery-label', 'eatery', ['get', 'name'], palette, 15),
+      ],
     },
     {
       key: 'aerialway',

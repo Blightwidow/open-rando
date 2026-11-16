@@ -32,8 +32,9 @@ OVERLAY_POINTS := $(OSM_DIR)/overlay-points.osm.pbf
 OVERLAY_POWER := $(OSM_DIR)/overlay-power.osm.pbf
 OVERLAY_WATERWAYS := $(OSM_DIR)/overlay-waterways.osm.pbf
 OVERLAY_STRUCTURES := $(OSM_DIR)/overlay-structures.osm.pbf
+OVERLAY_RESUPPLY := $(OSM_DIR)/overlay-resupply.osm.pbf
 
-OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS) $(OVERLAY_STRUCTURES)
+OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS) $(OVERLAY_STRUCTURES) $(OVERLAY_RESUPPLY)
 
 .PHONY: all check download extracts overlay index status clean distclean
 
@@ -129,6 +130,13 @@ $(OVERLAY_STRUCTURES): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		w/aerialway \
 		w/bridge
+
+# Where a hiker buys food or sits down for a meal: food shops, cafes, restaurants and bars,
+# mapped as nodes or as building areas.
+$(OVERLAY_RESUPPLY): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		nw/shop=supermarket,convenience,bakery,butcher,greengrocer,general,farm,deli,cheese \
+		nw/amenity=restaurant,cafe,bar
 
 index: $(EXTRACTS)
 	cd $(CURDIR) && uv run python -m open_rando osm-index --extracts-dir $(OSM_DIR)

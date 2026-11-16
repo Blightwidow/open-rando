@@ -67,7 +67,7 @@ class TestClassify:
         assert layer_of(line(waterway="stream")) == "stream"
 
     def test_unrelated_feature_is_dropped(self):
-        assert layer_of(point(amenity="cafe")) is None
+        assert layer_of(point(amenity="bench")) is None
 
     def test_peak_keeps_name_and_elevation_only(self):
         _, feature = classify(point(natural="peak", name="Mont Blanc", ele="4806", source="x"))
@@ -204,3 +204,26 @@ class TestNewLayers:
 
     def test_river_on_a_bridge_stays_a_river(self):
         assert layer_of(line(waterway="river", bridge="yes")) == "river"
+
+
+class TestResupply:
+    def test_bakery_is_a_shop(self):
+        assert layer_of(point(shop="bakery")) == "shop"
+
+    def test_supermarket_area_becomes_its_centroid(self):
+        classified = classify(square(shop="supermarket"))
+        assert classified is not None and classified[0] == "shop" and classified[1]["geometry"]["type"] == "Point"
+
+    def test_clothes_shop_is_dropped(self):
+        assert layer_of(point(shop="clothes")) is None
+
+    def test_restaurant_cafe_and_bar_are_eateries(self):
+        assert [layer_of(point(amenity=kind)) for kind in ("restaurant", "cafe", "bar")] == ["eatery"] * 3
+
+    def test_fast_food_is_dropped(self):
+        assert layer_of(point(amenity="fast_food")) is None
+
+    def test_eatery_keeps_its_name(self):
+        classified = classify(point(amenity="cafe", name="Chez Marcel"))
+        assert classified is not None and classified[1]["properties"] == {"name": "Chez Marcel"}
+

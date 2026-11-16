@@ -26,10 +26,12 @@ POINTS_PBF := $(OSM_DIR)/overlay-points.osm.pbf
 POWER_PBF := $(OSM_DIR)/overlay-power.osm.pbf
 WATERWAYS_PBF := $(OSM_DIR)/overlay-waterways.osm.pbf
 STRUCTURES_PBF := $(OSM_DIR)/overlay-structures.osm.pbf
+RESUPPLY_PBF := $(OSM_DIR)/overlay-resupply.osm.pbf
 
 POINTS_LAYERS := hut,shelter,water,spring,guidepost,peak,pass,waterfall,cave,ford,viewpoint,toilets,church,cemetery
 POWER_LAYERS := power_line,power_tower
 STRUCTURES_LAYERS := aerialway,bridge
+RESUPPLY_LAYERS := shop,eatery
 WATERWAYS_LAYERS := river
 ifeq ($(WITH_STREAMS),1)
 WATERWAYS_LAYERS := river,stream
@@ -63,13 +65,15 @@ LAYER_ARGS := \
 	-L'{"file": "$(BUILD_DIR)/church.geojsonl", "layer": "church"}' \
 	-L'{"file": "$(BUILD_DIR)/cemetery.geojsonl", "layer": "cemetery"}' \
 	-L'{"file": "$(BUILD_DIR)/aerialway.geojsonl", "layer": "aerialway"}' \
-	-L'{"file": "$(BUILD_DIR)/bridge.geojsonl", "layer": "bridge"}'
+	-L'{"file": "$(BUILD_DIR)/bridge.geojsonl", "layer": "bridge"}' \
+	-L'{"file": "$(BUILD_DIR)/shop.geojsonl", "layer": "shop"}' \
+	-L'{"file": "$(BUILD_DIR)/eatery.geojsonl", "layer": "eatery"}'
 
 ifeq ($(WITH_STREAMS),1)
 LAYER_ARGS += -L'{"file": "$(BUILD_DIR)/stream.geojsonl", "layer": "stream"}'
 endif
 
-STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp $(BUILD_DIR)/structures.stamp
+STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp $(BUILD_DIR)/structures.stamp $(BUILD_DIR)/resupply.stamp
 
 .PHONY: all install stats upload clean
 
@@ -85,6 +89,10 @@ $(BUILD_DIR)/points.stamp: $(POINTS_PBF) overlay_features.py | $(BUILD_DIR)
 
 $(BUILD_DIR)/power.stamp: $(POWER_PBF) overlay_features.py | $(BUILD_DIR)
 	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(POWER_LAYERS)
+	touch $@
+
+$(BUILD_DIR)/resupply.stamp: $(RESUPPLY_PBF) overlay_features.py | $(BUILD_DIR)
+	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(RESUPPLY_LAYERS)
 	touch $@
 
 $(BUILD_DIR)/structures.stamp: $(STRUCTURES_PBF) overlay_features.py | $(BUILD_DIR)

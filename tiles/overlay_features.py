@@ -56,6 +56,11 @@ AERIALWAYS = {
 # Christian places of worship are the landmarks wanted; a mosque or synagogue is not.
 NON_CHRISTIAN_RELIGIONS = {"muslim", "jewish", "buddhist", "hindu", "sikh", "shinto", "taoist"}
 
+FOOD_SHOPS = frozenset(
+    {"supermarket", "convenience", "bakery", "butcher", "greengrocer", "general", "farm", "deli", "cheese"}
+)
+EATERIES = frozenset({"restaurant", "cafe", "bar"})
+
 Values = str | frozenset[str] | None  # None: any value of the tag
 
 # (layer, tag, values, geometries). First match wins, so a hut also tagged as a shelter stays a hut.
@@ -77,6 +82,8 @@ RULES: list[tuple[str, str, Values, set[str]]] = [
     ("church", "amenity", "place_of_worship", POINT_GEOMETRIES),
     ("cemetery", "landuse", "cemetery", POINT_GEOMETRIES),
     ("cemetery", "amenity", "grave_yard", POINT_GEOMETRIES),
+    ("shop", "shop", FOOD_SHOPS, POINT_GEOMETRIES),
+    ("eatery", "amenity", EATERIES, POINT_GEOMETRIES),
     ("power_line", "power", "line", LINE_GEOMETRIES),
     ("power_tower", "power", "tower", {"Point"}),
     ("aerialway", "aerialway", frozenset(AERIALWAYS), LINE_GEOMETRIES),
@@ -86,7 +93,7 @@ RULES: list[tuple[str, str, Values, set[str]]] = [
     ("bridge", "bridge", None, LINE_GEOMETRIES),
 ]
 # Areas mapped for these stand for a point: draw their centroid.
-CENTROID_LAYERS = {"hut", "shelter", "viewpoint", "toilets", "church", "cemetery"}
+CENTROID_LAYERS = {"hut", "shelter", "viewpoint", "toilets", "church", "cemetery", "shop", "eatery"}
 ELEVATION_LAYERS = {"peak", "hut", "pass"}
 LAYERS = list(dict.fromkeys(layer for layer, *_ in RULES))
 
@@ -109,6 +116,8 @@ MIN_ZOOMS = {
     "waterfall": 12,
     "cave": 12,
     "church": 12,
+    "shop": 13,
+    "eatery": 14,
     "toilets": 13,
     "cemetery": 13,
     "ford": 13,
