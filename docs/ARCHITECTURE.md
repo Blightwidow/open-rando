@@ -229,12 +229,13 @@ open-rando/
 |   |   +-- layouts/
 |   |   |   +-- Landing.astro          # landing page layout (hero, features, CTA)
 |   |   |   +-- Base.astro             # app layout (SEO meta, sticky nav, theme toggle, i18n)
-|   |   +-- pages/                     # FR at the root, EN under en/
-|   |   |   +-- index.astro            # landing page
-|   |   |   +-- about.astro, privacy.astro, legal.astro
-|   |   |   +-- app/index.astro        # route explorer with filters + suggest panel
-|   |   |   +-- app/route/[slug].astro # route detail page
-|   |   |   +-- en/...                 # English copies of every page above
+|   |   +-- pages/
+|   |   |   +-- [...locale]/           # one template per page, built for fr (root) and en (/en)
+|   |   |   |   +-- index.astro        # landing page
+|   |   |   |   +-- app/index.astro    # route explorer with filters + suggest panel
+|   |   |   |   +-- app/route/[slug].astro  # route detail page
+|   |   |   +-- about.astro, privacy.astro, legal.astro        # FR long-form prose
+|   |   |   +-- en/about.astro, en/privacy.astro, en/legal.astro  # EN long-form prose
 |   |   +-- components/
 |   |   |   +-- RouteCard.astro        # clickable card with difficulty/terrain/description
 |   |   |   +-- RouteList.astro        # grid + empty state
@@ -248,8 +249,12 @@ open-rando/
 |   |       +-- poi-popup.ts           # POI map popups
 |   |       +-- rail.ts                # train departure formatting
 |   |       +-- map.ts                 # shared MapLibre utilities (createMap, contours, POIs, theme)
+|   |       +-- route-map.ts           # detail-page map: trail, POIs, hover marker, section highlight
+|   |       +-- section-selector.ts    # detail-page section picker: stats, GPX, QR code, URL state
+|   |       +-- section-gpx.ts         # GPX 1.1 for one section of a route
+|   |       +-- trail-geometry.ts      # haversine, cumulative distances, section index ranges
 |   |       +-- styles/                # style-light.json, style-dark.json
-|   |       +-- i18n.ts                # translation dictionary (FR/EN) + helpers
+|   |       +-- i18n.ts                # translation dictionary (FR/EN), localePath, getLocaleStaticPaths
 |   |       +-- format.ts              # formatting utilities
 |   |       +-- elevation.ts           # elevation profile utilities
 |   |       +-- route-filters.ts       # filter logic

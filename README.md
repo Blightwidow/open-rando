@@ -122,10 +122,10 @@ open-rando/
   tiles/                 Tile pipelines (Protomaps extract, contours, hillshade, mobile grid)
   website/               Astro static site
     src/
-      pages/             Landing, app (list + map), route detail (FR + EN)
+      pages/             Landing, app (list + map), route detail (one template, FR + EN); prose pages per locale
       components/        ElevationChart, RouteCard, RouteFilters, RouteList, SearchableSelect
       layouts/           Base, Landing
-      lib/               catalog, POI grid and join, rail service, i18n, map, map styles
+      lib/               catalog, POI grid and join, rail service, i18n, map and route map, section selector, map styles
   docs/                  Architecture, data sources, deployment, vector tiles, mobile offline
 ```
 
