@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { OVERLAY_SOURCE_LAYERS, defaultVisibleGroups, getOverlayGroups } from './overlay';
+import { OVERLAY_ICON_NAMES, overlayIconImageId } from './overlay-icons';
 
 const allLayers = (isDark: boolean) => getOverlayGroups(isDark).flatMap((group) => group.layers);
 
@@ -41,5 +42,24 @@ describe('overlay groups', () => {
   test('every source layer the tiles carry is drawn, except streams', () => {
     const drawn = new Set(allLayers(false).map((layer) => (layer as { 'source-layer': string })['source-layer']));
     expect(OVERLAY_SOURCE_LAYERS.filter((name) => !drawn.has(name))).toEqual([]);
+  });
+
+  test('every icon a layer draws is one the icon module registers', () => {
+    const registered = new Set(OVERLAY_ICON_NAMES.map(overlayIconImageId));
+    const drawn = allLayers(false).flatMap((layer) => {
+      const iconImage = (layer.layout as { 'icon-image'?: string } | undefined)?.['icon-image'];
+      return iconImage ? [iconImage] : [];
+    });
+    expect(drawn.filter((imageId) => !registered.has(imageId))).toEqual([]);
+  });
+
+  test('every icon is drawn by at least one layer', () => {
+    const drawn = new Set(allLayers(false).map((layer) => (layer.layout as { 'icon-image'?: string } | undefined)?.['icon-image']));
+    expect(OVERLAY_ICON_NAMES.filter((name) => !drawn.has(overlayIconImageId(name)))).toEqual([]);
+  });
+
+  test('a group with an icon swatch names its icon', () => {
+    const missing = getOverlayGroups(false).filter((group) => group.swatch === 'icon' && !group.icon);
+    expect(missing.map((group) => group.key)).toEqual([]);
   });
 });

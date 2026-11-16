@@ -5,6 +5,7 @@ import {
   addOverlay,
   defaultVisibleGroups,
   getOverlayGroups,
+  legendIconUrl,
   setOverlayGroupVisibility,
 } from './overlay';
 import { buildPoiPopupHtml, escapeHtml } from './poi-popup';
@@ -258,7 +259,7 @@ export function initRouteMap(mapElement: HTMLElement): void {
     const swatches: Record<typeof group.swatch, string> = {
       dot: `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${group.color};"></span>`,
       line: `<span style="display:inline-block;width:10px;height:0;border-top:2px solid ${group.color};"></span>`,
-      cross: `<svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0v12M1.5 4h7" stroke="${group.color}" stroke-width="2" fill="none"/></svg>`,
+      icon: group.icon ? `<img src="${legendIconUrl(group.icon)}" width="16" height="16" alt="" />` : '',
     };
     const swatch = swatches[group.swatch];
     row.innerHTML = `<input type="checkbox" class="rounded" data-overlay-group="${group.key}" /> ${swatch} ${escapeHtml(labels.overlay[group.key])}`;
