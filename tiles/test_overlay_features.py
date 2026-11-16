@@ -138,3 +138,69 @@ class TestSplitFeatures:
 
     def test_every_rule_layer_is_listed(self):
         assert set(overlay_features.LAYERS) == {rule[0] for rule in overlay_features.RULES}
+
+
+class TestNewLayers:
+    def test_water_tap_and_water_point_count_as_water(self):
+        assert [layer_of(point(man_made="water_tap")), layer_of(point(amenity="water_point"))] == ["water", "water"]
+
+    def test_wilderness_hut_is_a_hut(self):
+        assert layer_of(point(tourism="wilderness_hut")) == "hut"
+
+    def test_mountain_pass_and_saddle_keep_elevation(self):
+        classified = classify(point(mountain_pass="yes", name="Col du Galibier", ele="2642"))
+        assert classified is not None and classified[0] == "pass" and classified[1]["properties"]["ele"] == 2642
+
+    def test_saddle_is_a_pass(self):
+        assert layer_of(point(natural="saddle")) == "pass"
+
+    def test_waterfall_cave_and_ford(self):
+        assert [
+            layer_of(point(waterway="waterfall")),
+            layer_of(point(natural="cave_entrance")),
+            layer_of(point(ford="yes")),
+        ] == ["waterfall", "cave", "ford"]
+
+    def test_church_area_becomes_its_centroid(self):
+        classified = classify(square(amenity="place_of_worship", religion="christian"))
+        assert classified is not None and classified[1]["geometry"]["type"] == "Point"
+
+    def test_mosque_is_dropped(self):
+        assert layer_of(point(amenity="place_of_worship", religion="muslim")) is None
+
+    def test_untagged_religion_place_of_worship_is_kept(self):
+        assert layer_of(point(amenity="place_of_worship")) == "church"
+
+    def test_cemetery_polygon_is_a_point(self):
+        classified = classify(square(landuse="cemetery"))
+        assert classified is not None and classified[0] == "cemetery" and classified[1]["geometry"]["type"] == "Point"
+
+    def test_old_graveyard_tag_is_a_cemetery(self):
+        assert layer_of(point(amenity="grave_yard")) == "cemetery"
+
+    def test_private_toilets_are_dropped(self):
+        assert layer_of(point(amenity="toilets", access="customers")) is None
+
+    def test_public_toilets_are_kept(self):
+        assert layer_of(point(amenity="toilets")) == "toilets"
+
+    def test_cable_car_keeps_its_kind(self):
+        classified = classify(line(aerialway="gondola"))
+        assert classified is not None and classified[1]["properties"]["kind"] == "gondola"
+
+    def test_pylon_aerialway_is_dropped(self):
+        assert layer_of(line(aerialway="pylon")) is None
+
+    def test_footbridge_is_kept_as_foot(self):
+        classified = classify(line(bridge="yes", highway="footway"))
+        assert classified is not None and classified[1]["properties"]["kind"] == "foot"
+
+    def test_track_bridge_is_kept_as_track(self):
+        classified = classify(line(bridge="yes", highway="track"))
+        assert classified is not None and classified[1]["properties"]["kind"] == "track"
+
+    def test_road_bridge_is_dropped(self):
+        assert layer_of(line(bridge="yes", highway="primary")) is None
+
+    def test_river_on_a_bridge_stays_a_river(self):
+        assert layer_of(line(waterway="river", bridge="yes")) == "river"

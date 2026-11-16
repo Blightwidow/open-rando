@@ -1,7 +1,8 @@
 # Hiking overlay tiles: OSM extracts -> osmium export -> overlay_features.py -> tippecanoe
 #
 # Builds overlay.pmtiles: drinking water, springs, shelters, huts, guideposts,
-# peaks, viewpoints, power lines and towers, rivers (and streams, opt-in). They
+# peaks, passes, waterfalls, caves, fords, viewpoints, toilets, churches, cemeteries,
+# power lines and towers, aerialways, footbridges, rivers (and streams, opt-in). They
 # are drawn on the map, not clicked: no popups, no POI grid.
 #
 # Prerequisites: osmium-tool, tippecanoe, uv (upload also needs npx and `wrangler login`)
@@ -24,9 +25,11 @@ WITH_STREAMS ?= 0
 POINTS_PBF := $(OSM_DIR)/overlay-points.osm.pbf
 POWER_PBF := $(OSM_DIR)/overlay-power.osm.pbf
 WATERWAYS_PBF := $(OSM_DIR)/overlay-waterways.osm.pbf
+STRUCTURES_PBF := $(OSM_DIR)/overlay-structures.osm.pbf
 
-POINTS_LAYERS := hut,shelter,water,spring,guidepost,peak,viewpoint
+POINTS_LAYERS := hut,shelter,water,spring,guidepost,peak,pass,waterfall,cave,ford,viewpoint,toilets,church,cemetery
 POWER_LAYERS := power_line,power_tower
+STRUCTURES_LAYERS := aerialway,bridge
 WATERWAYS_LAYERS := river
 ifeq ($(WITH_STREAMS),1)
 WATERWAYS_LAYERS := river,stream
@@ -51,13 +54,22 @@ LAYER_ARGS := \
 	-L'{"file": "$(BUILD_DIR)/shelter.geojsonl", "layer": "shelter"}' \
 	-L'{"file": "$(BUILD_DIR)/viewpoint.geojsonl", "layer": "viewpoint"}' \
 	-L'{"file": "$(BUILD_DIR)/guidepost.geojsonl", "layer": "guidepost"}' \
-	-L'{"file": "$(BUILD_DIR)/power_tower.geojsonl", "layer": "power_tower"}'
+	-L'{"file": "$(BUILD_DIR)/power_tower.geojsonl", "layer": "power_tower"}' \
+	-L'{"file": "$(BUILD_DIR)/pass.geojsonl", "layer": "pass"}' \
+	-L'{"file": "$(BUILD_DIR)/waterfall.geojsonl", "layer": "waterfall"}' \
+	-L'{"file": "$(BUILD_DIR)/cave.geojsonl", "layer": "cave"}' \
+	-L'{"file": "$(BUILD_DIR)/ford.geojsonl", "layer": "ford"}' \
+	-L'{"file": "$(BUILD_DIR)/toilets.geojsonl", "layer": "toilets"}' \
+	-L'{"file": "$(BUILD_DIR)/church.geojsonl", "layer": "church"}' \
+	-L'{"file": "$(BUILD_DIR)/cemetery.geojsonl", "layer": "cemetery"}' \
+	-L'{"file": "$(BUILD_DIR)/aerialway.geojsonl", "layer": "aerialway"}' \
+	-L'{"file": "$(BUILD_DIR)/bridge.geojsonl", "layer": "bridge"}'
 
 ifeq ($(WITH_STREAMS),1)
 LAYER_ARGS += -L'{"file": "$(BUILD_DIR)/stream.geojsonl", "layer": "stream"}'
 endif
 
-STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp
+STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp $(BUILD_DIR)/structures.stamp
 
 .PHONY: all install stats upload clean
 
@@ -73,6 +85,10 @@ $(BUILD_DIR)/points.stamp: $(POINTS_PBF) overlay_features.py | $(BUILD_DIR)
 
 $(BUILD_DIR)/power.stamp: $(POWER_PBF) overlay_features.py | $(BUILD_DIR)
 	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(POWER_LAYERS)
+	touch $@
+
+$(BUILD_DIR)/structures.stamp: $(STRUCTURES_PBF) overlay_features.py | $(BUILD_DIR)
+	$(EXPORT) $< | $(SPLIT) --out-dir $(BUILD_DIR) --layers $(STRUCTURES_LAYERS)
 	touch $@
 
 $(BUILD_DIR)/waterways.stamp: $(WATERWAYS_PBF) overlay_features.py | $(BUILD_DIR)

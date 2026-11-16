@@ -32,4 +32,14 @@ describe('overlay groups', () => {
     const visible = defaultVisibleGroups();
     expect([visible.has('peak'), visible.has('water')]).toEqual([true, true]);
   });
+
+  test('bridges, churches and toilets are drawn', () => {
+    const sourceLayers = new Set(allLayers(false).map((layer) => (layer as { 'source-layer': string })['source-layer']));
+    expect(['bridge', 'church', 'toilets', 'pass', 'waterfall', 'aerialway'].filter((name) => !sourceLayers.has(name))).toEqual([]);
+  });
+
+  test('every source layer the tiles carry is drawn, except streams', () => {
+    const drawn = new Set(allLayers(false).map((layer) => (layer as { 'source-layer': string })['source-layer']));
+    expect(OVERLAY_SOURCE_LAYERS.filter((name) => !drawn.has(name))).toEqual([]);
+  });
 });
