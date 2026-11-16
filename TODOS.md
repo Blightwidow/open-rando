@@ -6,9 +6,11 @@ Known work not yet done. Each entry says what is wrong, why it matters, and what
 
 ### 1. Hiking overlay tiles (water, huts, peaks, power lines)
 
-The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, `shelter`, `alpine_hut`, `viewpoint`, `peak` with elevation, `guidepost`, power lines and towers, `leaf_type` (evergreen vs deciduous), river flow direction. None are drawn today.
+The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, `shelter`, `alpine_hut`, `viewpoint`, `peak` with elevation, `guidepost`, power lines and towers, river flow direction. None are drawn today. They are plain map layers (no clicks, no popups), not POIs. `leaf_type` is out of scope: only 58% of forests carry it.
 
-Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend. First check which of these tags the existing extract layers (`Makefile.osm`: trail, stations, accommodation, landmarks, forest) already cover; the rest needs new osmium filters. The manifest schemas already accept extra layers.
+Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend.
+
+Status: osmium extracts done (`make -f Makefile.osm overlay` writes `overlay-points`, `overlay-power`, `overlay-waterways` PBFs). Next: `tiles/Makefile.overlay` (GeoJSONSeq + tippecanoe), then styles and R2 upload. Sizes to watch: 696k streams (103 MB PBF), 249k power towers. Filter out bus shelters (`shelter_type=public_transport`) from the 35k shelter ways when tiling; draw rivers first, streams only if the size fits.
 
 ### 2. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 
