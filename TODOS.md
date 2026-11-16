@@ -4,13 +4,11 @@ Known work not yet done. Each entry says what is wrong, why it matters, and what
 
 ## Debt
 
-### 1. Constants duplicated across the tile scripts
+### 1. Hiking overlay tiles (water, huts, peaks, power lines)
 
-`PAD_DEG`, `DEFAULT_COLS`, `DEFAULT_ROWS`, `read_makefile_var` and `read_grid_bbox` are copied in `tiles/build-grid.py` and `tiles/build-routes.py`. `grid.json` already carries `grid.bbox`, `cols`, `rows` and `pad_deg`. If the copies drift, route manifests list the wrong squares; the route-vs-grid check catches squares that do not exist, not squares that are wrong.
+The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, `shelter`, `alpine_hut`, `viewpoint`, `peak` with elevation, `guidepost`, power lines and towers, `leaf_type` (evergreen vs deciduous), river flow direction. None are drawn today.
 
-Done when both scripts take these values from one place: either `tiles/tile_manifests.py` (shared module) or `build-routes.py` reading them from `grid.json` (which then has to be built first).
-
-## Features
+Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend. First check which of these tags the existing extract layers (`Makefile.osm`: trail, stations, accommodation, landmarks, forest) already cover; the rest needs new osmium filters. The manifest schemas already accept extra layers.
 
 ### 2. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 
