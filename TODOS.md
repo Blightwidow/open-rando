@@ -14,7 +14,7 @@ Done when the dead functions and their tests are deleted (and the `_compute_cumu
 
 Every page exists twice, with only hardcoded strings differing: `app/route/[slug].astro` vs `en/app/route/[slug].astro` (835/834 lines, 51 differing lines), `app/index.astro` vs `en/app/index.astro` (342/340, 26), `index.astro` vs `en/index.astro` (161/155, 16), plus `about`, `legal` and `privacy`. Every feature has to be written twice and the copies drift.
 
-Done when Astro i18n routing (already declared in `astro.config.mjs`, `prefixDefaultLocale: false`) serves both locales from one template per page, with all copy from `src/lib/i18n.ts`, and the 835-line detail page's inline scripts are split into modules (map setup, section selector, QR code, elevation sync). Blocks TODOs 9, 12 and 13 in practice, since each adds UI.
+Done when Astro i18n routing (already declared in `astro.config.mjs`, `prefixDefaultLocale: false`) serves both locales from one template per page, with all copy from `src/lib/i18n.ts`, and the 835-line detail page's inline scripts are split into modules (map setup, section selector, QR code, elevation sync). Blocks TODOs 8, 11 and 12 in practice, since each adds UI.
 
 ### 3. README and ARCHITECTURE project tree are out of date
 
@@ -49,7 +49,7 @@ Constraints found while reviewing:
 - The tile scripts are standalone `uv run --script` with `dependencies = []`, so they cannot import `open_rando`. They need `jsonschema` in their inline deps and must load the schemas by relative path.
 - CI has no tiles job and no master archives. Manifest construction in `build-grid.py` `main()` must move into a pure function so a `pipeline/` pytest can build a fixture manifest and validate it.
 - Validate the final document: after URL injection (`write_grid_manifest`) and after the `--square` merge with the previous `grid.json`.
-- `layers`, `base` and `files` must be open maps, not hardcoded `france/contours/hillshade`, since TODOs 9 and 11 add layers.
+- `layers`, `base` and `files` must be open maps, not hardcoded `france/contours/hillshade`, since TODOs 8 and 10 add layers.
 - Cross-checks JSON Schema cannot express stay in code: layer keys in `base`/`files` exist in `layers`; every route `[col, row]` exists in `grid.json.squares` and is within `grid.cols`/`grid.rows`.
 - `read_makefile_var`, `PAD_DEG`, `DEFAULT_COLS` and `DEFAULT_ROWS` are duplicated in both scripts; `build-routes.py` could read them from `grid.json`.
 
@@ -63,39 +63,33 @@ Open: add a per-layer `kind` (`vector` | `raster-dem`, today inferred from the l
 
 Done when the elevation chart marks the breaks and the route page states the gap, in both locales.
 
-### 8. `docs/DEPLOYMENT.md` says `website/.env.production` is not in the repository
-
-Stale: `9f3486c` committed it, `.gitignore` whitelists it, and it is tracked. The doc still tells readers to create it by hand.
-
-Done when the DEPLOYMENT section states that the file is committed (its value is a public `r2.dev` URL) and keeps the note about the build failing without it.
-
 ## Features
 
-### 9. Hiking overlay tiles (water, huts, peaks, power lines)
+### 8. Hiking overlay tiles (water, huts, peaks, power lines)
 
 The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, `shelter`, `alpine_hut`, `viewpoint`, `peak` with elevation, `guidepost`, power lines and towers, `leaf_type` (evergreen vs deciduous), river flow direction. None are drawn today.
 
 Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend. First check which of these tags the existing extract layers (`Makefile.osm`: trail, stations, accommodation, landmarks, forest) already cover; the rest needs new osmium filters. Depends on TODO 2 (toggles written once) and TODO 6 (manifest schema covers the new layer).
 
-### 10. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
+### 9. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 
 Contours and hillshade come from SRTM 30m, coarse in the Alps and Pyrenees.
 
 Done when `contours.pmtiles` and `hillshade.pmtiles` build from RGE ALTI 5m (open licence), the SRTM path stays as fallback outside coverage, and the size delta on R2 is recorded in `docs/VECTOR_TILES.md`. Mind the 10 GB R2 free tier; `build-grid.py` already caps contours at z13 for that reason.
 
-### 11. LiDAR HD hillshade, corridor pilot
+### 10. LiDAR HD hillshade, corridor pilot
 
 IGN LiDAR HD (1m, open) shows old tracks, terraces and drainage under tree cover. Full France would exceed 10 GB on R2, so scope by corridor.
 
 Done when a ~2 km buffer around a few pilot routes (Alps + Pyrenees GRs) renders to raster hillshade at z13-15, the measured size per route is documented, and a go/no-go for the 176-route rollout is decided from that number. Opt-in layer, off by default. Depends on TODO 6.
 
-### 12. MBTiles export for offline apps
+### 11. MBTiles export for offline apps
 
 Mobile offline ships PMTiles grid squares. Avenza and OsmAnd need MBTiles.
 
 Done when a route page can export its corridor as `.mbtiles` (built client-side from range reads, or prebuilt per route on R2), in both locales. GeoPDF and Garmin are out of scope (server-side tooling).
 
-### 13. Mobile app download on the landing page
+### 12. Mobile app download on the landing page
 
 The mobile app ships from `https://github.com/Blightwidow/open-rando-mobile/releases/latest`, but `index.astro` and `en/index.astro` never mention it. The mobile README will soon carry product screenshots.
 
