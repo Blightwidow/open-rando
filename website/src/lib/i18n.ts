@@ -39,6 +39,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.mobile.description': "L'application compagnon pour randonner sans réseau : enregistrez un itinéraire ou une section (depuis le QR code du site), importez un fichier GPX et suivez votre position GPS sur la carte.",
     'landing.mobile.cta': 'Télécharger pour Android',
     'landing.mobile.note': 'APK à installer à la main, F-Droid et AltStore sont prévus. Ni compte, ni analytics.',
+    'landing.mobile.screenshotExplore': "Liste des itinéraires de l'application mobile, avec distance, dénivelé et difficulté",
+    'landing.mobile.screenshotOffline': "Page d'un itinéraire enregistré pour le hors-ligne : carte, arrêts de bus et profil d'altitude",
+    'landing.mobile.screenshotNavigation': "Suivi en cours : position GPS sur la carte, distance restante et avance sur le profil d'altitude",
 
     // Footer
     'footer.about': 'À propos',
@@ -168,6 +171,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.mobile.description': "The companion app for hiking without a signal: save a route or a section (from the website's QR code), import a GPX file and follow your GPS position on the map.",
     'landing.mobile.cta': 'Download for Android',
     'landing.mobile.note': 'APK to install by hand; F-Droid and AltStore are planned. No account, no analytics.',
+    'landing.mobile.screenshotExplore': 'Route list in the mobile app, with distance, elevation gain and difficulty',
+    'landing.mobile.screenshotOffline': 'A route saved for offline use: map, bus stops and elevation profile',
+    'landing.mobile.screenshotNavigation': 'Live following: GPS position on the map, remaining distance and time ahead on the elevation profile',
 
     // Footer
     'footer.about': 'About',

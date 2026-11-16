@@ -6,6 +6,12 @@ export const getStaticPaths = getLocaleStaticPaths;
 
 const MOBILE_APP_RELEASES_URL = 'https://github.com/Blightwidow/open-rando-mobile/releases/latest';
 
+const MOBILE_SCREENSHOTS = [
+  { file: 'explore', altKey: 'landing.mobile.screenshotExplore' },
+  { file: 'offline-route', altKey: 'landing.mobile.screenshotOffline' },
+  { file: 'navigation', altKey: 'landing.mobile.screenshotNavigation' },
+] as const;
+
 const { locale } = Astro.props;
 ---
 
@@ -159,6 +165,22 @@ const { locale } = Astro.props;
         {t(locale, 'landing.mobile.cta')}
       </a>
       <p class="mt-3 text-xs text-stone-500 dark:text-stone-400">{t(locale, 'landing.mobile.note')}</p>
+      <ul class="mt-10 flex gap-4 justify-start sm:justify-center overflow-x-auto snap-x pb-2 list-none p-0">
+        {
+          MOBILE_SCREENSHOTS.map((screenshot) => (
+            <li class="snap-center shrink-0">
+              <img
+                src={`/mobile/${screenshot.file}.webp`}
+                alt={t(locale, screenshot.altKey)}
+                width="540"
+                height="1145"
+                loading="lazy"
+                class="h-96 w-auto rounded-xl border border-stone-200 dark:border-neutral-700 shadow-sm"
+              />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
