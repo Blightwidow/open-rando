@@ -3,35 +3,38 @@
 ## System Overview
 
 ```
-BUILD TIME                                    RUNTIME (static files)
-+-----------------------------------------+   +----------------------------+
-| Python Pipeline                         |   | Astro Static Site          |
-|                                         |   |                            |
-| routes.yaml ---+                        |   |  MapLibre GL JS            |
-| Overpass API --+-> fetch trail ->       |   |    Vector base tiles       |
-| SNCF stations -+   match stations ->    |   |    Contour overlay         |
-| GTFS API ------+   fetch POIs ->        |   |    GeoJSON trails + POIs   |
-| SRTM tiles ----+   elevation ->         |   |  Route list + filters      |
-| OSRM router ---+   geography ->         |   |  Elevation Chart (SVG)     |
-|                     export              |   |  Suggest panel             |
-|        ~/.local/share/open-rando/data/  |   |    catalog.json            |
-|               catalog.json              |   |    /gpx/{id}.gpx           |
-|               gpx/*.gpx                 |   |    /geojson/{id}.json      |
-|               geojson/*.json            |   |    /elevation/{id}.json    |
-|               elevation/*.json          |   +----------------------------+
-+-----------------------------------------+
-                                              +----------------------------+
-+-----------------------------------------+  | Cloudflare R2              |
-| Tile Pipeline                           |  |                            |
-|                                         |  |  france.pmtiles  (base)    |
-| Protomaps daily -> go-pmtiles extract ->|  |  world-low.pmtiles (z0-5)  |
-| SRTM .hgt -> GDAL + tippecanoe ------>  |  |  contours.pmtiles (SRTM)   |
-| SRTM .hgt -> GDAL + encode_rgb_dem ->   |  |  hillshade.pmtiles (SRTM)  |
-|               france.pmtiles            |  +----------------------------+
-|               world-low.pmtiles         |
-|               contours.pmtiles          |
-|               hillshade.pmtiles         |
-+-----------------------------------------+
+BUILD TIME                                       RUNTIME (static files)
++--------------------------------------------+   +-----------------------------+
+| Python pipeline (pipeline/)                |   | Astro static site           |
+|                                            |   |                             |
+| routes.yaml ---+                           |   |  MapLibre GL JS             |
+| OSM extract ---+-> tracks                  |   |    Vector base tiles        |
+| (Overpass      |   (geometry, SRTM         |   |    Contour overlay          |
+|  fallback)     |    elevation, geography)  |   |    GeoJSON trails + POIs    |
+| SRTM tiles ----+                           |   |  Route list + filters       |
+|                                            |   |  Elevation chart (SVG)      |
+| GTFS feeds ----> gtfs (stop index)         |   |  Section selector + QR      |
+| OSM extract ---+                           |   |                             |
+| SNCF stations -+-> pois (12x8 grid)        |   |    catalog.json             |
+| gtfs index ----+                           |   |    tracks/<id>/*            |
+|                                            |   |    pois/<col>_<row>.json    |
+| tracks + pois --> link (OSRM refinement)   |   |    links/<id>.json          |
+| tracks + links -> catalog + run-report     |   +-----------------------------+
+|                                            |
+|  ~/.local/share/open-rando/data/           |   +-----------------------------+
+|    catalog.json, run-report.json           |   | Cloudflare R2               |
+|    tracks/  pois/  links/                  |   |                             |
++--------------------------------------------+   |  france.pmtiles  (base)     |
+                                                 |  world-low.pmtiles (z0-5)   |
++--------------------------------------------+   |  contours.pmtiles (SRTM)    |
+| Tile pipelines (tiles/)                    |   |  hillshade.pmtiles (SRTM)   |
+|                                            |   |  base/ + grid/{col}_{row}/  |
+| Protomaps daily -> go-pmtiles extract      |   |    mobile offline bundles   |
+| SRTM .hgt -> GDAL + tippecanoe             |   +-----------------------------+
+| SRTM .hgt -> GDAL + encode_rgb_dem         |
+| masters -> build-grid.py, build-routes.py  |
+|   (grid.json + routes/<id>/pmtiles.json)   |
++--------------------------------------------+
 ```
 
 Build flow: `cd pipeline && uv run python -m open_rando pipeline` produces data artifacts to `~/.local/share/open-rando/data/`, then `cd website && bun run build` (Astro) copies them to `public/data/` and outputs a deployable `dist/` folder. Data and cache are stored outside the repo to persist across git worktrees.
@@ -150,67 +153,102 @@ open-rando/
 +-- pipeline/
 |   +-- pyproject.toml
 |   +-- uv.lock
+|   +-- Makefile.osm             # download France extract, filter per layer, build the index
 |   +-- routes.yaml              # curated GR route catalog (relation IDs, descriptions)
 |   +-- src/open_rando/
-|       +-- __init__.py
-|       +-- __main__.py
-|       +-- cli.py               # entry point, multi-route orchestration, catalog merging
-|       +-- config.py            # constants (API URLs, cache TTLs, thresholds)
-|       +-- models.py            # Accommodation, Station, PointOfInterest, Route dataclasses
-|       +-- data/
-|       |   +-- gr-descriptions.yaml  # route flavor text
-|       +-- fetchers/
-|       |   +-- discovery.py     # load routes from routes.yaml
-|       |   +-- overpass.py      # Overpass API client (cached, super-relation resolution)
-|       |   +-- stations.py      # OSM station fetcher (bbox chunking for large trails)
-|       |   +-- sncf.py          # SNCF reference station data (UIC codes, filtering)
-|       |   +-- gtfs.py          # GTFS bus stops + route names from transport.data.gouv.fr
-|       |   +-- pois.py          # accommodation POIs (hotels, campings via Overpass)
-|       |   +-- routing.py       # OSRM pedestrian routing for station-trail connectors
-|       |   +-- srtm.py          # SRTM .hgt tile downloader + bilinear interpolation
-|       +-- processors/
-|       |   +-- match.py         # station-to-trail matching (LineString + MultiLineString)
-|       |   +-- slice.py         # trail substring extraction, distance computation
-|       |   +-- elevation.py     # elevation profiling, duration, difficulty classification
-|       |   +-- geography.py     # region/departement resolution, terrain classification, forest ratio
-|       |   +-- connectors.py    # pedestrian walking paths between stations and trail
-|       +-- exporters/
-|           +-- gpx.py           # GPX writer (multi-segment tracks with elevation + POI waypoints)
-|           +-- geojson.py       # GeoJSON FeatureCollection per route
-|           +-- catalog.py       # catalog.json writer
-|           +-- elevation.py     # per-route elevation profile JSON
+|   |   +-- __main__.py
+|   |   +-- cli.py               # argument parsing, `pipeline` command chaining the stages
+|   |   +-- config.py            # constants (paths, API URLs, cache TTLs, thresholds)
+|   |   +-- models.py            # Station, PointOfInterest, PoiLink, Track, Landmark dataclasses
+|   |   +-- osm_tags.py          # OSM tag values shared by Overpass queries and the local index
+|   |   +-- poi_grid.py          # fixed 12x8 grid splitting France-wide POIs into files
+|   |   +-- poi_store.py         # read the POI grid written by `pois`
+|   |   +-- commands/            # one module per subcommand
+|   |   |   +-- tracks.py        # `tracks`: compute each curated track
+|   |   |   +-- gtfs.py          # `gtfs`: download feeds, build stop index
+|   |   |   +-- pois.py          # `pois`: build the France-wide POI grid
+|   |   |   +-- link.py          # `link`: join POIs to each track
+|   |   |   +-- catalog.py       # `catalog`: assemble catalog.json + run report
+|   |   |   +-- images.py        # `images`: AI hero illustrations per route
+|   |   |   +-- osm_index.py     # `osm-index`: build/inspect the local OSM extract index
+|   |   +-- data/                # JSON Schemas: catalog, poi-square, poi-index, links,
+|   |   |                        #   tile-grid, route-tiles (+ gr-descriptions.yaml, unused)
+|   |   +-- fetchers/
+|   |   |   +-- discovery.py     # load routes from routes.yaml
+|   |   |   +-- osm_extract.py   # query the local OSM extract index (replaces Overpass)
+|   |   |   +-- overpass.py      # Overpass API client (fallback; cached, super-relation resolution)
+|   |   |   +-- stations.py      # OSM station fetcher (bbox chunking for large trails)
+|   |   |   +-- sncf.py          # SNCF reference station data (UIC codes, filtering)
+|   |   |   +-- gtfs.py          # GTFS feed download, departures, bus line names
+|   |   |   +-- gtfs_stops_index.py  # local SQLite index of every boarding stop
+|   |   |   +-- pois.py          # accommodation POIs (hotels, campings)
+|   |   |   +-- landmarks.py     # landmarks near a trail (AI image prompts)
+|   |   |   +-- routing.py       # OSRM pedestrian routing for station-trail connectors
+|   |   |   +-- srtm.py          # SRTM .hgt tile downloader + bilinear interpolation
+|   |   +-- processors/
+|   |   |   +-- trail.py         # trail assembly shared by `pipeline` and `tracks`
+|   |   |   +-- match.py         # station-to-trail matching (LineString + MultiLineString)
+|   |   |   +-- slice.py         # trail substring extraction, distance and gap computation
+|   |   |   +-- elevation.py     # elevation profiling, duration, difficulty classification
+|   |   |   +-- geography.py     # region/departement resolution, terrain classification
+|   |   |   +-- connectors.py    # pedestrian walking paths between stations and trail
+|   |   |   +-- link.py          # which POIs are reachable from a track, and where along it
+|   |   +-- exporters/
+|   |       +-- track.py         # track.json writer
+|   |       +-- gpx.py           # GPX writer (multi-segment tracks with elevation)
+|   |       +-- geojson.py       # GeoJSON FeatureCollection per track
+|   |       +-- elevation.py     # per-track elevation profile JSON
+|   |       +-- pois.py          # POI grid squares + index
+|   |       +-- links.py         # links/<id>.json writer
+|   |       +-- catalog.py       # catalog.json builder + schema validation
+|   |       +-- report.py        # run-report.json (catalog diff, regression warnings)
+|   |       +-- failures.py      # failed-routes.json log
+|   |       +-- image_generator.py  # local FLUX hero images
+|   +-- tests/
 +-- tiles/
-|   +-- Makefile                  # SRTM → GDAL → tippecanoe → contours.pmtiles
+|   +-- Makefile                 # SRTM -> GDAL -> tippecanoe -> contours.pmtiles
+|   +-- Makefile.protomaps       # france.pmtiles + world-low.pmtiles, upload to R2
+|   +-- Makefile.hillshade       # hillshade.pmtiles (Mapbox RGB raster-dem)
+|   +-- Makefile.routes          # base/ + 12x8 grid/ bundles, per-route manifests, upload
+|   +-- build-grid.py            # split master archives into base + grid squares, write grid.json
+|   +-- build-routes.py          # per-route manifests listing intersecting squares
+|   +-- tile_manifests.py        # validate grid.json and route manifests against their schemas
+|   +-- build_france_mask.py     # French admin border for clipping
+|   +-- encode_rgb_dem.py        # SRTM -> Mapbox RGB PNG tiles
+|   +-- download.sh              # fetch the go-pmtiles binary
 +-- website/
 |   +-- package.json
 |   +-- bun.lock
 |   +-- astro.config.mjs
 |   +-- tailwind.config.mjs
+|   +-- deploy.sh                # build + push dist/ to gh-pages
+|   +-- .env.production          # PUBLIC_PMTILES_BASE (public R2 URL)
+|   +-- scripts/
+|   |   +-- check-pmtiles-base.mjs  # fail the build when PUBLIC_PMTILES_BASE is missing
 |   +-- src/
 |   |   +-- layouts/
 |   |   |   +-- Landing.astro          # landing page layout (hero, features, CTA)
 |   |   |   +-- Base.astro             # app layout (SEO meta, sticky nav, theme toggle, i18n)
-|   |   +-- pages/
-|   |   |   +-- index.astro            # landing page (FR)
-|   |   |   +-- about.astro            # about page (FR)
-|   |   |   +-- privacy.astro          # privacy policy (FR)
-|   |   |   +-- legal.astro            # legal mentions (FR)
-|   |   |   +-- app/index.astro        # route explorer with filters + suggest panel (FR)
-|   |   |   +-- app/route/[slug].astro # route detail page (FR)
-|   |   |   +-- en/index.astro         # landing page (EN)
-|   |   |   +-- en/about.astro         # about page (EN)
-|   |   |   +-- en/privacy.astro       # privacy policy (EN)
-|   |   |   +-- en/legal.astro         # legal mentions (EN)
-|   |   |   +-- en/app/index.astro     # route explorer (EN)
-|   |   |   +-- en/app/route/[slug].astro # route detail page (EN)
+|   |   +-- pages/                     # FR at the root, EN under en/
+|   |   |   +-- index.astro            # landing page
+|   |   |   +-- about.astro, privacy.astro, legal.astro
+|   |   |   +-- app/index.astro        # route explorer with filters + suggest panel
+|   |   |   +-- app/route/[slug].astro # route detail page
+|   |   |   +-- en/...                 # English copies of every page above
 |   |   +-- components/
 |   |   |   +-- RouteCard.astro        # clickable card with difficulty/terrain/description
 |   |   |   +-- RouteList.astro        # grid + empty state
-|   |   |   +-- RouteFilters.astro     # region, terrain, difficulty, step filters + suggest panel
+|   |   |   +-- RouteFilters.astro     # region, terrain, difficulty filters + suggest panel
+|   |   |   +-- SearchableSelect.astro # searchable dropdown used by the filters
 |   |   |   +-- ElevationChart.astro   # inline SVG elevation profile with map hover sync
 |   |   +-- lib/
-|   |       +-- catalog.ts             # types + data loading
+|   |       +-- catalog.ts             # types + data loading (tracks, links, POIs)
+|   |       +-- poi-grid.ts            # POI grid maths (same grid as the pipeline)
+|   |       +-- route-pois.ts          # pure join of links/<id>.json with POI squares
+|   |       +-- poi-popup.ts           # POI map popups
+|   |       +-- rail.ts                # train departure formatting
 |   |       +-- map.ts                 # shared MapLibre utilities (createMap, contours, POIs, theme)
+|   |       +-- styles/                # style-light.json, style-dark.json
 |   |       +-- i18n.ts                # translation dictionary (FR/EN) + helpers
 |   |       +-- format.ts              # formatting utilities
 |   |       +-- elevation.ts           # elevation profile utilities
@@ -219,8 +257,8 @@ open-rando/
 +-- docs/
 ```
 
-**Python deps**: `requests`, `shapely`, `gpxpy`, `geojson`, `pyyaml`
-**JS deps**: `astro`, `@astrojs/sitemap`, `maplibre-gl`, `pmtiles`, `tailwindcss`
+**Python deps**: `requests`, `shapely`, `gpxpy`, `geojson`, `pyyaml`, `ruamel.yaml`, `jsonschema` (extras: `osmium` for the OSM index, `diffusers`/`torch` for `images`)
+**JS deps**: `astro`, `@astrojs/sitemap`, `@astrojs/tailwind`, `maplibre-gl`, `pmtiles`, `qrcode-generator`, `tailwindcss`
 
 ---
 
@@ -228,10 +266,11 @@ open-rando/
 
 | Data | Cache location | TTL |
 |------|---------------|-----|
+| Local OSM extract index (trails, stations, accommodation, landmarks, forest) | `~/.cache/open-rando/osm/extract-index.sqlite` | Rebuilt by hand (`make -f Makefile.osm`) |
 | Overpass API responses (trails) | `~/.cache/open-rando/overpass/` | 60 days |
 | Overpass API responses (stations, accommodation) | `~/.cache/open-rando/overpass/` | 30 days |
 | SNCF station reference data | `~/.cache/open-rando/sncf/` | 30 days |
-| GTFS stops + feeds | `~/.cache/open-rando/gtfs/` | 30 days |
+| GTFS stop index, feeds and departures | `~/.cache/open-rando/gtfs/` | Feeds 30 days; departures per ISO week |
 | OSRM pedestrian routes | `~/.cache/open-rando/osrm/` | 90 days |
 | SRTM elevation tiles | `~/.cache/open-rando/srtm/` | Permanent |
 
@@ -243,7 +282,7 @@ When an Overpass query is served from cache, the pipeline skips the cooldown sle
 
 ## Tile Pipelines
 
-Three independent build chains in `tiles/`, all feeding Cloudflare R2 (`open-rando-tiles`):
+Four build chains in `tiles/`, all feeding Cloudflare R2 (`open-rando-tiles`):
 
 **1. Protomaps base** (`Makefile.protomaps`) — `go-pmtiles` extracts regional subsets from Protomaps' daily planet build via HTTP range requests (no full planet download).
 - `france.pmtiles` — France bbox `-5.5,41.0,10.0,51.5`, z6-13, Flat v4 schema
@@ -271,7 +310,9 @@ Three independent build chains in `tiles/`, all feeding Cloudflare R2 (`open-ran
 ```
 Replaces `rio-rgbify` which failed with a PROJ error on our DEM. Int16 + DEFLATE compression keeps the intermediate DEM ~1-2GB instead of 88GB Float32.
 
-All four PMTiles live on R2 under the public `.r2.dev` URL. Upload via `rclone` (wrangler's 300 MiB per-object ceiling blocks the multi-GB files). MapLibre GL JS reads PMTiles natively via the `pmtiles://` protocol. See [VECTOR_TILES.md](VECTOR_TILES.md) for style integration + R2 setup.
+**4. Mobile offline grid** (`Makefile.routes`) — `build-grid.py` splits each master archive into a shared low-zoom `base/<layer>.pmtiles` plus a 12x8 grid of high-zoom `grid/{col}_{row}/<layer>.pmtiles`; `build-routes.py` writes `routes/<id>/pmtiles.json` listing the squares a route touches. Both manifests (`grid.json`, `pmtiles.json`) are validated against their JSON Schemas by `tile_manifests.py` before they are written. See [MOBILE_OFFLINE.md](MOBILE_OFFLINE.md).
+
+The master PMTiles and the grid bundles live on R2 under the public `.r2.dev` URL. Upload via `rclone` (wrangler's 300 MiB per-object ceiling blocks the multi-GB files). MapLibre GL JS reads PMTiles natively via the `pmtiles://` protocol. See [VECTOR_TILES.md](VECTOR_TILES.md) for style integration + R2 setup.
 
 Prerequisites: `gdal` (gdal_contour, gdalbuildvrt, gdalwarp, ogrmerge.py, ogr2ogr), `tippecanoe`, `uv`, `rclone`, `go-pmtiles`.
 
