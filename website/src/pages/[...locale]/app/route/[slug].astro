@@ -24,6 +24,7 @@ const trainStations = getTrainStations(pois);
 const hotelCount = pois.filter((poi) => poi.poi_type === 'hotel').length;
 const campingCount = pois.filter((poi) => poi.poi_type === 'camping').length;
 const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
+const hasTrailGap = (route.trail_gap_km ?? 0) > 0 && (route.trail_segment_count ?? 1) > 1;
 ---
 
 <Base
@@ -77,6 +78,11 @@ const busStopCount = pois.filter((poi) => poi.poi_type === 'bus_stop').length;
           </>
         )}
       </dl>
+      {hasTrailGap && (
+        <p class="text-sm rounded-md bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200 px-3 py-2">
+          {t(locale, 'detail.trailGapNote', { count: route.trail_segment_count!, gap: route.trail_gap_km!.toFixed(1) })}
+        </p>
+      )}
       <div class="flex flex-wrap gap-2 mt-2">
         <span class="text-xs bg-forest-100 text-forest-800 dark:bg-forest-800 dark:text-forest-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.stationCount', { count: trainStations.length })}</span>
         {busStopCount > 0 && <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">{t(locale, 'detail.busStopCount', { count: busStopCount })}</span>}

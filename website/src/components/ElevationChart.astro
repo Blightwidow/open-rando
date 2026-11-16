@@ -14,6 +14,7 @@ const { elevationPath, locale = 'fr' } = Astro.props;
   id="elevation-chart"
   class="bg-white dark:bg-neutral-800 rounded-lg border border-stone-200 dark:border-neutral-700 p-5"
   data-elevation-path={elevationPath}
+  data-gap-label={t(locale, 'detail.trailGapMarker')}
 >
   <h2 class="text-lg font-semibold mb-3">{t(locale, 'detail.elevationProfile')}</h2>
   <div id="elevation-chart-container" class="relative" style="height: 240px;">
@@ -30,16 +31,21 @@ const { elevationPath, locale = 'fr' } = Astro.props;
     </div>
     <span class="text-stone-400 dark:text-stone-500 italic text-right">{t(locale, 'detail.timeDisclaimer')}</span>
   </div>
+  <div id="elevation-gap-legend" class="hidden items-center gap-1 mt-2 text-xs text-stone-500 dark:text-stone-400">
+    <span class="inline-block w-0 h-3 border-l-2 border-dashed border-stone-500 dark:border-stone-400"></span>
+    {t(locale, 'detail.trailGapLegend')}
+  </div>
 </div>
 
 <script>
   import type { RouteElevationProfile } from '../lib/catalog';
-  import { getSlopeColor, computeSlopePercent, formatTime } from '../lib/elevation';
+  import { getSlopeColor, computeSlopePercent, formatTime, sliceSegmentBoundaries } from '../lib/elevation';
 
   const chartElement = document.getElementById('elevation-chart')!;
   const container = document.getElementById('elevation-chart-container')!;
   const loading = document.getElementById('elevation-loading')!;
   const elevationPath = chartElement.dataset.elevationPath!;
+  const gapLabel = chartElement.dataset.gapLabel!;
 
   let fullProfile: RouteElevationProfile | null = null;
 
@@ -85,6 +91,7 @@ const { elevationPath, locale = 'fr' } = Astro.props;
       distances_km: profile.distances_km.slice(startIndex, endIndex + 1).map((distance) => distance - distanceOffset),
       elevations_m: profile.elevations_m.slice(startIndex, endIndex + 1),
       times_min: profile.times_min.slice(startIndex, endIndex + 1).map((time) => time - timeOffset),
+      segment_boundaries_km: sliceSegmentBoundaries(profile.segment_boundaries_km, startKm, endKm),
     };
   }
 
@@ -139,6 +146,11 @@ const { elevationPath, locale = 'fr' } = Astro.props;
         `<path d="M${x1},${y1} L${x2},${y2} L${x2},${baselineY} L${x1},${baselineY} Z" fill="${color}" fill-opacity="0.25" />`
       );
     }
+
+    const gapMarkers = (profile.segment_boundaries_km ?? []).map((boundaryKm) => {
+      const x = scaleX(boundaryKm).toFixed(1);
+      return `<line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${paddingTop + chartHeight}" stroke="currentColor" stroke-opacity="0.6" stroke-width="1.5" stroke-dasharray="4 3"><title>${gapLabel}</title></line>`;
+    });
 
     const gridLines: string[] = [];
     const gridLabels: string[] = [];
@@ -196,12 +208,16 @@ const { elevationPath, locale = 'fr' } = Astro.props;
       ${timelineLabels.join('\n')}
       ${slopeAreaSegments.join('\n')}
       <path d="${linePath}" fill="none" stroke="var(--color-trail, #E72323)" stroke-width="2" stroke-linejoin="round" />
+      ${gapMarkers.join('\n')}
       ${tooltipGroup}
       <rect id="tooltip-overlay" x="${paddingLeft}" y="${paddingTop}" width="${chartWidth}" height="${chartHeight}" fill="transparent" />
     </svg>`;
 
     container.innerHTML = svg;
     document.getElementById('elevation-legend')!.classList.replace('hidden', 'flex');
+    const gapLegend = document.getElementById('elevation-gap-legend')!;
+    gapLegend.classList.toggle('hidden', gapMarkers.length === 0);
+    gapLegend.classList.toggle('flex', gapMarkers.length > 0);
 
     const overlay = document.getElementById('tooltip-overlay')!;
     const tooltipLine = document.getElementById('tooltip-line')!;
