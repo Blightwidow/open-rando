@@ -10,7 +10,7 @@ The Protomaps base lacks features a GR hiker needs: `drinking_water`, `spring`, 
 
 Done when `tiles/` builds a France-wide `overlay.pmtiles` with tippecanoe, uploaded to R2, styled in light and dark in `website/src/lib/styles/`, with per-layer toggles and a legend.
 
-Status: extracts (`make -f Makefile.osm overlay`) and `tiles/Makefile.overlay` + `overlay_features.py` are written; intermediates build (519k features without streams). Not yet run: the tippecanoe step (tippecanoe not installed on the dev machine), so no real `overlay.pmtiles` size yet. Next: build it and record the size, then styles (light/dark, toggles, legend) and R2 upload. Sizes to watch: 696k streams (103 MB PBF), 249k power towers. Filter out bus shelters (`shelter_type=public_transport`) from the 35k shelter ways when tiling; draw rivers first, streams only if the size fits.
+Status: extracts, `tiles/Makefile.overlay` and `overlay_features.py` done and built. `overlay.pmtiles` is 61 MB without streams (519k features, 1m45s) and 157 MB with `WITH_STREAMS=1` (696k stream ways add 96 MB). Next: styles (light/dark, per-layer toggles, legend, FR/EN labels), R2 upload, `docs/VECTOR_TILES.md`.
 
 ### 2. Higher-resolution DEM (IGN RGE ALTI 5m instead of SRTM 30m)
 

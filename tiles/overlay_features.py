@@ -53,6 +53,23 @@ RULES: list[tuple[str, str, str, set[str]]] = [
 ]
 LAYERS = [layer for layer, *_ in RULES]
 
+# First zoom each layer is drawn at. Points are cheap, so they come in early enough to
+# plan a day; towers and streams are dense and only read up close. Written on every
+# feature as `tippecanoe.minzoom`: tippecanoe ignores a minzoom given per layer.
+MIN_ZOOMS = {
+    "river": 8,
+    "peak": 9,
+    "hut": 9,
+    "power_line": 10,
+    "water": 11,
+    "spring": 11,
+    "shelter": 11,
+    "viewpoint": 11,
+    "guidepost": 12,
+    "stream": 12,
+    "power_tower": 13,
+}
+
 
 def parse_elevation(raw: str | None) -> int | None:
     """Metres from an OSM `ele` value such as "1234", "1234.5" or "1 234 m"."""
@@ -121,7 +138,12 @@ def classify(feature: Feature) -> tuple[str, Feature] | None:
             elevation = parse_elevation(tags.get("ele"))
             if elevation is not None:
                 properties["ele"] = elevation
-        return layer, {"type": "Feature", "properties": properties, "geometry": geometry}
+        return layer, {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": geometry,
+            "tippecanoe": {"minzoom": MIN_ZOOMS[layer]},
+        }
     return None
 
 

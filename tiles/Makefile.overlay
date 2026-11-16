@@ -39,35 +39,23 @@ EXPORT := osmium export -f geojsonseq --geometry-types=point,linestring,polygon
 R2_BUCKET := open-rando-tiles
 R2_REMOTE := r2
 
-# Per layer: first zoom it is drawn at. Points are cheap, so they come in early
-# enough to plan a day; towers and streams are dense and only read up close.
-MINZOOM_RIVER := 8
-MINZOOM_PEAK := 9
-MINZOOM_HUT := 9
-MINZOOM_POWER_LINE := 10
-MINZOOM_WATER := 11
-MINZOOM_SPRING := 11
-MINZOOM_SHELTER := 11
-MINZOOM_VIEWPOINT := 11
-MINZOOM_GUIDEPOST := 12
-MINZOOM_STREAM := 12
-MINZOOM_POWER_TOWER := 13
+# Each layer's first zoom is set per feature in overlay_features.py (MIN_ZOOMS).
 MAXZOOM := 14
 
 LAYER_ARGS := \
-	-L'{"file": "$(BUILD_DIR)/river.geojsonl", "layer": "river", "minzoom": $(MINZOOM_RIVER)}' \
-	-L'{"file": "$(BUILD_DIR)/peak.geojsonl", "layer": "peak", "minzoom": $(MINZOOM_PEAK)}' \
-	-L'{"file": "$(BUILD_DIR)/hut.geojsonl", "layer": "hut", "minzoom": $(MINZOOM_HUT)}' \
-	-L'{"file": "$(BUILD_DIR)/power_line.geojsonl", "layer": "power_line", "minzoom": $(MINZOOM_POWER_LINE)}' \
-	-L'{"file": "$(BUILD_DIR)/water.geojsonl", "layer": "water", "minzoom": $(MINZOOM_WATER)}' \
-	-L'{"file": "$(BUILD_DIR)/spring.geojsonl", "layer": "spring", "minzoom": $(MINZOOM_SPRING)}' \
-	-L'{"file": "$(BUILD_DIR)/shelter.geojsonl", "layer": "shelter", "minzoom": $(MINZOOM_SHELTER)}' \
-	-L'{"file": "$(BUILD_DIR)/viewpoint.geojsonl", "layer": "viewpoint", "minzoom": $(MINZOOM_VIEWPOINT)}' \
-	-L'{"file": "$(BUILD_DIR)/guidepost.geojsonl", "layer": "guidepost", "minzoom": $(MINZOOM_GUIDEPOST)}' \
-	-L'{"file": "$(BUILD_DIR)/power_tower.geojsonl", "layer": "power_tower", "minzoom": $(MINZOOM_POWER_TOWER)}'
+	-L'{"file": "$(BUILD_DIR)/river.geojsonl", "layer": "river"}' \
+	-L'{"file": "$(BUILD_DIR)/peak.geojsonl", "layer": "peak"}' \
+	-L'{"file": "$(BUILD_DIR)/hut.geojsonl", "layer": "hut"}' \
+	-L'{"file": "$(BUILD_DIR)/power_line.geojsonl", "layer": "power_line"}' \
+	-L'{"file": "$(BUILD_DIR)/water.geojsonl", "layer": "water"}' \
+	-L'{"file": "$(BUILD_DIR)/spring.geojsonl", "layer": "spring"}' \
+	-L'{"file": "$(BUILD_DIR)/shelter.geojsonl", "layer": "shelter"}' \
+	-L'{"file": "$(BUILD_DIR)/viewpoint.geojsonl", "layer": "viewpoint"}' \
+	-L'{"file": "$(BUILD_DIR)/guidepost.geojsonl", "layer": "guidepost"}' \
+	-L'{"file": "$(BUILD_DIR)/power_tower.geojsonl", "layer": "power_tower"}'
 
 ifeq ($(WITH_STREAMS),1)
-LAYER_ARGS += -L'{"file": "$(BUILD_DIR)/stream.geojsonl", "layer": "stream", "minzoom": $(MINZOOM_STREAM)}'
+LAYER_ARGS += -L'{"file": "$(BUILD_DIR)/stream.geojsonl", "layer": "stream"}'
 endif
 
 STAMPS := $(BUILD_DIR)/points.stamp $(BUILD_DIR)/power.stamp $(BUILD_DIR)/waterways.stamp

@@ -85,6 +85,12 @@ class TestClassify:
         assert layer_of(square(natural="spring")) is None
 
 
+class TestMinimumZoom:
+    def test_feature_carries_its_layers_minimum_zoom_for_tippecanoe(self):
+        _, feature = classify(point(information="guidepost"))
+        assert feature["tippecanoe"] == {"minzoom": 12}
+
+
 class TestParseElevation:
     def test_plain_number(self):
         assert parse_elevation("1234") == 1234
@@ -126,6 +132,9 @@ class TestSplitFeatures:
         split_features([], tmp_path, ["water"])
 
         assert (tmp_path / "river.geojsonl").read_text() == "keep\n"
+
+    def test_every_rule_layer_has_a_minimum_zoom(self):
+        assert set(overlay_features.MIN_ZOOMS) == set(overlay_features.LAYERS)
 
     def test_every_rule_layer_is_listed(self):
         assert set(overlay_features.LAYERS) == {rule[0] for rule in overlay_features.RULES}
