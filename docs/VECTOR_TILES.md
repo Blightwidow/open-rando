@@ -377,6 +377,7 @@ make -f Makefile.overlay upload                   # upload to R2 (wrangler)
 - First zooms: rivers 8, peaks and huts 9, power lines, aerialways and passes 10, water, springs, shelters, viewpoints 11, guideposts, waterfalls, caves and churches 12, toilets, cemeteries, fords, bridges and towers 13.
 - Size: 80 MB with every layer (61 MB before passes, waterfalls, caves, fords, bridges, toilets, churches, cemeteries and aerialways). Bridges (100k) and power towers (249k) are the biggest point and line layers.
 - Bridges: only those carrying a path, footway, steps, bridleway, cycleway, track or pedestrian way. They are drawn as a pale deck between two dark edges (reversed in dark theme).
+- Churches are a cross icon and cemeteries a cross in a square, as on the IGN Scan 25 map. The Protomaps sprite has neither, so `registerOverlayImages` (`overlay.ts`) draws them on a canvas and adds them to the map on every style load.
 - Not included on purpose: difficulty (`sac_scale`), protected areas, other hiking route relations, resupply shops.
 - `--drop-densest-as-needed` thins crowded tiles instead of failing on the tile size limit.
 - Upload uses `wrangler r2 object put --remote` (login once with `npx wrangler@4 login`), because the file is under wrangler's 300 MiB limit. No rclone remote needed.

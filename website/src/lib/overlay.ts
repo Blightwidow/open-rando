@@ -50,8 +50,8 @@ export interface OverlayGroup {
   key: OverlayGroupKey;
   /** Translation key of the toggle and legend label. */
   labelKey: string;
-  /** Legend swatch: a dot for point features, a stroke for lines. */
-  swatch: 'dot' | 'line';
+  /** Legend swatch: a dot for point features, a stroke for lines, a cross for churches. */
+  swatch: 'dot' | 'line' | 'cross';
   color: string;
   /** Guideposts and power lines are dense, so they start hidden. */
   defaultVisible: boolean;
@@ -89,8 +89,8 @@ const LIGHT: Palette = {
   power: '#78716c',
   waterfall: '#0891b2',
   cave: '#7c2d12',
-  church: '#4d7c0f',
-  cemetery: '#64748b',
+  church: '#1c1917',
+  cemetery: '#44403c',
   toilets: '#0d9488',
   aerialway: '#1c1917',
   bridgeDeck: '#fafaf9',
@@ -110,8 +110,8 @@ const DARK: Palette = {
   power: '#a8a29e',
   waterfall: '#22d3ee',
   cave: '#fb923c',
-  church: '#a3e635',
-  cemetery: '#94a3b8',
+  church: '#fafaf9',
+  cemetery: '#d6d3d1',
   toilets: '#2dd4bf',
   aerialway: '#f5f5f4',
   bridgeDeck: '#292524',
@@ -183,6 +183,78 @@ function label(
       'text-halo-width': 1.5,
     },
   };
+}
+
+export const CHURCH_ICON_ID = 'overlay-church-cross';
+export const CEMETERY_ICON_ID = 'overlay-cemetery-cross';
+
+/** Symbol layer drawing one of the icons registered by `registerOverlayImages`. */
+function icon(id: string, sourceLayer: string, iconId: string, size: [number, number]): maplibregl.LayerSpecification {
+  return {
+    id,
+    type: 'symbol',
+    source: OVERLAY_SOURCE_ID,
+    'source-layer': sourceLayer,
+    layout: {
+      'icon-image': iconId,
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 12, size[0], 16, size[1]],
+      'icon-allow-overlap': true,
+    },
+  };
+}
+
+const ICON_PIXELS = 48;
+
+/**
+ * Cross for a church and cross in a square for a cemetery, in the manner of the IGN Scan 25 map.
+ * Drawn on a canvas (a halo under a solid stroke keeps them readable on any ground) because the
+ * Protomaps sprite has no such icons. Works with `setStyle`, which drops images: call it each time.
+ */
+export function registerOverlayImages(map: maplibregl.Map, isDark: boolean): void {
+  const palette = isDark ? DARK : LIGHT;
+  const images: Array<[string, (context: CanvasRenderingContext2D, color: string, halo: string) => void, string]> = [
+    [CHURCH_ICON_ID, drawChurchCross, palette.church],
+    [CEMETERY_ICON_ID, drawCemeteryCross, palette.cemetery],
+  ];
+  for (const [iconId, draw, color] of images) {
+    const canvas = document.createElement('canvas');
+    canvas.width = ICON_PIXELS;
+    canvas.height = ICON_PIXELS;
+    const context = canvas.getContext('2d');
+    if (!context) continue;
+    draw(context, color, palette.halo);
+    if (map.hasImage(iconId)) map.removeImage(iconId);
+    map.addImage(iconId, context.getImageData(0, 0, ICON_PIXELS, ICON_PIXELS), { pixelRatio: 2 });
+  }
+}
+
+function fillCross(context: CanvasRenderingContext2D, centerX: number, top: number, height: number, thickness: number, grow: number): void {
+  const armY = top + height * 0.3;
+  const armWidth = height * 0.62;
+  context.fillRect(centerX - thickness / 2 - grow, top - grow, thickness + 2 * grow, height + 2 * grow);
+  context.fillRect(centerX - armWidth / 2 - grow, armY - thickness / 2 - grow, armWidth + 2 * grow, thickness + 2 * grow);
+}
+
+function drawChurchCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
+  context.fillStyle = halo;
+  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 2.5);
+  context.fillStyle = color;
+  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 0);
+}
+
+function drawCemeteryCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
+  const inset = 7;
+  const side = ICON_PIXELS - 2 * inset;
+  context.lineWidth = 6;
+  context.strokeStyle = halo;
+  context.strokeRect(inset, inset, side, side);
+  context.lineWidth = 3;
+  context.strokeStyle = color;
+  context.strokeRect(inset, inset, side, side);
+  context.fillStyle = halo;
+  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 1.5);
+  context.fillStyle = color;
+  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 0);
 }
 
 export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
@@ -328,12 +400,12 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
     {
       key: 'landmark',
       labelKey: 'overlay.landmark',
-      swatch: 'dot',
-      color: palette.church,
+      swatch: 'cross',
+      color: '#78716c', // mid-tone: the legend reads on both a light and a dark panel
       defaultVisible: true,
       layers: [
-        dot('overlay-cemetery', 'cemetery', palette.cemetery, outline, [2.5, 4.5], { hollow: true }),
-        dot('overlay-church', 'church', palette.church, outline, [3, 6]),
+        icon('overlay-cemetery', 'cemetery', CEMETERY_ICON_ID, [0.65, 1]),
+        icon('overlay-church', 'church', CHURCH_ICON_ID, [0.75, 1.1]),
         label('overlay-church-label', 'church', ['get', 'name'], palette, 14),
       ],
     },
@@ -412,6 +484,7 @@ export function addOverlay(
   isDark: boolean,
   visibleGroups: Set<OverlayGroupKey>,
 ): void {
+  registerOverlayImages(map, isDark);
   map.addSource(OVERLAY_SOURCE_ID, {
     type: 'vector',
     url: pmtilesUrl,
