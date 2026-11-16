@@ -21,16 +21,37 @@ export const OVERLAY_SOURCE_LAYERS = [
   'viewpoint',
   'guidepost',
   'power_tower',
+  'pass',
+  'waterfall',
+  'cave',
+  'ford',
+  'toilets',
+  'church',
+  'cemetery',
+  'aerialway',
+  'bridge',
 ] as const;
 
-export type OverlayGroupKey = 'river' | 'water' | 'shelter' | 'peak' | 'viewpoint' | 'guidepost' | 'power';
+export type OverlayGroupKey =
+  | 'river'
+  | 'water'
+  | 'shelter'
+  | 'peak'
+  | 'viewpoint'
+  | 'nature'
+  | 'crossing'
+  | 'landmark'
+  | 'toilets'
+  | 'aerialway'
+  | 'guidepost'
+  | 'power';
 
 export interface OverlayGroup {
   key: OverlayGroupKey;
   /** Translation key of the toggle and legend label. */
   labelKey: string;
-  /** Legend swatch: a dot for point features, a stroke for lines. */
-  swatch: 'dot' | 'line';
+  /** Legend swatch: a dot for point features, a stroke for lines, a cross for churches. */
+  swatch: 'dot' | 'line' | 'cross';
   color: string;
   /** Guideposts and power lines are dense, so they start hidden. */
   defaultVisible: boolean;
@@ -45,6 +66,14 @@ interface Palette {
   viewpoint: string;
   guidepost: string;
   power: string;
+  waterfall: string;
+  cave: string;
+  church: string;
+  cemetery: string;
+  toilets: string;
+  aerialway: string;
+  bridgeDeck: string;
+  bridgeCasing: string;
   halo: string;
   text: string;
   dotOutline: string;
@@ -58,6 +87,14 @@ const LIGHT: Palette = {
   viewpoint: '#db2777',
   guidepost: '#0f766e',
   power: '#78716c',
+  waterfall: '#0891b2',
+  cave: '#7c2d12',
+  church: '#1c1917',
+  cemetery: '#44403c',
+  toilets: '#0d9488',
+  aerialway: '#1c1917',
+  bridgeDeck: '#fafaf9',
+  bridgeCasing: '#44403c',
   halo: '#ffffff',
   text: '#44403c',
   dotOutline: '#ffffff',
@@ -71,12 +108,28 @@ const DARK: Palette = {
   viewpoint: '#f472b6',
   guidepost: '#2dd4bf',
   power: '#a8a29e',
+  waterfall: '#22d3ee',
+  cave: '#fb923c',
+  church: '#fafaf9',
+  cemetery: '#d6d3d1',
+  toilets: '#2dd4bf',
+  aerialway: '#f5f5f4',
+  bridgeDeck: '#292524',
+  bridgeCasing: '#e7e5e4',
   halo: '#1c1917',
   text: '#e7e5e4',
   dotOutline: '#1c1917',
 };
 
 const FONT = ['Noto Sans Regular'];
+
+/** "Name\n1234 m" when the elevation is known, the name alone otherwise. */
+const ELEVATION_LABEL: maplibregl.ExpressionSpecification = [
+  'case',
+  ['has', 'ele'],
+  ['concat', ['get', 'name'], '\n', ['to-string', ['get', 'ele']], ' m'],
+  ['get', 'name'],
+];
 
 function dot(
   id: string,
@@ -130,6 +183,78 @@ function label(
       'text-halo-width': 1.5,
     },
   };
+}
+
+export const CHURCH_ICON_ID = 'overlay-church-cross';
+export const CEMETERY_ICON_ID = 'overlay-cemetery-cross';
+
+/** Symbol layer drawing one of the icons registered by `registerOverlayImages`. */
+function icon(id: string, sourceLayer: string, iconId: string, size: [number, number]): maplibregl.LayerSpecification {
+  return {
+    id,
+    type: 'symbol',
+    source: OVERLAY_SOURCE_ID,
+    'source-layer': sourceLayer,
+    layout: {
+      'icon-image': iconId,
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 12, size[0], 16, size[1]],
+      'icon-allow-overlap': true,
+    },
+  };
+}
+
+const ICON_PIXELS = 48;
+
+/**
+ * Cross for a church and cross in a square for a cemetery, in the manner of the IGN Scan 25 map.
+ * Drawn on a canvas (a halo under a solid stroke keeps them readable on any ground) because the
+ * Protomaps sprite has no such icons. Works with `setStyle`, which drops images: call it each time.
+ */
+export function registerOverlayImages(map: maplibregl.Map, isDark: boolean): void {
+  const palette = isDark ? DARK : LIGHT;
+  const images: Array<[string, (context: CanvasRenderingContext2D, color: string, halo: string) => void, string]> = [
+    [CHURCH_ICON_ID, drawChurchCross, palette.church],
+    [CEMETERY_ICON_ID, drawCemeteryCross, palette.cemetery],
+  ];
+  for (const [iconId, draw, color] of images) {
+    const canvas = document.createElement('canvas');
+    canvas.width = ICON_PIXELS;
+    canvas.height = ICON_PIXELS;
+    const context = canvas.getContext('2d');
+    if (!context) continue;
+    draw(context, color, palette.halo);
+    if (map.hasImage(iconId)) map.removeImage(iconId);
+    map.addImage(iconId, context.getImageData(0, 0, ICON_PIXELS, ICON_PIXELS), { pixelRatio: 2 });
+  }
+}
+
+function fillCross(context: CanvasRenderingContext2D, centerX: number, top: number, height: number, thickness: number, grow: number): void {
+  const armY = top + height * 0.3;
+  const armWidth = height * 0.62;
+  context.fillRect(centerX - thickness / 2 - grow, top - grow, thickness + 2 * grow, height + 2 * grow);
+  context.fillRect(centerX - armWidth / 2 - grow, armY - thickness / 2 - grow, armWidth + 2 * grow, thickness + 2 * grow);
+}
+
+function drawChurchCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
+  context.fillStyle = halo;
+  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 2.5);
+  context.fillStyle = color;
+  fillCross(context, ICON_PIXELS / 2, 6, 36, 7, 0);
+}
+
+function drawCemeteryCross(context: CanvasRenderingContext2D, color: string, halo: string): void {
+  const inset = 7;
+  const side = ICON_PIXELS - 2 * inset;
+  context.lineWidth = 6;
+  context.strokeStyle = halo;
+  context.strokeRect(inset, inset, side, side);
+  context.lineWidth = 3;
+  context.strokeStyle = color;
+  context.strokeRect(inset, inset, side, side);
+  context.fillStyle = halo;
+  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 1.5);
+  context.fillStyle = color;
+  fillCross(context, ICON_PIXELS / 2, 14, 20, 4, 0);
 }
 
 export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
@@ -213,13 +338,9 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
       defaultVisible: true,
       layers: [
         dot('overlay-peak', 'peak', palette.peak, outline, [2.5, 5], { named: true }),
-        label(
-          'overlay-peak-label',
-          'peak',
-          ['case', ['has', 'ele'], ['concat', ['get', 'name'], '\n', ['to-string', ['get', 'ele']], ' m'], ['get', 'name']],
-          palette,
-          11,
-        ),
+        label('overlay-peak-label', 'peak', ELEVATION_LABEL, palette, 11),
+        dot('overlay-pass', 'pass', palette.peak, outline, [2.5, 5], { hollow: true }),
+        label('overlay-pass-label', 'pass', ELEVATION_LABEL, palette, 12),
       ],
     },
     {
@@ -229,6 +350,92 @@ export function getOverlayGroups(isDark: boolean): OverlayGroup[] {
       color: palette.viewpoint,
       defaultVisible: true,
       layers: [dot('overlay-viewpoint', 'viewpoint', palette.viewpoint, outline, [3, 5.5])],
+    },
+    {
+      key: 'nature',
+      labelKey: 'overlay.nature',
+      swatch: 'dot',
+      color: palette.waterfall,
+      defaultVisible: true,
+      layers: [
+        dot('overlay-waterfall', 'waterfall', palette.waterfall, outline, [3, 5.5]),
+        dot('overlay-cave', 'cave', palette.cave, outline, [3, 5.5]),
+        label('overlay-waterfall-label', 'waterfall', ['get', 'name'], palette, 13),
+        label('overlay-cave-label', 'cave', ['get', 'name'], palette, 13),
+      ],
+    },
+    {
+      key: 'crossing',
+      labelKey: 'overlay.crossing',
+      swatch: 'line',
+      color: '#a8a29e', // mid-tone: the legend reads on both a light and a dark panel
+      defaultVisible: true,
+      layers: [
+        // A bridge reads as a pale deck between two dark edges, laid over the trail's own line.
+        {
+          id: 'overlay-bridge-casing',
+          type: 'line',
+          source: OVERLAY_SOURCE_ID,
+          'source-layer': 'bridge',
+          layout: { 'line-cap': 'butt' },
+          paint: {
+            'line-color': palette.bridgeCasing,
+            'line-width': ['interpolate', ['linear'], ['zoom'], 13, 3, 17, 9],
+          },
+        },
+        {
+          id: 'overlay-bridge-deck',
+          type: 'line',
+          source: OVERLAY_SOURCE_ID,
+          'source-layer': 'bridge',
+          layout: { 'line-cap': 'butt' },
+          paint: {
+            'line-color': palette.bridgeDeck,
+            'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1.4, 17, 5.5],
+          },
+        },
+        dot('overlay-ford', 'ford', palette.water, outline, [3, 5.5], { hollow: true }),
+      ],
+    },
+    {
+      key: 'landmark',
+      labelKey: 'overlay.landmark',
+      swatch: 'cross',
+      color: '#78716c', // mid-tone: the legend reads on both a light and a dark panel
+      defaultVisible: true,
+      layers: [
+        icon('overlay-cemetery', 'cemetery', CEMETERY_ICON_ID, [0.65, 1]),
+        icon('overlay-church', 'church', CHURCH_ICON_ID, [0.75, 1.1]),
+        label('overlay-church-label', 'church', ['get', 'name'], palette, 14),
+      ],
+    },
+    {
+      key: 'toilets',
+      labelKey: 'overlay.toilets',
+      swatch: 'dot',
+      color: palette.toilets,
+      defaultVisible: true,
+      layers: [dot('overlay-toilets', 'toilets', palette.toilets, outline, [3, 5])],
+    },
+    {
+      key: 'aerialway',
+      labelKey: 'overlay.aerialway',
+      swatch: 'line',
+      color: '#78716c', // mid-tone: the legend reads on both a light and a dark panel
+      defaultVisible: true,
+      layers: [
+        {
+          id: 'overlay-aerialway',
+          type: 'line',
+          source: OVERLAY_SOURCE_ID,
+          'source-layer': 'aerialway',
+          paint: {
+            'line-color': palette.aerialway,
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 15, 2.2],
+            'line-dasharray': [2, 2],
+          },
+        },
+      ],
     },
     {
       key: 'guidepost',
@@ -277,6 +484,7 @@ export function addOverlay(
   isDark: boolean,
   visibleGroups: Set<OverlayGroupKey>,
 ): void {
+  registerOverlayImages(map, isDark);
   map.addSource(OVERLAY_SOURCE_ID, {
     type: 'vector',
     url: pmtilesUrl,

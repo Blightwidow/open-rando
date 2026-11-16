@@ -31,8 +31,9 @@ EXTRACTS := $(STATIONS) $(ACCOMMODATION) $(LANDMARKS) $(FOREST) $(TRAILS)
 OVERLAY_POINTS := $(OSM_DIR)/overlay-points.osm.pbf
 OVERLAY_POWER := $(OSM_DIR)/overlay-power.osm.pbf
 OVERLAY_WATERWAYS := $(OSM_DIR)/overlay-waterways.osm.pbf
+OVERLAY_STRUCTURES := $(OSM_DIR)/overlay-structures.osm.pbf
 
-OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS)
+OVERLAYS := $(OVERLAY_POINTS) $(OVERLAY_POWER) $(OVERLAY_WATERWAYS) $(OVERLAY_STRUCTURES)
 
 .PHONY: all check download extracts overlay index status clean distclean
 
@@ -89,18 +90,27 @@ $(TRAILS): $(PBF)
 
 overlay: $(OVERLAYS)
 
-# Water, shelters, huts, guideposts, peaks and viewpoints. Shelters, huts and
-# viewpoints are sometimes mapped as areas, hence nodes and ways. Keep the tags
-# (drinking_water, ele, name, ...): the tiles decide what to draw.
+# Water, shelters, huts, guideposts, peaks, passes, viewpoints and landmarks. Shelters, huts,
+# viewpoints, toilets, churches and cemeteries are sometimes mapped as areas, hence nodes and
+# ways. Keep the tags (drinking_water, ele, religion, ...): the tiles decide what to draw.
 $(OVERLAY_POINTS): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		n/amenity=drinking_water \
+		n/amenity=water_point \
+		n/man_made=water_tap \
 		n/natural=spring \
 		nw/amenity=shelter \
-		nw/tourism=alpine_hut \
+		nw/tourism=alpine_hut,wilderness_hut \
 		n/information=guidepost \
-		n/natural=peak \
-		nw/tourism=viewpoint
+		n/natural=peak,saddle,cave_entrance \
+		n/mountain_pass=yes \
+		n/waterway=waterfall \
+		n/ford=yes \
+		nw/tourism=viewpoint \
+		nw/amenity=toilets \
+		nw/amenity=place_of_worship \
+		nw/landuse=cemetery \
+		nw/amenity=grave_yard
 
 # Power lines and their towers. Pylons are poles for lower-voltage lines, which
 # hikers do not need, so only `line` and `tower`.
@@ -113,6 +123,12 @@ $(OVERLAY_POWER): $(PBF)
 $(OVERLAY_WATERWAYS): $(PBF)
 	osmium tags-filter --overwrite -o $@ $< \
 		w/waterway=river,stream
+
+# Cable cars, lifts and every bridge (the tiles keep only those carrying a path or track).
+$(OVERLAY_STRUCTURES): $(PBF)
+	osmium tags-filter --overwrite -o $@ $< \
+		w/aerialway \
+		w/bridge
 
 index: $(EXTRACTS)
 	cd $(CURDIR) && uv run python -m open_rando osm-index --extracts-dir $(OSM_DIR)

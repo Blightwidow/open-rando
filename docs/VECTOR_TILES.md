@@ -352,12 +352,12 @@ Paths are contract: `grid/{col}_{row}/{layer}.pmtiles`. Bump `grid.json` `versio
 
 ## Stage G: Hiking overlay
 
-Water points, springs, shelters, huts, guideposts, peaks, viewpoints, power lines and rivers, drawn on the route detail map. Plain layers: no popups, no clicks. Streams are left out (157 MB with them against 61 MB without; `WITH_STREAMS=1` opts in).
+Water points (taps and fountains included), springs, shelters, huts, guideposts, peaks and passes, waterfalls, caves, fords, bridges, viewpoints, toilets, churches, cemeteries, aerialways, power lines and rivers, drawn on the route detail map. Plain layers: no popups, no clicks. Streams are left out (157 MB with them against 61 MB without; `WITH_STREAMS=1` opts in).
 
 ### Files
 
-- `pipeline/Makefile.osm` target `overlay` — `osmium tags-filter` extracts from the France PBF (`overlay-points`, `overlay-power`, `overlay-waterways`)
-- `tiles/overlay_features.py` — PEP 723 script; sorts `osmium export` GeoJSONSeq into one file per layer, keeps only `name` and `ele`, turns areas into centroids, drops bus shelters and non-drinkable water, writes `tippecanoe.minzoom` on every feature
+- `pipeline/Makefile.osm` target `overlay` — `osmium tags-filter` extracts from the France PBF (`overlay-points`, `overlay-power`, `overlay-waterways`, `overlay-structures`). The recipes depend on the PBF only: after editing a filter, delete that extract to rebuild it
+- `tiles/overlay_features.py` — PEP 723 script; sorts `osmium export` GeoJSONSeq into one file per layer, keeps only `name` and `ele`, turns areas into centroids, drops bus shelters, non-drinkable water, non-Christian places of worship, private toilets and bridges that carry a road, writes `tippecanoe.minzoom` on every feature
 - `tiles/Makefile.overlay` — extracts → layer files → tippecanoe → `overlay.pmtiles`
 - `website/src/lib/overlay.ts` — layers, groups, palette (light + dark), toggles
 
@@ -374,7 +374,11 @@ make -f Makefile.overlay upload                   # upload to R2 (wrangler)
 ### Notes
 
 - tippecanoe ignores a `minzoom` set per layer in `-L`; the first zoom of each layer lives in `MIN_ZOOMS` (`overlay_features.py`) and is written per feature.
-- First zooms: rivers 8, peaks and huts 9, power lines 10, water, springs, shelters, viewpoints 11, guideposts 12, towers 13.
+- First zooms: rivers 8, peaks and huts 9, power lines, aerialways and passes 10, water, springs, shelters, viewpoints 11, guideposts, waterfalls, caves and churches 12, toilets, cemeteries, fords, bridges and towers 13.
+- Size: 80 MB with every layer (61 MB before passes, waterfalls, caves, fords, bridges, toilets, churches, cemeteries and aerialways). Bridges (100k) and power towers (249k) are the biggest point and line layers.
+- Bridges: only those carrying a path, footway, steps, bridleway, cycleway, track or pedestrian way. They are drawn as a pale deck between two dark edges (reversed in dark theme).
+- Churches are a cross icon and cemeteries a cross in a square, as on the IGN Scan 25 map. The Protomaps sprite has neither, so `registerOverlayImages` (`overlay.ts`) draws them on a canvas and adds them to the map on every style load.
+- Not included on purpose: difficulty (`sac_scale`), protected areas, other hiking route relations, resupply shops.
 - `--drop-densest-as-needed` thins crowded tiles instead of failing on the tile size limit.
 - Upload uses `wrangler r2 object put --remote` (login once with `npx wrangler@4 login`), because the file is under wrangler's 300 MiB limit. No rclone remote needed.
 - Not on the explore map: the overlay is added by `route-map.ts` only.

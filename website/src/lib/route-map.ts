@@ -255,10 +255,12 @@ export function initRouteMap(mapElement: HTMLElement): void {
   for (const group of getOverlayGroups(false)) {
     const row = document.createElement('label');
     row.className = 'flex items-center gap-2 cursor-pointer';
-    const swatch =
-      group.swatch === 'dot'
-        ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${group.color};"></span>`
-        : `<span style="display:inline-block;width:10px;height:0;border-top:2px solid ${group.color};"></span>`;
+    const swatches: Record<typeof group.swatch, string> = {
+      dot: `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${group.color};"></span>`,
+      line: `<span style="display:inline-block;width:10px;height:0;border-top:2px solid ${group.color};"></span>`,
+      cross: `<svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0v12M1.5 4h7" stroke="${group.color}" stroke-width="2" fill="none"/></svg>`,
+    };
+    const swatch = swatches[group.swatch];
     row.innerHTML = `<input type="checkbox" class="rounded" data-overlay-group="${group.key}" /> ${swatch} ${escapeHtml(labels.overlay[group.key])}`;
     const checkbox = row.querySelector('input')!;
     checkbox.checked = visibleOverlayGroups.has(group.key);
