@@ -30,6 +30,8 @@ from concurrent.futures import ThreadPoolExecutor
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
+import tile_manifests  # noqa: E402  (needs the sys.path entry above)
+
 _spec = importlib.util.spec_from_file_location("build_grid", SCRIPT_DIR / "build-grid.py")
 assert _spec is not None and _spec.loader is not None
 build_grid = importlib.util.module_from_spec(_spec)
@@ -52,8 +54,8 @@ def remote_size(url: str) -> int | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--cols", type=int, default=build_grid.DEFAULT_COLS)
-    parser.add_argument("--rows", type=int, default=build_grid.DEFAULT_ROWS)
+    parser.add_argument("--cols", type=int, default=tile_manifests.DEFAULT_COLS)
+    parser.add_argument("--rows", type=int, default=tile_manifests.DEFAULT_ROWS)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument(
         "--r2-public-url",
@@ -67,8 +69,8 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    grid_bbox = build_grid.read_grid_bbox()
-    snapshot = build_grid.read_makefile_var("SNAPSHOT")
+    grid_bbox = tile_manifests.read_grid_bbox()
+    snapshot = tile_manifests.read_makefile_var("SNAPSHOT")
     layers = build_grid.layer_specs()
     base_url = args.r2_public_url
 

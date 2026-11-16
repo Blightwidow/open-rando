@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import pathlib
+import re
 from typing import Any
 
 import jsonschema
@@ -20,6 +21,33 @@ SCHEMA_DIR = pathlib.Path(__file__).resolve().parent.parent / "pipeline/src/open
 GRID_SCHEMA = "tile-grid.schema.json"
 ROUTE_SCHEMA = "route-tiles.schema.json"
 MAX_REPORTED_ERRORS = 5
+
+TILES_DIR = pathlib.Path(__file__).resolve().parent
+PAD_DEG = 0.02  # ~2 km; MapLibre has edge tiles when viewport straddles squares
+DEFAULT_COLS = 12
+DEFAULT_ROWS = 8
+
+
+def read_makefile_var(name: str) -> str:
+    makefile = TILES_DIR / "Makefile.protomaps"
+    match = re.search(
+        rf"^{re.escape(name)}\s*:=\s*(.+?)\s*$",
+        makefile.read_text(),
+        re.MULTILINE,
+    )
+    if not match:
+        raise RuntimeError(f"cannot find {name} in {makefile}")
+    return match.group(1)
+
+
+def read_grid_bbox() -> tuple[float, float, float, float]:
+    """Parse BBOX from Makefile.protomaps so grid bbox tracks the master."""
+    raw = read_makefile_var("BBOX")
+    parts = [float(part) for part in raw.split(",")]
+    if len(parts) != 4:
+        raise RuntimeError(f"unexpected BBOX in Makefile.protomaps: {raw!r}")
+    lon_min, lat_min, lon_max, lat_max = parts
+    return lon_min, lat_min, lon_max, lat_max
 
 
 class ManifestError(Exception):
