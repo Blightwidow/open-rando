@@ -33,9 +33,3 @@ Done when a route page can export its corridor as `.mbtiles` (built client-side 
 The landing page now links the app's latest release (`landing.mobile.*` in `src/lib/i18n.ts`, section in `pages/[...locale]/index.astro`), but shows no visuals: `Blightwidow/open-rando-mobile` has no product screenshots yet, only a banner and icons.
 
 Done when the mobile README carries product screenshots, they are copied into `website/public/` (not hotlinked, so the page stays self-hosted) and shown in the mobile section with localized alt text, in both locales.
-
-### 6. `docs/DEPLOYMENT.md` describes a deploy workflow that does not exist
-
-The doc says GitHub Actions (`.github/workflows/deploy.yml`) deploys on push to `main` from a `data.tar.gz` release. Only `ci.yml` exists; the site is published by `website/deploy.sh` from a local data dir (build, then force-push `dist/` to `gh-pages`). Nothing ties a published site to a reviewed commit, and `deploy.sh` publishes whatever branch is checked out.
-
-Done when the doc matches how the site is really published, and `deploy.sh` either refuses a dirty or non-`main` checkout or the site is published from CI. (The check that `dist/data/` carries `grid.json` and the route manifests is in place.)
