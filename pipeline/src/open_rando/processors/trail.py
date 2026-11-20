@@ -7,11 +7,24 @@ import time
 from shapely.geometry import LineString, MultiLineString
 
 from open_rando.config import OVERPASS_COOLDOWN_SECONDS
-from open_rando.fetchers.overpass import (
+from open_rando.fetchers.osm_source import get_osm_source
+from open_rando.processors.trail_assembly import (
+    build_trail_from_elements,
     chain_linestrings,
-    fetch_trail,
     order_segments_along_route,
 )
+
+
+def fetch_trail(
+    relation_id: int,
+) -> tuple[LineString | MultiLineString, dict[str, str | int], bool]:
+    """Fetch a GR route relation and return (geometry, metadata, cache_hit).
+
+    A LineString when the trail is continuous, a MultiLineString when it has
+    gaps between child relations (see `trail_assembly.MAX_CHAIN_GAP_DEGREES`).
+    """
+    data, cache_hit = get_osm_source().trail(relation_id)
+    return build_trail_from_elements(relation_id, data, cache_hit=cache_hit)
 
 
 def fetch_and_fuse_trails(

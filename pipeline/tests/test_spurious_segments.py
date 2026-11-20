@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from shapely.geometry import LineString, MultiLineString
 
-from open_rando.fetchers.overpass import _drop_spurious_segments, _segment_length_km
+from open_rando.processors.trail_assembly import _drop_spurious_segments, _segment_length_km
 
 
 def line_along_latitude(start_longitude: float, latitude: float, span: float) -> LineString:

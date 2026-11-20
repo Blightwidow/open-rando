@@ -10,8 +10,7 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
 from shapely.prepared import prep
 
-from open_rando.fetchers.osm_extract import LAYER_FOREST, open_layer
-from open_rando.fetchers.overpass import query_overpass
+from open_rando.fetchers.osm_source import get_osm_source
 from open_rando.models import Station
 from open_rando.processors.match import haversine_meters
 
@@ -240,37 +239,17 @@ def classify_terrain(
 def fetch_forest_areas(
     bbox: tuple[float, float, float, float],
 ) -> list[Polygon]:
-    """Fetch forest/wood polygons from Overpass within a bounding box.
+    """Fetch forest/wood polygons within a bounding box from the run's OSM source.
 
     bbox is (min_lon, min_lat, max_lon, max_lat) — Shapely bounds order.
     Returns a list of Shapely Polygons.
     """
     min_lon, min_lat, max_lon, max_lat = bbox
 
-    index = open_layer(LAYER_FOREST, (min_lat, min_lon, max_lat, max_lon))
-    if index is not None:
-        try:
-            data = index.area_elements(LAYER_FOREST, min_lat, min_lon, max_lat, max_lon)
-        finally:
-            index.close()
-        polygons = _parse_forest_elements(data)
-        logger.info("Fetched %d forest polygons in bbox (local extract)", len(polygons))
-        return polygons
-
-    query = f"""
-[out:json][timeout:120];
-(
-  way["landuse"="forest"]({min_lat},{min_lon},{max_lat},{max_lon});
-  way["natural"="wood"]({min_lat},{min_lon},{max_lat},{max_lon});
-  rel["landuse"="forest"]({min_lat},{min_lon},{max_lat},{max_lon});
-  rel["natural"="wood"]({min_lat},{min_lon},{max_lat},{max_lon});
-);
-out geom;
-"""
-    data, _cache_hit = query_overpass(query)
+    source = get_osm_source()
+    data, _cache_hit = source.forest((min_lat, min_lon, max_lat, max_lon))
     polygons = _parse_forest_elements(data)
-
-    logger.info("Fetched %d forest polygons in bbox", len(polygons))
+    logger.info("Fetched %d forest polygons in bbox (%s)", len(polygons), source.name)
     return polygons
 
 

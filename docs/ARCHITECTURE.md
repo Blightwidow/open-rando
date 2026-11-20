@@ -48,7 +48,7 @@ Build flow: `cd pipeline && uv run python -m open_rando pipeline` produces data 
 The pipeline is five stages. Each one reads files the previous stage wrote and can run alone; `pipeline` chains them. See [Split pipeline](SPLIT_PIPELINE.md) for the file contracts.
 
 1. **`tracks`**: for each curated route in `pipeline/routes.yaml` (with `--route`, `--retry-failed`):
-   1. **Fetch** trail geometry (local OSM extract, Overpass as fallback; resolves super-relations recursively, fuses multiple relation IDs into a single LineString or MultiLineString)
+   1. **Fetch** trail geometry (local OSM extract, border-crossing relations from Overpass; resolves super-relations recursively, fuses multiple relation IDs into a single LineString or MultiLineString)
    2. **Elevation** profiling via SRTM .hgt tiles: bilinear interpolation, sample every 50m, compute gain/loss/min/max with 5m noise threshold. A trail mapped in several segments is profiled segment by segment and stitched, so the straight jump across an unmapped gap costs no distance, climb or time; the gaps are reported as `trail_gap_km` and their positions as `segment_boundaries_km`
    3. **Geography**: département from the SNCF station nearest to the trail start, region from the département, terrain (coastal, mountain, hills, forest, plains from elevation, forest ratio, département) and difficulty (bands of ascent per km: <15 easy, <30 moderate, <50 difficult, else very difficult, with routes under 300m of total ascent always easy)
    4. **Landmarks** near the trail, for the AI hero image prompt
@@ -175,8 +175,9 @@ open-rando/
 |   |   |                        #   tile-grid, route-tiles
 |   |   +-- fetchers/
 |   |   |   +-- discovery.py     # load routes from routes.yaml
-|   |   |   +-- osm_extract.py   # query the local OSM extract index (replaces Overpass)
-|   |   |   +-- overpass.py      # Overpass API client (fallback; cached, super-relation resolution)
+|   |   |   +-- osm_source.py    # one OSM source per run: local extract (default) or Overpass (dev)
+|   |   |   +-- osm_extract.py   # query the local OSM extract index
+|   |   |   +-- overpass.py      # Overpass API HTTP client with disk cache
 |   |   |   +-- stations.py      # OSM station fetcher (bbox chunking for large trails)
 |   |   |   +-- sncf.py          # SNCF reference station data (UIC codes, filtering)
 |   |   |   +-- gtfs.py          # GTFS feed download, departures, bus line names
@@ -186,7 +187,8 @@ open-rando/
 |   |   |   +-- routing.py       # OSRM pedestrian routing for station-trail connectors
 |   |   |   +-- srtm.py          # SRTM .hgt tile downloader + bilinear interpolation
 |   |   +-- processors/
-|   |   |   +-- trail.py         # trail assembly shared by `pipeline` and `tracks`
+|   |   |   +-- trail.py         # fetch + fuse trail relations, shared by `pipeline` and `tracks`
+|   |   |   +-- trail_assembly.py  # OSM relation elements -> ordered trail geometry
 |   |   |   +-- match.py         # station-to-trail matching (LineString + MultiLineString)
 |   |   |   +-- slice.py         # trail substring extraction, distance and gap computation
 |   |   |   +-- elevation.py     # elevation profiling, duration, difficulty classification

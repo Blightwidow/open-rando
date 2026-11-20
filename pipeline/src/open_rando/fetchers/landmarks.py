@@ -10,28 +10,15 @@ from shapely.ops import nearest_points
 from open_rando.config import (
     MAX_STATION_BBOX_DEGREES,
     OVERPASS_COOLDOWN_SECONDS,
-    OVERPASS_TIMEOUT_SECONDS,
 )
-from open_rando.fetchers.osm_extract import LAYER_LANDMARKS, open_layer
-from open_rando.fetchers.overpass import query_overpass
+from open_rando.fetchers.osm_source import get_osm_source
 from open_rando.models import Landmark
-from open_rando.osm_tags import (
-    HISTORIC_LANDMARK_KINDS,
-    MAN_MADE_LANDMARK_KINDS,
-    NATURAL_LANDMARK_KINDS,
-    TOURISM_LANDMARK_KINDS,
-)
 
 logger = logging.getLogger("open_rando")
 
 LANDMARK_RADIUS_METERS = 2000
 LANDMARK_BBOX_MARGIN_DEGREES = 0.02  # ~2km matches search radius
 MAX_LANDMARKS_PER_ROUTE = 12
-
-_HISTORIC_KINDS = HISTORIC_LANDMARK_KINDS
-_TOURISM_KINDS = TOURISM_LANDMARK_KINDS
-_NATURAL_KINDS = NATURAL_LANDMARK_KINDS
-_MAN_MADE_KINDS = MAN_MADE_LANDMARK_KINDS
 
 
 def fetch_landmarks(
@@ -73,43 +60,10 @@ def _fetch_bbox(
     west = min_lon - LANDMARK_BBOX_MARGIN_DEGREES
     north = max_lat + LANDMARK_BBOX_MARGIN_DEGREES
     east = max_lon + LANDMARK_BBOX_MARGIN_DEGREES
-    bbox = f"{south},{west},{north},{east}"
-
-    index = open_layer(LAYER_LANDMARKS, (south, west, north, east))
-    if index is not None:
-        try:
-            local_data = index.point_elements(LAYER_LANDMARKS, south, west, north, east)
-        finally:
-            index.close()
-        landmarks = _parse_elements(local_data)
-        logger.info("Found %d landmarks in bbox (local extract)", len(landmarks))
-        return landmarks, True
-
-    selectors: list[str] = []
-    for kind in _HISTORIC_KINDS:
-        selectors.append(f'  node["historic"="{kind}"]({bbox});')
-        selectors.append(f'  way["historic"="{kind}"]({bbox});')
-    for kind in _TOURISM_KINDS:
-        selectors.append(f'  node["tourism"="{kind}"]({bbox});')
-        selectors.append(f'  way["tourism"="{kind}"]({bbox});')
-    for kind in _NATURAL_KINDS:
-        selectors.append(f'  node["natural"="{kind}"]({bbox});')
-        selectors.append(f'  way["natural"="{kind}"]({bbox});')
-    for kind in _MAN_MADE_KINDS:
-        selectors.append(f'  node["man_made"="{kind}"]({bbox});')
-        selectors.append(f'  way["man_made"="{kind}"]({bbox});')
-
-    body = "\n".join(selectors)
-    query = f"""
-[out:json][timeout:{OVERPASS_TIMEOUT_SECONDS}];
-(
-{body}
-);
-out center;
-"""
-    data, cache_hit = query_overpass(query)
+    source = get_osm_source()
+    data, cache_hit = source.landmarks((south, west, north, east))
     landmarks = _parse_elements(data)
-    logger.info("Found %d landmarks in bbox", len(landmarks))
+    logger.info("Found %d landmarks in bbox (%s)", len(landmarks), source.name)
     return landmarks, cache_hit
 
 

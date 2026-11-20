@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from shapely.geometry import LineString, MultiLineString
 
-from open_rando.fetchers.overpass import _build_trail_from_elements, _chain_ways
+from open_rando.processors.trail_assembly import _chain_ways, build_trail_from_elements
 
 RELATION_ID = 900
 
@@ -45,7 +45,7 @@ def straight(start: float, end: float, latitude: float = 45.0) -> list[tuple[flo
 
 
 def build(elements: list[dict[str, Any]]) -> tuple[Any, dict[str, str | int]]:
-    trail, metadata, cache_hit = _build_trail_from_elements(
+    trail, metadata, cache_hit = build_trail_from_elements(
         RELATION_ID, {"elements": elements}, cache_hit=True
     )
     assert cache_hit is True

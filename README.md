@@ -32,7 +32,7 @@ BUILD TIME                                        RUNTIME (static files)
 
 The pipeline is five stages, each reading what the previous one wrote ([docs/SPLIT_PIPELINE.md](docs/SPLIT_PIPELINE.md)):
 
-1. **`tracks`**: loads the curated GR routes from `routes.yaml` (176 trails with OSM relation IDs), builds the trail geometry from the local OSM extract (Overpass API as fallback, super-relations resolved recursively), samples SRTM elevation every 50m, classifies geography (region, terrain, difficulty). Writes `tracks/<id>/{track.json, trail.geojson, trail.gpx, elevation.json}`, no POIs.
+1. **`tracks`**: loads the curated GR routes from `routes.yaml` (176 trails with OSM relation IDs), builds the trail geometry from the local OSM extract (super-relations resolved recursively; border-crossing relations fetched from the Overpass API), samples SRTM elevation every 50m, classifies geography (region, terrain, difficulty). Writes `tracks/<id>/{track.json, trail.geojson, trail.gpx, elevation.json}`, no POIs.
 2. **`gtfs`**: downloads every national GTFS feed once and builds a local stop index plus a per-feed departures cache.
 3. **`pois`**: builds the France-wide POI grid (12x8 squares, same grid as the mobile tiles): train stations filtered against SNCF data with departures per kind of day, bus stops with GTFS line names, hotels, campings. Writes `pois/<col>_<row>.json` and `pois/index.json`.
 4. **`link`**: joins the POIs to each track (train stations within 5 km with a walking-distance junction, bus stops within 2 km, hotels and campings within 3 km). Writes `links/<id>.json`.
@@ -46,7 +46,7 @@ On macOS, `brew bundle` at the repo root installs every native tool (uv, osmium-
 
 - Python 3.13+ with [uv](https://docs.astral.sh/uv/)
 - [Bun](https://bun.sh/) (or Node.js)
-- [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (required by the `pois` stage; tracks fall back to the Overpass API)
+- [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (required; `OPEN_RANDO_ALLOW_OVERPASS=1` reads the Overpass API instead, for development)
 
 ### Run the pipeline
 
@@ -113,7 +113,7 @@ open-rando/
     src/open_rando/
       cli.py             Entry point
       commands/          One module per subcommand (tracks, gtfs, pois, link, catalog, images, osm-index)
-      fetchers/          OSM extract + Overpass, SNCF, GTFS, SRTM, OSRM, POI fetchers
+      fetchers/          OSM source (extract or Overpass), SNCF, GTFS, SRTM, OSRM, POI fetchers
       processors/        Trail assembly, station matching, elevation, geography, linking
       exporters/         Track, GPX, GeoJSON, elevation, POI, link, catalog and report writers
       data/              JSON Schemas for every published file
@@ -136,13 +136,13 @@ open-rando/
 | Pipeline | Python 3.13+, Shapely, requests, gpxpy, pyyaml, jsonschema |
 | Website | Astro, MapLibre GL JS, PMTiles, Tailwind CSS, qrcode-generator |
 | Tiles | go-pmtiles, GDAL, tippecanoe, PMTiles, Cloudflare R2 |
-| Data sources | OpenStreetMap (Geofabrik extracts via osmium, Overpass API fallback), SNCF open data, transport.data.gouv.fr GTFS, OSRM, SRTM elevation tiles, Protomaps |
+| Data sources | OpenStreetMap (Geofabrik extracts via osmium; Overpass API for development), SNCF open data, transport.data.gouv.fr GTFS, OSRM, SRTM elevation tiles, Protomaps |
 
 ## Data sources
 
 All data comes from open sources. OpenStreetMap data is under the [ODbL license](https://opendatacommons.org/licenses/odbl/). See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for details and risks.
 
-- **Hiking routes**: OpenStreetMap (`route=hiking`, `ref~"^GR"`), from the local extract, Overpass API as fallback
+- **Hiking routes**: OpenStreetMap (`route=hiking`, `ref~"^GR"`), from the local extract
 - **Train stations**: OpenStreetMap (`railway=station` / `railway=halt`), filtered for active service via SNCF data
 - **Train departures and bus stops**: GTFS feeds from transport.data.gouv.fr
 - **Accommodation**: OpenStreetMap (`tourism=hotel|guest_house|hostel|camp_site`)

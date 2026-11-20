@@ -13,7 +13,7 @@ from shapely.geometry import LineString
 
 from open_rando.commands.osm_index import EXTRACT_FILENAMES, build_layer, extract_bbox
 from open_rando.fetchers import landmarks as landmarks_module
-from open_rando.fetchers import osm_extract
+from open_rando.fetchers import osm_extract, osm_source
 from open_rando.fetchers import pois as pois_module
 from open_rando.fetchers import stations as stations_module
 from open_rando.fetchers.osm_extract import (
@@ -25,8 +25,8 @@ from open_rando.fetchers.osm_extract import (
     LAYER_TRAILS,
     OsmExtractIndex,
 )
-from open_rando.fetchers.overpass import fetch_trail
 from open_rando.processors import geography as geography_module
+from open_rando.processors.trail import fetch_trail
 
 osmium = pytest.importorskip("osmium")
 
@@ -194,8 +194,7 @@ def forbid_overpass(monkeypatch: pytest.MonkeyPatch) -> None:
     def fail(*_args: object, **_kwargs: object) -> None:
         raise AssertionError("Overpass was called although the local extract has the layer")
 
-    for module in (stations_module, landmarks_module, geography_module):
-        monkeypatch.setattr(module, "query_overpass", fail)
+    monkeypatch.setattr(osm_source, "query_overpass", fail)
 
 
 class TestBuiltLayers:
@@ -322,7 +321,7 @@ class TestFetchersUseTheIndex:
         def fail(*_args: object, **_kwargs: object) -> None:
             raise AssertionError("Overpass was called for a relation held locally")
 
-        monkeypatch.setattr("open_rando.fetchers.overpass.query_overpass", fail)
+        monkeypatch.setattr(osm_source, "query_overpass", fail)
 
         trail, metadata, cache_hit = fetch_trail(900)
 

@@ -2,8 +2,8 @@
 
 The public Overpass API answers with 504s under load, and the pipeline's
 queries are plain tag filters over France. `python -m open_rando osm-index`
-turns Geofabrik extracts into the SQLite index read here; the fetchers fall
-back to Overpass whenever a layer is missing, so the index is optional.
+turns Geofabrik extracts into the SQLite index read here. Runs require it;
+see `osm_source.py` for the development-only Overpass mode.
 
 Query results are shaped like Overpass JSON responses on purpose: the existing
 parsers, and their tests, stay untouched.
@@ -267,8 +267,7 @@ class OsmExtractIndex:
         """Record a built layer, with the bounding box the extract covers.
 
         The bbox is what keeps a regional extract honest: a bbox query reaching
-        outside it would silently return too few features, so callers fall back
-        to Overpass instead.
+        outside it returns too few features, so the source logs a warning.
         """
         details: dict[str, Any] = {
             "features": feature_count,
@@ -407,7 +406,7 @@ class OsmExtractIndex:
         Mirrors the `rel(id); rel(r); way(r)` recursion of the Overpass query.
         Returns None when the relation is absent, or when any member way is
         missing — a route clipped by the extract boundary would otherwise yield
-        a silently truncated trail instead of falling back to Overpass.
+        a silently truncated trail (the source then fetches it from Overpass).
         """
         row = self.connection.execute(
             "SELECT tags, members FROM trail_relations WHERE relation_id = ?", (relation_id,)
@@ -487,7 +486,8 @@ def open_layer(
 ) -> OsmExtractIndex | None:
     """Open the index if it can answer for this layer (and bbox), else None.
 
-    Callers use this to prefer local data and fall back to Overpass.
+    The `pois` stage requires every layer it reads; per-route fetchers go
+    through `osm_source.get_osm_source()` instead.
     """
     index = OsmExtractIndex.open_for_reading()
     if index is None:
@@ -497,7 +497,7 @@ def open_layer(
         return None
     if bbox is not None and not index.covers(layer, *bbox):
         logger.info(
-            "Local %s extract does not cover (%.3f,%.3f)-(%.3f,%.3f), using Overpass",
+            "Local %s extract does not cover (%.3f,%.3f)-(%.3f,%.3f)",
             layer,
             *bbox,
         )

@@ -15,8 +15,8 @@ OSM_DIR ?= $(OPEN_RANDO_CACHE_DIR)/osm
 PBF_URL ?= https://download.geofabrik.de/europe/france-latest.osm.pbf
 # Named after the URL so a regional extract can be used for a quick trial:
 #   make -f Makefile.osm PBF_URL=https://download.geofabrik.de/europe/france/bourgogne-latest.osm.pbf
-# Regional extracts only answer queries inside their own bounding box; the
-# fetchers fall back to Overpass elsewhere.
+# Regional extracts only answer queries inside their own bounding box; queries
+# outside it log a warning and return what the extract holds.
 PBF := $(OSM_DIR)/$(notdir $(PBF_URL))
 INDEX := $(OSM_DIR)/extract-index.sqlite
 

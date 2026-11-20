@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from shapely.geometry import LineString, MultiLineString
 
-from open_rando.fetchers.overpass import order_segments_along_route
 from open_rando.processors.slice import compute_trail_gaps_km
+from open_rando.processors.trail_assembly import order_segments_along_route
 
 
 def line(start: float, end: float, latitude: float = 45.0) -> LineString:
