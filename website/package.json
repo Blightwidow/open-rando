@@ -10,6 +10,8 @@
     "preview": "astro preview",
     "deploy": "bash deploy.sh",
     "test": "bun test",
+    "generate:types": "bun scripts/generate-types.mjs",
+    "check:types": "bun scripts/generate-types.mjs --check",
     "check:manifests": "bun scripts/check-tile-manifests.mjs dist/data",
     "check:env": "test \"$ALLOW_MISSING_PMTILES_BASE\" = \"1\" || bun scripts/check-pmtiles-base.mjs"
   },
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
+    "json-schema-to-typescript": "15.0.4",
     "typescript": "^6.0.2"
   }
 }

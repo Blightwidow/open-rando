@@ -1,35 +1,15 @@
 // Joins a track's links (links/<id>.json) with the POIs they point at (pois/<col>_<row>.json).
 // The pipeline stores them apart so one POI can serve many tracks and custom GPX imports.
 
-import type { RailService } from './rail';
+import type { PoiLink } from './generated/links';
+import type { Poi, RailService } from './generated/poi-square';
 
-export type PoiKind = 'hotel' | 'camping' | 'shop' | 'eatery' | 'train_station' | 'bus_stop';
+export type { PoiLink } from './generated/links';
+
+export type PoiKind = Poi['kind'];
 
 /** A POI as stored in the grid, independent of any track. */
-export interface PoiRecord {
-  id: string;
-  kind: PoiKind;
-  name: string;
-  lat: number;
-  lon: number;
-  url?: string | null;
-  category?: string | null;
-  opening_hours?: string | null;
-  phone?: string | null;
-  transit_lines?: string[];
-  rail_service?: RailService | null;
-}
-
-/** How a POI relates to one track. */
-export interface PoiLink {
-  poi_id: string;
-  kind: PoiKind;
-  distance_to_trail_m: number;
-  /** Position along the trail from its start. Train stations only. */
-  distance_km: number | null;
-  /** [lon, lat] where the walk from the POI meets the trail. */
-  junction: [number, number] | null;
-}
+export type PoiRecord = Poi;
 
 /** A POI of one track: the grid record plus its link. */
 export interface RoutePoi {

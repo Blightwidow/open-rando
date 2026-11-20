@@ -1,16 +1,6 @@
-export interface ServiceWindow {
-  first_departure_minutes: number;
-  last_departure_minutes: number;
-  departure_count: number;
-  /** Calendar date the pipeline counted these departures on. */
-  sample_date?: string | null;
-}
+import type { RailService, ServiceWindow } from './generated/poi-square';
 
-export interface RailService {
-  weekday: ServiceWindow | null;
-  saturday: ServiceWindow | null;
-  sunday: ServiceWindow | null;
-}
+export type { RailService, ServiceWindow } from './generated/poi-square';
 
 export type DayType = keyof RailService;
 

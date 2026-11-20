@@ -1,12 +1,8 @@
 // The fixed POI grid written by the pipeline's `pois` stage (data/pois/index.json).
 // Same maths as pipeline/src/open_rando/poi_grid.py: a square is [col, row].
 
-export interface PoiGridDefinition {
-  /** [lonMin, latMin, lonMax, latMax] */
-  bbox: [number, number, number, number];
-  cols: number;
-  rows: number;
-}
+export type { PoiGridDefinition } from './generated/poi-index';
+import type { PoiGridDefinition } from './generated/poi-index';
 
 export type PoiSquare = [number, number];
 

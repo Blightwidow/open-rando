@@ -15,6 +15,7 @@
       "type": "string"
     },
     "counts": {
+      "title": "PoiCounts",
       "description": "How many linked POIs of each kind the track has. The POIs themselves live in the POI grid; links/<id>.json says which ones belong to this track.",
       "type": "object",
       "required": [
@@ -61,6 +62,7 @@
     "links": {
       "type": "array",
       "items": {
+        "title": "PoiLink",
         "type": "object",
         "required": [
           "poi_id",

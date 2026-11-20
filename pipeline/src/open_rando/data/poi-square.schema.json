@@ -11,6 +11,7 @@
   "additionalProperties": false,
   "properties": {
     "square": {
+      "title": "SquareCoordinates",
       "type": "object",
       "required": [
         "col",

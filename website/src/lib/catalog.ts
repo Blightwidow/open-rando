@@ -9,46 +9,9 @@ import { squareFileName, squaresForBoundingBox, type PoiGridDefinition } from '.
 export type { RoutePoi } from './route-pois';
 export { getTrainStations } from './route-pois';
 
-export interface PoiCounts {
-  train_station: number;
-  bus_stop: number;
-  hotel: number;
-  camping: number;
-  shop: number;
-  eatery: number;
-  train_station_with_rail_service: number;
-}
+import type { OpenRandoRouteCatalog, Route } from './generated/catalog';
 
-export interface Route {
-  id: string;
-  slug: string;
-  path_ref: string;
-  path_name: string;
-  description: string;
-  osm_relation_id: number;
-  distance_km: number;
-  elevation_gain_m: number;
-  elevation_loss_m: number;
-  max_elevation_m: number;
-  min_elevation_m: number;
-  bbox: [number, number, number, number];
-  region: string;
-  departement: string;
-  difficulty: 'easy' | 'moderate' | 'difficult' | 'very_difficult' | 'unknown';
-  is_circular_trail: boolean;
-  terrain: string[];
-  /** Mapped segments the trail is made of; more than one means it has gaps. */
-  trail_segment_count?: number;
-  /** Straight-line length of those gaps. Not included in distance_km. */
-  trail_gap_km?: number;
-  geojson_path: string;
-  gpx_path: string;
-  elevation_path: string;
-  /** Linked POIs per kind. The POIs themselves come from `getRoutePois`. */
-  poi_counts: PoiCounts;
-  last_updated: string;
-  image_path?: string | null;
-}
+export type { PoiCounts, Route } from './generated/catalog';
 
 export interface RouteElevationProfile {
   distances_km: number[];
@@ -59,17 +22,10 @@ export interface RouteElevationProfile {
   segment_boundaries_km?: number[];
 }
 
-interface Catalog {
-  generated_at: string;
-  source: string;
-  license: string;
-  routes: Route[];
-}
-
 export function getAllRoutes(): Route[] {
   const catalogPath = join(process.cwd(), 'public', 'data', 'catalog.json');
   const raw = readFileSync(catalogPath, 'utf-8');
-  const catalog: Catalog = JSON.parse(raw);
+  const catalog: OpenRandoRouteCatalog = JSON.parse(raw);
   return catalog.routes;
 }
 

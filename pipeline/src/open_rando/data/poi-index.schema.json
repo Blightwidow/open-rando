@@ -23,6 +23,7 @@
       "type": "string"
     },
     "grid": {
+      "title": "PoiGridDefinition",
       "type": "object",
       "required": [
         "bbox",
