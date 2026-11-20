@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 
+from open_rando.json_types import JsonObject
 from open_rando.models import PointOfInterest
 from open_rando.osm_tags import ACCOMMODATION_KINDS, RESUPPLY_EATERY_KINDS, RESUPPLY_SHOP_KINDS
 
@@ -13,7 +14,7 @@ POI_RESUPPLY_RADIUS_METERS = 1500
 
 
 def _parse_accommodation_elements(
-    data: dict,  # type: ignore[type-arg]
+    data: JsonObject,
 ) -> list[PointOfInterest]:
     """Parse Overpass response into accommodation POIs."""
     pois: list[PointOfInterest] = []
@@ -54,7 +55,7 @@ def _parse_accommodation_elements(
 
 
 def _parse_resupply_elements(
-    data: dict,  # type: ignore[type-arg]
+    data: JsonObject,
 ) -> list[PointOfInterest]:
     """Parse OSM elements into food shop and eatery POIs.
 

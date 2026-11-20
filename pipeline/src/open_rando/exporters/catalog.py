@@ -9,6 +9,8 @@ from typing import Any
 
 import jsonschema
 
+from open_rando.json_types import load_json_object
+
 CATALOG_SCHEMA_RESOURCE = "catalog.schema.json"
 POI_SQUARE_SCHEMA_RESOURCE = "poi-square.schema.json"
 POI_INDEX_SCHEMA_RESOURCE = "poi-index.schema.json"
@@ -23,7 +25,7 @@ class CatalogValidationError(Exception):
 def load_schema(resource: str) -> dict[str, Any]:
     """Load one of the JSON Schemas shipped with the package."""
     schema_text = resources.files("open_rando.data").joinpath(resource).read_text(encoding="utf-8")
-    return json.loads(schema_text)  # type: ignore[no-any-return]
+    return load_json_object(schema_text)
 
 
 def load_catalog_schema() -> dict[str, Any]:

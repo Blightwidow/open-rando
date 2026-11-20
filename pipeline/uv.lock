@@ -835,11 +835,6 @@ osm = [
     { name = "osmium" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "types-pyyaml" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "accelerate", marker = "extra == 'images'", specifier = ">=1.0" },
@@ -866,9 +861,6 @@ requires-dist = [
     { name = "types-requests", marker = "extra == 'dev'" },
 ]
 provides-extras = ["dev", "osm", "images"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "types-pyyaml", specifier = ">=6.0.12.20260408" }]
 
 [[package]]
 name = "osmium"

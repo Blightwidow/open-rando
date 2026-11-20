@@ -7,6 +7,7 @@ from open_rando.config import (
 )
 from open_rando.fetchers.osm_extract import LAYER_STATIONS, open_layer
 from open_rando.fetchers.overpass import query_overpass
+from open_rando.json_types import JsonObject
 from open_rando.models import Station
 
 logger = logging.getLogger("open_rando")
@@ -81,7 +82,7 @@ def filter_stations_by_sncf(
     return filtered
 
 
-def _parse_station_elements(data: dict) -> list[Station]:  # type: ignore[type-arg]
+def _parse_station_elements(data: JsonObject) -> list[Station]:
     """Parse Overpass response elements into Station objects."""
     stations: list[Station] = []
 

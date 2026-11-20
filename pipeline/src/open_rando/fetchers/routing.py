@@ -18,6 +18,7 @@ from open_rando.config import (
     OSRM_TABLE_URL,
     OSRM_TIMEOUT_SECONDS,
 )
+from open_rando.json_types import JsonObject, as_json_object, load_json_object
 
 logger = logging.getLogger("open_rando")
 
@@ -107,7 +108,7 @@ def fetch_pedestrian_distance_matrix(
 
 
 def _parse_table_response(
-    data: dict,  # type: ignore[type-arg]
+    data: JsonObject,
     destination_count: int,
 ) -> list[float | None]:
     """Extract one row of walking distances from an OSRM table response."""
@@ -162,7 +163,7 @@ def make_straight_line_connector(
     return geometry, distance_km
 
 
-def _parse_osrm_response(data: dict) -> tuple[LineString | None, float]:  # type: ignore[type-arg]
+def _parse_osrm_response(data: JsonObject) -> tuple[LineString | None, float]:
     """Extract geometry and distance from an OSRM response."""
     try:
         route = data["routes"][0]
@@ -176,7 +177,7 @@ def _parse_osrm_response(data: dict) -> tuple[LineString | None, float]:  # type
         return None, 0.0
 
 
-def _fetch_with_retry(url: str) -> dict | None:  # type: ignore[type-arg]
+def _fetch_with_retry(url: str) -> JsonObject | None:
     """Fetch from OSRM with retry on transient errors."""
     for attempt in range(RETRY_ATTEMPTS):
         try:
@@ -202,7 +203,7 @@ def _fetch_with_retry(url: str) -> dict | None:  # type: ignore[type-arg]
             logger.warning("OSRM returned code=%s", data.get("code"))
             return None
 
-        return data  # type: ignore[no-any-return]
+        return as_json_object(data)
 
     logger.warning("OSRM failed after %d attempts", RETRY_ATTEMPTS)
     return None
@@ -227,7 +228,7 @@ def _cache_path(cache_key: str) -> Path:
     return cache_directory / f"{cache_key}.json"
 
 
-def _read_cache(cache_key: str) -> dict | None:  # type: ignore[type-arg]
+def _read_cache(cache_key: str) -> JsonObject | None:
     path = _cache_path(cache_key)
     if not path.exists():
         return None
@@ -237,12 +238,12 @@ def _read_cache(cache_key: str) -> dict | None:  # type: ignore[type-arg]
         return None
 
     try:
-        return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+        return load_json_object(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return None
 
 
-def _write_cache(cache_key: str, data: dict) -> None:  # type: ignore[type-arg]
+def _write_cache(cache_key: str, data: JsonObject) -> None:
     path = _cache_path(cache_key)
     try:
         path.write_text(json.dumps(data), encoding="utf-8")

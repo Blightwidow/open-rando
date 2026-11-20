@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run --script
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.13"
 # dependencies = ["shapely>=2", "requests>=2.31"]
 # ///
 """Build metropolitan France admin boundary polygons.

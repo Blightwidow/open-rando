@@ -9,12 +9,12 @@ Train station-to-station hiking on French GR paths.
 - `tiles/` -- Tile pipelines: Protomaps extract (OSM base + world coverage) + GDAL/tippecanoe (contours) → PMTiles
 - `website/` -- Astro static site (MapLibre GL JS map, route list with filters, elevation chart, suggest panel)
 - `docs/` -- Project documentation
-- Pipeline output: `~/.local/share/open-rando/data/` (shared across worktrees)
-- Cache: `~/.cache/open-rando/` (Overpass, SNCF, GTFS, OSRM, SRTM caches, shared across worktrees)
+- Pipeline output: `~/.local/share/open-rando/data/` (shared across worktrees; override with `OPEN_RANDO_DATA_DIR`)
+- Cache: `~/.cache/open-rando/` (Overpass, SNCF, GTFS, OSRM, SRTM caches, shared across worktrees; override with `OPEN_RANDO_CACHE_DIR`)
 
 ## Stack
 
-- **Pipeline**: Python 3.12+, Shapely, requests, gpxpy, pyyaml
+- **Pipeline**: Python 3.13+, Shapely, requests, gpxpy, pyyaml
 - **Website**: Astro, MapLibre GL JS, Tailwind CSS
 - **Tiles**: go-pmtiles (Protomaps extract), GDAL, tippecanoe, PMTiles, Cloudflare R2
 - **Data sources**: OpenStreetMap (local Geofabrik extracts via osmium, Overpass API as fallback), SNCF open data, transport.data.gouv.fr GTFS feeds, OSRM, SRTM elevation tiles
@@ -89,7 +89,7 @@ cd website && bun install && bun run dev
 
 ## Architecture
 
-See `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks, `docs/DEPLOYMENT.md` for GitHub Pages deployment.
+See `docs/ARCHITECTURE.md` for algorithm and data model, `docs/DATA_SOURCES.md` for sources and risks, `docs/DEPLOYMENT.md` for GitHub Pages deployment, `docs/DECISIONS.md` for why thresholds and structural choices are what they are.
 
 OSM access: every OSM query (trail geometry, stations, accommodation, landmarks, forest) reads the local extract index at `~/.cache/open-rando/osm/extract-index.sqlite` when the matching layer is built, and falls back to the Overpass API otherwise. Build it with `make -f Makefile.osm` (needs `osmium-tool`); the public Overpass API returns 504s under load.
 

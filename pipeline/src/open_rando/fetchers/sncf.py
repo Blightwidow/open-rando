@@ -13,6 +13,7 @@ from open_rando.config import (
     SNCF_CACHE_TTL_SECONDS,
     SNCF_STATIONS_URL,
 )
+from open_rando.json_types import load_json_object_list
 from open_rando.models import slugify_sncf
 
 logger = logging.getLogger("open_rando")
@@ -105,7 +106,7 @@ def _read_cache(
             logger.info("SNCF cache expired (%.0fs old)", age_seconds)
             return None
 
-    return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+    return load_json_object_list(path.read_text(encoding="utf-8"))
 
 
 def _write_cache(path: Path, data: list[dict[str, Any]]) -> None:

@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run --script
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.13"
 # dependencies = ["rasterio>=1.3", "mercantile>=1.2", "numpy>=1.26", "pillow>=10"]
 # ///
 """Encode a DEM GeoTIFF (EPSG:3857) to Mapbox-RGB PNG tiles in an MBTiles.

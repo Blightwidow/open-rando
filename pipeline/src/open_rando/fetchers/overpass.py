@@ -19,6 +19,7 @@ from open_rando.config import (
     OVERPASS_TRAIL_CACHE_TTL_SECONDS,
 )
 from open_rando.fetchers.osm_extract import LAYER_TRAILS, open_layer
+from open_rando.json_types import JsonObject, as_json_object, load_json_object
 
 logger = logging.getLogger("open_rando")
 
@@ -47,7 +48,7 @@ RETRY_BACKOFF_SECONDS = 15
 def query_overpass(
     query: str,
     cache_ttl_seconds: int | None = None,
-) -> tuple[dict, bool]:  # type: ignore[type-arg]
+) -> tuple[JsonObject, bool]:
     """Query Overpass API with disk caching.
 
     Responses are cached by query hash. Pass cache_ttl_seconds to override default TTL,
@@ -70,7 +71,7 @@ def query_overpass(
     return result, False
 
 
-def _fetch_overpass(query: str) -> dict:  # type: ignore[type-arg]
+def _fetch_overpass(query: str) -> JsonObject:
     for attempt in range(RETRY_ATTEMPTS):
         try:
             response = requests.post(
@@ -91,7 +92,7 @@ def _fetch_overpass(query: str) -> dict:  # type: ignore[type-arg]
             time.sleep(wait)
             continue
         response.raise_for_status()
-        return response.json()  # type: ignore[no-any-return]
+        return as_json_object(response.json())
     raise RuntimeError("Overpass API failed after retries")
 
 
@@ -105,7 +106,7 @@ def _cache_path(query: str) -> Path:
     return cache_directory / f"{_cache_key(query)}.json"
 
 
-def _read_cache(query: str, ttl_seconds: int) -> dict | None:  # type: ignore[type-arg]
+def _read_cache(query: str, ttl_seconds: int) -> JsonObject | None:
     path = _cache_path(query)
     if not path.exists():
         return None
@@ -116,10 +117,10 @@ def _read_cache(query: str, ttl_seconds: int) -> dict | None:  # type: ignore[ty
         return None
 
     logger.info("Using cached response %s (%.0fs old)", path.name, age_seconds)
-    return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+    return load_json_object(path.read_text(encoding="utf-8"))
 
 
-def _write_cache(query: str, data: dict) -> None:  # type: ignore[type-arg]
+def _write_cache(query: str, data: JsonObject) -> None:
     path = _cache_path(query)
     path.write_text(json.dumps(data), encoding="utf-8")
     logger.info("Cached Overpass response to %s", path.name)
@@ -171,13 +172,13 @@ out geom;
 
 def _build_trail_from_elements(
     relation_id: int,
-    data: dict,  # type: ignore[type-arg]
+    data: JsonObject,
     cache_hit: bool,
 ) -> tuple[LineString | MultiLineString, dict[str, str | int], bool]:
     """Assemble a trail geometry from Overpass-shaped relation/way elements."""
     # Sort elements by type
     superroute = None
-    child_relations: dict[int, dict] = {}  # type: ignore[type-arg]
+    child_relations: dict[int, JsonObject] = {}
     ways_by_id: dict[int, list[tuple[float, float]]] = {}
 
     for element in data.get("elements", []):

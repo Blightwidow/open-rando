@@ -17,6 +17,8 @@
 #   make -f Makefile.protomaps show   # inspect tiles
 #   make -f Makefile.protomaps clean  # remove output
 
+OPEN_RANDO_DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+
 PMTILES := ./pmtiles
 
 # Protomaps daily build — bump SNAPSHOT to refresh OSM data
@@ -34,7 +36,7 @@ WORLD_MAX_ZOOM := 5
 # R2 bucket name (accessed via rclone remote "r2" — see docs/VECTOR_TILES.md)
 R2_BUCKET := open-rando-tiles
 R2_REMOTE := r2
-CONTOURS_FILE := $(HOME)/.local/share/open-rando/data/contours.pmtiles
+CONTOURS_FILE := $(OPEN_RANDO_DATA_DIR)/contours.pmtiles
 
 RCLONE_UPLOAD := rclone copyto --s3-chunk-size=64M --s3-no-check-bucket --progress \
 	--header-upload "Cache-Control: public, max-age=604800, immutable" \

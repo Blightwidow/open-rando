@@ -9,7 +9,9 @@
 #   make -f Makefile.osm status     report what the index holds
 #   make -f Makefile.osm clean      drop extracts and index (keeps the planet file)
 
-OSM_DIR ?= $(HOME)/.cache/open-rando/osm
+OPEN_RANDO_CACHE_DIR ?= $(HOME)/.cache/open-rando
+
+OSM_DIR ?= $(OPEN_RANDO_CACHE_DIR)/osm
 PBF_URL ?= https://download.geofabrik.de/europe/france-latest.osm.pbf
 # Named after the URL so a regional extract can be used for a quick trial:
 #   make -f Makefile.osm PBF_URL=https://download.geofabrik.de/europe/france/bourgogne-latest.osm.pbf

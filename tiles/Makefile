@@ -12,8 +12,11 @@
 #   make upload     # upload to GitHub Release
 #   make clean      # remove intermediate files
 
-SRTM_DIR ?= $(HOME)/.cache/open-rando/srtm
-OUTPUT_DIR ?= $(HOME)/.local/share/open-rando/data
+OPEN_RANDO_DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+OPEN_RANDO_CACHE_DIR ?= $(HOME)/.cache/open-rando
+
+SRTM_DIR ?= $(OPEN_RANDO_CACHE_DIR)/srtm
+OUTPUT_DIR ?= $(OPEN_RANDO_DATA_DIR)
 BUILD_DIR := build
 
 HGT_FILES := $(wildcard $(SRTM_DIR)/*.hgt)

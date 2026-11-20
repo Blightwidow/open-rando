@@ -33,8 +33,10 @@
 #   make -f Makefile.routes show SQUARE=6_5      # inspect one square
 #   make -f Makefile.routes clean                # remove build-grid/
 
+OPEN_RANDO_DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+
 GRID_DIR ?= build-grid
-DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+DATA_DIR ?= $(OPEN_RANDO_DATA_DIR)
 PMTILES := ./pmtiles
 
 R2_BUCKET := open-rando-tiles

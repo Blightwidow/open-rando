@@ -17,8 +17,11 @@
 #   make -f Makefile.overlay upload                # upload to R2
 #   make -f Makefile.overlay clean                 # remove intermediates
 
-OSM_DIR ?= $(HOME)/.cache/open-rando/osm
-OUTPUT_DIR ?= $(HOME)/.local/share/open-rando/data
+OPEN_RANDO_DATA_DIR ?= $(HOME)/.local/share/open-rando/data
+OPEN_RANDO_CACHE_DIR ?= $(HOME)/.cache/open-rando
+
+OSM_DIR ?= $(OPEN_RANDO_CACHE_DIR)/osm
+OUTPUT_DIR ?= $(OPEN_RANDO_DATA_DIR)
 BUILD_DIR := build-overlay
 WITH_STREAMS ?= 0
 

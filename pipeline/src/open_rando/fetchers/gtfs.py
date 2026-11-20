@@ -20,6 +20,7 @@ from open_rando.config import (
     GTFS_FEEDS_CACHE_DIRECTORY,
     GTFS_MATCH_RADIUS_METERS,
 )
+from open_rando.json_types import JsonObject, load_json_object
 from open_rando.models import RailService, ServiceWindow, Station
 
 logger = logging.getLogger("open_rando")
@@ -473,7 +474,7 @@ def _feed_data_to_cache(feed: FeedData) -> dict[str, object]:
     }
 
 
-def _feed_data_from_cache(cached: dict) -> FeedData:  # type: ignore[type-arg]
+def _feed_data_from_cache(cached: JsonObject) -> FeedData:
     return FeedData(
         connectivity={
             stop_id: set(route_ids) for stop_id, route_ids in cached.get("connectivity", {}).items()
@@ -827,15 +828,15 @@ def _generic_cache_path(name: str) -> Path:
     return cache_directory / f"{name}.json"
 
 
-def _read_generic_cache(path: Path) -> dict | None:  # type: ignore[type-arg]
+def _read_generic_cache(path: Path) -> JsonObject | None:
     if not path.exists():
         return None
     age_seconds = time.time() - path.stat().st_mtime
     if age_seconds > GTFS_CACHE_TTL_SECONDS:
         return None
     logger.info("Using cached %s (%.0fs old)", path.name, age_seconds)
-    return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+    return load_json_object(path.read_text(encoding="utf-8"))
 
 
-def _write_generic_cache(path: Path, data: dict) -> None:  # type: ignore[type-arg]
+def _write_generic_cache(path: Path, data: JsonObject) -> None:
     path.write_text(json.dumps(data), encoding="utf-8")
