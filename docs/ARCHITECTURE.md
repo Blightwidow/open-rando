@@ -184,7 +184,7 @@ open-rando/
 |   |   |   +-- gtfs_stops_index.py  # local SQLite index of every boarding stop
 |   |   |   +-- pois.py          # accommodation and resupply POIs (hotels, campings, shops, eateries)
 |   |   |   +-- landmarks.py     # landmarks near a trail (AI image prompts)
-|   |   |   +-- routing.py       # OSRM pedestrian routing for station-trail connectors
+|   |   |   +-- routing.py       # OSRM walking-distance matrix (local router, see Makefile.osrm)
 |   |   |   +-- srtm.py          # SRTM .hgt tile downloader + bilinear interpolation
 |   |   +-- processors/
 |   |   |   +-- trail.py         # fetch + fuse trail relations, shared by `pipeline` and `tracks`
@@ -193,7 +193,6 @@ open-rando/
 |   |   |   +-- slice.py         # trail substring extraction, distance and gap computation
 |   |   |   +-- elevation.py     # elevation profiling, duration, difficulty classification
 |   |   |   +-- geography.py     # region/departement resolution, terrain classification
-|   |   |   +-- connectors.py    # pedestrian walking paths between stations and trail
 |   |   |   +-- link.py          # which POIs are reachable from a track, and where along it
 |   |   +-- exporters/
 |   |       +-- track.py         # track.json writer
@@ -278,7 +277,8 @@ open-rando/
 | Overpass API responses (stations, accommodation) | `~/.cache/open-rando/overpass/` | 30 days |
 | SNCF station reference data | `~/.cache/open-rando/sncf/` | 30 days |
 | GTFS stop index, feeds and departures | `~/.cache/open-rando/gtfs/` | Feeds 30 days; departures per ISO week |
-| OSRM pedestrian routes | `~/.cache/open-rando/osrm/` | 90 days |
+| OSRM walking-distance tables | `~/.cache/open-rando/osrm/` | 90 days |
+| OSRM foot graph (built by `Makefile.osrm`) | `~/.cache/open-rando/osrm-graph/` | until rebuilt |
 | SRTM elevation tiles | `~/.cache/open-rando/srtm/` | Permanent |
 
 Overpass responses are keyed by SHA256 of the query string. SRTM tiles are keyed by tile name (e.g., `N47E003.hgt`). Missing tiles are cached as sentinels to avoid re-downloading. All caches are in `~/.cache/open-rando/` (shared across worktrees).

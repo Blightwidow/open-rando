@@ -53,10 +53,12 @@ SNCF_STATIONS_URL = "https://ressources.data.sncf.com/api/explore/v2.1/catalog/d
 SNCF_CACHE_DIRECTORY = f"{CACHE_ROOT}/sncf"
 SNCF_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
 
-OSRM_HOST = "http://router.project-osrm.org"
-OSRM_BASE_URL = f"{OSRM_HOST}/route/v1/foot"
+# Local router built by pipeline/Makefile.osrm. The public demo server
+# (router.project-osrm.org) is rate limited and not meant for bulk use.
+OSRM_HOST = os.environ.get("OPEN_RANDO_OSRM_URL", "http://localhost:5000")
 OSRM_TABLE_URL = f"{OSRM_HOST}/table/v1/foot"
 OSRM_CACHE_DIRECTORY = f"{CACHE_ROOT}/osrm"
 OSRM_CACHE_TTL_SECONDS = 90 * 24 * 3600  # 90 days
-OSRM_COOLDOWN_SECONDS = 1
+# Pause between requests only when sharing someone else's server.
+OSRM_COOLDOWN_SECONDS = 0 if OSRM_HOST.startswith("http://localhost") else 1
 OSRM_TIMEOUT_SECONDS = 10

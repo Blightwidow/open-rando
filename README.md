@@ -47,6 +47,7 @@ On macOS, `brew bundle` at the repo root installs every native tool (uv, osmium-
 - Python 3.13+ with [uv](https://docs.astral.sh/uv/)
 - [Bun](https://bun.sh/) (or Node.js)
 - [osmium-tool](https://osmcode.org/osmium-tool/) to build the local OSM extracts (required; `OPEN_RANDO_ALLOW_OVERPASS=1` reads the Overpass API instead, for development)
+- [Docker](https://www.docker.com/) to run the local OSRM walking router (`make -f Makefile.osrm`), used by the `link` stage
 
 ### Run the pipeline
 
@@ -56,7 +57,7 @@ uv sync --all-extras
 uv run python -m open_rando pipeline
 ```
 
-The `pois` stage reads the local OSM extract index, so build it first (`make -f Makefile.osm` in `pipeline/`, downloads the ~5 GB France extract once). Each stage also runs alone, see [docs/SPLIT_PIPELINE.md](docs/SPLIT_PIPELINE.md).
+Every stage reads the local OSM extract index, so build it first (`make -f Makefile.osm` in `pipeline/`, downloads the ~5 GB France extract once). The `link` stage measures walking distances with a local OSRM router: `make -f Makefile.osrm serve` in `pipeline/` builds it from the same extract (once) and starts it. Each stage also runs alone, see [docs/SPLIT_PIPELINE.md](docs/SPLIT_PIPELINE.md).
 
 Options:
 

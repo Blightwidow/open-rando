@@ -58,6 +58,8 @@ cd website && bun install && bun run dev
 - `make -f Makefile.osm` (in pipeline/) -- download france-latest.osm.pbf (~5GB, once), filter per-layer extracts, build the index
 - `make -f Makefile.osm extracts` (in pipeline/) -- re-filter the per-layer extracts only
 - `make -f Makefile.osm clean` (in pipeline/) -- drop extracts + index, keep the downloaded planet file
+- `make -f Makefile.osrm` (in pipeline/) -- build the local OSRM foot graph from the France PBF (Docker, ~16 GB RAM)
+- `make -f Makefile.osrm serve|status|stop` (in pipeline/) -- run the router on http://localhost:5000 (`OPEN_RANDO_OSRM_URL` overrides); the `link` stage needs it unless `--skip-walking-refinement`
 - `make` (in tiles/) -- build contour tiles (requires GDAL + tippecanoe)
 - `make install` (in tiles/) -- verify contour pipeline dependencies
 - `./download.sh` (in tiles/) -- fetch go-pmtiles binary

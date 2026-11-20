@@ -8,7 +8,7 @@
 | OpenStreetMap via Overpass API | Same data, used only for layers absent from the local index | Free, rate-limited | Disk cache, 30-60 day TTL |
 | SNCF gares-de-voyageurs | Train station reference data (UIC codes, names, coordinates) for filtering | Free, no auth | Disk cache, 30-day TTL |
 | transport.data.gouv.fr GTFS API | Bus stop locations, route names, timetable feed URLs, train departures (first/last train and train count per kind of day) | Free, public API | Disk cache, 30-day TTL, keyed per reference month |
-| OSRM public router | Pedestrian routing for station-to-trail walking connectors | Free, rate-limited | Disk cache, 90-day TTL |
+| OSRM (local, Docker) | Walking distance from stations to the trail (junction refinement in `link`) | Self-hosted on the Geofabrik France PBF | Disk cache, 90-day TTL |
 | SRTM `.hgt` tiles via AWS Skadi | Elevation data (1 or 3 arc-second resolution) | Free, no auth | Permanent disk cache |
 
 ### Local OSM Extracts
@@ -72,7 +72,7 @@ Tiles are downloaded from `https://elevation-tiles-prod.s3.amazonaws.com/skadi/`
 | Local extracts going stale | The index is a snapshot: rebuild it (`make -f Makefile.osm extracts index`) when route or station data looks out of date; `osm-index --status` shows each layer's build time and coverage |
 | Partial extract used by mistake | Layer coverage comes from the PBF header bbox; queries outside it fall back to Overpass rather than returning half the stations |
 | `osmium-tool` not installed | `make -f Makefile.osm check` fails fast with the install command; without an index the pipeline falls back to Overpass |
-| OSRM public server rate limits | 1s cooldown between requests; disk cache (90-day TTL); fallback to straight-line distance |
+| OSRM router down or not started | `link` stops with the error and the `make -f Makefile.osrm serve` hint instead of keeping crow-fly junctions; `--skip-walking-refinement` runs without it |
 | Large static site (many GPX/GeoJSON) | GPX on-demand download; simplify GeoJSON; gzip on CDN |
 
 ---

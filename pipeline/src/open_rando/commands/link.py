@@ -25,6 +25,7 @@ from open_rando.exporters.track import (
     TRAIL_GEOJSON_FILE_NAME,
     load_track_metadata,
 )
+from open_rando.fetchers.routing import RoutingUnavailableError
 from open_rando.models import Track
 from open_rando.poi_grid import PoiGrid
 from open_rando.poi_store import PoiGridMissingError, read_poi_squares
@@ -113,7 +114,7 @@ def run_link(arguments: argparse.Namespace) -> None:
                 links_directory,
                 refine_junctions=not arguments.skip_walking_refinement,
             )
-        except PoiGridMissingError as error:
+        except (PoiGridMissingError, RoutingUnavailableError) as error:
             raise SystemExit(str(error)) from error
         if train_station_count < MIN_TRAIN_STATIONS_PER_ROUTE:
             logger.warning(
