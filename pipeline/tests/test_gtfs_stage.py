@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import io
+import sqlite3
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -121,6 +123,46 @@ class TestIndexFeed:
 
         assert result.status == FEED_STATUS_INDEXED
         assert len(result.stops) == 2
+
+    def test_records_the_hash_of_the_downloaded_feed(
+        self, feed_cache: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        content = build_zip(MINIMAL_FEED)
+        monkeypatch.setattr(gtfs, "_download_feed", lambda _resource_id, _url: content)
+
+        result = index_feed(5, "https://example.test/feed.zip", REFERENCE_DATE)
+
+        assert result.content_sha256 == hashlib.sha256(content).hexdigest()
+
+
+class TestFeedVersions:
+    def test_lists_each_feed_with_its_content_hash(self, tmp_path: Path):
+        index = GtfsStopsIndex.open_for_writing(tmp_path / "stops.sqlite")
+        index.replace_feed(7, FEED_STATUS_INDEXED, [], content_sha256="f00d")
+
+        versions = index.feed_versions()
+        index.close()
+
+        assert [(version["resource_id"], version["content_sha256"]) for version in versions] == [
+            (7, "f00d")
+        ]
+
+    def test_upgrades_an_index_written_before_hashes_existed(self, tmp_path: Path):
+        path = tmp_path / "stops.sqlite"
+        connection = sqlite3.connect(path)
+        connection.execute(
+            "CREATE TABLE feeds (resource_id INTEGER PRIMARY KEY, status TEXT NOT NULL, "
+            "stop_count INTEGER NOT NULL, indexed_at TEXT NOT NULL)"
+        )
+        connection.execute("INSERT INTO feeds VALUES (3, 'indexed', 0, '2026-01-01T00:00:00')")
+        connection.commit()
+        connection.close()
+
+        index = GtfsStopsIndex.open_for_writing(path)
+        versions = index.feed_versions()
+        index.close()
+
+        assert versions[0]["content_sha256"] is None
 
 
 class TestStopsIndex:

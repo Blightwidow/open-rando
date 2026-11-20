@@ -27,6 +27,8 @@ LINKS_DIRECTORY = f"{DATA_ROOT}/links"
 POIS_DIRECTORY = f"{DATA_ROOT}/pois"
 CATALOG_PATH = f"{DATA_ROOT}/catalog.json"
 RUN_REPORT_PATH = f"{DATA_ROOT}/run-report.json"
+# Input versions each stage read (OSM extract, GTFS feeds, OSRM graph, code).
+RUN_INPUTS_PATH = f"{DATA_ROOT}/run-inputs.json"
 # Routes whose last run raised (timeouts, rate limits), so --retry-failed
 # reruns only those instead of the whole catalog.
 FAILURE_LOG_PATH = f"{DATA_ROOT}/failed-routes.json"
@@ -58,6 +60,8 @@ SNCF_CACHE_TTL_SECONDS = 30 * 24 * 3600  # 30 days
 OSRM_HOST = os.environ.get("OPEN_RANDO_OSRM_URL", "http://localhost:5000")
 OSRM_TABLE_URL = f"{OSRM_HOST}/table/v1/foot"
 OSRM_CACHE_DIRECTORY = f"{CACHE_ROOT}/osrm"
+# Foot graph built by pipeline/Makefile.osrm.
+OSRM_GRAPH_DIRECTORY = f"{CACHE_ROOT}/osrm-graph"
 OSRM_CACHE_TTL_SECONDS = 90 * 24 * 3600  # 90 days
 # Pause between requests only when sharing someone else's server.
 OSRM_COOLDOWN_SECONDS = 0 if OSRM_HOST.startswith("http://localhost") else 1

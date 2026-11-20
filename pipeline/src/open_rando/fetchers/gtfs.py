@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 import logging
@@ -355,6 +356,8 @@ FEED_STATUS_DOWNLOAD_FAILED = "download_failed"
 class FeedIndexResult:
     status: str
     stops: list[GtfsStop] = field(default_factory=list)
+    # Identifies the exact feed version a run used; None when not downloaded.
+    content_sha256: str | None = None
 
 
 def index_feed(resource_id: int, url: str, reference_date: date) -> FeedIndexResult:
@@ -367,6 +370,7 @@ def index_feed(resource_id: int, url: str, reference_date: date) -> FeedIndexRes
     content = _download_feed(resource_id, url)
     if content is None:
         return FeedIndexResult(FEED_STATUS_DOWNLOAD_FAILED)
+    content_sha256 = hashlib.sha256(content).hexdigest()
 
     try:
         stops = parse_gtfs_stops(content, resource_id)
@@ -375,7 +379,7 @@ def index_feed(resource_id: int, url: str, reference_date: date) -> FeedIndexRes
         _write_generic_cache(
             _feed_cache_path(resource_id, reference_date), _feed_data_to_cache(FeedData())
         )
-        return FeedIndexResult(FEED_STATUS_UNPARSEABLE)
+        return FeedIndexResult(FEED_STATUS_UNPARSEABLE, content_sha256=content_sha256)
 
     try:
         feed = parse_gtfs_zip(content, reference_date)
@@ -385,7 +389,7 @@ def index_feed(resource_id: int, url: str, reference_date: date) -> FeedIndexRes
         )
         feed = FeedData()
     _write_generic_cache(_feed_cache_path(resource_id, reference_date), _feed_data_to_cache(feed))
-    return FeedIndexResult(FEED_STATUS_INDEXED, stops)
+    return FeedIndexResult(FEED_STATUS_INDEXED, stops, content_sha256)
 
 
 def parse_gtfs_stops(content: bytes, resource_id: int) -> list[GtfsStop]:

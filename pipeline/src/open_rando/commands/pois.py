@@ -16,6 +16,8 @@ from typing import Any
 
 from open_rando.config import POIS_DIRECTORY, TRAIN_GTFS_MATCH_RADIUS_METERS
 from open_rando.exporters.pois import export_poi_index, export_poi_square, read_poi_index_counts
+from open_rando.exporters.run_inputs import osm_inputs, record_stage_inputs, sncf_inputs
+from open_rando.fetchers import osm_extract
 from open_rando.fetchers.gtfs import (
     FeedData,
     GtfsStop,
@@ -33,9 +35,11 @@ from open_rando.fetchers.osm_extract import (
     OsmExtractIndex,
     open_layer,
 )
+from open_rando.fetchers.osm_source import LocalExtractSource
 from open_rando.fetchers.pois import _parse_accommodation_elements, _parse_resupply_elements
 from open_rando.fetchers.sncf import build_sncf_code_set, build_sncf_url, fetch_sncf_stations
 from open_rando.fetchers.stations import _parse_station_elements, filter_stations_by_sncf
+from open_rando.json_types import JsonObject
 from open_rando.models import PointOfInterest, Station
 from open_rando.poi_grid import PoiGrid, Square, square_file_name
 
@@ -191,6 +195,13 @@ def run_pois(arguments: argparse.Namespace) -> None:
             "or `python -m open_rando osm-index` to build it: the POI grid is read from it."
         )
 
+    gtfs_index_summary: JsonObject | None = None
+    if stops_index is not None:
+        gtfs_index_summary = {
+            "feed_count": stops_index.feed_count(),
+            "stop_count": stops_index.stop_count(),
+        }
+
     try:
         for square in squares:
             west, south, east, north = grid.square_bounding_box(square)
@@ -242,6 +253,17 @@ def run_pois(arguments: argparse.Namespace) -> None:
             stops_index.close()
 
     export_poi_index(grid, counts_by_square, output_directory)
+    record_stage_inputs(
+        "pois",
+        {
+            "squares": [f"{column}_{row}" for column, row in squares]
+            if arguments.square
+            else "all",
+            "osm": osm_inputs(LocalExtractSource(osm_extract.default_index_path())),
+            "sncf": sncf_inputs(),
+            "gtfs_index": gtfs_index_summary,
+        },
+    )
     logger.info("POI grid written to %s", output_directory)
 
 

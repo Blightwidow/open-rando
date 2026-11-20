@@ -12,6 +12,7 @@ import logging
 from datetime import date
 
 from open_rando.config import GTFS_CACHE_TTL_SECONDS
+from open_rando.exporters.run_inputs import record_stage_inputs
 from open_rando.fetchers.gtfs import (
     FEED_STATUS_DOWNLOAD_FAILED,
     FEED_STATUS_INDEXED,
@@ -75,13 +76,21 @@ def run_gtfs(arguments: argparse.Namespace) -> None:
                 # Not recorded: a transient failure is retried on the next run.
                 failed += 1
                 continue
-            index.replace_feed(resource_id, result.status, result.stops)
+            index.replace_feed(resource_id, result.status, result.stops, result.content_sha256)
             if result.status == FEED_STATUS_INDEXED:
                 indexed += 1
             logger.info("  -> %s, %d stops", result.status, len(result.stops))
+        feed_versions = index.feed_versions()
     finally:
         index.close()
 
+    record_stage_inputs(
+        "gtfs",
+        {
+            "resources": sorted(arguments.resource) if arguments.resource else "all",
+            "feeds": feed_versions,
+        },
+    )
     logger.info(
         "=== GTFS: %d indexed, %d already fresh, %d download failures ===",
         indexed,

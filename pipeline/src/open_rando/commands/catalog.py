@@ -26,6 +26,7 @@ from open_rando.exporters.failures import load_failure_log
 from open_rando.exporters.image_generator import find_image_on_disk
 from open_rando.exporters.links import load_link_counts
 from open_rando.exporters.report import build_run_report, export_run_report, log_run_report
+from open_rando.exporters.run_inputs import load_run_inputs, summarize_inputs_for_log
 from open_rando.exporters.track import TRACK_METADATA_FILE_NAME, load_track_metadata
 from open_rando.models import Track
 
@@ -113,6 +114,7 @@ def run_catalog(_arguments: argparse.Namespace) -> None:
         failed_route_refs=list(failure_log),
         skipped_route_refs=[*too_few_stations, *unlinked],
     )
+    report["inputs"] = load_run_inputs()
     report_path = str(Path(RUN_REPORT_PATH).expanduser())
     export_run_report(report, report_path)
 
@@ -128,4 +130,6 @@ def run_catalog(_arguments: argparse.Namespace) -> None:
         logger.warning("Left out, not linked yet (run `link`): %s", ", ".join(unlinked))
     logger.info("Catalog written to %s", catalog_path)
     log_run_report(report)
+    for line in summarize_inputs_for_log(report["inputs"]):
+        logger.info("Inputs %s", line)
     logger.info("Run report written to %s", report_path)

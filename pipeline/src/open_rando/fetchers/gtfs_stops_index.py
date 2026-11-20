@@ -19,7 +19,8 @@ SCHEMA_STATEMENTS = (
         resource_id INTEGER PRIMARY KEY,
         status TEXT NOT NULL,
         stop_count INTEGER NOT NULL,
-        indexed_at TEXT NOT NULL
+        indexed_at TEXT NOT NULL,
+        content_sha256 TEXT
     )""",
     """CREATE TABLE IF NOT EXISTS stops (
         resource_id INTEGER NOT NULL,
@@ -47,6 +48,7 @@ class GtfsStopsIndex:
         connection = sqlite3.connect(index_path)
         for statement in SCHEMA_STATEMENTS:
             connection.execute(statement)
+        _add_missing_columns(connection)
         connection.commit()
         return cls(connection)
 
@@ -62,7 +64,13 @@ class GtfsStopsIndex:
     def close(self) -> None:
         self.connection.close()
 
-    def replace_feed(self, resource_id: int, status: str, stops: list[GtfsStop]) -> None:
+    def replace_feed(
+        self,
+        resource_id: int,
+        status: str,
+        stops: list[GtfsStop],
+        content_sha256: str | None = None,
+    ) -> None:
         """Swap a feed's stops for a fresh set, atomically."""
         with self.connection:
             self.connection.execute("DELETE FROM stops WHERE resource_id = ?", (resource_id,))
@@ -71,9 +79,10 @@ class GtfsStopsIndex:
                 [(stop.resource_id, stop.stop_id, stop.latitude, stop.longitude) for stop in stops],
             )
             self.connection.execute(
-                "INSERT OR REPLACE INTO feeds (resource_id, status, stop_count, indexed_at) "
-                "VALUES (?, ?, ?, ?)",
-                (resource_id, status, len(stops), datetime.now(UTC).isoformat()),
+                "INSERT OR REPLACE INTO feeds "
+                "(resource_id, status, stop_count, indexed_at, content_sha256) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (resource_id, status, len(stops), datetime.now(UTC).isoformat(), content_sha256),
             )
 
     def is_feed_fresh(self, resource_id: int, max_age_seconds: float) -> bool:
@@ -112,3 +121,27 @@ class GtfsStopsIndex:
     def stop_count(self) -> int:
         row = self.connection.execute("SELECT COUNT(*) FROM stops").fetchone()
         return int(row[0])
+
+    def feed_versions(self) -> list[dict[str, object]]:
+        """Which version of each feed the index holds, for the run report."""
+        cursor = self.connection.execute(
+            "SELECT resource_id, status, stop_count, indexed_at, content_sha256 "
+            "FROM feeds ORDER BY resource_id"
+        )
+        return [
+            {
+                "resource_id": resource_id,
+                "status": status,
+                "stop_count": stop_count,
+                "indexed_at": indexed_at,
+                "content_sha256": content_sha256,
+            }
+            for resource_id, status, stop_count, indexed_at, content_sha256 in cursor
+        ]
+
+
+def _add_missing_columns(connection: sqlite3.Connection) -> None:
+    """Upgrade an index written before `content_sha256` existed."""
+    feed_columns = {row[1] for row in connection.execute("PRAGMA table_info(feeds)")}
+    if "content_sha256" not in feed_columns:
+        connection.execute("ALTER TABLE feeds ADD COLUMN content_sha256 TEXT")

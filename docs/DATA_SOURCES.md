@@ -67,7 +67,7 @@ Tiles are downloaded from `https://elevation-tiles-prod.s3.amazonaws.com/skadi/`
 | FFRP trademark on "GR" | Frame as "hiking between stations"; no logo reproduction; disclaimer |
 | GTFS feed availability | Some bus networks may not publish GTFS data; bus stops without GTFS enrichment show raw OSM names. Train stations with no GTFS match carry no departure data and simply show no times. |
 | GTFS feed size | National rail feeds hold millions of `stop_times.txt` rows; they are streamed row by row, aggregated per stop, and cached per feed and reference month so a run parses each feed at most once |
-| Silent data regressions | Every run writes `data/run-report.json` comparing the catalog before and after, and warns when a route shrinks, loses train stations, or loses elevation gain |
+| Silent data regressions | Every run writes `data/run-report.json` comparing the catalog before and after, and warns when a route shrinks, loses train stations, or loses elevation gain; its `inputs` section names the OSM extract, GTFS feed hashes, SNCF export, OSRM graph and git commit each stage used |
 | Contract drift with the mobile client | `catalog.json` is validated against `src/open_rando/data/catalog.schema.json` before it is written; new fields must be added as optional |
 | Local extracts going stale | The index is a snapshot: rebuild it (`make -f Makefile.osm extracts index`) when route or station data looks out of date; `osm-index --status` shows each layer's build time and coverage |
 | Partial extract used by mistake | Layer coverage comes from the PBF header bbox; queries outside it fall back to Overpass rather than returning half the stations |

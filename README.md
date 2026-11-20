@@ -36,7 +36,7 @@ The pipeline is five stages, each reading what the previous one wrote ([docs/SPL
 2. **`gtfs`**: downloads every national GTFS feed once and builds a local stop index plus a per-feed departures cache.
 3. **`pois`**: builds the France-wide POI grid (12x8 squares, same grid as the mobile tiles): train stations filtered against SNCF data with departures per kind of day, bus stops with GTFS line names, hotels, campings. Writes `pois/<col>_<row>.json` and `pois/index.json`.
 4. **`link`**: joins the POIs to each track (train stations within 5 km with a walking-distance junction, bus stops within 2 km, hotels and campings within 3 km). Writes `links/<id>.json`.
-5. **`catalog`**: merges tracks and link counts into `catalog.json`, keeping tracks with at least 2 train stations, validates it against its JSON Schema, and writes `run-report.json` (what changed, regression warnings).
+5. **`catalog`**: merges tracks and link counts into `catalog.json`, keeping tracks with at least 2 train stations, validates it against its JSON Schema, and writes `run-report.json` (what changed, regression warnings, and which input versions each stage read).
 
 ## Getting started
 

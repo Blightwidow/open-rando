@@ -20,6 +20,7 @@ from open_rando.config import (
     TRACKS_DIRECTORY,
 )
 from open_rando.exporters.links import export_links
+from open_rando.exporters.run_inputs import record_stage_inputs, routing_inputs
 from open_rando.exporters.track import (
     TRACK_METADATA_FILE_NAME,
     TRAIL_GEOJSON_FILE_NAME,
@@ -122,3 +123,13 @@ def run_link(arguments: argparse.Namespace) -> None:
                 train_station_count,
                 MIN_TRAIN_STATIONS_PER_ROUTE,
             )
+
+    record_stage_inputs(
+        "link",
+        {
+            "routes": [track.path_ref for track, _directory in tracks]
+            if arguments.route
+            else "all",
+            "routing": routing_inputs(walking_refinement=not arguments.skip_walking_refinement),
+        },
+    )

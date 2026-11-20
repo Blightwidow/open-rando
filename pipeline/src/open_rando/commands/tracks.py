@@ -33,6 +33,12 @@ from open_rando.exporters.failures import (
 )
 from open_rando.exporters.geojson import export_route_geojson
 from open_rando.exporters.gpx import export_route_gpx
+from open_rando.exporters.run_inputs import (
+    elevation_inputs,
+    osm_inputs,
+    record_stage_inputs,
+    sncf_inputs,
+)
 from open_rando.exporters.track import (
     ELEVATION_FILE_NAME,
     TRAIL_GEOJSON_FILE_NAME,
@@ -41,6 +47,7 @@ from open_rando.exporters.track import (
 )
 from open_rando.fetchers.discovery import discover_routes
 from open_rando.fetchers.landmarks import fetch_landmarks
+from open_rando.fetchers.osm_source import get_osm_source
 from open_rando.fetchers.sncf import build_sncf_code_set, fetch_sncf_stations
 from open_rando.fetchers.srtm import SrtmReader
 from open_rando.fetchers.stations import fetch_stations_in_bounds
@@ -319,6 +326,17 @@ def run_tracks(arguments: argparse.Namespace) -> None:
             )
             export_failure_log(failure_log, failure_log_path)
 
+    record_stage_inputs(
+        "tracks",
+        {
+            "routes": [str(route["ref"]) for route in discovered]
+            if arguments.route or arguments.retry_failed
+            else "all",
+            "osm": osm_inputs(get_osm_source()),
+            "elevation": elevation_inputs(),
+            "sncf": sncf_inputs(),
+        },
+    )
     logger.info("=== Summary: %d/%d tracks computed ===", succeeded, len(discovered))
     if failed:
         logger.warning("Failed: %s — rerun with --retry-failed", ", ".join(failed))
