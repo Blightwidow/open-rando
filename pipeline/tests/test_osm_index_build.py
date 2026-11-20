@@ -27,25 +27,9 @@ from open_rando.fetchers.osm_extract import (
 )
 from open_rando.processors import geography as geography_module
 from open_rando.processors.trail import fetch_trail
+from tests.osm_fixtures import write_pbf
 
 osmium = pytest.importorskip("osmium")
-
-
-def write_pbf(path: Path, nodes: list[dict], ways: list[dict], relations: list[dict]) -> Path:
-    """Write a small .osm.pbf. Node locations are (lon, lat), as osmium wants."""
-    from osmium.osm import mutable
-
-    writer = osmium.SimpleWriter(str(path))
-    try:
-        for node in nodes:
-            writer.add_node(mutable.Node(**node))
-        for way in ways:
-            writer.add_way(mutable.Way(**way))
-        for relation in relations:
-            writer.add_relation(mutable.Relation(**relation))
-    finally:
-        writer.close()
-    return path
 
 
 @pytest.fixture

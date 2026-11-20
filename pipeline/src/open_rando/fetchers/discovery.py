@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +9,10 @@ import yaml
 
 logger = logging.getLogger("open_rando")
 
-ROUTES_YAML_PATH = Path(__file__).resolve().parents[3] / "routes.yaml"
+# OPEN_RANDO_ROUTES_PATH points the pipeline at another catalog (tests, trials).
+ROUTES_YAML_PATH = Path(
+    os.environ.get("OPEN_RANDO_ROUTES_PATH") or Path(__file__).resolve().parents[3] / "routes.yaml"
+)
 
 
 def discover_routes(

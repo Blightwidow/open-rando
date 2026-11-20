@@ -82,6 +82,11 @@ cd website && bun install && bun run dev
 - `bun run build` (in website/) -- build static site to `dist/`
 - `bun run generate:types` (in website/) -- regenerate `src/lib/generated/*.ts` from the pipeline's JSON Schemas (`--out-dir <dir>` writes them for the mobile app); `bun run check:types` fails when they are stale (CI)
 
+## Testing
+
+- `uv run pytest` (in pipeline/) includes `tests/test_pipeline_end_to_end.py`: osm-index, tracks, pois (`--skip-gtfs`), link (`--skip-walking-refinement`) and catalog run as subprocesses on a synthetic extract (`tests/end_to_end_fixture.py`); `uv run python -m tests.end_to_end_fixture <dir>` writes that dataset, and CI builds the website against it
+- `OPEN_RANDO_ROUTES_PATH` points the pipeline at another routes.yaml
+
 ## Code Conventions
 
 - Python: ruff for formatting + linting, mypy for type checking

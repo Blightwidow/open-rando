@@ -21,18 +21,45 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "pipeline/uv.lock"
 
-      - run: uv sync --all-extras
+      # No `images` extra: torch and diffusers are only needed to generate illustrations.
+      - run: uv sync --extra dev --extra osm
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy src/
+      # Includes tests/test_pipeline_end_to_end.py: every offline stage on a synthetic extract.
       - run: uv run pytest
+
+      - name: Build fixture data for the website
+        run: uv run python -m tests.end_to_end_fixture "$RUNNER_TEMP/fixture"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fixture-data
+          path: ${{ runner.temp }}/fixture/data
+          if-no-files-found: error
+
+  tiles:
+    name: Tiles (Python scripts)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tiles
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v8.1.0
+
+      - run: uv run --python 3.13 --with pytest pytest -q test_overlay_features.py
 
   website:
     name: Website (Astro)
+    needs: pipeline
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: website
+    env:
+      OPEN_RANDO_DATA_DIR: ${{ github.workspace }}/fixture-data
     steps:
       - uses: actions/checkout@v4
 
@@ -40,10 +67,16 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - name: Create stub catalog for type checking
-        run: |
-          mkdir -p public/data
-          echo '{"generated_at":"","source":"","license":"","routes":[]}' > public/data/catalog.json
+      - name: Generated types match the pipeline schemas
+        run: bun run check:types
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fixture-data
+          path: ${{ github.workspace }}/fixture-data
 
       - run: bun test
+
+      # prebuild copies the fixture data into public/data, which astro check reads.
+      - run: bun run build
       - run: bun run astro check

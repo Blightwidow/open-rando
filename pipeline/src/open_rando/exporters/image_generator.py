@@ -258,7 +258,7 @@ def _load_flux_pipeline() -> Any:
         dtype = torch.float32
 
     logger.info("Loading FLUX pipeline %s on %s", FLUX_MODEL_ID, device)
-    pipeline = DiffusionPipeline.from_pretrained(  # type: ignore[no-untyped-call]
+    pipeline = DiffusionPipeline.from_pretrained(  # type: ignore[no-untyped-call,unused-ignore]
         FLUX_MODEL_ID, torch_dtype=dtype
     )
     pipeline = pipeline.to(device)

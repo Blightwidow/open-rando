@@ -158,13 +158,20 @@ cd pipeline
 uv run ruff format .
 uv run ruff check .
 uv run mypy src/
-uv run pytest
+uv run pytest            # includes an end-to-end run of every offline stage
 
-# Website: tests, type check
+# Synthetic one-route dataset (what CI builds the website against)
+uv run python -m tests.end_to_end_fixture /tmp/open-rando-fixture
+
+# Website: generated types, tests, type check
 cd website
+bun run check:types
 bun test
 bun run astro check
+OPEN_RANDO_DATA_DIR=/tmp/open-rando-fixture/data bun run build
 ```
+
+Pipeline output, caches and the route catalog can each be redirected with `OPEN_RANDO_DATA_DIR`, `OPEN_RANDO_CACHE_DIR` and `OPEN_RANDO_ROUTES_PATH`. Why the thresholds are what they are: [docs/DECISIONS.md](docs/DECISIONS.md).
 
 Known work not yet done is tracked in [TODOS.md](TODOS.md).
 
